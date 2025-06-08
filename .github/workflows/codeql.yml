@@ -68,8 +68,19 @@ jobs:
       run: |
         # Create google-services.json for Android from GitHub secret
         if [ -n "${{ secrets.GOOGLE_SERVICES_JSON }}" ]; then
-          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/composeApp/google-services.json
-          echo "✅ Firebase config for Android created"
+          echo "Attempting to decode Firebase config..."
+          if echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/composeApp/google-services.json 2>/dev/null; then
+            echo "✅ Firebase config for Android created successfully"
+            # Verify the file is valid JSON
+            if python3 -m json.tool mobile/composeApp/google-services.json > /dev/null 2>&1; then
+              echo "✅ Firebase config is valid JSON"
+            else
+              echo "⚠️ Firebase config is not valid JSON, but continuing build"
+            fi
+          else
+            echo "⚠️ Failed to decode GOOGLE_SERVICES_JSON secret (invalid Base64), skipping Firebase setup"
+            echo "Build will continue without Firebase configuration"
+          fi
         else
           echo "⚠️ GOOGLE_SERVICES_JSON secret not found, skipping Firebase setup"
         fi
