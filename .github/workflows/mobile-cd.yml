@@ -52,13 +52,13 @@ jobs:
         echo "🔥 Setting up Firebase for production release..."
         
         # Check if Firebase configuration secret is available
-        if [ -z "${{ secrets.FIREBASE_CONFIG_JSON }}" ]; then
-          echo "⚠️ FIREBASE_CONFIG_JSON secret not found."
+        if [ -z "${{ secrets.GOOGLE_SERVICES_JSON }}" ]; then
+          echo "⚠️ GOOGLE_SERVICES_JSON secret not found."
           echo "Using default configuration - Crashlytics will be disabled."
-          echo "To enable Crashlytics for releases, add your google-services.json as a repository secret."
+          echo "To enable Crashlytics for releases, add your google-services.json as a base64 encoded repository secret."
         else
           echo "✅ Firebase configuration secret found. Setting up for production release."
-          echo '${{ secrets.FIREBASE_CONFIG_JSON }}' > mobile/composeApp/google-services.json
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/composeApp/google-services.json
           echo "🔥 Firebase Crashlytics enabled for this release build."
         fi
 
@@ -224,8 +224,8 @@ jobs:
         echo "🔥 Setting up Firebase for iOS production release..."
         
         # Set up Android Firebase config if available
-        if [ ! -z "${{ secrets.FIREBASE_CONFIG_JSON }}" ]; then
-          echo '${{ secrets.FIREBASE_CONFIG_JSON }}' > mobile/composeApp/google-services.json
+        if [ ! -z "${{ secrets.GOOGLE_SERVICES_JSON }}" ]; then
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/composeApp/google-services.json
           echo "✅ Android Firebase configuration set up."
         else
           echo "⚠️ Using default Android Firebase configuration."

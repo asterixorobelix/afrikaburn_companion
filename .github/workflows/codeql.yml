@@ -66,26 +66,56 @@ jobs:
     - name: Setup Firebase Config for Mobile
       if: matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
       run: |
-        # Create google-services.json for Android from GitHub secret
+        # Check if the existing google-services.json file is valid
+        if [ -f mobile/composeApp/google-services.json ]; then
+          if python3 -m json.tool mobile/composeApp/google-services.json > /dev/null 2>&1; then
+            echo "✅ Existing Firebase configuration file is valid"
+            EXISTING_CONFIG_VALID=true
+          else
+            echo "⚠️ Existing Firebase configuration file is invalid"
+            EXISTING_CONFIG_VALID=false
+          fi
+        else
+          echo "ℹ️ No existing Firebase configuration file found"
+          EXISTING_CONFIG_VALID=false
+        fi
+        
+        # Try to use secret if available, but fall back to existing file
         if [ -n "${{ secrets.GOOGLE_SERVICES_JSON }}" ]; then
-          echo "Attempting to decode Firebase config..."
-          if echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/composeApp/google-services.json 2>/dev/null; then
-            # Verify the file is valid JSON
-            if python3 -m json.tool mobile/composeApp/google-services.json > /dev/null 2>&1; then
-              echo "✅ Firebase config created and validated successfully"
+          echo "🔄 Attempting to decode Firebase config from secret..."
+          if echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/composeApp/google-services.json.tmp 2>/dev/null; then
+            # Verify the decoded file is valid JSON
+            if python3 -m json.tool mobile/composeApp/google-services.json.tmp > /dev/null 2>&1; then
+              echo "✅ Firebase config from secret is valid, using it"
+              mv mobile/composeApp/google-services.json.tmp mobile/composeApp/google-services.json
             else
-              echo "⚠️ Firebase config is not valid JSON, removing file to prevent build failure"
-              rm -f mobile/composeApp/google-services.json
+              echo "⚠️ Firebase config from secret is not valid JSON"
+              rm -f mobile/composeApp/google-services.json.tmp
+              if [ "$EXISTING_CONFIG_VALID" = "true" ]; then
+                echo "✅ Keeping existing valid Firebase configuration"
+              else
+                echo "❌ No valid Firebase configuration available"
+              fi
             fi
           else
             echo "⚠️ Failed to decode GOOGLE_SERVICES_JSON secret (invalid Base64)"
-            rm -f mobile/composeApp/google-services.json
+            rm -f mobile/composeApp/google-services.json.tmp
+            if [ "$EXISTING_CONFIG_VALID" = "true" ]; then
+              echo "✅ Keeping existing valid Firebase configuration"
+            else
+              echo "❌ No valid Firebase configuration available"
+            fi
           fi
         else
-          echo "ℹ️ GOOGLE_SERVICES_JSON secret not found, building without Firebase"
+          echo "ℹ️ GOOGLE_SERVICES_JSON secret not found"
+          if [ "$EXISTING_CONFIG_VALID" = "true" ]; then
+            echo "✅ Using existing valid Firebase configuration"
+          else
+            echo "ℹ️ Building without Firebase configuration"
+          fi
         fi
         
-        # Ensure no malformed google-services.json exists
+        # Final status check
         if [ -f mobile/composeApp/google-services.json ]; then
           echo "ℹ️ Building with Firebase configuration"
         else
