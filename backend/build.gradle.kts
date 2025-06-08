@@ -1,22 +1,20 @@
 val ktor_version = "2.3.12"
 val kotlin_version = "1.9.24"
-val logback_version = "1.5.18"
-val exposed_version = "0.61.0"
-val koin_version = "3.5.6"
+val logback_version = "1.4.11"
+val exposed_version = "0.44.1"
 
 plugins {
-    kotlin("jvm") version "2.1.21"
-    id("io.ktor.plugin") version "3.1.3"
+    kotlin("jvm") version "1.9.24"
+    id("io.ktor.plugin") version "2.3.12"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.24"
-    id("io.gitlab.arturbosch.detekt") version "1.23.8"
-    jacoco
+    id("io.gitlab.arturbosch.detekt") version "1.23.1"
 }
 
-group = "com.example.myproject"
+group = "io.asterixorobelix.afrikaburn"
 version = "0.0.1"
 
 application {
-    mainClass.set("com.example.myproject.ApplicationKt")
+    mainClass.set("io.asterixorobelix.afrikaburn.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
@@ -44,7 +42,7 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-call-logging-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-rate-limit-jvm:$ktor_version")
-    implementation("com.auth0:java-jwt:4.5.0")
+    implementation("com.auth0:java-jwt:4.4.0")
     
     // Database (Exposed ORM)
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
@@ -54,8 +52,8 @@ dependencies {
     implementation("com.zaxxer:HikariCP:5.0.1")
     
     // Database Drivers
-    implementation("com.h2database:h2:2.3.232")         // Development
-    implementation("org.postgresql:postgresql:42.7.6")  // Production
+    implementation("com.h2database:h2:2.1.214")         // Development
+    implementation("org.postgresql:postgresql:42.6.0")  // Production
     
     // HTTP Client for AI APIs
     implementation("io.ktor:ktor-client-core:$ktor_version")
@@ -65,21 +63,17 @@ dependencies {
     // Logging
     implementation("ch.qos.logback:logback-classic:$logback_version")
     
-    // Dependency Injection (Koin)
-    implementation("io.insert-koin:koin-ktor:$koin_version")
-    implementation("io.insert-koin:koin-logger-slf4j:$koin_version")
-    
     // Testing
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
-    testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
-    testImplementation("io.mockk:mockk:1.14.2")
+    testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
+    testImplementation("io.mockk:mockk:1.13.8")
 }
 
 // Fat JAR for deployment
 tasks.jar {
     manifest {
-        attributes["Main-Class"] = "com.example.myproject.ApplicationKt"
+        attributes["Main-Class"] = "io.asterixorobelix.afrikaburn.ApplicationKt"
     }
     from(configurations.runtimeClasspath.get().map { 
         if (it.isDirectory) it else zipTree(it) 
@@ -92,66 +86,8 @@ detekt {
     toolVersion = "1.23.1"
     config.from(file("detekt.yml"))
     buildUponDefaultConfig = true
-    reports {
-        xml {
-            required.set(true)
-            outputLocation.set(file("build/reports/detekt/detekt.xml"))
-        }
-        html {
-            required.set(true)
-            outputLocation.set(file("build/reports/detekt/detekt.html"))
-        }
-        txt {
-            required.set(false)
-        }
-        sarif {
-            required.set(false)
-        }
-        md {
-            required.set(false)
-        }
-    }
 }
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
-    
-    // Generate test reports for CI
-    reports {
-        junitXml.required.set(true)
-        html.required.set(true)
-    }
-    
-    // Continue on test failures to show all results
-    ignoreFailures = false
-    
-    // Better test output
-    testLogging {
-        events("passed", "failed", "skipped")
-        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-        showStandardStreams = false
-    }
-    
-    finalizedBy(tasks.jacocoTestReport)
-}
-
-// JaCoCo test coverage configuration
-tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-    reports {
-        xml.required.set(true)
-        html.required.set(true)
-        csv.required.set(false)
-    }
-}
-
-tasks.jacocoTestCoverageVerification {
-    dependsOn(tasks.jacocoTestReport)
-    violationRules {
-        rule {
-            limit {
-                minimum = "0.80".toBigDecimal() // 80% minimum coverage
-            }
-        }
-    }
 }

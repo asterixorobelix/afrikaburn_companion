@@ -1,4 +1,4 @@
-rootProject.name = "myproject"
+rootProject.name = "Afrikaburn"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

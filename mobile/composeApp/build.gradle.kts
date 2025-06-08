@@ -87,11 +87,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.myproject"
+    namespace = "io.asterixorobelix.afrikaburn"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.example.myproject"
+        applicationId = "io.asterixorobelix.afrikaburn"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
