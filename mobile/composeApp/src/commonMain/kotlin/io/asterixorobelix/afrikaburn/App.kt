@@ -77,6 +77,9 @@ fun App() {
                     composable(NavigationDestination.Directions.route) {
                         DirectionsScreen()
                     }
+                    composable(NavigationDestination.About.route) {
+                        AboutScreen()
+                    }
                 }
             }
         }
