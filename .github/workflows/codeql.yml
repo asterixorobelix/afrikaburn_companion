@@ -44,6 +44,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Setup Gradle
+      if: matrix.language == 'java-kotlin'
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: 8.11.1
+
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
@@ -54,13 +60,13 @@ jobs:
       if: matrix.language == 'java-kotlin' && matrix.build-dir == 'backend'
       run: |
         cd backend
-        ./gradlew build -x test
+        gradle build -x test
 
     - name: Build Mobile
       if: matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
       run: |
         cd mobile
-        ./gradlew build -x test
+        gradle build -x test
 
     - name: Build iOS App
       if: matrix.language == 'swift'
