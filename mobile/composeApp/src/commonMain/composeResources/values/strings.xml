@@ -1,0 +1,9 @@
+<resources>
+    <!-- Navigation -->
+    <string name="nav_projects">Projects</string>
+    <string name="nav_directions">Directions</string>
+    
+    <!-- Content descriptions -->
+    <string name="cd_projects_icon">Projects icon</string>
+    <string name="cd_directions_icon">Directions icon</string>
+</resources>
