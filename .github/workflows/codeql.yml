@@ -63,6 +63,17 @@ jobs:
         gradle detekt
         gradle build -x test
 
+    - name: Setup Firebase Config for Mobile
+      if: matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
+      run: |
+        # Create google-services.json for Android from GitHub secret
+        if [ -n "${{ secrets.GOOGLE_SERVICES_JSON }}" ]; then
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/composeApp/google-services.json
+          echo "✅ Firebase config for Android created"
+        else
+          echo "⚠️ GOOGLE_SERVICES_JSON secret not found, skipping Firebase setup"
+        fi
+
     - name: Build Mobile
       if: matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
       run: |
