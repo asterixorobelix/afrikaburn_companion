@@ -81,6 +81,14 @@ jobs:
       with:
         xcode-version: 'latest-stable'
     
+    - name: Create dummy gradlew for iOS build
+      if: matrix.language == 'swift'
+      run: |
+        cd mobile
+        echo '#!/bin/bash' > gradlew
+        echo 'gradle "$@"' >> gradlew
+        chmod +x gradlew
+    
     - name: Build iOS App
       if: matrix.language == 'swift'
       run: |
