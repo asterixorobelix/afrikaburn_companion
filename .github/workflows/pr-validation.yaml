@@ -151,13 +151,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: `⚠️ **Large PR Warning**
-                
-This PR is quite large (${totalChanges} lines changed, ${changedFiles} files). Consider:
-- Breaking it into smaller, focused PRs
-- Ensuring adequate testing
-- Providing detailed description and context
-- Requesting additional reviewers`
+                body: `⚠️ **Large PR Warning**\n\nThis PR is quite large (${totalChanges} lines changed, ${changedFiles} files). Consider:\n- Breaking it into smaller, focused PRs\n- Ensuring adequate testing\n- Providing detailed description and context\n- Requesting additional reviewers`
               });
             }
 
