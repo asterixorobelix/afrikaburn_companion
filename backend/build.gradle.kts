@@ -6,7 +6,7 @@ val exposed_version = "0.44.1"
 plugins {
     kotlin("jvm") version "1.9.24"
     id("io.ktor.plugin") version "2.3.12"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.24"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.21"
     id("io.gitlab.arturbosch.detekt") version "1.23.1"
 }
 
