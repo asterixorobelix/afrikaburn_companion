@@ -71,6 +71,18 @@ jobs:
     if: github.event.pull_request.draft == false
     
     steps:
+      - name: Label dependency updates
+        uses: actions/github-script@v7
+        if: startsWith(github.event.pull_request.title, 'Bump ') || startsWith(github.event.pull_request.title, 'Update ')
+        with:
+          script: |
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['dependencies']
+            });
+      
       - name: Check PR Title
         uses: amannn/action-semantic-pull-request@v5
         env:
@@ -95,6 +107,9 @@ jobs:
             The subject "{subject}" found in the pull request title "{title}"
             didn't match the configured pattern. Please ensure that the subject
             doesn't start with an uppercase character.
+          # Skip validation for dependency update PRs
+          ignoreLabels: |
+            dependencies
 
   size-check:
     name: PR Size Check
