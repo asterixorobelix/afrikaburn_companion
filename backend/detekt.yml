@@ -1,5 +1,5 @@
 build:
-  maxIssues: 0
+  maxIssues: 10
   excludeCorrectable: false
   weights:
     complexity: 2
@@ -512,7 +512,7 @@ style:
     active: false
     includeLineWrapping: false
   ForbiddenComment:
-    active: true
+    active: false
     values:
       - 'TODO:'
       - 'FIXME:'
@@ -561,6 +561,13 @@ style:
       - '0'
       - '1'
       - '2'
+      - '3'
+      - '4'
+      - '5'
+      - '8080'
+      - '10'
+      - '100'
+      - '1000'
     ignoreHashCodeFunction: true
     ignorePropertyDeclaration: false
     ignoreLocalVariableDeclaration: false

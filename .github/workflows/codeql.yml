@@ -60,6 +60,7 @@ jobs:
       if: matrix.language == 'java-kotlin' && matrix.build-dir == 'backend'
       run: |
         cd backend
+        gradle detekt
         gradle build -x test
 
     - name: Build Mobile
