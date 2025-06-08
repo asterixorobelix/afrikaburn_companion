@@ -204,12 +204,7 @@ jobs:
                     owner,
                     repo,
                     issue_number: pr.number,
-                    body: `👋 **Friendly reminder**: This PR has been waiting for review for over a week.
-                    
-**Reviewers**: Please take a look when you have a moment.
-**Author**: Feel free to ping reviewers or ask for help if needed.
-
-Thanks for your patience! 🙏`
+                    body: `👋 **Friendly reminder**: This PR has been waiting for review for over a week.\n\n**Reviewers**: Please take a look when you have a moment.\n**Author**: Feel free to ping reviewers or ask for help if needed.\n\nThanks for your patience! 🙏`
                   });
                   
                   // Add label to track that we've reminded
