@@ -274,8 +274,6 @@ potential-bugs:
       - 'java.util.HashSet'
       - 'java.util.LinkedHashMap'
       - 'java.util.HashMap'
-  DuplicateCaseInWhenExpression:
-    active: false  # Deprecated: compiler performs this check
   EqualsAlwaysReturnsTrueOrFalse:
     active: true
   EqualsWithHashCodeExist:
@@ -314,13 +312,8 @@ potential-bugs:
     ignoreOnClassesPattern: ''
   MapGetWithNotNullAssertionOperator:
     active: true
-  MissingWhenCase:
-    active: false  # Deprecated: compiler performs this check
-    allowElseExpression: true
   NullableToStringCall:
     active: false
-  RedundantElseInWhen:
-    active: false  # Deprecated: compiler performs this check
   UnconditionalJumpStatementInLoop:
     active: false
   UnnecessaryNotNullOperator:
@@ -374,11 +367,6 @@ style:
     methods:
       - 'kotlin.io.println'
       - 'kotlin.io.print'
-  ForbiddenPublicDataClass:
-    active: false  # Deprecated: migrated to libraries ruleset
-    ignorePackages:
-      - '*.internal'
-      - '*.internal.*'
   ForbiddenVoid:
     active: true
     ignoreUsageInGenerics: false
@@ -389,10 +377,6 @@ style:
     excludedFunctions: []
     ignoreAnnotated:
       - 'dagger.Provides'
-  LibraryCodeMustSpecifyReturnType:
-    active: false  # Deprecated: migrated to libraries ruleset
-  LibraryEntitiesShouldNotBePublic:
-    active: false  # Deprecated: migrated to libraries ruleset
   LoopWithTooManyJumpStatements:
     active: true
     maxJumpCount: 1
