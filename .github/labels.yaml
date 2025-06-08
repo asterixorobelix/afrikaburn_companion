@@ -1,0 +1,255 @@
+# Repository Labels Configuration
+# This file defines all labels that should exist in the repository
+# Use with the label-sync GitHub Action
+
+# Platform Labels
+- name: "android"
+  color: "3DDC84"
+  description: "Related to Android platform"
+
+- name: "ios"
+  color: "007AFF"
+  description: "Related to iOS platform"
+
+- name: "shared"
+  color: "A020F0"
+  description: "Related to shared/common code"
+
+- name: "backend"
+  color: "FF6B35"
+  description: "Related to backend services"
+
+# Type Labels
+- name: "bug"
+  color: "d73a4a"
+  description: "Something isn't working"
+
+- name: "enhancement"
+  color: "a2eeef"
+  description: "New feature or request"
+
+- name: "documentation"
+  color: "0075ca"
+  description: "Improvements or additions to documentation"
+
+- name: "question"
+  color: "d876e3"
+  description: "Further information is requested"
+
+- name: "help wanted"
+  color: "008672"
+  description: "Extra attention is needed"
+
+- name: "good first issue"
+  color: "7057ff"
+  description: "Good for newcomers"
+
+# Priority Labels
+- name: "priority:critical"
+  color: "B60205"
+  description: "Critical priority - needs immediate attention"
+
+- name: "priority:high"
+  color: "D93F0B"
+  description: "High priority"
+
+- name: "priority:medium"
+  color: "FBCA04"
+  description: "Medium priority"
+
+- name: "priority:low"
+  color: "0E8A16"
+  description: "Low priority"
+
+# Size Labels (for PRs)
+- name: "size/XS"
+  color: "0e8a16"
+  description: "Extra small PR (< 10 lines)"
+
+- name: "size/S"
+  color: "0e8a16"
+  description: "Small PR (10-50 lines)"
+
+- name: "size/M"
+  color: "ffed4e"
+  description: "Medium PR (50-200 lines)"
+
+- name: "size/L"
+  color: "fbca04"
+  description: "Large PR (200-500 lines)"
+
+- name: "size/XL"
+  color: "d93f0b"
+  description: "Extra large PR (500-1000 lines)"
+
+- name: "size/XXL"
+  color: "b60205"
+  description: "Extra extra large PR (> 1000 lines)"
+
+# Status Labels
+- name: "status:blocked"
+  color: "d73a4a"
+  description: "Blocked by another issue or external dependency"
+
+- name: "status:in-progress"
+  color: "yellow"
+  description: "Currently being worked on"
+
+- name: "status:ready-for-review"
+  color: "0e8a16"
+  description: "Ready for code review"
+
+- name: "status:needs-info"
+  color: "d876e3"
+  description: "Needs more information from author"
+
+- name: "status:stale"
+  color: "666666"
+  description: "No recent activity"
+
+- name: "status:wontfix"
+  color: "ffffff"
+  description: "This will not be worked on"
+
+# Component Labels
+- name: "component:ui"
+  color: "1f77b4"
+  description: "User interface related"
+
+- name: "component:api"
+  color: "ff7f0e"
+  description: "API related"
+
+- name: "component:database"
+  color: "2ca02c"
+  description: "Database related"
+
+- name: "component:authentication"
+  color: "d62728"
+  description: "Authentication/authorization related"
+
+- name: "component:networking"
+  color: "9467bd"
+  description: "Network communication related"
+
+- name: "component:storage"
+  color: "8c564b"
+  description: "Data storage related"
+
+- name: "component:testing"
+  color: "e377c2"
+  description: "Testing framework or test-related"
+
+# Area Labels
+- name: "area:performance"
+  color: "FF6B6B"
+  description: "Performance improvements or issues"
+
+- name: "area:security"
+  color: "FF5722"
+  description: "Security related"
+
+- name: "area:accessibility"
+  color: "4CAF50"
+  description: "Accessibility improvements"
+
+- name: "area:localization"
+  color: "2196F3"
+  description: "Internationalization and localization"
+
+- name: "area:ci-cd"
+  color: "795548"
+  description: "Continuous integration and deployment"
+
+- name: "area:dependencies"
+  color: "9C27B0"
+  description: "Dependency updates or issues"
+
+# Special Labels
+- name: "breaking-change"
+  color: "d73a4a"
+  description: "Contains breaking changes"
+
+- name: "feature-flag"
+  color: "0052cc"
+  description: "Related to feature flags"
+
+- name: "needs-triage"
+  color: "ffffff"
+  description: "Needs initial assessment and labeling"
+
+- name: "duplicate"
+  color: "cfd3d7"
+  description: "This issue or pull request already exists"
+
+- name: "invalid"
+  color: "e4e669"
+  description: "This doesn't seem right"
+
+# Automation Labels
+- name: "automated"
+  color: "4c1"
+  description: "Created or updated by automation"
+
+- name: "dependencies"
+  color: "0366d6"
+  description: "Pull requests that update a dependency file"
+
+- name: "github-actions"
+  color: "000000"
+  description: "Related to GitHub Actions"
+
+# Release Labels
+- name: "release:major"
+  color: "d73a4a"
+  description: "Major version release (breaking changes)"
+
+- name: "release:minor"
+  color: "fbca04"
+  description: "Minor version release (new features)"
+
+- name: "release:patch"
+  color: "0e8a16"
+  description: "Patch version release (bug fixes)"
+
+- name: "release:beta"
+  color: "6f42c1"
+  description: "Beta release"
+
+- name: "release:alpha"
+  color: "d876e3"
+  description: "Alpha release"
+
+# Review Labels
+- name: "review:approved"
+  color: "0e8a16"
+  description: "Approved by reviewers"
+
+- name: "review:changes-requested"
+  color: "d93f0b"
+  description: "Changes requested by reviewers"
+
+- name: "review:needs-reviewer"
+  color: "fbca04"
+  description: "Needs a reviewer assigned"
+
+# Team Labels (customize based on your team structure)
+- name: "team:mobile"
+  color: "FF9800"
+  description: "Mobile team responsibility"
+
+- name: "team:backend"
+  color: "607D8B"
+  description: "Backend team responsibility"
+
+- name: "team:devops"
+  color: "795548"
+  description: "DevOps team responsibility"
+
+- name: "team:design"
+  color: "E91E63"
+  description: "Design team responsibility"
+
+- name: "team:qa"
+  color: "9C27B0"
+  description: "QA team responsibility"

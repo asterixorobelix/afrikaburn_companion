@@ -1,0 +1,74 @@
+name: "CodeQL"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: '20 19 * * 1'
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      security-events: write
+      packages: read
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - language: java-kotlin
+          build-mode: manual
+          build-dir: backend
+        - language: java-kotlin
+          build-mode: manual
+          build-dir: mobile
+        - language: swift
+          build-mode: manual
+          build-dir: mobile
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      if: matrix.language == 'java-kotlin'
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        build-mode: ${{ matrix.build-mode }}
+
+    - name: Build Backend
+      if: matrix.language == 'java-kotlin' && matrix.build-dir == 'backend'
+      run: |
+        cd backend
+        ./gradlew build -x test
+
+    - name: Build Mobile
+      if: matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
+      run: |
+        cd mobile
+        ./gradlew build -x test
+
+    - name: Build iOS App
+      if: matrix.language == 'swift'
+      run: |
+        cd mobile/iosApp
+        xcodebuild -project iosApp.xcodeproj -scheme iosApp -destination generic/platform=iOS
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{matrix.language}}-${{matrix.build-dir}}"

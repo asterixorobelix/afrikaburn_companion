@@ -1,0 +1,7 @@
+# Global code owners - automatically request review
+* @asterixorobelix @github-copilot
+
+# Specific file patterns
+*.kt @github-copilot
+*.swift @github-copilot
+*.gradle.kts @github-copilot

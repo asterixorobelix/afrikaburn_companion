@@ -1,0 +1,435 @@
+name: Mobile CI
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths: [ 'mobile/**' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'mobile/**' ]
+  pull_request_target:
+    types: [opened]
+    paths: [ 'mobile/**' ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      checks: write
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    
+    - name: Set up Firebase Configuration
+      run: |
+        echo "🔥 Checking Firebase configuration..."
+        if [ ! -f "mobile/composeApp/google-services.json" ]; then
+          echo "⚠️ google-services.json not found. Firebase Crashlytics will use default template."
+          echo "For production builds, add your Firebase configuration as a repository secret."
+        else
+          echo "✅ Firebase configuration file found."
+          # Check if it's the default template
+          if grep -q "your-project-id-here" "mobile/composeApp/google-services.json"; then
+            echo "⚠️ Using default Firebase template. Crashlytics disabled for this build."
+          else
+            echo "✅ Custom Firebase configuration detected."
+          fi
+        fi
+
+    - name: Make gradlew executable
+      run: chmod +x mobile/gradlew
+      
+    - name: Initialize Gradle wrapper
+      run: |
+        cd mobile
+        gradle wrapper --gradle-version 8.11.1
+      
+    - name: Run tests
+      run: |
+        cd mobile
+        echo "Finding test files..."
+        find . -name "*Test.kt" -o -name "*Tests.kt" | head -10
+        echo "Running tests..."
+        ./gradlew test --continue
+    
+    - name: Run detekt
+      run: |
+        cd mobile
+        ./gradlew detekt --continue || echo "Detekt completed with issues"
+      continue-on-error: true
+    
+    - name: Parse and Report Test Results
+      if: always()
+      run: |
+        echo "## 📱 Mobile Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ -d "mobile" ]; then
+          total_tests=0
+          total_failures=0
+          total_skipped=0
+          
+          for xml_file in mobile/**/build/test-results/**/TEST-*.xml; do
+            if [ -f "$xml_file" ]; then
+              # Extract test counts using grep and sed
+              tests=$(grep '<testsuite' "$xml_file" | sed -n 's/.*tests="\([0-9]*\)".*/\1/p' | head -1)
+              failures=$(grep '<testsuite' "$xml_file" | sed -n 's/.*failures="\([0-9]*\)".*/\1/p' | head -1)
+              errors=$(grep '<testsuite' "$xml_file" | sed -n 's/.*errors="\([0-9]*\)".*/\1/p' | head -1)
+              skipped=$(grep '<testsuite' "$xml_file" | sed -n 's/.*skipped="\([0-9]*\)".*/\1/p' | head -1)
+              
+              # Default to 0 if values are empty
+              tests=${tests:-0}
+              failures=${failures:-0}
+              errors=${errors:-0}
+              skipped=${skipped:-0}
+              
+              total_tests=$((total_tests + tests))
+              total_failures=$((total_failures + failures + errors))
+              total_skipped=$((total_skipped + skipped))
+            fi
+          done
+          
+          passed=$((total_tests - total_failures - total_skipped))
+          
+          if [ $total_failures -eq 0 ]; then
+            echo "✅ **All $total_tests tests passed!** 🎉" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **$total_failures test(s) failed** out of $total_tests total tests" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Status | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| ✅ Passed | $passed |" >> $GITHUB_STEP_SUMMARY
+          echo "| ❌ Failed | $total_failures |" >> $GITHUB_STEP_SUMMARY
+          echo "| ⏭️ Skipped | $total_skipped |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📊 **Total** | **$total_tests** |" >> $GITHUB_STEP_SUMMARY
+          
+          # Store test results for PR comment
+          echo "MOBILE_TESTS_TOTAL=$total_tests" >> $GITHUB_ENV
+          echo "MOBILE_TESTS_PASSED=$passed" >> $GITHUB_ENV
+          echo "MOBILE_TESTS_FAILED=$total_failures" >> $GITHUB_ENV
+          echo "MOBILE_TESTS_SKIPPED=$total_skipped" >> $GITHUB_ENV
+        else
+          echo "⚠️ No test results found" >> $GITHUB_STEP_SUMMARY
+          echo "MOBILE_TESTS_TOTAL=0" >> $GITHUB_ENV
+          echo "MOBILE_TESTS_PASSED=0" >> $GITHUB_ENV
+          echo "MOBILE_TESTS_FAILED=0" >> $GITHUB_ENV
+          echo "MOBILE_TESTS_SKIPPED=0" >> $GITHUB_ENV
+        fi
+        
+    - name: Comment PR with Test Results
+      uses: actions/github-script@v7
+      if: github.event_name == 'pull_request' && always()
+      with:
+        script: |
+          const totalTests = process.env.MOBILE_TESTS_TOTAL || '0';
+          const passedTests = process.env.MOBILE_TESTS_PASSED || '0';
+          const failedTests = process.env.MOBILE_TESTS_FAILED || '0';
+          const skippedTests = process.env.MOBILE_TESTS_SKIPPED || '0';
+          
+          let comment = '## 🧪 Mobile Test Results\n\n';
+          
+          if (parseInt(totalTests) === 0) {
+            comment += '🚧 **No tests found or executed**\n\n';
+            comment += 'This might indicate:\n';
+            comment += '- No test files exist in the mobile module\n';
+            comment += '- Tests are not properly configured\n';
+            comment += '- Test execution was skipped\n';
+          } else if (parseInt(failedTests) === 0) {
+            comment += `✅ **All ${totalTests} tests passed!** 🎉\n\n`;
+          } else {
+            comment += `❌ **${failedTests} test(s) failed** out of ${totalTests} total tests\n\n`;
+          }
+          
+          if (parseInt(totalTests) > 0) {
+            comment += '### 📊 Test Breakdown:\n';
+            comment += '| Status | Count | Percentage |\n';
+            comment += '|--------|-------|------------|\n';
+            const passedPercent = Math.round((parseInt(passedTests) / parseInt(totalTests)) * 100);
+            const failedPercent = Math.round((parseInt(failedTests) / parseInt(totalTests)) * 100);
+            const skippedPercent = Math.round((parseInt(skippedTests) / parseInt(totalTests)) * 100);
+            comment += `| ✅ Passed | ${passedTests} | ${passedPercent}% |\n`;
+            comment += `| ❌ Failed | ${failedTests} | ${failedPercent}% |\n`;
+            comment += `| ⏭️ Skipped | ${skippedTests} | ${skippedPercent}% |\n`;
+            comment += `| 📊 **Total** | **${totalTests}** | **100%** |\n\n`;
+            
+            if (parseInt(failedTests) > 0) {
+              comment += '### 🔧 Next Steps:\n';
+              comment += '1. 📱 Download the [test artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for detailed reports\n';
+              comment += '2. 💻 Run tests locally: `cd mobile && ./gradlew test`\n';
+              comment += '3. 🔍 Check test logs in the artifacts for specific failure details\n';
+              comment += '4. ⚙️ Fix failing tests before merging\n';
+            }
+            
+            comment += '\n📎 **Detailed Reports**: Check the artifacts section below for downloadable HTML test reports.\n';
+          }
+          
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: comment
+          });
+        
+    - name: Comment PR with Detekt Results
+      uses: actions/github-script@v7
+      if: github.event_name == 'pull_request' && always()
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          try {
+            // Check multiple possible locations for detekt reports
+            const detektPaths = [
+              'mobile/build/reports/detekt/detekt.xml',
+              'mobile/composeApp/build/reports/detekt/detekt.xml'
+            ];
+            
+            let totalIssues = 0;
+            let foundReports = 0;
+            
+            for (const detektPath of detektPaths) {
+              if (fs.existsSync(detektPath)) {
+                const detektReport = fs.readFileSync(detektPath, 'utf8');
+                const issueCount = (detektReport.match(/<error/g) || []).length;
+                totalIssues += issueCount;
+                foundReports++;
+                console.log(`Found detekt report at ${detektPath} with ${issueCount} issues`);
+              }
+            }
+            
+            if (foundReports > 0) {
+              let comment = '## 📱 Mobile Detekt Analysis\n\n';
+              
+              if (totalIssues === 0) {
+                comment += '✅ **No Detekt issues found!** Your mobile code looks clean.\n';
+              } else {
+                comment += `⚠️ **Found ${totalIssues} Detekt issue(s)** in mobile code.\n\n`;
+                comment += 'Please check the [Detekt report artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.\n\n';
+                comment += '### 🔧 Common Mobile Issues to Check:\n';
+                comment += '- 🎨 Compose function naming conventions (PascalCase for @Composable)\n';
+                comment += '- 🏠 Missing newlines at end of files\n';
+                comment += '- 🔢 Magic numbers in theme colors (consider constants)\n';
+                comment += '- 📋 Code complexity and readability\n\n';
+                comment += '**Tip**: Many issues can be auto-fixed by your IDE or with detekt formatting rules.\n';
+              }
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            } else {
+              console.log('No detekt reports found in expected locations');
+            }
+          } catch (error) {
+            console.log('Could not process Mobile Detekt results:', error.message);
+          }
+    
+    - name: Build Android APK
+      run: |
+        cd mobile
+        ./gradlew composeApp:assembleDebug
+        
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: mobile-test-results
+        path: mobile/**/build/reports/tests/
+        
+    - name: Check for detekt reports
+      if: always()
+      run: |
+        echo "Checking for detekt reports..."
+        find mobile -name "detekt.*" -type f 2>/dev/null || echo "No detekt reports found"
+        
+    - name: Upload detekt results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: mobile-detekt-results
+        path: |
+          mobile/build/reports/detekt/
+          mobile/**/build/reports/detekt/
+        if-no-files-found: warn
+        
+    - name: Create Comprehensive PR Summary
+      uses: actions/github-script@v7
+      if: github.event_name == 'pull_request' && always()
+      with:
+        script: |
+          // Get test results from environment
+          const totalTests = process.env.MOBILE_TESTS_TOTAL || '0';
+          const passedTests = process.env.MOBILE_TESTS_PASSED || '0';
+          const failedTests = process.env.MOBILE_TESTS_FAILED || '0';
+          const skippedTests = process.env.MOBILE_TESTS_SKIPPED || '0';
+          
+          // Check for detekt results
+          const fs = require('fs');
+          const detektPaths = [
+            'mobile/build/reports/detekt/detekt.xml',
+            'mobile/composeApp/build/reports/detekt/detekt.xml'
+          ];
+          
+          let totalDetektIssues = 0;
+          let foundDetektReports = 0;
+          
+          for (const detektPath of detektPaths) {
+            if (fs.existsSync(detektPath)) {
+              const detektReport = fs.readFileSync(detektPath, 'utf8');
+              const issueCount = (detektReport.match(/<error/g) || []).length;
+              totalDetektIssues += issueCount;
+              foundDetektReports++;
+            }
+          }
+          
+          // Create comprehensive summary comment
+          let comment = '# 📱 Mobile CI/CD Results\n\n';
+          
+          // Test Results Section
+          comment += '## 🧪 Test Results\n';
+          if (parseInt(totalTests) === 0) {
+            comment += '🚧 No tests found or executed\n';
+          } else if (parseInt(failedTests) === 0) {
+            comment += `✅ All ${totalTests} tests passed! 🎉\n`;
+          } else {
+            comment += `❌ ${failedTests}/${totalTests} tests failed\n`;
+          }
+          
+          // Code Quality Section
+          comment += '\n## 🔍 Code Quality (Detekt)\n';
+          if (foundDetektReports === 0) {
+            comment += '⚠️ No detekt reports found\n';
+          } else if (totalDetektIssues === 0) {
+            comment += '✅ No code quality issues found! Clean code! 🎆\n';
+          } else {
+            comment += `⚠️ Found ${totalDetektIssues} code quality issue(s)\n`;
+          }
+          
+          // Artifacts Section
+          comment += '\n## 📎 Available Reports\n';
+          comment += `🔗 **[Download All Artifacts](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)**\n\n`;
+          comment += '### Available Downloads:\n';
+          comment += '| Report Type | Artifact Name | Contents |\n';
+          comment += '|-------------|---------------|----------|\n';
+          comment += '| 🧪 Tests | `mobile-test-results` | HTML test reports with detailed results |\n';
+          comment += '| 🔍 Code Quality | `mobile-detekt-results` | Detekt analysis reports |\n\n';
+          comment += '> 📝 **How to access**: Go to the Actions run → Scroll to "Artifacts" section → Download ZIP files\n\n';
+          
+          // Status Summary
+          const testsOk = parseInt(failedTests) === 0;
+          const codeQualityOk = totalDetektIssues === 0;
+          
+          comment += '## 🏁 Summary\n';
+          if (testsOk && codeQualityOk) {
+            comment += '✅ **Ready to merge!** All tests pass and code quality looks good.\n';
+          } else {
+            comment += '⚠️ **Needs attention before merging:**\n';
+            if (!testsOk) comment += '- Fix failing tests\n';
+            if (!codeQualityOk) comment += '- Address code quality issues\n';
+          }
+          
+          comment += '\n---\n*🤖 This summary was automatically generated by the Mobile CI pipeline*';
+          
+          await github.rest.issues.createComment({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.issue.number,
+            body: comment
+          });
+
+  build-ios:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Select Xcode version
+      run: sudo xcode-select --print-path
+    
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    
+    - name: Set up Firebase Configuration (iOS)
+      run: |
+        echo "🔥 Checking Firebase configuration for iOS..."
+        if [ ! -f "mobile/iosApp/iosApp/GoogleService-Info.plist" ]; then
+          echo "⚠️ GoogleService-Info.plist not found. iOS Crashlytics will use basic logging."
+          echo "For production iOS builds, add GoogleService-Info.plist to enable Firebase features."
+        else
+          echo "✅ iOS Firebase configuration found."
+        fi
+
+    - name: Make gradlew executable
+      run: chmod +x mobile/gradlew
+      
+    - name: Initialize Gradle wrapper
+      run: |
+        cd mobile
+        gradle wrapper --gradle-version 8.11.1
+      
+    - name: Build iOS framework
+      run: |
+        cd mobile
+        ./gradlew :composeApp:assembleDebugXCFramework
+
+  request-copilot-review:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    
+    steps:
+    - name: Request GitHub Copilot Review
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.number }}
+      run: |
+        gh pr review $PR_NUMBER --repo ${{ github.repository }} --comment --body "🤖 **GitHub Copilot Auto-Review Request**
+        
+        This PR has been automatically flagged for Copilot review. Please review the mobile-related changes:
+        
+        - ✅ Code quality and best practices
+        - ✅ Kotlin/Compose Multiplatform conventions  
+        - ✅ Potential bugs or improvements
+        - ✅ Performance considerations
+        - ✅ Security implications
+        
+        Use GitHub Copilot's code review features to analyze this PR."

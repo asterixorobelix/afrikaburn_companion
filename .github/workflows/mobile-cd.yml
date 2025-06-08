@@ -1,0 +1,353 @@
+name: Mobile Continuous Deployment (CD)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_bump:
+        description: 'Type of version bump'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+        default: 'patch'
+      release_notes:
+        description: 'Additional release notes (optional)'
+        required: false
+        type: string
+
+jobs:
+  version-and-build:
+    runs-on: ubuntu-latest
+    outputs:
+      new_version: ${{ steps.version.outputs.new_version }}
+      version_code: ${{ steps.version.outputs.version_code }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    
+    - name: Set up Firebase Configuration for Release
+      run: |
+        echo "🔥 Setting up Firebase for production release..."
+        
+        # Check if Firebase configuration secret is available
+        if [ -z "${{ secrets.FIREBASE_CONFIG_JSON }}" ]; then
+          echo "⚠️ FIREBASE_CONFIG_JSON secret not found."
+          echo "Using default configuration - Crashlytics will be disabled."
+          echo "To enable Crashlytics for releases, add your google-services.json as a repository secret."
+        else
+          echo "✅ Firebase configuration secret found. Setting up for production release."
+          echo '${{ secrets.FIREBASE_CONFIG_JSON }}' > mobile/composeApp/google-services.json
+          echo "🔥 Firebase Crashlytics enabled for this release build."
+        fi
+
+    - name: Make gradlew executable
+      run: chmod +x mobile/gradlew
+    
+    - name: Initialize Gradle wrapper
+      run: |
+        cd mobile
+        gradle wrapper --gradle-version 8.11.1
+    
+    - name: Get current version and calculate new version
+      id: version
+      run: |
+        cd mobile
+        
+        # Get current version from build.gradle.kts
+        CURRENT_VERSION=$(grep 'versionName = ' composeApp/build.gradle.kts | sed 's/.*versionName = "\(.*\)".*/\1/')
+        CURRENT_CODE=$(grep 'versionCode = ' composeApp/build.gradle.kts | sed 's/.*versionCode = \(.*\)/\1/')
+        
+        echo "Current version: $CURRENT_VERSION"
+        echo "Current version code: $CURRENT_CODE"
+        
+        # Parse semantic version
+        IFS='.' read -ra VERSION_PARTS <<< "$CURRENT_VERSION"
+        MAJOR=${VERSION_PARTS[0]}
+        MINOR=${VERSION_PARTS[1]}
+        PATCH=${VERSION_PARTS[2]}
+        
+        # Bump version based on input
+        case "${{ github.event.inputs.version_bump }}" in
+          "major")
+            MAJOR=$((MAJOR + 1))
+            MINOR=0
+            PATCH=0
+            ;;
+          "minor")
+            MINOR=$((MINOR + 1))
+            PATCH=0
+            ;;
+          "patch")
+            PATCH=$((PATCH + 1))
+            ;;
+        esac
+        
+        NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+        NEW_VERSION_CODE=$((CURRENT_CODE + 1))
+        
+        echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+        echo "version_code=$NEW_VERSION_CODE" >> $GITHUB_OUTPUT
+        
+        echo "New version: $NEW_VERSION"
+        echo "New version code: $NEW_VERSION_CODE"
+    
+    - name: Update version in build.gradle.kts
+      run: |
+        cd mobile
+        sed -i "s/versionName = \".*\"/versionName = \"${{ steps.version.outputs.new_version }}\"/" composeApp/build.gradle.kts
+        sed -i "s/versionCode = .*/versionCode = ${{ steps.version.outputs.version_code }}/" composeApp/build.gradle.kts
+    
+    - name: Generate changelog
+      id: changelog
+      run: |
+        cd mobile
+        
+        # Get the last tag
+        LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+        
+        if [ -z "$LAST_TAG" ]; then
+          echo "No previous tags found, generating changelog from all commits"
+          COMMITS=$(git log --pretty=format:"- %s (%h)" --no-merges)
+        else
+          echo "Generating changelog since $LAST_TAG"
+          COMMITS=$(git log $LAST_TAG..HEAD --pretty=format:"- %s (%h)" --no-merges)
+        fi
+        
+        # Create changelog content
+        CHANGELOG="## What's Changed in v${{ steps.version.outputs.new_version }}
+        
+        $COMMITS"
+        
+        if [ ! -z "${{ github.event.inputs.release_notes }}" ]; then
+          CHANGELOG="$CHANGELOG
+        
+        ## Additional Notes
+        ${{ github.event.inputs.release_notes }}"
+        fi
+        
+        # Save changelog to file
+        echo "$CHANGELOG" > CHANGELOG.md
+        
+        # Save changelog to output (escape newlines)
+        {
+          echo 'changelog<<EOF'
+          echo "$CHANGELOG"
+          echo 'EOF'
+        } >> $GITHUB_OUTPUT
+    
+    - name: Commit version bump
+      run: |
+        cd mobile
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add composeApp/build.gradle.kts
+        git commit -m "Bump version to v${{ steps.version.outputs.new_version }}"
+        git push
+    
+    - name: Create and push tag
+      run: |
+        cd mobile
+        git tag -a "v${{ steps.version.outputs.new_version }}" -m "Release v${{ steps.version.outputs.new_version }}"
+        git push origin "v${{ steps.version.outputs.new_version }}"
+    
+    - name: Build Android AAB
+      run: |
+        cd mobile
+        ./gradlew :composeApp:bundleRelease
+    
+    - name: Sign Android AAB
+      uses: r0adkll/sign-android-release@v1
+      id: sign_aab
+      with:
+        releaseDirectory: mobile/composeApp/build/outputs/bundle/release
+        signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+        alias: ${{ secrets.ANDROID_KEY_ALIAS }}
+        keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+    
+    - name: Upload AAB artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-aab
+        path: mobile/composeApp/build/outputs/bundle/release/*.aab
+
+  build-ios:
+    runs-on: macos-latest
+    needs: version-and-build
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: main # Get the updated version from the previous job
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    
+    - name: Set up Firebase Configuration for iOS Release
+      run: |
+        echo "🔥 Setting up Firebase for iOS production release..."
+        
+        # Set up Android Firebase config if available
+        if [ ! -z "${{ secrets.FIREBASE_CONFIG_JSON }}" ]; then
+          echo '${{ secrets.FIREBASE_CONFIG_JSON }}' > mobile/composeApp/google-services.json
+          echo "✅ Android Firebase configuration set up."
+        else
+          echo "⚠️ Using default Android Firebase configuration."
+        fi
+        
+        # Set up iOS Firebase config if available
+        if [ ! -z "${{ secrets.IOS_FIREBASE_CONFIG_PLIST }}" ]; then
+          echo '${{ secrets.IOS_FIREBASE_CONFIG_PLIST }}' > mobile/iosApp/iosApp/GoogleService-Info.plist
+          echo "✅ iOS Firebase configuration set up - Crashlytics enabled."
+        else
+          echo "⚠️ iOS Firebase configuration not found. Add IOS_FIREBASE_CONFIG_PLIST secret for iOS Crashlytics."
+        fi
+
+    - name: Make gradlew executable
+      run: chmod +x mobile/gradlew
+    
+    - name: Initialize Gradle wrapper
+      run: |
+        cd mobile
+        gradle wrapper --gradle-version 8.11.1
+    
+    - name: Build iOS Framework
+      run: |
+        cd mobile
+        ./gradlew :composeApp:assembleReleaseXCFramework
+    
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Build iOS IPA
+      run: |
+        cd mobile/iosApp
+        
+        # Configure build settings
+        xcodebuild \
+          -project iosApp.xcodeproj \
+          -scheme iosApp \
+          -configuration Release \
+          -destination generic/platform=iOS \
+          -archivePath build/iosApp.xcarchive \
+          archive \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+        
+        # Export IPA
+        xcodebuild \
+          -archivePath build/iosApp.xcarchive \
+          -exportArchive \
+          -exportPath build/ \
+          -exportOptionsPlist ../exportOptions.plist
+    
+    - name: Create exportOptions.plist
+      run: |
+        cd mobile
+        cat > exportOptions.plist << EOF
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+            <key>method</key>
+            <string>development</string>
+            <key>teamID</key>
+            <string>\${{ secrets.APPLE_TEAM_ID }}</string>
+            <key>compileBitcode</key>
+            <false/>
+            <key>stripSwiftSymbols</key>
+            <true/>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+        </dict>
+        </plist>
+        EOF
+    
+    - name: Upload IPA artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-ipa
+        path: mobile/iosApp/build/*.ipa
+
+  create-release:
+    runs-on: ubuntu-latest
+    needs: [version-and-build, build-ios]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: main
+    
+    - name: Download Android AAB
+      uses: actions/download-artifact@v4
+      with:
+        name: android-aab
+        path: ./artifacts/
+    
+    - name: Download iOS IPA
+      uses: actions/download-artifact@v4
+      with:
+        name: ios-ipa
+        path: ./artifacts/
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ needs.version-and-build.outputs.new_version }}
+        name: Release v${{ needs.version-and-build.outputs.new_version }}
+        body: ${{ needs.version-and-build.outputs.changelog }}
+        draft: false
+        prerelease: false
+        files: |
+          artifacts/*.aab
+          artifacts/*.ipa
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Notify completion
+      run: |
+        echo "🎉 Release v${{ needs.version-and-build.outputs.new_version }} created successfully!"
+        echo "📱 Android AAB and iOS IPA files have been uploaded to the release."
+        echo "🔗 Release URL: https://github.com/${{ github.repository }}/releases/tag/v${{ needs.version-and-build.outputs.new_version }}"

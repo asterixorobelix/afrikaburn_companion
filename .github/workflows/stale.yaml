@@ -1,0 +1,305 @@
+name: Stale Issues and PRs
+
+on:
+  schedule:
+    # Run daily at 1:00 AM UTC
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    name: Mark and Close Stale Issues/PRs
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Stale Issues and PRs
+        uses: actions/stale@v9
+        with:
+          # Authentication
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          
+          # Stale issue configuration
+          stale-issue-message: |
+            👋 This issue has been automatically marked as stale because it has not had recent activity.
+            
+            **What happens next?**
+            - This issue will be closed automatically in 7 days if no further activity occurs
+            - You can remove the stale label or add a comment to keep it open
+            - If you believe this was marked as stale in error, please let us know!
+            
+            **Why do we do this?**
+            We use stale detection to keep our issue tracker focused on active work and ensure important issues don't get lost in the noise.
+            
+            Thank you for your contributions! 🙏
+            
+          stale-issue-label: 'status:stale'
+          exempt-issue-labels: 'priority:high,priority:critical,good first issue,help wanted,pinned'
+          days-before-issue-stale: 60
+          days-before-issue-close: 7
+          
+          # Stale PR configuration
+          stale-pr-message: |
+            👋 This pull request has been automatically marked as stale because it has not had recent activity.
+            
+            **What happens next?**
+            - This PR will be closed automatically in 14 days if no further activity occurs
+            - You can remove the stale label, add a comment, or push new commits to keep it open
+            - We encourage rebasing against the latest main branch if there are conflicts
+            
+            **Need help?**
+            - Check our [contributing guidelines](../CONTRIBUTING.md) for PR requirements
+            - Feel free to ask questions in the comments
+            - Reach out to maintainers if you need assistance
+            
+            Thank you for your contribution! 🚀
+            
+          stale-pr-label: 'status:stale'
+          exempt-pr-labels: 'priority:high,priority:critical,ready-for-review,work-in-progress'
+          days-before-pr-stale: 45
+          days-before-pr-close: 14
+          
+          # Close messages
+          close-issue-message: |
+            🔒 This issue has been automatically closed due to inactivity.
+            
+            **Don't worry!** If this issue is still relevant:
+            - Feel free to reopen it
+            - Create a new issue with updated information
+            - Reference this issue in your new report
+            
+            We appreciate your understanding and contributions to the project! 🙏
+            
+          close-pr-message: |
+            🔒 This pull request has been automatically closed due to inactivity.
+            
+            **Want to continue this work?**
+            - Feel free to reopen this PR if you're still working on it
+            - Create a new PR with updated changes
+            - Reference this PR in your new contribution
+            
+            Thank you for your contribution! We look forward to your future PRs! 🚀
+            
+          # General configuration
+          operations-per-run: 100
+          remove-stale-when-updated: true
+          enable-statistics: true
+          
+          # Debugging
+          debug-only: false
+
+  stale-draft-prs:
+    name: Handle Stale Draft PRs
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Stale Draft PRs
+        uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          
+          # Only target draft PRs
+          only-pr-labels: ''
+          any-of-pr-labels: ''
+          
+          stale-pr-message: |
+            👋 This draft pull request has been automatically marked as stale.
+            
+            **Draft PRs are marked stale faster** to keep the PR list focused on work ready for review.
+            
+            **To keep this PR active:**
+            - Mark it as "Ready for review" if it's complete
+            - Add a comment with your current progress
+            - Add the `work-in-progress` label if you're actively working on it
+            
+            **What happens next?**
+            - This draft PR will be closed in 7 days if no activity occurs
+            - You can always reopen it or create a new PR when ready
+            
+            Thanks for your contribution! 🛠️
+            
+          close-pr-message: |
+            🔒 This draft pull request has been closed due to inactivity.
+            
+            **No worries!** Draft PRs are closed more aggressively to keep things organized.
+            
+            **When you're ready:**
+            - Reopen this PR if you want to continue this work
+            - Create a fresh PR with your changes
+            - Mark it as ready for review when complete
+            
+            We look forward to your completed contribution! 🚀
+            
+          days-before-pr-stale: 21  # Shorter for drafts
+          days-before-pr-close: 7   # Shorter for drafts
+          stale-pr-label: 'status:stale'
+          exempt-pr-labels: 'work-in-progress,priority:high,priority:critical'
+          
+          # Don't process issues for this job
+          days-before-issue-stale: -1
+          days-before-issue-close: -1
+          
+          operations-per-run: 50
+
+  remind-reviewers:
+    name: Remind Reviewers of Pending PRs
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Find PRs awaiting review
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            
+            // Get open PRs that are ready for review
+            const prs = await github.rest.pulls.list({
+              owner,
+              repo,
+              state: 'open',
+              sort: 'created',
+              direction: 'asc'
+            });
+            
+            const now = new Date();
+            const threeDaysAgo = new Date(now.getTime() - (3 * 24 * 60 * 60 * 1000));
+            const oneWeekAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+            
+            for (const pr of prs.data) {
+              // Skip draft PRs
+              if (pr.draft) continue;
+              
+              // Skip PRs with certain labels
+              const labels = pr.labels.map(label => label.name);
+              if (labels.includes('status:stale') || 
+                  labels.includes('status:blocked') ||
+                  labels.includes('work-in-progress')) {
+                continue;
+              }
+              
+              const prDate = new Date(pr.created_at);
+              const lastUpdate = new Date(pr.updated_at);
+              
+              // Check if PR needs review reminder
+              if (lastUpdate < threeDaysAgo && prDate < oneWeekAgo) {
+                // Add a gentle reminder comment
+                const comments = await github.rest.issues.listComments({
+                  owner,
+                  repo,
+                  issue_number: pr.number
+                });
+                
+                // Check if we already added a reminder recently
+                const recentReminder = comments.data.find(comment => 
+                  comment.user.type === 'Bot' && 
+                  comment.body.includes('friendly reminder') &&
+                  new Date(comment.created_at) > threeDaysAgo
+                );
+                
+                if (!recentReminder) {
+                  await github.rest.issues.createComment({
+                    owner,
+                    repo,
+                    issue_number: pr.number,
+                    body: `👋 **Friendly reminder**: This PR has been waiting for review for over a week.
+                    
+**Reviewers**: Please take a look when you have a moment.
+**Author**: Feel free to ping reviewers or ask for help if needed.
+
+Thanks for your patience! 🙏`
+                  });
+                  
+                  // Add label to track that we've reminded
+                  await github.rest.issues.addLabels({
+                    owner,
+                    repo,
+                    issue_number: pr.number,
+                    labels: ['review:needs-reviewer']
+                  });
+                }
+              }
+            }
+
+  cleanup-closed:
+    name: Cleanup Closed Issues
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'  # Only run on schedule
+    
+    steps:
+      - name: Remove stale labels from closed issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            
+            // Get closed issues with stale label
+            const issues = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'closed',
+              labels: 'status:stale',
+              per_page: 100
+            });
+            
+            for (const issue of issues.data) {
+              // Remove stale label from closed issues
+              try {
+                await github.rest.issues.removeLabel({
+                  owner,
+                  repo,
+                  issue_number: issue.number,
+                  name: 'status:stale'
+                });
+                console.log(`Removed stale label from closed issue #${issue.number}`);
+              } catch (error) {
+                // Ignore if label doesn't exist
+                if (error.status !== 404) {
+                  console.error(`Error removing label from issue #${issue.number}:`, error);
+                }
+              }
+            }
+
+  statistics:
+    name: Stale Statistics
+    runs-on: ubuntu-latest
+    needs: [stale, stale-draft-prs]
+    if: always()
+    
+    steps:
+      - name: Generate stale statistics
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            
+            // Get issues and PRs with stale label
+            const staleIssues = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: 'open',
+              labels: 'status:stale',
+              per_page: 100
+            });
+            
+            const issues = staleIssues.data.filter(item => !item.pull_request);
+            const prs = staleIssues.data.filter(item => item.pull_request);
+            
+            console.log(`📊 Stale Statistics:`);
+            console.log(`- Stale Issues: ${issues.length}`);
+            console.log(`- Stale PRs: ${prs.length}`);
+            console.log(`- Total Stale Items: ${staleIssues.data.length}`);
+            
+            // Add to job summary
+            core.summary
+              .addHeading('🗂️ Stale Management Summary')
+              .addTable([
+                [{data: 'Type', header: true}, {data: 'Count', header: true}],
+                ['Stale Issues', issues.length.toString()],
+                ['Stale PRs', prs.length.toString()],
+                ['Total Stale', staleIssues.data.length.toString()]
+              ])
+              .addQuote('Items are automatically marked as stale to keep our issue tracker focused on active work.')
+              .write();

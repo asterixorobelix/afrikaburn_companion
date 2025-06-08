@@ -1,0 +1,364 @@
+name: Changelog
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to generate changelog for'
+        required: true
+        type: string
+      from_tag:
+        description: 'Previous tag to compare from (optional)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  update-changelog:
+    name: Update Changelog
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup variables
+        id: vars
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            VERSION="${{ github.event.release.tag_name }}"
+            RELEASE_NAME="${{ github.event.release.name }}"
+          else
+            VERSION="${{ github.event.inputs.version }}"
+            RELEASE_NAME="$VERSION"
+          fi
+          
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "release_name=$RELEASE_NAME" >> $GITHUB_OUTPUT
+          
+          # Get previous tag for comparison
+          if [ -n "${{ github.event.inputs.from_tag }}" ]; then
+            PREVIOUS_TAG="${{ github.event.inputs.from_tag }}"
+          else
+            PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+          fi
+          echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_OUTPUT
+          
+          # Get current date
+          RELEASE_DATE=$(date +"%Y-%m-%d")
+          echo "release_date=$RELEASE_DATE" >> $GITHUB_OUTPUT
+      
+      - name: Generate changelog content
+        id: changelog
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = "${{ steps.vars.outputs.version }}";
+            const previousTag = "${{ steps.vars.outputs.previous_tag }}";
+            const releaseDate = "${{ steps.vars.outputs.release_date }}";
+            
+            let changelogContent = `## [${version}] - ${releaseDate}\n\n`;
+            
+            if (previousTag) {
+              // Get commits since previous tag
+              const commits = await github.rest.repos.compareCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                base: previousTag,
+                head: 'HEAD'
+              });
+              
+              // Get merged PRs since previous tag
+              const prs = await github.rest.pulls.list({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'closed',
+                sort: 'updated',
+                direction: 'desc',
+                per_page: 100
+              });
+              
+              // Filter PRs that were merged since previous tag
+              const previousTagDate = previousTag ? 
+                (await github.rest.git.getRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: `tags/${previousTag}`
+                })).data.object.sha : null;
+              
+              let previousTagCommitDate = null;
+              if (previousTagDate) {
+                const tagCommit = await github.rest.git.getCommit({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  commit_sha: previousTagDate
+                });
+                previousTagCommitDate = new Date(tagCommit.data.author.date);
+              }
+              
+              const recentPRs = prs.data.filter(pr => 
+                pr.merged_at && 
+                (!previousTagCommitDate || new Date(pr.merged_at) > previousTagCommitDate)
+              );
+              
+              // Categorize changes
+              const features = [];
+              const fixes = [];
+              const improvements = [];
+              const breaking = [];
+              const other = [];
+              
+              recentPRs.forEach(pr => {
+                const title = pr.title.toLowerCase();
+                const labels = pr.labels.map(label => label.name);
+                
+                const entry = `- ${pr.title} (#${pr.number}) @${pr.user.login}`;
+                
+                if (labels.includes('breaking-change')) {
+                  breaking.push(entry);
+                } else if (title.startsWith('feat:') || title.startsWith('feature:') || labels.includes('enhancement')) {
+                  features.push(entry);
+                } else if (title.startsWith('fix:') || labels.includes('bug')) {
+                  fixes.push(entry);
+                } else if (title.startsWith('perf:') || title.startsWith('refactor:') || labels.includes('performance')) {
+                  improvements.push(entry);
+                } else {
+                  other.push(entry);
+                }
+              });
+              
+              // Build changelog sections
+              if (breaking.length > 0) {
+                changelogContent += `### 💥 Breaking Changes\n\n${breaking.join('\n')}\n\n`;
+              }
+              
+              if (features.length > 0) {
+                changelogContent += `### ✨ New Features\n\n${features.join('\n')}\n\n`;
+              }
+              
+              if (improvements.length > 0) {
+                changelogContent += `### 🚀 Improvements\n\n${improvements.join('\n')}\n\n`;
+              }
+              
+              if (fixes.length > 0) {
+                changelogContent += `### 🐛 Bug Fixes\n\n${fixes.join('\n')}\n\n`;
+              }
+              
+              if (other.length > 0) {
+                changelogContent += `### 📝 Other Changes\n\n${other.join('\n')}\n\n`;
+              }
+              
+              // Add comparison link
+              if (previousTag) {
+                changelogContent += `**Full Changelog**: https://github.com/${context.repo.owner}/${context.repo.repo}/compare/${previousTag}...${version}\n\n`;
+              }
+            } else {
+              changelogContent += `### 🎉 Initial Release\n\nThis is the first release of our Compose Multiplatform application!\n\n`;
+            }
+            
+            // Save changelog content
+            require('fs').writeFileSync('CHANGELOG_NEW.md', changelogContent);
+            
+            return changelogContent;
+      
+      - name: Update CHANGELOG.md
+        run: |
+          # Check if CHANGELOG.md exists
+          if [ ! -f CHANGELOG.md ]; then
+            echo "# Changelog" > CHANGELOG.md
+            echo "" >> CHANGELOG.md
+            echo "All notable changes to this project will be documented in this file." >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+            echo "The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)," >> CHANGELOG.md
+            echo "and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)." >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          fi
+          
+          # Create temporary file with new content
+          {
+            # Keep the header
+            head -n 7 CHANGELOG.md
+            
+            # Add new changelog entry
+            cat CHANGELOG_NEW.md
+            
+            # Add existing content (skip header)
+            tail -n +8 CHANGELOG.md | grep -v "^## \[${{ steps.vars.outputs.version }}\]" || true
+          } > CHANGELOG_TEMP.md
+          
+          # Replace original file
+          mv CHANGELOG_TEMP.md CHANGELOG.md
+          rm CHANGELOG_NEW.md
+      
+      - name: Commit changelog
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          if git diff --quiet CHANGELOG.md; then
+            echo "No changes to commit"
+          else
+            git add CHANGELOG.md
+            git commit -m "docs: update CHANGELOG for ${{ steps.vars.outputs.version }}"
+            git push
+          fi
+      
+      - name: Update release notes
+        if: github.event_name == 'release'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const changelog = fs.readFileSync('CHANGELOG.md', 'utf8');
+            
+            // Extract the latest version's changelog
+            const versionRegex = new RegExp(`## \\[${{ steps.vars.outputs.version }}\\].*?(?=## \\[|$)`, 's');
+            const match = changelog.match(versionRegex);
+            
+            if (match) {
+              const releaseNotes = match[0]
+                .replace(/^## \[.*?\] - \d{4}-\d{2}-\d{2}\n\n/, '') // Remove header
+                .trim();
+              
+              // Update the release with formatted notes
+              await github.rest.repos.updateRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: ${{ github.event.release.id }},
+                body: releaseNotes
+              });
+            }
+
+  validate-changelog:
+    name: Validate Changelog Format
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Validate changelog format
+        run: |
+          if [ -f CHANGELOG.md ]; then
+            # Check if changelog follows Keep a Changelog format
+            if ! grep -q "## \[" CHANGELOG.md; then
+              echo "⚠️ CHANGELOG.md doesn't seem to follow Keep a Changelog format"
+              echo "Expected entries like: ## [1.0.0] - 2024-01-01"
+            fi
+            
+            # Check for unreleased section
+            if ! grep -qi "unreleased" CHANGELOG.md; then
+              echo "💡 Consider adding an [Unreleased] section for ongoing changes"
+            fi
+            
+            # Check for proper sections
+            if grep -q "## \[" CHANGELOG.md; then
+              echo "✅ Changelog format looks good!"
+            fi
+          else
+            echo "📝 No CHANGELOG.md found - consider creating one"
+          fi
+
+  generate-draft-changelog:
+    name: Generate Draft Changelog
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Generate unreleased changes
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Get latest tag
+            const latestTag = await github.rest.repos.getLatestRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            }).catch(() => null);
+            
+            const since = latestTag ? latestTag.data.published_at : null;
+            
+            // Get recent PRs
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'closed',
+              sort: 'updated',
+              direction: 'desc',
+              per_page: 50
+            });
+            
+            const recentPRs = prs.data.filter(pr => 
+              pr.merged_at && 
+              (!since || new Date(pr.merged_at) > new Date(since))
+            );
+            
+            if (recentPRs.length === 0) {
+              console.log("No recent changes found");
+              return;
+            }
+            
+            // Categorize changes
+            const features = [];
+            const fixes = [];
+            const improvements = [];
+            const other = [];
+            
+            recentPRs.forEach(pr => {
+              const title = pr.title.toLowerCase();
+              const labels = pr.labels.map(label => label.name);
+              
+              const entry = `- ${pr.title} (#${pr.number})`;
+              
+              if (title.startsWith('feat:') || labels.includes('enhancement')) {
+                features.push(entry);
+              } else if (title.startsWith('fix:') || labels.includes('bug')) {
+                fixes.push(entry);
+              } else if (title.startsWith('perf:') || title.startsWith('refactor:')) {
+                improvements.push(entry);
+              } else {
+                other.push(entry);
+              }
+            });
+            
+            // Create draft changelog
+            let draftChangelog = `## [Unreleased]\n\n`;
+            
+            if (features.length > 0) {
+              draftChangelog += `### ✨ New Features\n\n${features.join('\n')}\n\n`;
+            }
+            
+            if (improvements.length > 0) {
+              draftChangelog += `### 🚀 Improvements\n\n${improvements.join('\n')}\n\n`;
+            }
+            
+            if (fixes.length > 0) {
+              draftChangelog += `### 🐛 Bug Fixes\n\n${fixes.join('\n')}\n\n`;
+            }
+            
+            if (other.length > 0) {
+              draftChangelog += `### 📝 Other Changes\n\n${other.join('\n')}\n\n`;
+            }
+            
+            console.log("## 📋 Draft Changelog for Next Release");
+            console.log(draftChangelog);
+            
+            // Add to job summary
+            core.summary
+              .addHeading('📋 Draft Changelog for Next Release')
+              .addCodeBlock(draftChangelog, 'markdown')
+              .addQuote('This shows changes since the last release that would be included in the next version.')
+              .write();

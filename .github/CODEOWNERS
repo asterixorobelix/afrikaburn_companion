@@ -1,0 +1,116 @@
+# CODEOWNERS file for automatic code review assignments
+# This file defines who owns different parts of the codebase
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Global owners - Default reviewers for everything
+* @asterixorobelix @TEAM_LEAD
+
+# Root configuration files
+*.md @YOUR_USERNAME @TECH_WRITER
+LICENSE @YOUR_USERNAME @LEGAL_TEAM
+.gitignore @YOUR_USERNAME @DEVOPS_TEAM
+gradle.properties @YOUR_USERNAME @ANDROID_TEAM
+settings.gradle.kts @YOUR_USERNAME @ANDROID_TEAM
+build.gradle.kts @YOUR_USERNAME @ANDROID_TEAM
+
+# Dependency management
+gradle/ @YOUR_USERNAME @ANDROID_TEAM @DEVOPS_TEAM
+gradle/libs.versions.toml @YOUR_USERNAME @ANDROID_TEAM
+
+# Shared/Common code (Kotlin Multiplatform)
+shared/ @YOUR_USERNAME @KOTLIN_TEAM @MOBILE_TEAM
+shared/src/commonMain/ @YOUR_USERNAME @KOTLIN_TEAM
+shared/src/commonTest/ @YOUR_USERNAME @KOTLIN_TEAM @QA_TEAM
+
+# Android-specific code
+androidApp/ @YOUR_USERNAME @ANDROID_TEAM
+shared/src/androidMain/ @YOUR_USERNAME @ANDROID_TEAM
+*.gradle.kts @YOUR_USERNAME @ANDROID_TEAM
+proguard-rules.pro @YOUR_USERNAME @ANDROID_TEAM
+
+# iOS-specific code  
+iosApp/ @YOUR_USERNAME @IOS_TEAM
+shared/src/iosMain/ @YOUR_USERNAME @IOS_TEAM
+*.swift @YOUR_USERNAME @IOS_TEAM
+*.xcodeproj/ @YOUR_USERNAME @IOS_TEAM
+*.xcworkspace/ @YOUR_USERNAME @IOS_TEAM
+*.plist @YOUR_USERNAME @IOS_TEAM
+
+# UI/UX related files
+shared/src/commonMain/kotlin/ui/ @YOUR_USERNAME @UI_UX_TEAM @MOBILE_TEAM
+shared/src/commonMain/kotlin/*/theme/ @YOUR_USERNAME @UI_UX_TEAM
+shared/src/commonMain/kotlin/*/components/ @YOUR_USERNAME @UI_UX_TEAM @MOBILE_TEAM
+
+# Business logic and architecture
+shared/src/commonMain/kotlin/domain/ @YOUR_USERNAME @BACKEND_TEAM @KOTLIN_TEAM
+shared/src/commonMain/kotlin/data/ @YOUR_USERNAME @BACKEND_TEAM @KOTLIN_TEAM
+shared/src/commonMain/kotlin/di/ @YOUR_USERNAME @KOTLIN_TEAM
+
+# Backend code (if in same repo)
+backend/ @YOUR_USERNAME @BACKEND_TEAM
+backend/api/ @YOUR_USERNAME @BACKEND_TEAM @API_TEAM
+backend/database/ @YOUR_USERNAME @BACKEND_TEAM @DATABASE_TEAM
+backend/services/ @YOUR_USERNAME @BACKEND_TEAM
+
+# Testing files
+**/test/ @YOUR_USERNAME @QA_TEAM @MOBILE_TEAM
+**/androidTest/ @YOUR_USERNAME @QA_TEAM @ANDROID_TEAM
+**/*Test.kt @YOUR_USERNAME @QA_TEAM @KOTLIN_TEAM
+**/*Tests.kt @YOUR_USERNAME @QA_TEAM @KOTLIN_TEAM
+
+# CI/CD and DevOps
+.github/ @YOUR_USERNAME @DEVOPS_TEAM
+.github/workflows/ @YOUR_USERNAME @DEVOPS_TEAM
+scripts/ @YOUR_USERNAME @DEVOPS_TEAM
+
+# Security-related files
+.github/workflows/security.yml @YOUR_USERNAME @SECURITY_TEAM @DEVOPS_TEAM
+**/security/ @YOUR_USERNAME @SECURITY_TEAM
+SECURITY.md @YOUR_USERNAME @SECURITY_TEAM
+
+# Documentation
+docs/ @YOUR_USERNAME @TECH_WRITER @TEAM_LEAD
+README.md @YOUR_USERNAME @TECH_WRITER
+CONTRIBUTING.md @YOUR_USERNAME @TECH_WRITER @TEAM_LEAD
+CHANGELOG.md @YOUR_USERNAME @TECH_WRITER
+
+# Code quality and linting
+detekt.yml @YOUR_USERNAME @KOTLIN_TEAM
+.editorconfig @YOUR_USERNAME @MOBILE_TEAM
+
+# Assets and resources
+assets/ @YOUR_USERNAME @UI_UX_TEAM @DESIGNER
+androidApp/src/main/res/ @YOUR_USERNAME @ANDROID_TEAM @UI_UX_TEAM
+iosApp/*/Assets.xcassets/ @YOUR_USERNAME @IOS_TEAM @UI_UX_TEAM
+
+# Store-related files
+assets/store/ @YOUR_USERNAME @MARKETING_TEAM @UI_UX_TEAM
+fastlane/ @YOUR_USERNAME @DEVOPS_TEAM @MARKETING_TEAM
+
+# Configuration files that require special attention
+keystore.properties @YOUR_USERNAME @SECURITY_TEAM @ANDROID_TEAM
+google-services.json @YOUR_USERNAME @ANDROID_TEAM @DEVOPS_TEAM
+GoogleService-Info.plist @YOUR_USERNAME @IOS_TEAM @DEVOPS_TEAM
+
+# Package/module specific owners
+# Add more specific rules as your project grows
+
+# Example team/user mappings (replace with actual GitHub usernames):
+# @YOUR_USERNAME - Project owner/maintainer
+# @TEAM_LEAD - Technical lead
+# @ANDROID_TEAM - Android developers
+# @IOS_TEAM - iOS developers  
+# @KOTLIN_TEAM - Kotlin/KMP specialists
+# @MOBILE_TEAM - General mobile developers
+# @BACKEND_TEAM - Backend developers
+# @UI_UX_TEAM - UI/UX designers and frontend developers
+# @QA_TEAM - Quality assurance engineers
+# @DEVOPS_TEAM - DevOps engineers
+# @SECURITY_TEAM - Security specialists
+# @TECH_WRITER - Technical writers
+# @MARKETING_TEAM - Marketing team
+# @LEGAL_TEAM - Legal team
+
+# Note: Remove teams/users that don't exist in your organization
+# Add specific rules for critical files that need extra review
+# Consider using wildcards for entire directories vs individual files

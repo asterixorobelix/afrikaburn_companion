@@ -1,0 +1,39 @@
+{
+  "_comment": "⚠️  DEFAULT TEMPLATE - REPLACE WITH YOUR FIREBASE PROJECT CONFIGURATION",
+  "_warning": "This is a default template file. Crashlytics will NOT work until you replace this with your actual Firebase google-services.json",
+  "_setup_instructions": [
+    "1. Go to https://console.firebase.google.com",
+    "2. Create a new project or use existing",
+    "3. Add Android app with your package name",
+    "4. Download the real google-services.json",
+    "5. Replace this file with the downloaded one",
+    "6. Enable Crashlytics in Firebase console"
+  ],
+  "project_info": {
+    "project_number": "000000000000",
+    "project_id": "your-project-id-here",
+    "storage_bucket": "your-project-id-here.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+        "android_client_info": {
+          "package_name": "com.example.myproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEFAULT_API_KEY_REPLACE_WITH_REAL_ONE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

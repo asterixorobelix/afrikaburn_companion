@@ -1,0 +1,206 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths: [ 'backend/**' ]
+  pull_request:
+    branches: [ main ]
+    paths: [ 'backend/**' ]
+  pull_request_target:
+    types: [opened]
+    paths: [ 'backend/**' ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+      checks: write
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+    
+    - name: Make gradlew executable
+      run: chmod +x backend/gradlew
+      
+    - name: Run tests
+      run: |
+        cd backend
+        ./gradlew test --continue
+    
+    - name: Run detekt
+      run: |
+        cd backend
+        ./gradlew detekt --continue
+      continue-on-error: true
+    
+    - name: Parse and Report Test Results
+      if: always()
+      run: |
+        echo "## 🧪 Backend Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        if [ -d "backend/build/test-results" ]; then
+          total_tests=0
+          total_failures=0
+          total_skipped=0
+          
+          for xml_file in backend/build/test-results/**/TEST-*.xml; do
+            if [ -f "$xml_file" ]; then
+              # Extract test counts using grep and sed
+              tests=$(grep '<testsuite' "$xml_file" | sed -n 's/.*tests="\([0-9]*\)".*/\1/p' | head -1)
+              failures=$(grep '<testsuite' "$xml_file" | sed -n 's/.*failures="\([0-9]*\)".*/\1/p' | head -1)
+              errors=$(grep '<testsuite' "$xml_file" | sed -n 's/.*errors="\([0-9]*\)".*/\1/p' | head -1)
+              skipped=$(grep '<testsuite' "$xml_file" | sed -n 's/.*skipped="\([0-9]*\)".*/\1/p' | head -1)
+              
+              # Default to 0 if values are empty
+              tests=${tests:-0}
+              failures=${failures:-0}
+              errors=${errors:-0}
+              skipped=${skipped:-0}
+              
+              total_tests=$((total_tests + tests))
+              total_failures=$((total_failures + failures + errors))
+              total_skipped=$((total_skipped + skipped))
+            fi
+          done
+          
+          passed=$((total_tests - total_failures - total_skipped))
+          
+          if [ $total_failures -eq 0 ]; then
+            echo "✅ **All $total_tests tests passed!** 🎉" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ **$total_failures test(s) failed** out of $total_tests total tests" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Status | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| ✅ Passed | $passed |" >> $GITHUB_STEP_SUMMARY
+          echo "| ❌ Failed | $total_failures |" >> $GITHUB_STEP_SUMMARY
+          echo "| ⏭️ Skipped | $total_skipped |" >> $GITHUB_STEP_SUMMARY
+          echo "| 📊 **Total** | **$total_tests** |" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ No test results found" >> $GITHUB_STEP_SUMMARY
+        fi
+        
+    - name: Check Detekt Results
+      if: always()
+      run: |
+        if [ -f "backend/build/reports/detekt/detekt.xml" ]; then
+          echo "Detekt report generated successfully"
+          echo "Report location: backend/build/reports/detekt/detekt.xml"
+        else
+          echo "No detekt report found"
+        fi
+        
+    - name: Comment PR with Detekt Results
+      uses: actions/github-script@v7
+      if: github.event_name == 'pull_request' && always()
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          try {
+            const detektReportPath = 'backend/build/reports/detekt/detekt.xml';
+            if (fs.existsSync(detektReportPath)) {
+              const detektReport = fs.readFileSync(detektReportPath, 'utf8');
+              const issueCount = (detektReport.match(/<error/g) || []).length;
+              
+              let comment = '## 🔍 Backend Detekt Analysis\n\n';
+              
+              if (issueCount === 0) {
+                comment += '✅ **No Detekt issues found!** Your backend code looks clean.\n';
+              } else {
+                comment += `⚠️ **Found ${issueCount} Detekt issue(s)** in backend code.\n\n`;
+                comment += 'Please check the [Detekt report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.\n';
+              }
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+          } catch (error) {
+            console.log('Could not process Detekt results:', error.message);
+          }
+    
+    - name: Build application
+      run: |
+        cd backend
+        ./gradlew build
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: backend-test-results
+        path: backend/build/reports/tests/test/
+        
+    - name: Upload detekt results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: backend-detekt-results
+        path: backend/build/reports/detekt/
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Deploy to Railway
+      run: |
+        echo "Add Railway deployment commands here"
+        # Example: railway up --service backend
+
+  request-copilot-review:
+    if: github.event_name == 'pull_request_target'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    
+    steps:
+    - name: Request GitHub Copilot Review
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_NUMBER: ${{ github.event.number }}
+      run: |
+        gh pr review $PR_NUMBER --repo ${{ github.repository }} --comment --body "🤖 **GitHub Copilot Auto-Review Request**
+        
+        This PR has been automatically flagged for Copilot review. Please review the backend-related changes:
+        
+        - ✅ Code quality and best practices
+        - ✅ Kotlin/Ktor backend conventions
+        - ✅ Security vulnerabilities
+        - ✅ Performance optimizations
+        - ✅ Database query efficiency
+        - ✅ API design and error handling
+        
+        Use GitHub Copilot's code review features to analyze this PR."

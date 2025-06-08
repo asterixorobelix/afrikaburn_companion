@@ -1,0 +1,240 @@
+# Auto-labeler Configuration
+# This file defines rules for automatically labeling pull requests
+# based on the files that were changed
+
+# Platform Labels
+android:
+  - androidApp/**/*
+  - shared/src/androidMain/**/*
+  - "**/*.gradle.kts"
+  - "**/proguard-rules.pro"
+
+ios:
+  - iosApp/**/*
+  - shared/src/iosMain/**/*
+  - "**/*.swift"
+  - "**/*.plist"
+  - "**/*.xcodeproj/**/*"
+  - "**/*.xcworkspace/**/*"
+
+shared:
+  - shared/src/commonMain/**/*
+  - shared/src/commonTest/**/*
+
+backend:
+  - backend/**/*
+  - server/**/*
+  - api/**/*
+
+# Component Labels
+component:ui:
+  - shared/src/commonMain/kotlin/ui/**/*
+  - shared/src/commonMain/kotlin/**/ui/**/*
+  - androidApp/src/main/res/**/*
+  - iosApp/**/Assets.xcassets/**/*
+
+component:api:
+  - shared/src/commonMain/kotlin/**/api/**/*
+  - shared/src/commonMain/kotlin/**/remote/**/*
+  - backend/api/**/*
+
+component:database:
+  - shared/src/commonMain/kotlin/**/local/**/*
+  - shared/src/commonMain/kotlin/**/database/**/*
+  - backend/database/**/*
+
+component:authentication:
+  - "**/*auth*/**/*"
+  - "**/*Auth*"
+  - "**/*login*/**/*"
+  - "**/*Login*"
+
+component:networking:
+  - "**/*network*/**/*"
+  - "**/*Network*"
+  - "**/*http*/**/*"
+  - "**/*Http*"
+  - "**/*ktor*/**/*"
+
+component:storage:
+  - "**/*storage*/**/*"
+  - "**/*Storage*"
+  - "**/*repository*/**/*"
+  - "**/*Repository*"
+
+component:testing:
+  - "**/test/**/*"
+  - "**/androidTest/**/*"
+  - "**/*Test.kt"
+  - "**/*Tests.kt"
+  - "**/testing/**/*"
+
+# Area Labels
+area:performance:
+  - "**/*performance*/**/*"
+  - "**/*Performance*"
+  - "**/benchmark/**/*"
+  - "**/*benchmark*/**/*"
+
+area:security:
+  - "**/*security*/**/*"
+  - "**/*Security*"
+  - "**/*crypto*/**/*"
+  - "**/*Crypto*"
+  - ".github/workflows/security.yml"
+
+area:accessibility:
+  - "**/*accessibility*/**/*"
+  - "**/*Accessibility*"
+  - "**/*a11y*/**/*"
+
+area:localization:
+  - "**/strings.xml"
+  - "**/Localizable.strings"
+  - "**/values-*/**/*"
+  - "**/*localization*/**/*"
+  - "**/*i18n*/**/*"
+
+area:ci-cd:
+  - ".github/workflows/**/*"
+  - ".github/actions/**/*"
+  - "scripts/**/*"
+  - "fastlane/**/*"
+  - "Jenkinsfile"
+  - ".circleci/**/*"
+  - ".travis.yml"
+  - "azure-pipelines.yml"
+
+area:dependencies:
+  - "gradle/libs.versions.toml"
+  - "**/gradle.properties"
+  - "**/build.gradle.kts"
+  - "**/build.gradle"
+  - "package.json"
+  - "yarn.lock"
+  - "Podfile"
+  - "Podfile.lock"
+
+# Documentation Labels
+documentation:
+  - "**/*.md"
+  - "docs/**/*"
+  - "**/README*"
+  - "**/CHANGELOG*"
+  - "**/CONTRIBUTING*"
+  - "**/LICENSE*"
+  - ".github/**/*.md"
+
+# Configuration Labels
+dependencies:
+  - "gradle/libs.versions.toml"
+  - "**/build.gradle.kts"
+  - "**/build.gradle"
+  - "package.json"
+  - "Podfile"
+  - ".github/dependabot.yml"
+
+github-actions:
+  - ".github/workflows/**/*"
+  - ".github/actions/**/*"
+
+# Breaking Changes (based on file patterns that often contain breaking changes)
+breaking-change:
+  - "shared/src/commonMain/kotlin/**/api/**/*"
+  - "shared/src/commonMain/kotlin/**/model/**/*"
+  - "backend/api/**/*"
+  - "**/migration/**/*"
+  - "**/migrations/**/*"
+
+# Feature Flags
+feature-flag:
+  - "**/*feature*flag*/**/*"
+  - "**/*FeatureFlag*"
+  - "**/*flag*/**/*"
+
+# Build System
+build:
+  - "gradle/**/*"
+  - "**/gradle.properties"
+  - "**/build.gradle.kts"
+  - "**/build.gradle"
+  - "settings.gradle.kts"
+  - "gradlew"
+  - "gradlew.bat"
+  - ".gradle/**/*"
+
+# Quality Assurance
+quality:
+  - "detekt.yml"
+  - ".editorconfig"
+  - "ktlint.gradle"
+  - "**/lint/**/*"
+  - "**/quality/**/*"
+
+# Assets and Resources
+assets:
+  - "assets/**/*"
+  - androidApp/src/main/res/**/*"
+  - "iosApp/**/Assets.xcassets/**/*"
+  - "**/*.png"
+  - "**/*.jpg"
+  - "**/*.jpeg"
+  - "**/*.gif"
+  - "**/*.svg"
+  - "**/*.ico"
+
+# Special Files
+config:
+  - "*.yml"
+  - "*.yaml"
+  - "*.json"
+  - "*.toml"
+  - "*.properties"
+  - "*.plist"
+
+# Team-specific (customize based on your team structure)
+team:mobile:
+  - shared/**/*
+  - androidApp/**/*
+  - iosApp/**/*
+
+team:backend:
+  - backend/**/*
+  - server/**/*
+  - api/**/*
+
+team:devops:
+  - ".github/workflows/**/*"
+  - "scripts/**/*"
+  - "docker/**/*"
+  - "Dockerfile*"
+  - "docker-compose*"
+
+team:design:
+  - "assets/**/*"
+  - androidApp/src/main/res/**/*"
+  - "iosApp/**/Assets.xcassets/**/*"
+  - shared/src/commonMain/kotlin/ui/theme/**/*"
+
+team:qa:
+  - "**/test/**/*"
+  - "**/androidTest/**/*"
+  - "**/*Test.kt"
+  - "**/*Tests.kt"
+
+# Size estimation (rough guidelines based on file types)
+# Note: These patterns help estimate, but actual size labels
+# are added by the size-check job in pr-validation.yml
+
+# Likely small changes
+potential-small:
+  - "**/*.md"
+  - "**/strings.xml"
+  - "**/*.properties"
+
+# Likely large changes  
+potential-large:
+  - "**/migration/**/*"
+  - "**/migrations/**/*"
+  - "gradle/libs.versions.toml"
+  - shared/src/commonMain/kotlin/ui/**/*"
