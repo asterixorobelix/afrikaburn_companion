@@ -305,6 +305,40 @@ For questions and support:
 - Check the documentation in each component's directory
 - Review the CI/CD pipeline logs for deployment issues
 
+## 🌍 About AfrikaBurn
+
+[AfrikaBurn](https://www.afrikaburn.org/) is the official South African regional event of the global Burning Man network. It takes place annually in the Tankwa Karoo, bringing together a community of creative individuals for a week of radical self-expression, self-reliance, and gifting.
+
+### Principles
+
+- **Radical Self-Expression** - Freedom to be yourself
+- **Gifting** - Unconditional giving without expectation
+- **Self-Reliance** - Taking responsibility for your own survival
+- **Leave No Trace** - Respect for the environment
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **AfrikaBurn Community** - For inspiration and feedback
+- **Burning Man Project** - For the original vision
+- **JetBrains** - For Compose Multiplatform
+- **Contributors** - Everyone who helps make this project better
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/asterixorobelix/afrikaburn-app/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/asterixorobelix/afrikaburn-app/discussions)
+- **Email**: support@afrikaburn-app.com
+
+## 🔥 Built with Love for the Burn
+
+This app is created by Burners, for Burners. It's a gift to the AfrikaBurn community to help everyone have a safer, more connected, and more magical experience in the Tankwa Karoo.
+
+*See you on the playa!* 🐪
+
 ---
 
 **Author**: asterixorobelix  
