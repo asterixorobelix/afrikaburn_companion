@@ -8,6 +8,8 @@
 
 A comprehensive mobile app for [AfrikaBurn](https://www.afrikaburn.org/), the South African regional Burning Man event. Built with Compose Multiplatform to provide essential tools for surviving and thriving in the Tankwa Karoo desert.
 
+[Firebase crashlytics](https://console.firebase.google.com/u/0/project/afrikaburn-companion-app/crashlytics/app/android:io.asterixorobelix.afrikaburn/issues?state=open&time=last-seven-days&types=crash&tag=all&sort=eventCount)
+
 ## 🌟 Features
 
 ### 🗺️ **Offline-First Design**
