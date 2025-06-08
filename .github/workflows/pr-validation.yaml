@@ -502,13 +502,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `📦 **APK Size Warning**
-              
-The generated APK is ${{ env.APK_SIZE }}. Consider:
-- Reviewing dependencies for unused libraries
-- Enabling R8/ProGuard optimizations
-- Using APK analyzer to identify large resources
-- Implementing dynamic feature modules if appropriate`
+              body: `📦 **APK Size Warning**\n\nThe generated APK is ${{ env.APK_SIZE }}. Consider:\n- Reviewing dependencies for unused libraries\n- Enabling R8/ProGuard optimizations\n- Using APK analyzer to identify large resources\n- Implementing dynamic feature modules if appropriate`
             });
 
   documentation-check:
