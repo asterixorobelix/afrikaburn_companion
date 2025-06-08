@@ -320,7 +320,6 @@ naming:
     parameterPattern: '[a-z][A-Za-z0-9]*'
     privateParameterPattern: '[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
-    ignoreOverriddenParameters: true
   EnumNaming:
     active: true
     enumEntryPattern: '[A-Z][_a-zA-Z0-9]*'
@@ -337,14 +336,10 @@ naming:
     active: true
     functionPattern: '([a-z][a-zA-Z0-9]*)|(`.*`)'
     excludeClassPattern: '$^'
-    ignoreOverriddenFunctions: true
-    ignoreAnnotatedFunctions:
-      - 'Composable'
   FunctionParameterNaming:
     active: true
     parameterPattern: '[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
-    ignoreOverriddenParameters: true
   InvalidPackageDeclaration:
     active: true
     rootPackage: ''
@@ -379,7 +374,6 @@ naming:
     variablePattern: '[a-z][A-Za-z0-9]*'
     privateVariablePattern: '(_)?[a-z][A-Za-z0-9]*'
     excludeClassPattern: '$^'
-    ignoreOverriddenProperties: true
 
 performance:
   active: true
@@ -387,12 +381,8 @@ performance:
     active: true
   ForEachOnRange:
     active: true
-    excludeAnnotatedClasses:
-      - 'Suppress'
   SpreadOperator:
     active: true
-    excludeAnnotatedClasses:
-      - 'Suppress'
   UnnecessaryTemporaryInstantiation:
     active: true
 
@@ -450,8 +440,6 @@ potential-bugs:
     active: true
   LateinitUsage:
     active: false
-    excludeAnnotatedClasses:
-      - 'Suppress'
     excludeAnnotatedProperties:
       - 'MockK'
       - 'InjectMockKs'
@@ -491,8 +479,6 @@ style:
     active: false
   CollapsibleIfStatements:
     active: false
-  DataClassContainsCustomEquals:
-    active: true
   DataClassShouldBeImmutable:
     active: false
   DestructuringDeclarationWithTooManyEntries:
@@ -500,14 +486,10 @@ style:
     maxDestructuringEntries: 3
   EqualsNullCall:
     active: true
-  EqualsOnSignatureFile:
-    active: true
   ExplicitCollectionElementAccessMethod:
     active: false
   ExplicitItLambdaParameter:
     active: true
-    excludeAnnotatedFunctions:
-      - 'Composable'
   ExpressionBodySyntax:
     active: false
     includeLineWrapping: false
@@ -534,7 +516,6 @@ style:
       - '*.internal.*'
   ForbiddenVoid:
     active: true
-    ignoreOverriddenMethods: false
     ignoreUsageInGenerics: false
   FunctionOnlyReturningConstant:
     active: true
@@ -554,8 +535,6 @@ style:
     maxJumpCount: 1
   MagicNumber:
     active: true
-    excludeAnnotatedClasses:
-      - 'Suppress'
     ignoreNumbers:
       - '-1'
       - '0'
@@ -643,8 +622,6 @@ style:
     allowNonStandardGrouping: false
   UnnecessaryAbstractClass:
     active: true
-    ignoreAnnotatedClasses:
-      - 'dagger.Module'
   UnnecessaryAnnotationUseSiteTarget:
     active: false
   UnnecessaryApply:
