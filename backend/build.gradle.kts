@@ -1,5 +1,5 @@
 val ktor_version = "2.3.12"
-val kotlin_version = "1.9.24"
+val kotlin_version = "2.1.21"
 val logback_version = "1.4.11"
 val exposed_version = "0.44.1"
 
