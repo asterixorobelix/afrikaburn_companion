@@ -1,13 +1,11 @@
 package io.asterixorobelix.afrikaburn.plugins
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.response.*
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class ErrorResponse(val error: String, val message: String)
+import io.asterixorobelix.afrikaburn.domain.ErrorResponse
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.response.respond
 
 fun Application.configureStatusPages() {
     install(StatusPages) {

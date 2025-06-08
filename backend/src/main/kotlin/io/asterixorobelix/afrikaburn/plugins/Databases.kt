@@ -2,26 +2,37 @@ package io.asterixorobelix.afrikaburn.plugins
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ktor.server.application.*
+import io.ktor.server.application.Application
 import kotlinx.coroutines.Dispatchers
-import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+
+private const val DEFAULT_CONNECTION_TIMEOUT_MS = 30000L
+private const val DEFAULT_IDLE_TIMEOUT_MS = 600000L
+private const val DEFAULT_MAX_LIFETIME_MS = 1800000L
 
 fun Application.configureDatabases() {
     val databaseUrl = System.getenv("DATABASE_URL") 
         ?: "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"
     
-    val (url, driver, user, password) = when {
+    val url: String
+    val driver: String
+    val user: String
+    val password: String
+    
+    when {
         databaseUrl.startsWith("jdbc:postgresql") -> {
-            listOf(
-                databaseUrl, 
-                "org.postgresql.Driver", 
-                System.getenv("DATABASE_USER") ?: "", 
-                System.getenv("DATABASE_PASSWORD") ?: ""
-            )
+            url = databaseUrl
+            driver = "org.postgresql.Driver"
+            user = System.getenv("DATABASE_USER") ?: ""
+            password = System.getenv("DATABASE_PASSWORD") ?: ""
         }
-        else -> listOf(databaseUrl, "org.h2.Driver", "sa", "")
+        else -> {
+            url = databaseUrl
+            driver = "org.h2.Driver"
+            user = "sa"
+            password = ""
+        }
     }
     
     val hikariConfig = HikariConfig().apply {
@@ -30,9 +41,9 @@ fun Application.configureDatabases() {
         username = user
         setPassword(password)
         maximumPoolSize = System.getenv("DB_POOL_SIZE")?.toInt() ?: 10
-        connectionTimeout = 30000
-        idleTimeout = 600000
-        maxLifetime = 1800000
+        connectionTimeout = DEFAULT_CONNECTION_TIMEOUT_MS
+        idleTimeout = DEFAULT_IDLE_TIMEOUT_MS
+        maxLifetime = DEFAULT_MAX_LIFETIME_MS
     }
     
     Database.connect(HikariDataSource(hikariConfig))
