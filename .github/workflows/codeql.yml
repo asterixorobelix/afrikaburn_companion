@@ -121,37 +121,35 @@ jobs:
         else
           echo "ℹ️ No Firebase configuration available, creating template file"
           # Create a minimal template google-services.json to prevent build failure
-          cat > mobile/composeApp/google-services.json << 'EOF'
-{
-  "project_info": {
-    "project_number": "000000000000",
-    "project_id": "template-project",
-    "storage_bucket": "template-project.appspot.com"
-  },
-  "client": [
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
-        "android_client_info": {
-          "package_name": "io.asterixorobelix.afrikaburn"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDummyKeyForCodeQLAnalysis000000000000000"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    }
-  ],
-  "configuration_version": "1"
-}
-EOF
+          echo '{
+            "project_info": {
+              "project_number": "000000000000",
+              "project_id": "template-project",
+              "storage_bucket": "template-project.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+                  "android_client_info": {
+                    "package_name": "io.asterixorobelix.afrikaburn"
+                  }
+                },
+                "oauth_client": [],
+                "api_key": [
+                  {
+                    "current_key": "AIzaSyDummyKeyForCodeQLAnalysis000000000000000"
+                  }
+                ],
+                "services": {
+                  "appinvite_service": {
+                    "other_platform_oauth_client": []
+                  }
+                }
+              }
+            ],
+            "configuration_version": "1"
+          }' > mobile/composeApp/google-services.json
           echo "✅ Template Firebase configuration created for build compatibility"
         fi
 
