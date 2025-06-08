@@ -2,7 +2,7 @@ val ktor_version = "2.3.12"
 val kotlin_version = "1.9.24"
 val logback_version = "1.5.18"
 val exposed_version = "0.61.0"
-val koin_version = "3.5.6"
+val koin_version = "4.0.4"
 
 plugins {
     kotlin("jvm") version "2.1.21"
