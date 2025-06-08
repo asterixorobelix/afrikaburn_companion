@@ -54,7 +54,7 @@ complexity:
     threshold: 10
     includeStaticDeclarations: false
     includePrivateDeclarations: false
-  ComplexMethod:
+  CyclomaticComplexMethod:
     active: true
     threshold: 15
     ignoreSingleWhenExpression: false
@@ -97,7 +97,7 @@ empty-blocks:
     active: true
   EmptyFunctionBlock:
     active: true
-    ignoreOverriddenFunctions: false
+    ignoreOverridden: false
   EmptyIfBlock:
     active: true
   EmptyInitBlock:
@@ -216,7 +216,6 @@ formatting:
     active: false
     autoCorrect: true
     indentSize: 4
-    continuationIndentSize: 4
   MaximumLineLength:
     active: true
     maxLineLength: 120
@@ -349,7 +348,7 @@ naming:
     mustBeFirst: true
   MemberNameEqualsClassName:
     active: true
-    ignoreOverriddenFunction: true
+    ignoreOverridden: true
   ObjectPropertyNaming:
     active: true
     constantPattern: '[A-Za-z][_A-Za-z0-9]*'
@@ -410,7 +409,7 @@ potential-bugs:
       - 'java.util.LinkedHashMap'
       - 'java.util.HashMap'
   DuplicateCaseInWhenExpression:
-    active: true
+    active: false  # Deprecated: compiler performs this check
   EqualsAlwaysReturnsTrueOrFalse:
     active: true
   EqualsWithHashCodeExist:
@@ -423,7 +422,7 @@ potential-bugs:
     active: true
   IgnoredReturnValue:
     active: true
-    restrictToAnnotatedMethods: true
+    restrictToConfig: true
     returnValueAnnotations:
       - '*.CheckReturnValue'
       - '*.CheckResult'
@@ -440,7 +439,7 @@ potential-bugs:
     active: true
   LateinitUsage:
     active: false
-    excludeAnnotatedProperties:
+    ignoreAnnotated:
       - 'MockK'
       - 'InjectMockKs'
       - 'Spy'
@@ -450,12 +449,12 @@ potential-bugs:
   MapGetWithNotNullAssertionOperator:
     active: true
   MissingWhenCase:
-    active: true
+    active: false  # Deprecated: compiler performs this check
     allowElseExpression: true
   NullableToStringCall:
     active: false
   RedundantElseInWhen:
-    active: true
+    active: false  # Deprecated: compiler performs this check
   UnconditionalJumpStatementInLoop:
     active: false
   UnnecessaryNotNullOperator:
@@ -495,7 +494,7 @@ style:
     includeLineWrapping: false
   ForbiddenComment:
     active: false
-    values:
+    comments:
       - 'TODO:'
       - 'FIXME:'
       - 'STOPSHIP:'
@@ -510,7 +509,7 @@ style:
       - 'kotlin.io.println'
       - 'kotlin.io.print'
   ForbiddenPublicDataClass:
-    active: true
+    active: false  # Deprecated: migrated to libraries ruleset
     ignorePackages:
       - '*.internal'
       - '*.internal.*'
@@ -522,14 +521,14 @@ style:
     ignoreOverridableFunction: true
     ignoreActualFunction: true
     excludedFunctions: []
-    excludeAnnotatedFunction:
+    ignoreAnnotated:
       - 'dagger.Provides'
   LibraryCodeMustSpecifyReturnType:
-    active: true
+    active: false  # Deprecated: migrated to libraries ruleset
     excludeAnnotatedClasses:
       - 'Suppress'
   LibraryEntitiesShouldNotBePublic:
-    active: false
+    active: false  # Deprecated: migrated to libraries ruleset
   LoopWithTooManyJumpStatements:
     active: true
     maxJumpCount: 1
@@ -557,8 +556,10 @@ style:
     ignoreEnums: false
     ignoreRanges: false
     ignoreExtensionFunctions: true
-  MandatoryBracesIfStatements:
+  BracesOnIfStatements:
     active: false
+    singleLine: always
+    multiLine: always
   MandatoryBracesLoops:
     active: false
   MaxLineLength:
@@ -617,7 +618,6 @@ style:
     active: false
   UnderscoresInNumericLiterals:
     active: false
-    acceptableDecimalLength: 5
     acceptableLength: 4
     allowNonStandardGrouping: false
   UnnecessaryAbstractClass:
