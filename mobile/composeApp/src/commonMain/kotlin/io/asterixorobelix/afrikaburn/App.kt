@@ -22,6 +22,7 @@ import io.asterixorobelix.afrikaburn.platform.CrashLogger
 import io.asterixorobelix.afrikaburn.platform.FirebaseConfigChecker
 import io.asterixorobelix.afrikaburn.ui.directions.DirectionsScreen
 import io.asterixorobelix.afrikaburn.ui.projects.ProjectsScreen
+import io.asterixorobelix.afrikaburn.ui.about.AboutScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 import org.koin.compose.KoinApplication
