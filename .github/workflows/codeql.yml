@@ -70,19 +70,26 @@ jobs:
         if [ -n "${{ secrets.GOOGLE_SERVICES_JSON }}" ]; then
           echo "Attempting to decode Firebase config..."
           if echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/composeApp/google-services.json 2>/dev/null; then
-            echo "✅ Firebase config for Android created successfully"
             # Verify the file is valid JSON
             if python3 -m json.tool mobile/composeApp/google-services.json > /dev/null 2>&1; then
-              echo "✅ Firebase config is valid JSON"
+              echo "✅ Firebase config created and validated successfully"
             else
-              echo "⚠️ Firebase config is not valid JSON, but continuing build"
+              echo "⚠️ Firebase config is not valid JSON, removing file to prevent build failure"
+              rm -f mobile/composeApp/google-services.json
             fi
           else
-            echo "⚠️ Failed to decode GOOGLE_SERVICES_JSON secret (invalid Base64), skipping Firebase setup"
-            echo "Build will continue without Firebase configuration"
+            echo "⚠️ Failed to decode GOOGLE_SERVICES_JSON secret (invalid Base64)"
+            rm -f mobile/composeApp/google-services.json
           fi
         else
-          echo "⚠️ GOOGLE_SERVICES_JSON secret not found, skipping Firebase setup"
+          echo "ℹ️ GOOGLE_SERVICES_JSON secret not found, building without Firebase"
+        fi
+        
+        # Ensure no malformed google-services.json exists
+        if [ -f mobile/composeApp/google-services.json ]; then
+          echo "ℹ️ Building with Firebase configuration"
+        else
+          echo "ℹ️ Building without Firebase configuration (CodeQL analysis will proceed normally)"
         fi
 
     - name: Build Mobile
