@@ -1,6 +1,49 @@
-# Afrikaburn
+# 🔥 AfrikaBurn App
 
-A Kotlin project template with backend (Ktor) and mobile (Compose Multiplatform) components.
+[![Build project with Gradle](https://github.com/asterixorobelix/afrikaburn_app/actions/workflows/build.yml/badge.svg)](https://github.com/asterixorobelix/afrikaburn_app/actions/workflows/build.yml)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Kotlin](https://img.shields.io/badge/kotlin-1.9.20-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.5.7-blue)](https://github.com/JetBrains/compose-multiplatform)
+![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android-blue)
+
+A comprehensive mobile app for [AfrikaBurn](https://www.afrikaburn.org/), the South African regional Burning Man event. Built with Compose Multiplatform to provide essential tools for surviving and thriving in the Tankwa Karoo desert.
+
+## 🌟 Features
+
+### 🗺️ **Offline-First Design**
+- **Complete offline functionality** - Works without internet in the desert
+- **Offline maps** with pinned locations for all artworks and theme camps
+- **Pre-downloaded content** including images and event schedules
+- **Smart sync** - Download everything before you leave for the event
+
+### 🎨 **Event Discovery**
+- **Interactive artwork map** - Find installations with artist details and photos
+- **Theme camp directory** - Discover camps, activities, and amenities
+- **Mutant vehicle tracker** - Locate and ride art cars across the playa
+- **Advanced search & filtering** - Find exactly what you're looking for
+
+### 🧭 **Planning & Navigation**
+- **GPS navigation** to the event location
+- **Packing checklists** - Tailored for desert survival
+- **Event timeline** - Personal schedule builder with conflict detection
+- **Weather integration** - Real-time Tankwa Karoo weather alerts
+
+### 🎭 **Surprise Elements**
+- **Time-released content** - Some artworks revealed only during the event
+- **Location-based unlocks** - Special content when you arrive at AfrikaBurn
+- **Hidden gems** - Discover secret installations and experiences
+
+### 🚨 **Safety & Emergency**
+- **Emergency contacts** - Quick access to Rangers and medical services
+- **Dust storm alerts** - Weather warnings for harsh conditions
+- **Resource sharing** - Find water, food, and equipment when needed
+- **MOOP tracking** - Help keep the desert pristine
+
+### 🤖 **Advanced Features**
+- **AR artwork discovery** - Point your camera to get installation details
+- **QR code scanning** - Quick access to camp and artwork information
+- **Real-time messaging** - Connect with other Burners (when online)
+- **Dark mode** - Essential for nighttime desert use
 
 ## 🚀 Quick Start
 
