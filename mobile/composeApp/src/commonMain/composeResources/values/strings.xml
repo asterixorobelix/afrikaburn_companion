@@ -3,7 +3,20 @@
     <string name="nav_projects">Projects</string>
     <string name="nav_directions">Directions</string>
     
+    <!-- About Screen -->
+    <string name="about_title">About</string>
+    <string name="about_page1_title">Welcome to AfrikaBurn</string>
+    <string name="about_page1_content">Your companion app for the AfrikaBurn experience in the Tankwa Karoo.</string>
+    <string name="about_page2_title">Discover Art &amp; Events</string>
+    <string name="about_page2_content">Explore amazing artworks, theme camps, and performances throughout the event.</string>
+    <string name="about_page3_title">Navigate the Desert</string>
+    <string name="about_page3_content">Find your way around the temporary city with our interactive maps and directions.</string>
+    <string name="about_page4_title">Survive &amp; Thrive</string>
+    <string name="about_page4_content">Get tips and information to help you make the most of your AfrikaBurn adventure.</string>
+    
     <!-- Content descriptions -->
     <string name="cd_projects_icon">Projects icon</string>
     <string name="cd_directions_icon">Directions icon</string>
+    <string name="cd_page_indicator">Page %1$d of %2$d</string>
+    <string name="cd_about_pager">About information carousel</string>
 </resources>

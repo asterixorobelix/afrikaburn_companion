@@ -245,14 +245,17 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
    ```kotlin
    // ✅ CORRECT - Use generated string resources
    import org.jetbrains.compose.resources.stringResource
-   import myproject.composeapp.generated.resources.Res
-   import myproject.composeapp.generated.resources.*
+   import afrikaburn.composeapp.generated.resources.Res
+   import afrikaburn.composeapp.generated.resources.about_title
+   import afrikaburn.composeapp.generated.resources.button_save
+   // Import specific resources or use wildcard import
+   // import afrikaburn.composeapp.generated.resources.*
    
    @Composable
    fun MyScreen() {
        AppTheme {
            Text(
-               text = stringResource(Res.string.welcome_message),
+               text = stringResource(Res.string.about_title),
                style = MaterialTheme.typography.headlineMedium
            )
        }
@@ -287,7 +290,12 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
 
 3. **String Resource Usage Examples**:
    ```kotlin
-   // ✅ CORRECT - Complete implementation
+   // ✅ CORRECT - Complete implementation with actual project imports
+   import afrikaburn.composeapp.generated.resources.Res
+   import afrikaburn.composeapp.generated.resources.screen_profile_title
+   import afrikaburn.composeapp.generated.resources.button_save
+   import afrikaburn.composeapp.generated.resources.cd_back_button
+   
    @Composable
    fun ProfileScreen() {
        AppTheme {
