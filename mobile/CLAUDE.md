@@ -125,11 +125,27 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
 
 1. **Theme Structure**:
    ```kotlin
-   // Always wrap UI in AppTheme
+   // AppTheme is ONLY declared at the app level in App.kt
    @Composable
    fun App() {
        AppTheme {
-           // Your UI content here
+           // Your UI content here - screens inherit theme automatically
+       }
+   }
+   
+   // ❌ WRONG - Do NOT wrap individual screens in AppTheme
+   @Composable
+   fun MyScreen() {
+       AppTheme {  // <- This is INCORRECT
+           // content
+       }
+   }
+   
+   // ✅ CORRECT - Screens inherit theme from App.kt
+   @Composable
+   fun MyScreen() {
+       Column {  // <- Start directly with layout
+           // content uses MaterialTheme.* automatically
        }
    }
    ```
@@ -238,6 +254,8 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
 
 **ENFORCEMENT**: Any PR with hardcoded colors, typography, or shapes will be rejected. Always use the Material Design 3 theme system.
 
+**CRITICAL APPTHEME RULE**: `AppTheme` is ONLY declared once in App.kt at the application level. NEVER wrap individual screens or components in `AppTheme` - they inherit theming automatically. Only use `AppTheme` in Preview functions for testing purposes.
+
 ### String Resources for Compose Multiplatform
 **MANDATORY for all AI assistants working on this mobile project:**
 
@@ -245,17 +263,18 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
    ```kotlin
    // ✅ CORRECT - Use generated string resources
    import org.jetbrains.compose.resources.stringResource
-   import myproject.composeapp.generated.resources.Res
-   import myproject.composeapp.generated.resources.*
+   import afrikaburn.composeapp.generated.resources.Res
+   import afrikaburn.composeapp.generated.resources.about_title
+   import afrikaburn.composeapp.generated.resources.button_save
+   // Import specific resources or use wildcard import
+   // import afrikaburn.composeapp.generated.resources.*
    
    @Composable
    fun MyScreen() {
-       AppTheme {
-           Text(
-               text = stringResource(Res.string.welcome_message),
-               style = MaterialTheme.typography.headlineMedium
-           )
-       }
+       Text(
+           text = stringResource(Res.string.about_title),
+           style = MaterialTheme.typography.headlineMedium
+       )
    }
    
    // ❌ WRONG - Never hardcode strings
@@ -287,7 +306,12 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
 
 3. **String Resource Usage Examples**:
    ```kotlin
-   // ✅ CORRECT - Complete implementation
+   // ✅ CORRECT - Complete implementation with actual project imports
+   import afrikaburn.composeapp.generated.resources.Res
+   import afrikaburn.composeapp.generated.resources.screen_profile_title
+   import afrikaburn.composeapp.generated.resources.button_save
+   import afrikaburn.composeapp.generated.resources.cd_back_button
+   
    @Composable
    fun ProfileScreen() {
        AppTheme {
@@ -408,6 +432,131 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
 - **FOLLOW** consistent naming: `screen_name_element`, `button_action`, `message_type`, `cd_description`
 
 **ENFORCEMENT**: Any PR with hardcoded strings will be rejected. All user-facing text must use the Compose Multiplatform string resource system.
+
+### Compose Preview Requirements
+**MANDATORY for all AI assistants working on this mobile project:**
+
+#### Always Add Preview Composables - One Preview Per File
+Every new Composable function MUST include corresponding `@Preview` functions for development and design validation. **CRITICAL**: Each file can only contain ONE `@Preview` function.
+
+1. **File Structure Requirements**:
+   ```kotlin
+   // ✅ CORRECT - One Composable, One Preview per file
+   
+   // File: MyComponent.kt
+   import org.jetbrains.compose.ui.tooling.preview.Preview
+   import io.asterixorobelix.afrikaburn.AppTheme
+   
+   @Composable
+   fun MyComponent() {
+       // Your composable content - inherits theme from App.kt
+   }
+   
+   @Preview
+   @Composable
+   private fun MyComponentPreview() {
+       AppTheme {  // Only use AppTheme in previews for testing
+           MyComponent()
+       }
+   }
+   
+   // ❌ WRONG - Multiple Previews in same file
+   // @Preview fun AnotherPreview() { ... }  // This would be rejected
+   ```
+
+2. **Component Separation Pattern**:
+   ```kotlin
+   // ✅ CORRECT - Separate files for each component
+   
+   // File: AboutPageContent.kt
+   @Composable
+   fun AboutPageContent(title: String, content: String) {
+       // Component implementation
+   }
+   
+   @Preview
+   @Composable
+   private fun AboutPageContentPreview() {
+       AppTheme {
+           AboutPageContent(
+               title = "Welcome to AfrikaBurn",
+               content = "Your companion app for the AfrikaBurn experience in the Tankwa Karoo."
+           )
+       }
+   }
+   
+   // File: PageIndicator.kt (separate file)
+   @Composable
+   fun PageIndicator(currentPage: Int, totalPages: Int) {
+       // Component implementation
+   }
+   
+   @Preview
+   @Composable
+   private fun PageIndicatorPreview() {
+       AppTheme {
+           // Show multiple states in ONE preview
+           Column {
+               PageIndicator(currentPage = 0, totalPages = 4)
+               PageIndicator(currentPage = 2, totalPages = 4) 
+           }
+       }
+   }
+   ```
+
+3. **Preview Best Practices**:
+   - **ALWAYS** wrap previews in `AppTheme` for accurate theming
+   - **USE** realistic sample data, not Lorem Ipsum
+   - **INCLUDE** multiple states within ONE preview when relevant (selected/unselected, different data)
+   - **MAKE** previews `private` to keep them internal to the file
+   - **PROVIDE** meaningful preview names ending with "Preview"
+   - **USE** proper background colors for visibility
+   - **SHOW** edge cases like long text, empty states, error states
+   - **CREATE** separate files when you need multiple distinct Composables
+
+4. **Multi-State Single Preview Example**:
+   ```kotlin
+   // File: MyButton.kt
+   @Preview
+   @Composable
+   private fun MyButtonPreview() {
+       AppTheme {
+           Column(
+               modifier = Modifier
+                   .background(MaterialTheme.colorScheme.background)
+                   .padding(Dimens.paddingMedium),
+               verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
+           ) {
+               // Show ALL states in ONE preview
+               MyButton(text = "Normal", enabled = true)
+               MyButton(text = "Disabled", enabled = false)
+               MyButton(text = "Very Long Button Text That Might Wrap", enabled = true)
+           }
+       }
+   }
+   ```
+
+**CRITICAL RULES**:
+- **ALWAYS** import `org.jetbrains.compose.ui.tooling.preview.Preview` when creating Composables (Compose Multiplatform)
+- **ALWAYS** import `io.asterixorobelix.afrikaburn.AppTheme` for preview theming
+- **NEVER** create Composables without corresponding previews
+- **NEVER** put multiple `@Preview` functions in the same file
+- **ALWAYS** create separate files for each distinct Composable component
+- **ALWAYS** use `AppTheme` wrapper in previews
+- **INCLUDE** all major component states within ONE preview function
+- **USE** realistic data from the AfrikaBurn context
+- **MAKE** previews visible in Android Studio design panel
+
+**FILE STRUCTURE REQUIREMENT**:
+```
+ui/about/
+├── AboutScreen.kt          // Main screen + ONE preview
+├── AboutPageContent.kt     // Component + ONE preview  
+├── PageIndicator.kt        // Component + ONE preview
+└── SomeOtherComponent.kt   // Component + ONE preview
+```
+
+**ENFORCEMENT**: Any PR with multiple `@Preview` functions in a single file will be rejected. Any PR with new Composables lacking proper `@Preview` functions and required imports will be rejected.
 
 ### Testing Strategy
 - Unit tests for business logic (80%+ coverage)
