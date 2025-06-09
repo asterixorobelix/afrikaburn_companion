@@ -15,10 +15,10 @@
     <string name="about_page4_content">I am an app developer</string>
     
     <!-- About URLs -->
-    <string name="about_page1_url">https://afrikaburn.com</string>
-    <string name="about_page2_url">https://afrikaburn.com/the-event/about/</string>
-    <string name="about_page3_url">https://afrikaburn.com/the-event/theme/</string>
-    <string name="about_page4_url">https://github.com/asterixorobelix</string>
+    <string name="about_page1_url">https://www.afrikaburn.org</string>
+    <string name="about_page2_url">https://quaggapedia.afrikaburn.com/index.php?title=Main_Page/</string>
+    <string name="about_page3_url">https://tickets.afrikaburn.org/afrikaburn-2025-theme/</string>
+    <string name="about_page4_url">https://www.linkedin.com/in/nathan-stasin</string>
     
     <!-- Button texts -->
     <string name="button_learn_more">Learn More</string>
