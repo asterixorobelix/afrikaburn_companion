@@ -31,5 +31,8 @@
     <string name="cd_directions_icon">Directions icon</string>
     <string name="cd_page_indicator">Page %1$d of %2$d</string>
     <string name="cd_about_pager">About information carousel</string>
-    <string name="cd_about_image">About page illustration</string>
+    <string name="cd_about_page1_image">Compose Multiplatform logo</string>
+    <string name="cd_about_page2_image">AfrikaBurn Quaggapedia Out of the Blue theme artwork</string>
+    <string name="cd_about_page3_image">AfrikaBurn event photography by Laura Niggeschmidt</string>
+    <string name="cd_about_page4_image">Developer contact image</string>
 </resources>

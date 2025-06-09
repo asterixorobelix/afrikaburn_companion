@@ -29,7 +29,8 @@ fun AboutPageContent(
     content: String,
     imagePainter: Painter? = null,
     buttonText: String? = null,
-    url: String? = null
+    url: String? = null,
+    imageContentDescription: String? = null
 ) {
     val uriHandler = LocalUriHandler.current
     
@@ -40,7 +41,7 @@ fun AboutPageContent(
         imagePainter?.let { painter ->
             Image(
                 painter = painter,
-                contentDescription = "About page illustration",
+                contentDescription = imageContentDescription ?: "About page illustration",
                 modifier = Modifier.size(120.dp)
             )
             Spacer(modifier = Modifier.height(Dimens.paddingSmall))
