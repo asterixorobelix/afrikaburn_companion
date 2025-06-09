@@ -125,11 +125,27 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
 
 1. **Theme Structure**:
    ```kotlin
-   // Always wrap UI in AppTheme
+   // AppTheme is ONLY declared at the app level in App.kt
    @Composable
    fun App() {
        AppTheme {
-           // Your UI content here
+           // Your UI content here - screens inherit theme automatically
+       }
+   }
+   
+   // ❌ WRONG - Do NOT wrap individual screens in AppTheme
+   @Composable
+   fun MyScreen() {
+       AppTheme {  // <- This is INCORRECT
+           // content
+       }
+   }
+   
+   // ✅ CORRECT - Screens inherit theme from App.kt
+   @Composable
+   fun MyScreen() {
+       Column {  // <- Start directly with layout
+           // content uses MaterialTheme.* automatically
        }
    }
    ```
@@ -238,6 +254,8 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
 
 **ENFORCEMENT**: Any PR with hardcoded colors, typography, or shapes will be rejected. Always use the Material Design 3 theme system.
 
+**CRITICAL APPTHEME RULE**: `AppTheme` is ONLY declared once in App.kt at the application level. NEVER wrap individual screens or components in `AppTheme` - they inherit theming automatically. Only use `AppTheme` in Preview functions for testing purposes.
+
 ### String Resources for Compose Multiplatform
 **MANDATORY for all AI assistants working on this mobile project:**
 
@@ -253,12 +271,10 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
    
    @Composable
    fun MyScreen() {
-       AppTheme {
-           Text(
-               text = stringResource(Res.string.about_title),
-               style = MaterialTheme.typography.headlineMedium
-           )
-       }
+       Text(
+           text = stringResource(Res.string.about_title),
+           style = MaterialTheme.typography.headlineMedium
+       )
    }
    
    // ❌ WRONG - Never hardcode strings
@@ -433,15 +449,13 @@ Every new Composable function MUST include corresponding `@Preview` functions fo
    
    @Composable
    fun MyComponent() {
-       AppTheme {
-           // Your composable content
-       }
+       // Your composable content - inherits theme from App.kt
    }
    
    @Preview
    @Composable
    private fun MyComponentPreview() {
-       AppTheme {
+       AppTheme {  // Only use AppTheme in previews for testing
            MyComponent()
        }
    }

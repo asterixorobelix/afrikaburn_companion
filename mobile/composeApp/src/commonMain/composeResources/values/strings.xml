@@ -13,18 +13,22 @@
     <string name="about_page3_content">Out Of The Blue: The Ocean. The Horizon. The Sky. Anything under the sun, and anything under the sea. Something old, something new, something borrowed, something once in a blue moon. Lazy days, hazy days, singing the blues. Your biggest dreams and boldest ideas. Your greatest wonders and biggest fears. The drop of a hat, and a flash in the pan. Anything you can dream up, dress up, make up, or fess up. It’s a whole new expanse. The next big thing. Anything.</string>
     <string name="about_page4_title">Contact Me</string>
     <string name="about_page4_content">I am an app developer</string>
+    <string name="direction_title">Event location</string>
+    <string name="direction_content">Afrikaburn is NOT in the Tankwa Karoo National Park! You will lose cellphone reception while driving, so be sure to download an offline version of the route in Google Maps. The AfrikaBurn event takes place at Quaggafontein, a private farm in the Tankwa Karoo. The farm is located about 3 hours drive from Cape Town, and 2 hours drive from Ceres. The nearest town is Calvinia, which is about 1 hour away. The GPS coordinates for Quaggafontein are: -32.482474, 19.897824. Please note that the AfrikaBurn event is not held in the Tankwa Karoo National Park.</string>
     
     <!-- About URLs -->
     <string name="about_page1_url">https://www.afrikaburn.org</string>
     <string name="about_page2_url">https://quaggapedia.afrikaburn.com/index.php?title=Main_Page/</string>
     <string name="about_page3_url">https://tickets.afrikaburn.org/afrikaburn-2025-theme/</string>
     <string name="about_page4_url">https://www.linkedin.com/in/nathan-stasin</string>
+    <string name="direction_url">https://www.google.com/maps/place/32%C2%B028\'56.9%22S+19%C2%B053\'52.2%22E/@-32.4824742,19.8952495,17z/data=!3m1!4b1!4m4!3m3!8m2!3d-32.4824742!4d19.8978244?entry=ttu&amp;g_ep=EgoyMDI1MDQwMi4xIKXMDSoJLDEwMjExNDUzSAFQAw%3D%3D</string>
     
     <!-- Button texts -->
     <string name="button_learn_more">Learn More</string>
     <string name="button_visit_website">Visit Website</string>
     <string name="button_view_theme">View Theme Details</string>
     <string name="button_contact">Contact</string>
+    <string name="button_directions">Google maps</string>
     
     <!-- Content descriptions -->
     <string name="cd_projects_icon">Projects icon</string>
