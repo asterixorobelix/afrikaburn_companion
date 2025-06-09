@@ -3,13 +3,21 @@ package io.asterixorobelix.afrikaburn.ui.about
 import afrikaburn.composeapp.generated.resources.Res
 import afrikaburn.composeapp.generated.resources.about_page1_content
 import afrikaburn.composeapp.generated.resources.about_page1_title
+import afrikaburn.composeapp.generated.resources.about_page1_url
 import afrikaburn.composeapp.generated.resources.about_page2_content
 import afrikaburn.composeapp.generated.resources.about_page2_title
+import afrikaburn.composeapp.generated.resources.about_page2_url
 import afrikaburn.composeapp.generated.resources.about_page3_content
 import afrikaburn.composeapp.generated.resources.about_page3_title
+import afrikaburn.composeapp.generated.resources.about_page3_url
 import afrikaburn.composeapp.generated.resources.about_page4_content
 import afrikaburn.composeapp.generated.resources.about_page4_title
+import afrikaburn.composeapp.generated.resources.about_page4_url
 import afrikaburn.composeapp.generated.resources.about_title
+import afrikaburn.composeapp.generated.resources.button_learn_more
+import afrikaburn.composeapp.generated.resources.button_visit_website
+import afrikaburn.composeapp.generated.resources.button_view_theme
+import afrikaburn.composeapp.generated.resources.button_contact
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,6 +27,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -63,7 +73,7 @@ fun AboutScreen() {
             Card(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(Dimens.paddingSmall),
+                    .padding(Dimens.paddingExtraSmall),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 ),
@@ -72,31 +82,41 @@ fun AboutScreen() {
                     defaultElevation = Dimens.elevationSmall
                 )
             ) {
-                Box(
+                Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(Dimens.paddingLarge),
-                    contentAlignment = Alignment.Center
+                        .verticalScroll(rememberScrollState())
+                        .padding(vertical = Dimens.paddingExtraSmall),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
                     when (page) {
                         0 -> AboutPageContent(
                             title = stringResource(Res.string.about_page1_title),
-                            content = stringResource(Res.string.about_page1_content)
+                            content = stringResource(Res.string.about_page1_content),
+                            buttonText = stringResource(Res.string.button_learn_more),
+                            url = stringResource(Res.string.about_page1_url)
                         )
 
                         1 -> AboutPageContent(
                             title = stringResource(Res.string.about_page2_title),
-                            content = stringResource(Res.string.about_page2_content)
+                            content = stringResource(Res.string.about_page2_content),
+                            buttonText = stringResource(Res.string.button_visit_website),
+                            url = stringResource(Res.string.about_page2_url)
                         )
 
                         2 -> AboutPageContent(
                             title = stringResource(Res.string.about_page3_title),
-                            content = stringResource(Res.string.about_page3_content)
+                            content = stringResource(Res.string.about_page3_content),
+                            buttonText = stringResource(Res.string.button_view_theme),
+                            url = stringResource(Res.string.about_page3_url)
                         )
 
                         3 -> AboutPageContent(
                             title = stringResource(Res.string.about_page4_title),
-                            content = stringResource(Res.string.about_page4_content)
+                            content = stringResource(Res.string.about_page4_content),
+                            buttonText = stringResource(Res.string.button_contact),
+                            url = stringResource(Res.string.about_page4_url)
                         )
                     }
                 }

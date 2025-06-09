@@ -8,22 +8,28 @@
     <string name="about_page1_title">Welcome to AfrikaBurn</string>
     <string name="about_page1_content">Your companion app for the AfrikaBurn experience in the Tankwa Karoo.</string>
     <string name="about_page2_title">About Afrikaburn</string>
-    <string name="about_page2_content">AfrikaBurn is the spectacular result of a community of participants who come together to create art, costume, performance, gifted and volunteered services, Theme Camps, music, Mutant Vehicles, and much, much more. It is a chance to invent the world anew.\n" +
-                "The flagship AfrikaBurn event takes place in the Tankwa Karoo, at Quaggafontein Farm, located in the Western Cape Province of South Africa, around the end of April every year.\n" +
-                "\n" +
-                "AfrikaBurn is the largest of many events across the globe that share Guiding Principles through affiliation with the Burning Man Regional Network." +"\n" +
-                "Originally called Afrika Burns, the first planned event in 2007 at Stonehenge Farm in the Northern Cape, was cancelled due to flooding. The inaugural event ‘Tribe’ took place in November of that year. The event was renamed through a public participation process to “AfrikaBurn” in 2008, due to concerns about negative interpretation. " +
-                "The emphasis was shifted from something (‘burns’) that happens to Africa, to something (a ‘burn’) that happens in Africa. In 2010 the event was moved earlier in the year to the end of April because the mild autumn weather better suited the event, and so that a South African public holiday (or two) would fall over the event period. " +
-                "2019 was the last year AfrikaBurn was held at Stonehenge Farm. In 2022 AfrikaBurn was hosted on Quaggafontein for the first time.</string>
+    <string name="about_page2_content">AfrikaBurn is the spectacular result of a community of participants who come together to create art, costume, performance, gifted and volunteered services, Theme Camps, music, Mutant Vehicles, and much, much more. It is a chance to invent the world anew. The flagship AfrikaBurn event takes place in the Tankwa Karoo, at Quaggafontein Farm, located in the Western Cape Province of South Africa, around the end of April every year. AfrikaBurn is the largest of many events across the globe that share Guiding Principles through affiliation with the Burning Man Regional Network. Originally called Afrika Burns, the first planned event in 2007 at Stonehenge Farm in the Northern Cape, was cancelled due to flooding. The inaugural event ‘Tribe’ took place in November of that year. The event was renamed through a public participation process to “AfrikaBurn” in 2008, due to concerns about negative interpretation. The emphasis was shifted from something (‘burns’) that happens to Africa, to something (a ‘burn’) that happens in Africa. In 2010 the event was moved earlier in the year to the end of April because the mild autumn weather better suited the event, and so that a South African public holiday (or two) would fall over the event period. 2019 was the last year AfrikaBurn was held at Stonehenge Farm. In 2022 AfrikaBurn was hosted on Quaggafontein for the first time.</string>
     <string name="about_page3_title">About this year's theme</string>
-    <string name="about_page3_content">Out Of The Blue: The Ocean. The Horizon. The Sky.\n" +
-                "Anything under the sun, and anything under the sea. Something old, something new, something borrowed, something once in a blue moon. Lazy days, hazy days, singing the blues. Your biggest dreams and boldest ideas. Your greatest wonders and biggest fears. The drop of a hat, and a flash in the pan. Anything you can dream up, dress up, make up, or fess up. It’s a whole new expanse. The next big thing. Anything.</string>
+    <string name="about_page3_content">Out Of The Blue: The Ocean. The Horizon. The Sky. Anything under the sun, and anything under the sea. Something old, something new, something borrowed, something once in a blue moon. Lazy days, hazy days, singing the blues. Your biggest dreams and boldest ideas. Your greatest wonders and biggest fears. The drop of a hat, and a flash in the pan. Anything you can dream up, dress up, make up, or fess up. It’s a whole new expanse. The next big thing. Anything.</string>
     <string name="about_page4_title">Contact Me</string>
     <string name="about_page4_content">I am an app developer</string>
+    
+    <!-- About URLs -->
+    <string name="about_page1_url">https://afrikaburn.com</string>
+    <string name="about_page2_url">https://afrikaburn.com/the-event/about/</string>
+    <string name="about_page3_url">https://afrikaburn.com/the-event/theme/</string>
+    <string name="about_page4_url">https://github.com/asterixorobelix</string>
+    
+    <!-- Button texts -->
+    <string name="button_learn_more">Learn More</string>
+    <string name="button_visit_website">Visit Website</string>
+    <string name="button_view_theme">View Theme Details</string>
+    <string name="button_contact">Contact</string>
     
     <!-- Content descriptions -->
     <string name="cd_projects_icon">Projects icon</string>
     <string name="cd_directions_icon">Directions icon</string>
     <string name="cd_page_indicator">Page %1$d of %2$d</string>
     <string name="cd_about_pager">About information carousel</string>
+    <string name="cd_about_image">About page illustration</string>
 </resources>
