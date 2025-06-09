@@ -193,18 +193,16 @@ jobs:
           cache: gradle
           
       - name: Make gradlew executable
-        run: chmod +x mobile/gradlew
+        run: chmod +x ./gradlew
         
       - name: Run Detekt
-        run: |
-          cd mobile
-          ./gradlew detekt --continue
+        run: ./gradlew detekt --continue
+        working-directory: mobile
         continue-on-error: true
         
       - name: Run ktlint
-        run: |
-          cd mobile
-          ./gradlew ktlintCheck
+        run: ./gradlew ktlintCheck
+        working-directory: mobile
         continue-on-error: true
         
       - name: Parse Detekt Results and Comment
@@ -213,11 +211,11 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const glob = require('@actions/glob');
+            const globModule = require('@actions/glob');
             const path = require('path');
             
             try {
-              const globber = await glob.create('mobile/**/build/reports/detekt/detekt.xml');
+              const globber = await globModule.create('mobile/**/build/reports/detekt/detekt.xml');
               const files = await globber.glob();
               
               let totalIssues = 0;
@@ -287,12 +285,11 @@ jobs:
           cache: gradle
           
       - name: Make gradlew executable
-        run: chmod +x mobile/gradlew
+        run: chmod +x ./gradlew
         
       - name: Build ${{ matrix.variant }}
-        run: |
-          cd mobile
-          ./gradlew composeApp:assemble${{ matrix.variant }}
+        run: ./gradlew composeApp:assemble${{ matrix.variant }}
+        working-directory: mobile
         
       - name: Check build outputs
         run: |
@@ -325,12 +322,11 @@ jobs:
           cache: gradle
           
       - name: Make gradlew executable
-        run: chmod +x mobile/gradlew
+        run: chmod +x ./gradlew
         
       - name: Run Unit Tests
-        run: |
-          cd mobile
-          ./gradlew test
+        run: ./gradlew test
+        working-directory: mobile
         
       - name: Generate Test Summary
         if: always()
@@ -386,10 +382,10 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const glob = require('@actions/glob');
+            const globModule = require('@actions/glob');
             
             try {
-              const globber = await glob.create('mobile/**/build/test-results/**/TEST-*.xml');
+              const globber = await globModule.create('mobile/**/build/test-results/**/TEST-*.xml');
               const files = await globber.glob();
               
               let totalTests = 0;
@@ -495,12 +491,11 @@ jobs:
           cache: gradle
           
       - name: Make gradlew executable
-        run: chmod +x mobile/gradlew
+        run: chmod +x ./gradlew
         
       - name: Build APK
-        run: |
-          cd mobile
-          ./gradlew composeApp:assembleDebug
+        run: ./gradlew composeApp:assembleDebug
+        working-directory: mobile
         
       - name: Check APK size
         run: |
