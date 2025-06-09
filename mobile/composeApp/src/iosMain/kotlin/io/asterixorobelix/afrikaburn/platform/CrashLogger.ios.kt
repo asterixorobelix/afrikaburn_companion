@@ -39,7 +39,8 @@ class IOSCrashLogger : CrashLogger {
     override fun log(message: String) {
         NSLog("LOG: $message")
     }
-    
+
+    @Suppress("UseCheckOrError")
     override fun testCrash() {
         NSLog("TEST_CRASH: Triggering test crash")
         throw IllegalStateException("Test crash for iOS")

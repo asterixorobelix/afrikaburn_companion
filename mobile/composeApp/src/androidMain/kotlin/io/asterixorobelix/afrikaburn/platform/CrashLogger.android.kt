@@ -38,7 +38,8 @@ class AndroidCrashLogger : CrashLogger {
     override fun log(message: String) {
         crashlytics.log(message)
     }
-    
+
+    @Suppress("UseCheckOrError")
     override fun testCrash() {
         throw IllegalStateException("Test crash for Firebase Crashlytics")
     }
