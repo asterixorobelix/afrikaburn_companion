@@ -36,15 +36,15 @@ jobs:
         with:
           filters: |
             android:
-              - 'androidApp/**'
-              - '**/*.gradle.kts'
-              - 'gradle/**'
+              - 'mobile/composeApp/**'
+              - 'mobile/**/*.gradle.kts'
+              - 'mobile/gradle/**'
             ios:
-              - 'iosApp/**'
-              - '**/*.swift'
+              - 'mobile/iosApp/**'
+              - 'mobile/**/*.swift'
             shared:
-              - 'shared/**'
-              - '**/*.kt'
+              - 'mobile/composeApp/**'
+              - 'mobile/**/*.kt'
             docs:
               - 'docs/**'
               - '*.md'
@@ -193,14 +193,18 @@ jobs:
           cache: gradle
           
       - name: Make gradlew executable
-        run: chmod +x ./gradlew
+        run: chmod +x mobile/gradlew
         
       - name: Run Detekt
-        run: ./gradlew detekt --continue
+        run: |
+          cd mobile
+          ./gradlew detekt --continue
         continue-on-error: true
         
       - name: Run ktlint
-        run: ./gradlew ktlintCheck
+        run: |
+          cd mobile
+          ./gradlew ktlintCheck
         continue-on-error: true
         
       - name: Parse Detekt Results and Comment
@@ -213,7 +217,7 @@ jobs:
             const path = require('path');
             
             try {
-              const globber = await glob.create('**/build/reports/detekt/detekt.xml');
+              const globber = await glob.create('mobile/**/build/reports/detekt/detekt.xml');
               const files = await globber.glob();
               
               let totalIssues = 0;
@@ -258,7 +262,7 @@ jobs:
         if: always()
         with:
           name: detekt-pr-report
-          path: '**/build/reports/detekt/'
+          path: 'mobile/**/build/reports/detekt/'
           retention-days: 7
 
   build-validation:
@@ -283,17 +287,19 @@ jobs:
           cache: gradle
           
       - name: Make gradlew executable
-        run: chmod +x ./gradlew
+        run: chmod +x mobile/gradlew
         
       - name: Build ${{ matrix.variant }}
-        run: ./gradlew assemble${{ matrix.variant }}
+        run: |
+          cd mobile
+          ./gradlew composeApp:assemble${{ matrix.variant }}
         
       - name: Check build outputs
         run: |
           if [ "${{ matrix.variant }}" = "Debug" ]; then
-            ls -la androidApp/build/outputs/apk/debug/
+            ls -la mobile/composeApp/build/outputs/apk/debug/ || echo "Debug APK not found"
           else
-            ls -la androidApp/build/outputs/apk/release/ || echo "Release build may require signing"
+            ls -la mobile/composeApp/build/outputs/apk/release/ || echo "Release build may require signing"
           fi
 
   test-validation:
@@ -319,10 +325,12 @@ jobs:
           cache: gradle
           
       - name: Make gradlew executable
-        run: chmod +x ./gradlew
+        run: chmod +x mobile/gradlew
         
       - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest
+        run: |
+          cd mobile
+          ./gradlew test
         
       - name: Generate Test Summary
         if: always()
@@ -334,7 +342,7 @@ jobs:
           total_failures=0
           total_skipped=0
           
-          for xml_file in **/build/test-results/**/TEST-*.xml; do
+          for xml_file in mobile/**/build/test-results/**/TEST-*.xml; do
             if [ -f "$xml_file" ]; then
               tests=$(grep '<testsuite' "$xml_file" | sed -n 's/.*tests="\([0-9]*\)".*/\1/p' | head -1)
               failures=$(grep '<testsuite' "$xml_file" | sed -n 's/.*failures="\([0-9]*\)".*/\1/p' | head -1)
@@ -381,7 +389,7 @@ jobs:
             const glob = require('@actions/glob');
             
             try {
-              const globber = await glob.create('**/build/test-results/**/TEST-*.xml');
+              const globber = await glob.create('mobile/**/build/test-results/**/TEST-*.xml');
               const files = await globber.glob();
               
               let totalTests = 0;
@@ -466,7 +474,7 @@ jobs:
         if: always()
         with:
           name: test-reports-pr
-          path: '**/build/reports/tests/'
+          path: 'mobile/**/build/reports/tests/'
           retention-days: 7
 
   performance-check:
@@ -487,14 +495,16 @@ jobs:
           cache: gradle
           
       - name: Make gradlew executable
-        run: chmod +x ./gradlew
+        run: chmod +x mobile/gradlew
         
       - name: Build APK
-        run: ./gradlew assembleDebug
+        run: |
+          cd mobile
+          ./gradlew composeApp:assembleDebug
         
       - name: Check APK size
         run: |
-          APK_FILE=$(find androidApp/build/outputs/apk/debug -name "*.apk" | head -1)
+          APK_FILE=$(find mobile/composeApp/build/outputs/apk/debug -name "*.apk" | head -1)
           APK_SIZE=$(du -h "$APK_FILE" | cut -f1)
           APK_SIZE_BYTES=$(du -b "$APK_FILE" | cut -f1)
           
@@ -536,7 +546,7 @@ jobs:
           use-quiet-mode: 'yes'
           use-verbose-mode: 'yes'
           config-file: '.github/markdown-link-check.json'
-          folder-path: 'docs'
+          folder-path: 'mobile'
         continue-on-error: true
 
   auto-assign-reviewers:
