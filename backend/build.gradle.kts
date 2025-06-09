@@ -42,7 +42,7 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-call-logging-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-rate-limit-jvm:$ktor_version")
-    implementation("com.auth0:java-jwt:4.4.0")
+    implementation("com.auth0:java-jwt:4.5.0")
     
     // Database (Exposed ORM)
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
