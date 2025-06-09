@@ -97,14 +97,7 @@ Afrikaburn/
 - **Clean Architecture**: Domain-Driven Design patterns
 - **Database Flexibility**: PostgreSQL (prod) + H2 (dev) support
 - **Security**: JWT auth, CORS, rate limiting, security headers
-- **AI Integration**: Multi-provider support (Claude, OpenAI, Gemini)
 - **Deployment Ready**: Railway/Docker configuration
-
-### 🤖 **AI Assistant Integration**
-- **Comprehensive Documentation**: Detailed context files for AI assistants
-- **Code Generation Guidelines**: Best practices and patterns
-- **Architecture Guidance**: How to maintain clean code structure
-- **CI/CD Awareness**: Integration with automated feedback
 
 ## 🚀 Quick Start
 
