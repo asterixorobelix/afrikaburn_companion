@@ -31,6 +31,7 @@ fun PageIndicator(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .padding(vertical = Dimens.paddingSmall)
             .semantics {
                 contentDescription = "Page ${currentPage + 1} of $totalPages"
             },
@@ -47,10 +48,10 @@ fun PageIndicator(
 
             Box(
                 modifier = Modifier
-                    .size(if (isSelected) 12.dp else 8.dp)
+                    .size(if (isSelected) 20.dp else 12.dp)
                     .clip(CircleShape)
                     .background(indicatorColor)
-                    .padding(end = if (index < totalPages - 1) Dimens.paddingMedium else 0.dp)
+                    .padding(horizontal = if (index < totalPages - 1) Dimens.paddingMedium else Dimens.paddingExtraSmall)
             )
         }
     }
@@ -71,13 +72,13 @@ private fun PageIndicatorPreview() {
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(bottom = Dimens.paddingMedium)
             )
-            
+
             PageIndicator(
                 currentPage = 0,
                 totalPages = 4,
                 modifier = Modifier.padding(vertical = Dimens.paddingSmall)
             )
-            
+
             PageIndicator(
                 currentPage = 2,
                 totalPages = 4,
