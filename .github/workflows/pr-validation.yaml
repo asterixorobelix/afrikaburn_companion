@@ -69,6 +69,10 @@ jobs:
     name: Validate PR Title
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     
     steps:
       - name: Label dependency updates
@@ -115,6 +119,10 @@ jobs:
     name: PR Size Check
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     
     steps:
       - name: Check PR size
@@ -194,6 +202,7 @@ jobs:
           
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+        working-directory: mobile
         
       - name: Run Detekt
         run: ./gradlew detekt --continue
@@ -211,12 +220,12 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const globModule = require('@actions/glob');
             const path = require('path');
             
             try {
-              const globber = await globModule.create('mobile/**/build/reports/detekt/detekt.xml');
-              const files = await globber.glob();
+              // Simple file check instead of using @actions/glob
+              const detektFile = 'mobile/composeApp/build/reports/detekt/detekt.xml';
+              const files = fs.existsSync(detektFile) ? [detektFile] : [];
               
               let totalIssues = 0;
               let detailedResults = '';
@@ -286,6 +295,7 @@ jobs:
           
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+        working-directory: mobile
         
       - name: Build ${{ matrix.variant }}
         run: ./gradlew composeApp:assemble${{ matrix.variant }}
@@ -323,6 +333,7 @@ jobs:
           
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+        working-directory: mobile
         
       - name: Run Unit Tests
         run: ./gradlew test
@@ -382,11 +393,23 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const globModule = require('@actions/glob');
+            const path = require('path');
             
             try {
-              const globber = await globModule.create('mobile/**/build/test-results/**/TEST-*.xml');
-              const files = await globber.glob();
+              // Check for common test result file locations
+              const testDirs = [
+                'mobile/composeApp/build/test-results/testDebugUnitTest',
+                'mobile/composeApp/build/test-results/testReleaseUnitTest',
+                'mobile/composeApp/build/test-results/test'
+              ];
+              
+              let files = [];
+              for (const dir of testDirs) {
+                if (fs.existsSync(dir)) {
+                  const testFiles = fs.readdirSync(dir).filter(f => f.startsWith('TEST-') && f.endsWith('.xml'));
+                  files.push(...testFiles.map(f => path.join(dir, f)));
+                }
+              }
               
               let totalTests = 0;
               let totalFailures = 0;
@@ -492,6 +515,7 @@ jobs:
           
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+        working-directory: mobile
         
       - name: Build APK
         run: ./gradlew composeApp:assembleDebug
