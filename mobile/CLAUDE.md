@@ -954,7 +954,8 @@ For Bill of Materials (BOM) dependencies like Firebase, use this pattern:
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(16.dp) // Use standard Material spacing
+                    .padding(Dimens.paddingMedium), // Always use Dimens for spacing
+                verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
             ) {
                 Text(
                     text = "Title",
@@ -966,9 +967,15 @@ For Bill of Materials (BOM) dependencies like Firebase, use this pattern:
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
-                    shape = MaterialTheme.shapes.medium
+                    shape = MaterialTheme.shapes.medium,
+                    elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall),
+                    modifier = Modifier.padding(Dimens.paddingExtraSmall)
                 ) {
-                    // Card content
+                    Column(
+                        modifier = Modifier.padding(Dimens.paddingMedium)
+                    ) {
+                        // Card content
+                    }
                 }
             }
         }
