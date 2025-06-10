@@ -51,13 +51,12 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import io.asterixorobelix.afrikaburn.AppTheme
 import io.asterixorobelix.afrikaburn.Dimens
-
-private const val TOTAL_PAGES = 4
-private const val PAGE_CONTACT = 3
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+private const val TOTAL_PAGES = 4
+private const val PAGE_CONTACT = 3
 @Composable
 fun AboutScreen() {
     Column(
@@ -96,7 +95,6 @@ private fun AboutScreenPager(pagerState: androidx.compose.foundation.pager.Pager
     HorizontalPager(
         state = pagerState,
         modifier = Modifier
-            .weight(1f)
             .semantics {
                 contentDescription = "About information carousel"
             }
