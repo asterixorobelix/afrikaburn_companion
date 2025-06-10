@@ -16,12 +16,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,23 +36,20 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextAlign
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import io.asterixorobelix.afrikaburn.Dimens
-import io.asterixorobelix.afrikaburn.models.Artist
+import io.asterixorobelix.afrikaburn.di.koinProjectsViewModel
+import io.asterixorobelix.afrikaburn.di.koinProjectTabViewModel
 import io.asterixorobelix.afrikaburn.models.ProjectItem
-import io.asterixorobelix.afrikaburn.models.TabDataSource
+import io.asterixorobelix.afrikaburn.models.ProjectType
 import afrikaburn.composeapp.generated.resources.Res
 import afrikaburn.composeapp.generated.resources.tab_art
 import afrikaburn.composeapp.generated.resources.tab_camps
@@ -59,9 +57,23 @@ import afrikaburn.composeapp.generated.resources.tab_events
 import afrikaburn.composeapp.generated.resources.tab_mobile_art
 import afrikaburn.composeapp.generated.resources.tab_performances
 import afrikaburn.composeapp.generated.resources.tab_vehicles
+import afrikaburn.composeapp.generated.resources.cd_search_icon
+import afrikaburn.composeapp.generated.resources.cd_clear_search
+import afrikaburn.composeapp.generated.resources.loading_projects
+import afrikaburn.composeapp.generated.resources.error_loading_projects
+import afrikaburn.composeapp.generated.resources.button_retry
+import afrikaburn.composeapp.generated.resources.cd_retry_button
+import afrikaburn.composeapp.generated.resources.cd_error_icon
+import afrikaburn.composeapp.generated.resources.cd_no_results_icon
+import afrikaburn.composeapp.generated.resources.no_results_found
+import afrikaburn.composeapp.generated.resources.no_results_for_query
+import afrikaburn.composeapp.generated.resources.cd_artist_icon
 
 @Composable
 fun ProjectsScreen() {
+    val viewModel = koinProjectsViewModel()
+    val screenState by viewModel.screenUiState.collectAsState()
+    
     val tabs = listOf(
         stringResource(Res.string.tab_art),
         stringResource(Res.string.tab_performances),
@@ -72,8 +84,8 @@ fun ProjectsScreen() {
     )
     
     val pagerState = rememberPagerState(
-        initialPage = 0,
-        pageCount = { tabs.size }
+        initialPage = screenState.currentTabIndex,
+        pageCount = { screenState.tabs.size }
     )
     val coroutineScope = rememberCoroutineScope()
 
@@ -94,6 +106,7 @@ fun ProjectsScreen() {
                     onClick = {
                         coroutineScope.launch {
                             pagerState.animateScrollToPage(index)
+                            viewModel.updateCurrentTab(index)
                         }
                     },
                     text = {
@@ -110,179 +123,233 @@ fun ProjectsScreen() {
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-            val tabDataSources = listOf(
-                TabDataSource("WTFArtworks.json", "Art"),
-                TabDataSource("WTFPerformances.json", "Performances"),
-                TabDataSource("WTFEvents.json", "Events"),
-                TabDataSource("WTFRovingArtworks.json", "Mobile Art"),
-                TabDataSource("WTFMutantVehicles.json", "Vehicles"),
-                TabDataSource("WTFThemeCamps.json", "Camps")
-            )
-            
-            ProjectTabContent(tabDataSources[page])
+            val projectType = screenState.tabs[page]
+            ProjectTabContent(projectType = projectType)
         }
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
-private fun ProjectTabContent(tabDataSource: TabDataSource) {
-    var projects by remember { mutableStateOf<List<ProjectItem>?>(null) }
-    var isLoading by remember { mutableStateOf(true) }
-    var error by remember { mutableStateOf<String?>(null) }
-    var searchQuery by remember { mutableStateOf("") }
+private fun ProjectTabContent(projectType: ProjectType) {
+    val tabViewModel = koinProjectTabViewModel(projectType)
+    val uiState by tabViewModel.uiState.collectAsState()
     
-    LaunchedEffect(tabDataSource.fileName) {
-        try {
-            isLoading = true
-            error = null
-            // For now, use placeholder data until proper resource loading is implemented
-            val sampleData = when (tabDataSource.fileName) {
-                "WTFArtworks.json" -> listOf(
-                    ProjectItem("Bee Cool Build", "A beehive-labyrinth hybrid with a purpose.", Artist("Megan Cleary and team")),
-                    ProjectItem("OBSCURA", "In the magical realm of the OBSCURA, light and imagination intertwine.", Artist("Tiaan van Deventer")),
-                    ProjectItem("Twist", "What do seashells, hurricanes, a Slinky toy, DNA, chameleon tails, and galaxies have in common?", Artist("Mari Schroeder"))
-                )
-                "WTFPerformances.json" -> listOf(
-                    ProjectItem("Underdog", "Exploring our inner dog, our motley crew will go for a walk at dusk daily.", Artist("Junkanew and The OV Arts Collective")),
-                    ProjectItem("The Dance of 1000 Flames", "The biggest fire dancing jam in Africa!", Artist("All the fire dancers of AfrikaBurn")),
-                    ProjectItem("Azania", "Highlighting the richness of African music, dance, and culture.", Artist("Zizipho Gcasamba"))
-                )
-                "WTFEvents.json" -> listOf(
-                    ProjectItem("Run Into The Blue", "On Thursday, 1 May, we invite fellow blue planet residents to join us.", Artist("")),
-                    ProjectItem("The Midnight Melt", "Sometimes, you just need a toasted cheese.", Artist("The Melters")),
-                    ProjectItem("Critical Tits Parade", "A celebration of body freedom and radical self-expression!", Artist("Tenille Lindeque"))
-                )
-                "WTFRovingArtworks.json" -> listOf(
-                    ProjectItem("Mobile Art 1", "Beautiful roving artwork that moves around the Binnekring.", Artist("Artist 1")),
-                    ProjectItem("Mobile Art 2", "Interactive mobile installation.", Artist("Artist 2"))
-                )
-                "WTFMutantVehicles.json" -> listOf(
-                    ProjectItem("Fire Truck", "A spectacular fire-breathing vehicle.", Artist("Vehicle Team 1")),
-                    ProjectItem("Art Car", "Mobile dance floor and art installation.", Artist("Vehicle Team 2"))
-                )
-                "WTFThemeCamps.json" -> listOf(
-                    ProjectItem("The Vagabonds", "A wellness and relaxation camp where everyone feels at home.", Artist(""), "", "Fam • Day Time"),
-                    ProjectItem("ALEGRA SPACE STATION", "The Burn equivalent of the International Space Station.", Artist(""), "", "Fam • Other"),
-                    ProjectItem("Cactus Rising", "Get ready for a prickly adventure!", Artist(""), "", "Fam(ish) • Day Time")
-                )
-                else -> emptyList()
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        // Search bar
+        SearchBar(
+            searchQuery = uiState.searchQuery,
+            onSearchQueryChange = tabViewModel::updateSearchQuery,
+            placeholderText = "Search ${projectType.displayName.lowercase()}..."
+        )
+        
+        // Content based on state
+        when {
+            uiState.isLoading -> {
+                LoadingContent()
             }
-            projects = sampleData
-        } catch (e: Exception) {
-            error = "Failed to load ${tabDataSource.displayName}: ${e.message}"
-        } finally {
-            isLoading = false
+            uiState.error != null -> {
+                ErrorContent(
+                    error = uiState.error ?: "Unknown error",
+                    onRetry = tabViewModel::retryLoading,
+                    onDismissError = tabViewModel::clearError
+                )
+            }
+            uiState.isShowingEmptySearch() -> {
+                EmptySearchContent(
+                    searchQuery = uiState.searchQuery,
+                    projectType = projectType.displayName
+                )
+            }
+            else -> {
+                ProjectList(projects = uiState.filteredProjects)
+            }
         }
     }
-    
-    when {
-        isLoading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator(
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
-        error != null -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = error!!,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
-        }
-        projects != null -> {
-            // Filter projects based on search query
-            val filteredProjects = projects!!.filter { project ->
-                searchQuery.isEmpty() || 
-                project.name.contains(searchQuery, ignoreCase = true) ||
-                project.description.contains(searchQuery, ignoreCase = true) ||
-                project.artist.name.contains(searchQuery, ignoreCase = true)
-            }
-            
-            Column(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                // Search bar
-                OutlinedTextField(
-                    value = searchQuery,
-                    onValueChange = { searchQuery = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = Dimens.paddingMedium, vertical = Dimens.paddingSmall),
-                    placeholder = {
-                        Text(
-                            text = "Search ${tabDataSource.displayName.lowercase()}...",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Search",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    },
-                    trailingIcon = {
-                        if (searchQuery.isNotEmpty()) {
-                            IconButton(onClick = { searchQuery = "" }) {
-                                Icon(
-                                    imageVector = Icons.Default.Clear,
-                                    contentDescription = "Clear search",
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-                    },
-                    shape = MaterialTheme.shapes.large,
-                    singleLine = true
-                )
-                
-                // Results
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = Dimens.paddingMedium),
-                    verticalArrangement = Arrangement.spacedBy(Dimens.paddingMedium)
-                ) {
-                    item {
-                        Spacer(modifier = Modifier.height(Dimens.paddingSmall))
-                    }
-                    
-                    if (filteredProjects.isEmpty() && searchQuery.isNotEmpty()) {
-                        item {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(Dimens.paddingLarge),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = "No ${tabDataSource.displayName.lowercase()} found matching \"$searchQuery\"",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-                    } else {
-                        items(filteredProjects) { project ->
-                            ProjectCard(project = project)
-                        }
-                    }
-                    
-                    item {
-                        Spacer(modifier = Modifier.height(Dimens.paddingMedium))
-                    }
+}
+
+@Composable
+private fun SearchBar(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    placeholderText: String
+) {
+    OutlinedTextField(
+        value = searchQuery,
+        onValueChange = onSearchQueryChange,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = Dimens.paddingMedium,
+                vertical = Dimens.paddingSmall
+            ),
+        placeholder = {
+            Text(
+                text = placeholderText,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = stringResource(Res.string.cd_search_icon),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        },
+        trailingIcon = {
+            if (searchQuery.isNotEmpty()) {
+                IconButton(onClick = { onSearchQueryChange("") }) {
+                    Icon(
+                        imageVector = Icons.Default.Clear,
+                        contentDescription = stringResource(Res.string.cd_clear_search),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
+        },
+        textStyle = MaterialTheme.typography.bodyMedium,
+        singleLine = true,
+        shape = MaterialTheme.shapes.medium
+    )
+}
+
+@Composable
+private fun LoadingContent() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(Dimens.paddingMedium)
+        ) {
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(Dimens.iconSizeLarge)
+            )
+            Text(
+                text = stringResource(Res.string.loading_projects),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+    }
+}
+
+@Composable
+private fun ErrorContent(
+    error: String,
+    onRetry: () -> Unit,
+    onDismissError: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(Dimens.paddingLarge),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = Icons.Default.Refresh,
+            contentDescription = stringResource(Res.string.cd_error_icon),
+            tint = MaterialTheme.colorScheme.error,
+            modifier = Modifier
+                .size(Dimens.iconSizeExtraLarge)
+                .padding(bottom = Dimens.paddingMedium)
+        )
+        
+        Text(
+            text = stringResource(Res.string.error_loading_projects),
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.error,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(bottom = Dimens.paddingSmall)
+        )
+        
+        Text(
+            text = error,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(bottom = Dimens.paddingLarge)
+        )
+        
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(Dimens.paddingMedium)
+        ) {
+            Button(
+                onClick = onRetry,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Refresh,
+                    contentDescription = stringResource(Res.string.cd_retry_button),
+                    modifier = Modifier.size(Dimens.iconSizeSmall)
+                )
+                Spacer(modifier = Modifier.width(Dimens.paddingSmall))
+                Text(
+                    text = stringResource(Res.string.button_retry),
+                    style = MaterialTheme.typography.labelLarge
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun EmptySearchContent(
+    searchQuery: String,
+    projectType: String
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(Dimens.paddingLarge),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = Icons.Default.Search,
+            contentDescription = stringResource(Res.string.cd_no_results_icon),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier
+                .size(Dimens.iconSizeExtraLarge)
+                .padding(bottom = Dimens.paddingMedium)
+        )
+        
+        Text(
+            text = stringResource(Res.string.no_results_found, projectType.lowercase()),
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(bottom = Dimens.paddingSmall)
+        )
+        
+        Text(
+            text = stringResource(Res.string.no_results_for_query, searchQuery),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun ProjectList(projects: List<ProjectItem>) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.spacedBy(Dimens.paddingMedium),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(
+            horizontal = Dimens.paddingMedium,
+            vertical = Dimens.paddingSmall
+        )
+    ) {
+        items(projects) { project ->
+            ProjectCard(project = project)
         }
     }
 }
@@ -318,7 +385,7 @@ private fun ProjectCard(project: ProjectItem) {
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,
-                        contentDescription = "Artist",
+                        contentDescription = stringResource(Res.string.cd_artist_icon),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(Dimens.paddingMedium)
                     )
