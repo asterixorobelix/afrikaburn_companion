@@ -31,6 +31,14 @@
     <string name="button_contact">Contact</string>
     <string name="button_directions">Google maps</string>
     
+    <!-- Projects tabs -->
+    <string name="tab_art">Art</string>
+    <string name="tab_performances">Performances</string>
+    <string name="tab_events">Events</string>
+    <string name="tab_mobile_art">Mobile Art</string>
+    <string name="tab_vehicles">Vehicles</string>
+    <string name="tab_camps">Camps</string>
+    
     <!-- Content descriptions -->
     <string name="cd_projects_icon">Projects icon</string>
     <string name="cd_directions_icon">Directions icon</string>
