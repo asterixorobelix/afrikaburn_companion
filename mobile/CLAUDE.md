@@ -558,6 +558,108 @@ ui/about/
 
 **ENFORCEMENT**: Any PR with multiple `@Preview` functions in a single file will be rejected. Any PR with new Composables lacking proper `@Preview` functions and required imports will be rejected.
 
+### Data Class Organization
+**MANDATORY for all AI assistants working on this mobile project:**
+
+#### Always Place Data Classes in Separate Files in Models Folder
+All data classes must be organized in individual files within the `models` package for better maintainability and reusability.
+
+1. **Models Folder Structure**:
+   ```
+   composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/models/
+   ├── Artist.kt
+   ├── ProjectItem.kt
+   ├── TabDataSource.kt
+   └── [OtherModel].kt
+   ```
+
+2. **One Data Class Per File Rule**:
+   ```kotlin
+   // ✅ CORRECT - Each data class in its own file
+   
+   // File: models/Artist.kt
+   package io.asterixorobelix.afrikaburn.models
+   
+   import kotlinx.serialization.SerialName
+   import kotlinx.serialization.Serializable
+   
+   @Serializable
+   data class Artist(
+       @SerialName("s") val name: String = ""
+   )
+   
+   // File: models/ProjectItem.kt
+   package io.asterixorobelix.afrikaburn.models
+   
+   import kotlinx.serialization.SerialName
+   import kotlinx.serialization.Serializable
+   
+   @Serializable
+   data class ProjectItem(
+       @SerialName("Name") val name: String,
+       @SerialName("Description") val description: String,
+       @SerialName("Artist") val artist: Artist = Artist(),
+       @SerialName("code") val code: String = "",
+       @SerialName("status") val status: String = ""
+   )
+   ```
+
+3. **Import Models in UI Files**:
+   ```kotlin
+   // ✅ CORRECT - Import models from dedicated package
+   import io.asterixorobelix.afrikaburn.models.Artist
+   import io.asterixorobelix.afrikaburn.models.ProjectItem
+   import io.asterixorobelix.afrikaburn.models.TabDataSource
+   
+   @Composable
+   fun ProjectsScreen() {
+       // Use imported models
+       var projects by remember { mutableStateOf<List<ProjectItem>?>(null) }
+   }
+   
+   // ❌ WRONG - Data classes defined in UI files
+   @Composable
+   fun SomeScreen() {
+       // UI implementation
+   }
+   
+   data class SomeModel(val name: String) // <- This is INCORRECT
+   ```
+
+4. **Serialization Best Practices**:
+   ```kotlin
+   // ✅ CORRECT - Proper serialization annotations
+   @Serializable
+   data class Event(
+       @SerialName("Name") val name: String,
+       @SerialName("Description") val description: String,
+       @SerialName("Artist") val artist: Artist = Artist(),
+       @SerialName("code") val code: String = "",
+       @SerialName("status") val status: String = ""
+   )
+   
+   // ✅ CORRECT - Non-serializable internal models
+   data class TabDataSource(
+       val fileName: String,
+       val displayName: String
+   )
+   ```
+
+5. **File Naming Conventions**:
+   - Use PascalCase for file names matching the data class name
+   - File name must exactly match the data class name
+   - Examples: `Artist.kt`, `ProjectItem.kt`, `EventDetails.kt`
+
+**CRITICAL RULES**:
+- **NEVER** define data classes in UI files (screens, components)
+- **ALWAYS** create a separate file for each data class in the `models` package
+- **ALWAYS** use proper package declaration: `package io.asterixorobelix.afrikaburn.models`
+- **INCLUDE** appropriate serialization annotations when needed
+- **IMPORT** models explicitly in files that use them
+- **FOLLOW** consistent naming conventions
+
+**ENFORCEMENT**: Any PR with data classes defined outside the `models` package or multiple data classes in a single file will be rejected. All data models must be properly organized for maintainability and reusability.
+
 ### Testing Strategy
 - Unit tests for business logic (80%+ coverage)
 - Integration tests for repositories

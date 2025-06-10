@@ -45,11 +45,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import io.asterixorobelix.afrikaburn.models.Artist
+import io.asterixorobelix.afrikaburn.models.ProjectItem
+import io.asterixorobelix.afrikaburn.models.TabDataSource
 import afrikaburn.composeapp.generated.resources.Res
 import afrikaburn.composeapp.generated.resources.tab_art
 import afrikaburn.composeapp.generated.resources.tab_camps
@@ -121,25 +122,6 @@ fun ProjectsScreen() {
         }
     }
 }
-
-@Serializable
-data class Artist(
-    @SerialName("s") val name: String = ""
-)
-
-@Serializable
-data class ProjectItem(
-    @SerialName("Name") val name: String,
-    @SerialName("Description") val description: String,
-    @SerialName("Artist") val artist: Artist = Artist(),
-    @SerialName("code") val code: String = "",
-    @SerialName("status") val status: String = ""
-)
-
-data class TabDataSource(
-    val fileName: String,
-    val displayName: String
-)
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
