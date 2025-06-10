@@ -48,6 +48,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.TabDataSource
@@ -216,7 +217,7 @@ private fun ProjectTabContent(tabDataSource: TabDataSource) {
                     onValueChange = { searchQuery = it },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                        .padding(horizontal = Dimens.paddingMedium, vertical = Dimens.paddingSmall),
                     placeholder = {
                         Text(
                             text = "Search ${tabDataSource.displayName.lowercase()}...",
@@ -249,11 +250,11 @@ private fun ProjectTabContent(tabDataSource: TabDataSource) {
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                        .padding(horizontal = Dimens.paddingMedium),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.paddingMedium)
                 ) {
                     item {
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(Dimens.paddingSmall))
                     }
                     
                     if (filteredProjects.isEmpty() && searchQuery.isNotEmpty()) {
@@ -261,7 +262,7 @@ private fun ProjectTabContent(tabDataSource: TabDataSource) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(32.dp),
+                                    .padding(Dimens.paddingLarge),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
@@ -278,7 +279,7 @@ private fun ProjectTabContent(tabDataSource: TabDataSource) {
                     }
                     
                     item {
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(Dimens.paddingMedium))
                     }
                 }
             }
@@ -294,34 +295,34 @@ private fun ProjectCard(project: ProjectItem) {
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(Dimens.paddingLarge)
         ) {
             // Title
             Text(
                 text = project.name,
                 style = MaterialTheme.typography.headlineSmall,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = Dimens.paddingSmall)
             )
             
             // Artist info with icon
             if (project.artist.name.isNotEmpty()) {
                 Row(
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = 12.dp)
+                    modifier = Modifier.padding(bottom = Dimens.paddingSmall)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Person,
                         contentDescription = "Artist",
                         tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(Dimens.paddingMedium)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(Dimens.paddingSmall))
                     Text(
                         text = project.artist.name,
                         style = MaterialTheme.typography.bodyMedium,
@@ -334,7 +335,7 @@ private fun ProjectCard(project: ProjectItem) {
             if (project.artist.name.isNotEmpty()) {
                 Divider(
                     color = MaterialTheme.colorScheme.outlineVariant,
-                    modifier = Modifier.padding(bottom = 12.dp)
+                    modifier = Modifier.padding(bottom = Dimens.paddingSmall)
                 )
             }
             
@@ -348,7 +349,7 @@ private fun ProjectCard(project: ProjectItem) {
             
             // Status badge
             if (project.status.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimens.paddingMedium))
                 Surface(
                     shape = MaterialTheme.shapes.small,
                     color = MaterialTheme.colorScheme.primaryContainer,
@@ -358,7 +359,7 @@ private fun ProjectCard(project: ProjectItem) {
                         text = project.status,
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                        modifier = Modifier.padding(horizontal = Dimens.paddingSmall, vertical = Dimens.paddingExtraSmall)
                     )
                 }
             }

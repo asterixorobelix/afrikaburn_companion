@@ -696,6 +696,127 @@ All data classes must be organized in individual files within the `models` packa
 
 **ENFORCEMENT**: Any PR with data classes defined outside the `models` package or multiple data classes in a single file will be rejected. All data models must be properly organized for maintainability and reusability.
 
+### Dimensions and Spacing Management
+**MANDATORY for all AI assistants working on this mobile project:**
+
+#### Always Use Dimens Object for All Spacing and Dimensions
+All spacing, padding, margins, sizes, and other dimensions must use the centralized Dimens object for consistency and maintainability.
+
+1. **Required Import and Usage**:
+   ```kotlin
+   // ✅ CORRECT - Always import and use Dimens
+   import io.asterixorobelix.afrikaburn.Dimens
+   
+   @Composable
+   fun MyComponent() {
+       Column(
+           modifier = Modifier
+               .fillMaxWidth()
+               .padding(Dimens.paddingMedium),
+           verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
+       ) {
+           Card(
+               modifier = Modifier.fillMaxWidth(),
+               elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
+           ) {
+               Text(
+                   text = "Content",
+                   modifier = Modifier.padding(Dimens.paddingMedium)
+               )
+           }
+           
+           Spacer(modifier = Modifier.height(Dimens.paddingLarge))
+       }
+   }
+   
+   // ❌ WRONG - Never hardcode dimensions
+   Column(
+       modifier = Modifier.padding(16.dp), // INCORRECT
+       verticalArrangement = Arrangement.spacedBy(8.dp) // INCORRECT
+   ) {
+       // content
+   }
+   ```
+
+2. **Available Dimens Values**:
+   ```kotlin
+   object Dimens {
+       // Padding - Use for margins, padding, spacing
+       val paddingExtraSmall = 4.dp
+       val paddingSmall = 8.dp
+       val paddingMedium = 16.dp
+       val paddingLarge = 24.dp
+       
+       // Corner Radius - Use for shape definitions
+       val cornerRadiusXSmall = 2.dp
+       val cornerRadiusSmall = 4.dp
+       val cornerRadiusMedium = 8.dp
+       val cornerRadiusLarge = 16.dp
+       
+       // Elevation - Use for card and surface elevation
+       val elevationSmall = 2.dp
+       val elevationNormal = 8.dp
+       
+       // Specific Dimensions
+       val dropdownMaxHeight = 200.dp
+   }
+   ```
+
+3. **Common Usage Patterns**:
+   ```kotlin
+   // ✅ CORRECT - Standard spacing patterns
+   
+   // Screen-level padding
+   .padding(Dimens.paddingMedium)
+   
+   // Component spacing
+   verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
+   
+   // Card content padding
+   .padding(Dimens.paddingMedium)
+   
+   // Small gaps between elements
+   Spacer(modifier = Modifier.height(Dimens.paddingSmall))
+   
+   // Large section separators
+   Spacer(modifier = Modifier.height(Dimens.paddingLarge))
+   
+   // Card elevation
+   elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
+   ```
+
+4. **Adding New Dimensions**:
+   ```kotlin
+   // ✅ CORRECT - Add new dimensions to existing Dimens object in Theme.kt
+   object Dimens {
+       // Existing dimensions...
+       
+       // New dimensions (add with descriptive names)
+       val iconSizeSmall = 16.dp
+       val iconSizeMedium = 24.dp
+       val iconSizeLarge = 32.dp
+       val searchBarHeight = 56.dp
+       val tabBarHeight = 48.dp
+   }
+   
+   // ❌ WRONG - Never create separate dimension objects or hardcode
+   object MyComponentDimens { // INCORRECT
+       val customPadding = 12.dp
+   }
+   
+   val customSize = 20.dp // INCORRECT
+   ```
+
+**CRITICAL RULES**:
+- **NEVER** hardcode any dimension values (dp values) in Composables
+- **ALWAYS** import and use `io.asterixorobelix.afrikaburn.Dimens`
+- **ALWAYS** use appropriate Dimens values for spacing, padding, margins, sizes
+- **ADD** new dimensions to the existing Dimens object in Theme.kt when needed
+- **USE** descriptive names when adding new dimensions
+- **MAINTAIN** consistency across the app by using standard Dimens values
+
+**ENFORCEMENT**: Any PR with hardcoded dimension values will be rejected. All spacing and dimensions must use the centralized Dimens object for maintainability and design consistency.
+
 ### Testing Strategy
 - Unit tests for business logic (80%+ coverage)
 - Integration tests for repositories

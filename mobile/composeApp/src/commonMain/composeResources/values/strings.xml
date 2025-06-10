@@ -22,7 +22,7 @@
     <string name="about_page2_url">https://quaggapedia.afrikaburn.com/index.php?title=Main_Page/</string>
     <string name="about_page3_url">https://tickets.afrikaburn.org/afrikaburn-2025-theme/</string>
     <string name="about_page4_url">https://www.linkedin.com/in/nathan-stasin</string>
-    <string name="direction_url">https://www.google.com/maps/place/32%C2%B028\'56.9%22S+19%C2%B053\'52.2%22E/@-32.4824742,19.8952495,17z/data=!3m1!4b1!4m4!3m3!8m2!3d-32.4824742!4d19.8978244?entry=ttu&amp;g_ep=EgoyMDI1MDQwMi4xIKXMDSoJLDEwMjExNDUzSAFQAw%3D%3D</string>
+    <string name="direction_url">https://www.google.com/maps/place/32%C2%B028&apos;56.9&quot;S+19%C2%B053&apos;52.2&quot;E/@-32.4824742,19.8952495,17z/data=!3m1!4b1!4m4!3m3!8m2!3d-32.4824742!4d19.8978244?entry=ttu&amp;g_ep=EgoyMDI1MDQwMi4xIKXMDSoJLDEwMjExNDUzSAFQAw%3D%3D</string>
     
     <!-- Button texts -->
     <string name="button_learn_more">Learn More</string>
