@@ -27,6 +27,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -68,6 +69,8 @@ import afrikaburn.composeapp.generated.resources.cd_no_results_icon
 import afrikaburn.composeapp.generated.resources.no_results_found
 import afrikaburn.composeapp.generated.resources.no_results_for_query
 import afrikaburn.composeapp.generated.resources.cd_artist_icon
+import afrikaburn.composeapp.generated.resources.filter_family_friendly_short
+import afrikaburn.composeapp.generated.resources.cd_family_filter
 
 @Composable
 fun ProjectsScreen() {
@@ -144,6 +147,15 @@ private fun ProjectTabContent(projectType: ProjectType) {
             placeholderText = "Search ${projectType.displayName.lowercase()}..."
         )
         
+        // Family filter chip (only for Camps)
+        if (projectType == ProjectType.CAMPS) {
+            FamilyFilterChip(
+                isSelected = uiState.isFamilyFilterEnabled,
+                onToggle = tabViewModel::toggleFamilyFilter,
+                modifier = Modifier.padding(horizontal = Dimens.paddingMedium)
+            )
+        }
+        
         // Content based on state
         when {
             uiState.isLoading -> {
@@ -159,7 +171,8 @@ private fun ProjectTabContent(projectType: ProjectType) {
             uiState.isShowingEmptySearch() -> {
                 EmptySearchContent(
                     searchQuery = uiState.searchQuery,
-                    projectType = projectType.displayName
+                    projectType = projectType.displayName,
+                    isFamilyFilterEnabled = uiState.isFamilyFilterEnabled
                 )
             }
             else -> {
@@ -303,7 +316,8 @@ private fun ErrorContent(
 @Composable
 private fun EmptySearchContent(
     searchQuery: String,
-    projectType: String
+    projectType: String,
+    isFamilyFilterEnabled: Boolean = false
 ) {
     Column(
         modifier = Modifier
@@ -330,7 +344,16 @@ private fun EmptySearchContent(
         )
         
         Text(
-            text = stringResource(Res.string.no_results_for_query, searchQuery),
+            text = when {
+                searchQuery.isNotEmpty() && isFamilyFilterEnabled -> 
+                    "No results for \"$searchQuery\" with family filter"
+                searchQuery.isNotEmpty() -> 
+                    stringResource(Res.string.no_results_for_query, searchQuery)
+                isFamilyFilterEnabled -> 
+                    "No family-friendly ${projectType.lowercase()} found"
+                else -> 
+                    "No ${projectType.lowercase()} found"
+            },
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -431,6 +454,42 @@ private fun ProjectCard(project: ProjectItem) {
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun FamilyFilterChip(
+    isSelected: Boolean,
+    onToggle: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.padding(vertical = Dimens.paddingSmall),
+        horizontalArrangement = Arrangement.Start
+    ) {
+        FilterChip(
+            onClick = onToggle,
+            label = {
+                Text(
+                    text = stringResource(Res.string.filter_family_friendly_short),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            selected = isSelected,
+            colors = androidx.compose.material3.FilterChipDefaults.filterChipColors(
+                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.surface,
+                labelColor = MaterialTheme.colorScheme.onSurface
+            ),
+            border = androidx.compose.material3.FilterChipDefaults.filterChipBorder(
+                enabled = true,
+                selected = isSelected,
+                borderColor = MaterialTheme.colorScheme.outline,
+                selectedBorderColor = MaterialTheme.colorScheme.primary
+            ),
+            modifier = Modifier
+        )
     }
 }
 

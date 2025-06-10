@@ -10,4 +10,11 @@ data class ProjectItem(
     @SerialName("Artist") val artist: Artist = Artist(),
     @SerialName("code") val code: String = "",
     @SerialName("status") val status: String = ""
-)
+) {
+    /**
+     * Determines if this project/camp is family-friendly based on the status field.
+     * Returns true if status contains "Fam" (including "Fam(ish)")
+     */
+    val isFamilyFriendly: Boolean
+        get() = status.contains("Fam", ignoreCase = true)
+}

@@ -3,6 +3,7 @@ package io.asterixorobelix.afrikaburn.presentation.projects
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
+import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,7 +33,11 @@ class ProjectTabViewModel(
                 .onSuccess { projects ->
                     _uiState.value = _uiState.value.copy(
                         projects = projects,
-                        filteredProjects = filterProjects(projects, _uiState.value.searchQuery),
+                        filteredProjects = filterProjects(
+                            projects = projects, 
+                            searchQuery = _uiState.value.searchQuery,
+                            familyFilter = _uiState.value.isFamilyFilterEnabled
+                        ),
                         isLoading = false,
                         error = null
                     )
@@ -49,7 +54,23 @@ class ProjectTabViewModel(
     fun updateSearchQuery(query: String) {
         _uiState.value = _uiState.value.copy(
             searchQuery = query,
-            filteredProjects = filterProjects(_uiState.value.projects, query)
+            filteredProjects = filterProjects(
+                projects = _uiState.value.projects, 
+                searchQuery = query,
+                familyFilter = _uiState.value.isFamilyFilterEnabled
+            )
+        )
+    }
+    
+    fun toggleFamilyFilter() {
+        val newFamilyFilter = !_uiState.value.isFamilyFilterEnabled
+        _uiState.value = _uiState.value.copy(
+            isFamilyFilterEnabled = newFamilyFilter,
+            filteredProjects = filterProjects(
+                projects = _uiState.value.projects,
+                searchQuery = _uiState.value.searchQuery,
+                familyFilter = newFamilyFilter
+            )
         )
     }
 
@@ -62,15 +83,26 @@ class ProjectTabViewModel(
     }
 
     private fun filterProjects(
-        projects: List<io.asterixorobelix.afrikaburn.models.ProjectItem>, 
-        query: String
-    ): List<io.asterixorobelix.afrikaburn.models.ProjectItem> {
-        if (query.isEmpty()) return projects
+        projects: List<ProjectItem>, 
+        searchQuery: String,
+        familyFilter: Boolean
+    ): List<ProjectItem> {
+        var filteredProjects = projects
         
-        return projects.filter { project ->
-            project.name.contains(query, ignoreCase = true) ||
-            project.description.contains(query, ignoreCase = true) ||
-            project.artist.name.contains(query, ignoreCase = true)
+        // Apply family filter first
+        if (familyFilter) {
+            filteredProjects = filteredProjects.filter { it.isFamilyFriendly }
         }
+        
+        // Apply search query filter
+        if (searchQuery.isNotEmpty()) {
+            filteredProjects = filteredProjects.filter { project ->
+                project.name.contains(searchQuery, ignoreCase = true) ||
+                project.description.contains(searchQuery, ignoreCase = true) ||
+                project.artist.name.contains(searchQuery, ignoreCase = true)
+            }
+        }
+        
+        return filteredProjects
     }
 }
