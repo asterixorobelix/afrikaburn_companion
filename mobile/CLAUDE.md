@@ -202,28 +202,54 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
 
 5. **Spacing and Dimensions**:
    ```kotlin
-   // ✅ CORRECT - Use standard Material spacing
-   .padding(16.dp)        // Standard content padding
-   .padding(8.dp)         // Small spacing
-   .padding(24.dp)        // Large spacing
+   // ✅ CORRECT - Always use Dimens object for all spacing and dimensions
+   import io.asterixorobelix.afrikaburn.Dimens
+   
+   .padding(Dimens.paddingMedium)        // Standard content padding (16.dp)
+   .padding(Dimens.paddingSmall)         // Small spacing (8.dp)
+   .padding(Dimens.paddingLarge)         // Large spacing (24.dp)
+   Spacer(modifier = Modifier.height(Dimens.paddingMedium))
+   
+   // ❌ WRONG - Never hardcode dimensions
+   .padding(16.dp)
+   .padding(8.dp)
+   .padding(24.dp)
    Spacer(modifier = Modifier.height(16.dp))
    
-   // For custom dimensions, create a Dimens object:
+   // Available Dimens values:
    object Dimens {
-       val cardElevation = 4.dp
-       val iconSize = 24.dp
-       val avatarSize = 40.dp
+       // Padding
+       val paddingExtraSmall = 4.dp
+       val paddingSmall = 8.dp
+       val paddingMedium = 16.dp
+       val paddingLarge = 24.dp
+       
+       // Corner Radius
+       val cornerRadiusXSmall = 2.dp
+       val cornerRadiusSmall = 4.dp
+       val cornerRadiusMedium = 8.dp
+       val cornerRadiusLarge = 16.dp
+       
+       // Elevation
+       val elevationSmall = 2.dp
+       val elevationNormal = 8.dp
+       
+       // Other dimensions
+       val dropdownMaxHeight = 200.dp
    }
    ```
 
 6. **Component Usage Examples**:
    ```kotlin
-   // ✅ CORRECT - Proper Material 3 components
+   // ✅ CORRECT - Proper Material 3 components with Dimens
+   import io.asterixorobelix.afrikaburn.Dimens
+   
    Button(
        onClick = { },
        colors = ButtonDefaults.buttonColors(
            containerColor = MaterialTheme.colorScheme.primary
-       )
+       ),
+       modifier = Modifier.padding(Dimens.paddingSmall)
    ) {
        Text(
            text = "Button Text",
@@ -238,21 +264,30 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
            containerColor = MaterialTheme.colorScheme.surface
        ),
        shape = MaterialTheme.shapes.medium,
-       elevation = CardDefaults.cardElevation(defaultElevation = Dimens.cardElevation)
+       elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
    ) {
        Column(
-           modifier = Modifier.padding(Dimens.paddingMedium)
+           modifier = Modifier.padding(Dimens.paddingMedium),
+           verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
        ) {
            Text(
                text = "Card Title",
                style = MaterialTheme.typography.titleMedium,
                color = MaterialTheme.colorScheme.onSurface
            )
+           
+           Spacer(modifier = Modifier.height(Dimens.paddingExtraSmall))
+           
+           Text(
+               text = "Card content with proper spacing",
+               style = MaterialTheme.typography.bodyMedium,
+               color = MaterialTheme.colorScheme.onSurface
+           )
        }
    }
    ```
 
-**ENFORCEMENT**: Any PR with hardcoded colors, typography, or shapes will be rejected. Always use the Material Design 3 theme system.
+**ENFORCEMENT**: Any PR with hardcoded colors, typography, shapes, or dimensions will be rejected. Always use the Material Design 3 theme system and Dimens object for all spacing and dimensions.
 
 **CRITICAL APPTHEME RULE**: `AppTheme` is ONLY declared once in App.kt at the application level. NEVER wrap individual screens or components in `AppTheme` - they inherit theming automatically. Only use `AppTheme` in Preview functions for testing purposes.
 
@@ -319,7 +354,8 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
                modifier = Modifier
                    .fillMaxSize()
                    .background(MaterialTheme.colorScheme.background)
-                   .padding(Dimens.paddingMedium)
+                   .padding(Dimens.paddingMedium),
+               verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
            ) {
                Text(
                    text = stringResource(Res.string.screen_profile_title),
