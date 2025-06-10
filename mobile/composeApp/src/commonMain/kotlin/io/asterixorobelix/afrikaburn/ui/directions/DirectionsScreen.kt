@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.ui.about.AboutPageContent
+import io.asterixorobelix.afrikaburn.ui.about.AboutPageData
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -32,18 +33,21 @@ fun DirectionsScreen() {
             .padding(Dimens.paddingMedium)
     ) {
         AboutPageContent(
-            title = stringResource(Res.string.direction_title),
-            content = stringResource(Res.string.direction_content),
-            buttonText = stringResource(Res.string.button_directions),
-            url = stringResource(Res.string.direction_url),
-            imagePainter = painterResource(Res.drawable.New_Turnoff),
-            imageContentDescription = stringResource(Res.string.cd_about_page4_image)
+            data = AboutPageData(
+                title = stringResource(Res.string.direction_title),
+                content = stringResource(Res.string.direction_content),
+                buttonText = stringResource(Res.string.button_directions),
+                url = stringResource(Res.string.direction_url),
+                imagePainter = painterResource(Res.drawable.New_Turnoff),
+                imageContentDescription = stringResource(Res.string.cd_about_page4_image)
+            )
         )
     }
 }
 
 @Preview
 @Composable
+@Suppress("UnusedPrivateMember")
 private fun DirectionsScreenPreview() {
     DirectionsScreen()
 }

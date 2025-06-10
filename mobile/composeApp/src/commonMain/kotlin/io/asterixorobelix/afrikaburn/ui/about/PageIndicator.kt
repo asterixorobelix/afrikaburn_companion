@@ -46,12 +46,18 @@ fun PageIndicator(
                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
             }
 
+            val horizontalPadding = if (index < totalPages - 1) {
+                Dimens.paddingMedium
+            } else {
+                Dimens.paddingExtraSmall
+            }
+            
             Box(
                 modifier = Modifier
                     .size(if (isSelected) 20.dp else 12.dp)
                     .clip(CircleShape)
                     .background(indicatorColor)
-                    .padding(horizontal = if (index < totalPages - 1) Dimens.paddingMedium else Dimens.paddingExtraSmall)
+                    .padding(horizontal = horizontalPadding)
             )
         }
     }
@@ -59,6 +65,7 @@ fun PageIndicator(
 
 @Preview
 @Composable
+@Suppress("UnusedPrivateMember")
 private fun PageIndicatorPreview() {
     AppTheme {
         Column(
