@@ -68,11 +68,22 @@ This is a Kotlin Multiplatform project, targeting Android and iOS platforms.
 
 ## Important Details
 
-1. **Serialization**
+1. **ALWAYS Check Git Branch First**
+   - **MANDATORY**: Before investigating any errors, failures, or issues, ALWAYS run `git branch` to confirm which branch you're working on
+   - **CRITICAL**: Different branches may have different code states, dependencies, or configurations
+   - **PREVENTS CONFUSION**: This ensures you're not debugging issues that don't exist on the current branch
+   - **Example workflow**:
+     ```bash
+     git branch  # Check current branch first
+     git status  # Then check working directory status
+     # Only then investigate specific errors or failures
+     ```
+
+2. **Serialization**
    - Uses Kotlinx Serialization with lenient parsing
    - JSON model classes use `@SerialName` annotations to map fields
 
-2. **Code Quality & CI/CD**
+3. **Code Quality & CI/CD**
    - Automated test execution on all pull requests
    - Detekt static analysis with mobile-specific rules
    - Comprehensive reporting in PR comments
