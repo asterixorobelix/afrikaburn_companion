@@ -818,6 +818,8 @@ For Bill of Materials (BOM) dependencies like Firebase, use this pattern:
 ## 🤝 Contribution Guidelines
 
 ### For AI Assistants
+- **MANDATORY**: Run `./gradlew detekt` after ALL code changes are complete
+- **CRITICAL**: Never commit code with detekt violations - always fix issues first
 - Always consider offline-first constraints
 - Follow established architecture patterns
 - Write comprehensive tests for new features (CI will validate)
