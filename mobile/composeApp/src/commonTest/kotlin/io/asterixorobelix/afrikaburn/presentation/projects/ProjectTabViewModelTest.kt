@@ -4,6 +4,8 @@ import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
+import io.mockk.coEvery
+import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -23,7 +25,7 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProjectTabViewModelTest {
     
-    private lateinit var repository: MockProjectsRepository
+    private lateinit var repository: ProjectsRepository
     private lateinit var viewModel: ProjectTabViewModel
     private val testDispatcher = StandardTestDispatcher()
     
@@ -54,7 +56,7 @@ class ProjectTabViewModelTest {
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        repository = MockProjectsRepositoryForProjectTabViewModel()
+        repository = mockk()
         viewModel = ProjectTabViewModel(repository, ProjectType.ART)
     }
     
@@ -80,7 +82,7 @@ class ProjectTabViewModelTest {
     @Test
     fun `loadProjects should update state with success data`() = runTest {
         // Given successful repository response
-        repository.setSuccessResponse(sampleProjects)
+        coEvery { repository.getProjectsByType(ProjectType.ART) } returns Result.success(sampleProjects)
         
         // When loading projects
         viewModel.loadProjects()
@@ -98,7 +100,7 @@ class ProjectTabViewModelTest {
     fun `loadProjects should update state with error`() = runTest {
         // Given repository that throws error
         val errorMessage = "Network error"
-        repository.setErrorResponse(errorMessage)
+        coEvery { repository.getProjectsByType(ProjectType.ART) } returns Result.failure(Exception(errorMessage))
         
         // When loading projects
         viewModel.loadProjects()
@@ -115,7 +117,7 @@ class ProjectTabViewModelTest {
     @Test
     fun `updateSearchQuery should filter projects by name`() = runTest {
         // Given projects are loaded
-        repository.setSuccessResponse(sampleProjects)
+        coEvery { repository.getProjectsByType(ProjectType.ART) } returns Result.success(sampleProjects)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
         
@@ -133,7 +135,7 @@ class ProjectTabViewModelTest {
     @Test
     fun `updateSearchQuery should filter projects by description`() = runTest {
         // Given projects are loaded
-        repository.setSuccessResponse(sampleProjects)
+        coEvery { repository.getProjectsByType(ProjectType.ART) } returns Result.success(sampleProjects)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
         
@@ -151,7 +153,7 @@ class ProjectTabViewModelTest {
     @Test
     fun `updateSearchQuery should filter projects by artist name`() = runTest {
         // Given projects are loaded
-        repository.setSuccessResponse(sampleProjects)
+        coEvery { repository.getProjectsByType(ProjectType.ART) } returns Result.success(sampleProjects)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
         
@@ -169,7 +171,7 @@ class ProjectTabViewModelTest {
     @Test
     fun `updateSearchQuery should be case insensitive`() = runTest {
         // Given projects are loaded
-        repository.setSuccessResponse(sampleProjects)
+        coEvery { repository.getProjectsByType(ProjectType.ART) } returns Result.success(sampleProjects)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
         
@@ -187,7 +189,7 @@ class ProjectTabViewModelTest {
     @Test
     fun `updateSearchQuery with empty string should show all projects`() = runTest {
         // Given projects are loaded and filtered
-        repository.setSuccessResponse(sampleProjects)
+        coEvery { repository.getProjectsByType(ProjectType.ART) } returns Result.success(sampleProjects)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
         viewModel.updateSearchQuery("Fire")
@@ -207,12 +209,12 @@ class ProjectTabViewModelTest {
     @Test
     fun `retryLoading should reload projects`() = runTest {
         // Given initial error state
-        repository.setErrorResponse("Network error")
+        coEvery { repository.getProjectsByType(ProjectType.ART) } returns Result.failure(Exception("Network error"))
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
         
         // When retrying with successful response
-        repository.setSuccessResponse(sampleProjects)
+        coEvery { repository.getProjectsByType(ProjectType.ART) } returns Result.success(sampleProjects)
         viewModel.retryLoading()
         testDispatcher.scheduler.advanceUntilIdle()
         
@@ -226,7 +228,7 @@ class ProjectTabViewModelTest {
     @Test
     fun `clearError should remove error from state`() = runTest {
         // Given error state
-        repository.setErrorResponse("Network error")
+        coEvery { repository.getProjectsByType(ProjectType.ART) } returns Result.failure(Exception("Network error"))
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
         
@@ -242,7 +244,7 @@ class ProjectTabViewModelTest {
     @Test
     fun `isShowingEmptySearch should return true when search has no results`() = runTest {
         // Given projects are loaded
-        repository.setSuccessResponse(sampleProjects)
+        coEvery { repository.getProjectsByType(ProjectType.ART) } returns Result.success(sampleProjects)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
         
@@ -260,36 +262,12 @@ class ProjectTabViewModelTest {
     @Test
     fun `isShowingEmptySearch should return false when not searching`() = runTest {
         // Given projects are loaded without search
-        repository.setSuccessResponse(sampleProjects)
+        coEvery { repository.getProjectsByType(ProjectType.ART) } returns Result.success(sampleProjects)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should not show empty search state
         val state = viewModel.uiState.first()
         assertFalse(state.isShowingEmptySearch())
-    }
-}
-
-internal class MockProjectsRepositoryForProjectTabViewModel : ProjectsRepository {
-    private var shouldThrowError = false
-    private var errorMessage = ""
-    private var projects = emptyList<ProjectItem>()
-    
-    fun setSuccessResponse(projectList: List<ProjectItem>) {
-        shouldThrowError = false
-        projects = projectList
-    }
-    
-    fun setErrorResponse(message: String) {
-        shouldThrowError = true
-        errorMessage = message
-    }
-    
-    override suspend fun getProjectsByType(type: ProjectType): Result<List<ProjectItem>> {
-        return if (shouldThrowError) {
-            Result.failure(Exception(errorMessage))
-        } else {
-            Result.success(projects)
-        }
     }
 }
