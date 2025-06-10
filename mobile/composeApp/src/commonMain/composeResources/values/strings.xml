@@ -14,6 +14,7 @@
     <string name="about_page4_title">Contact Me</string>
     <string name="about_page4_content">I am an app developer</string>
     <string name="direction_title">Event location</string>
+    <string name="direction_sub_title">Driving to Afrikaburn</string>
     <string name="direction_content">Afrikaburn is NOT in the Tankwa Karoo National Park! You will lose cellphone reception while driving, so be sure to download an offline version of the route in Google Maps. The AfrikaBurn event takes place at Quaggafontein, a private farm in the Tankwa Karoo. The farm is located about 3 hours drive from Cape Town, and 2 hours drive from Ceres. The nearest town is Calvinia, which is about 1 hour away. The GPS coordinates for Quaggafontein are: -32.482474, 19.897824. Please note that the AfrikaBurn event is not held in the Tankwa Karoo National Park.</string>
     
     <!-- About URLs -->
