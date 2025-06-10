@@ -994,8 +994,10 @@ For Bill of Materials (BOM) dependencies like Firebase, use this pattern:
     - Body text: `MaterialTheme.typography.bodyLarge/Medium/Small`
     - Labels: `MaterialTheme.typography.labelLarge/Medium/Small`
   - **Spacing Guidelines**:
-    - Use standard Material spacing: 4.dp, 8.dp, 12.dp, 16.dp, 20.dp, 24.dp, 32.dp
-    - For custom dimensions, define them in a `Dimens` object
+    - **ALWAYS** use Dimens object for all spacing and dimensions
+    - **NEVER** hardcode spacing values like 4.dp, 8.dp, 16.dp, etc.
+    - Available spacing: Dimens.paddingExtraSmall, Dimens.paddingSmall, Dimens.paddingMedium, Dimens.paddingLarge
+    - For custom dimensions, add them to the existing Dimens object in Theme.kt
 - **NEW**: Be aware of automated CI/CD pipeline:
   - Tests run automatically on PR creation
   - Detekt analysis provides code quality feedback
