@@ -51,6 +51,7 @@ import io.asterixorobelix.afrikaburn.di.koinProjectsViewModel
 import io.asterixorobelix.afrikaburn.di.koinProjectTabViewModel
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
+import io.asterixorobelix.afrikaburn.models.TimeFilter
 import afrikaburn.composeapp.generated.resources.Res
 import afrikaburn.composeapp.generated.resources.tab_art
 import afrikaburn.composeapp.generated.resources.tab_camps
@@ -71,6 +72,10 @@ import afrikaburn.composeapp.generated.resources.no_results_for_query
 import afrikaburn.composeapp.generated.resources.cd_artist_icon
 import afrikaburn.composeapp.generated.resources.filter_family_friendly_short
 import afrikaburn.composeapp.generated.resources.cd_family_filter
+import afrikaburn.composeapp.generated.resources.filter_time_all
+import afrikaburn.composeapp.generated.resources.filter_time_daytime
+import afrikaburn.composeapp.generated.resources.filter_time_nighttime
+import afrikaburn.composeapp.generated.resources.cd_time_filter
 
 @Composable
 fun ProjectsScreen() {
@@ -147,11 +152,13 @@ private fun ProjectTabContent(projectType: ProjectType) {
             placeholderText = "Search ${projectType.displayName.lowercase()}..."
         )
         
-        // Family filter chip (only for Camps)
+        // Filter chips (only for Camps)
         if (projectType == ProjectType.CAMPS) {
-            FamilyFilterChip(
-                isSelected = uiState.isFamilyFilterEnabled,
-                onToggle = tabViewModel::toggleFamilyFilter,
+            FilterChipsRow(
+                isFamilyFilterEnabled = uiState.isFamilyFilterEnabled,
+                onToggleFamilyFilter = tabViewModel::toggleFamilyFilter,
+                timeFilter = uiState.timeFilter,
+                onTimeFilterChange = tabViewModel::updateTimeFilter,
                 modifier = Modifier.padding(horizontal = Dimens.paddingMedium)
             )
         }
@@ -172,7 +179,8 @@ private fun ProjectTabContent(projectType: ProjectType) {
                 EmptySearchContent(
                     searchQuery = uiState.searchQuery,
                     projectType = projectType.displayName,
-                    isFamilyFilterEnabled = uiState.isFamilyFilterEnabled
+                    isFamilyFilterEnabled = uiState.isFamilyFilterEnabled,
+                    timeFilter = uiState.timeFilter
                 )
             }
             else -> {
@@ -317,7 +325,8 @@ private fun ErrorContent(
 private fun EmptySearchContent(
     searchQuery: String,
     projectType: String,
-    isFamilyFilterEnabled: Boolean = false
+    isFamilyFilterEnabled: Boolean = false,
+    timeFilter: TimeFilter = TimeFilter.ALL
 ) {
     Column(
         modifier = Modifier
@@ -345,12 +354,20 @@ private fun EmptySearchContent(
         
         Text(
             text = when {
+                searchQuery.isNotEmpty() && isFamilyFilterEnabled && timeFilter != TimeFilter.ALL -> 
+                    "No results for \"$searchQuery\" with filters"
                 searchQuery.isNotEmpty() && isFamilyFilterEnabled -> 
                     "No results for \"$searchQuery\" with family filter"
+                searchQuery.isNotEmpty() && timeFilter != TimeFilter.ALL -> 
+                    "No results for \"$searchQuery\" with ${timeFilter.displayName.lowercase()} filter"
                 searchQuery.isNotEmpty() -> 
                     stringResource(Res.string.no_results_for_query, searchQuery)
+                isFamilyFilterEnabled && timeFilter != TimeFilter.ALL -> 
+                    "No family-friendly ${timeFilter.displayName.lowercase()} ${projectType.lowercase()} found"
                 isFamilyFilterEnabled -> 
                     "No family-friendly ${projectType.lowercase()} found"
+                timeFilter != TimeFilter.ALL -> 
+                    "No ${timeFilter.displayName.lowercase()} ${projectType.lowercase()} found"
                 else -> 
                     "No ${projectType.lowercase()} found"
             },
@@ -458,24 +475,27 @@ private fun ProjectCard(project: ProjectItem) {
 }
 
 @Composable
-private fun FamilyFilterChip(
-    isSelected: Boolean,
-    onToggle: () -> Unit,
+private fun FilterChipsRow(
+    isFamilyFilterEnabled: Boolean,
+    onToggleFamilyFilter: () -> Unit,
+    timeFilter: TimeFilter,
+    onTimeFilterChange: (TimeFilter) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier.padding(vertical = Dimens.paddingSmall),
-        horizontalArrangement = Arrangement.Start
+        horizontalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
     ) {
+        // Family filter chip
         FilterChip(
-            onClick = onToggle,
+            onClick = onToggleFamilyFilter,
             label = {
                 Text(
                     text = stringResource(Res.string.filter_family_friendly_short),
                     style = MaterialTheme.typography.labelMedium
                 )
             },
-            selected = isSelected,
+            selected = isFamilyFilterEnabled,
             colors = androidx.compose.material3.FilterChipDefaults.filterChipColors(
                 selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
                 selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -484,12 +504,41 @@ private fun FamilyFilterChip(
             ),
             border = androidx.compose.material3.FilterChipDefaults.filterChipBorder(
                 enabled = true,
-                selected = isSelected,
+                selected = isFamilyFilterEnabled,
                 borderColor = MaterialTheme.colorScheme.outline,
                 selectedBorderColor = MaterialTheme.colorScheme.primary
-            ),
-            modifier = Modifier
+            )
         )
+        
+        // Time filter chips
+        TimeFilter.values().forEach { filter ->
+            FilterChip(
+                onClick = { onTimeFilterChange(filter) },
+                label = {
+                    Text(
+                        text = when (filter) {
+                            TimeFilter.ALL -> stringResource(Res.string.filter_time_all)
+                            TimeFilter.DAYTIME -> stringResource(Res.string.filter_time_daytime)
+                            TimeFilter.NIGHTTIME -> stringResource(Res.string.filter_time_nighttime)
+                        },
+                        style = MaterialTheme.typography.labelMedium
+                    )
+                },
+                selected = timeFilter == filter,
+                colors = androidx.compose.material3.FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    selectedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    labelColor = MaterialTheme.colorScheme.onSurface
+                ),
+                border = androidx.compose.material3.FilterChipDefaults.filterChipBorder(
+                    enabled = true,
+                    selected = timeFilter == filter,
+                    borderColor = MaterialTheme.colorScheme.outline,
+                    selectedBorderColor = MaterialTheme.colorScheme.secondary
+                )
+            )
+        }
     }
 }
 

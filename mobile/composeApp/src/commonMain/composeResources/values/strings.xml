@@ -49,8 +49,14 @@
     
     <!-- Family filter -->
     <string name="filter_family_friendly">Family Friendly</string>
-    <string name="filter_family_friendly_short">Fam</string>
+    <string name="filter_family_friendly_short">Child friendly</string>
     <string name="filter_family_friendly_description">Show only family-friendly camps</string>
+    
+    <!-- Time filters -->
+    <string name="filter_time_all">All Times</string>
+    <string name="filter_time_daytime">Daytime</string>
+    <string name="filter_time_nighttime">Nighttime</string>
+    <string name="filter_time_description">Filter camps by operating time</string>
     
     <!-- Content descriptions -->
     <string name="cd_projects_icon">Projects icon</string>
@@ -62,6 +68,7 @@
     <string name="cd_retry_button">Retry</string>
     <string name="cd_artist_icon">Artist</string>
     <string name="cd_family_filter">Family filter</string>
+    <string name="cd_time_filter">Time filter</string>
     <string name="cd_page_indicator">Page %1$d of %2$d</string>
     <string name="cd_about_pager">About information carousel</string>
     <string name="cd_about_page1_image">Compose Multiplatform logo</string>

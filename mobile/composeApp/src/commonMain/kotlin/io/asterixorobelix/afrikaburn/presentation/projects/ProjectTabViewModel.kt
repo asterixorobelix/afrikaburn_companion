@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
+import io.asterixorobelix.afrikaburn.models.TimeFilter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,7 +37,8 @@ class ProjectTabViewModel(
                         filteredProjects = filterProjects(
                             projects = projects, 
                             searchQuery = _uiState.value.searchQuery,
-                            familyFilter = _uiState.value.isFamilyFilterEnabled
+                            familyFilter = _uiState.value.isFamilyFilterEnabled,
+                            timeFilter = _uiState.value.timeFilter
                         ),
                         isLoading = false,
                         error = null
@@ -57,7 +59,8 @@ class ProjectTabViewModel(
             filteredProjects = filterProjects(
                 projects = _uiState.value.projects, 
                 searchQuery = query,
-                familyFilter = _uiState.value.isFamilyFilterEnabled
+                familyFilter = _uiState.value.isFamilyFilterEnabled,
+                timeFilter = _uiState.value.timeFilter
             )
         )
     }
@@ -69,7 +72,20 @@ class ProjectTabViewModel(
             filteredProjects = filterProjects(
                 projects = _uiState.value.projects,
                 searchQuery = _uiState.value.searchQuery,
-                familyFilter = newFamilyFilter
+                familyFilter = newFamilyFilter,
+                timeFilter = _uiState.value.timeFilter
+            )
+        )
+    }
+    
+    fun updateTimeFilter(timeFilter: TimeFilter) {
+        _uiState.value = _uiState.value.copy(
+            timeFilter = timeFilter,
+            filteredProjects = filterProjects(
+                projects = _uiState.value.projects,
+                searchQuery = _uiState.value.searchQuery,
+                familyFilter = _uiState.value.isFamilyFilterEnabled,
+                timeFilter = timeFilter
             )
         )
     }
@@ -85,7 +101,8 @@ class ProjectTabViewModel(
     private fun filterProjects(
         projects: List<ProjectItem>, 
         searchQuery: String,
-        familyFilter: Boolean
+        familyFilter: Boolean,
+        timeFilter: TimeFilter
     ): List<ProjectItem> {
         var filteredProjects = projects
         
@@ -94,7 +111,12 @@ class ProjectTabViewModel(
             filteredProjects = filteredProjects.filter { it.isFamilyFriendly }
         }
         
-        // Apply search query filter
+        // Apply time filter
+        if (timeFilter != TimeFilter.ALL) {
+            filteredProjects = filteredProjects.filter { it.matchesTimeFilter(timeFilter) }
+        }
+        
+        // Apply search query filter last
         if (searchQuery.isNotEmpty()) {
             filteredProjects = filteredProjects.filter { project ->
                 project.name.contains(searchQuery, ignoreCase = true) ||
