@@ -53,7 +53,7 @@ dependencies {
     
     // Database Drivers
     implementation("com.h2database:h2:2.1.214")         // Development
-    implementation("org.postgresql:postgresql:42.6.0")  // Production
+    implementation("org.postgresql:postgresql:42.7.6")  // Production
     
     // HTTP Client for AI APIs
     implementation("io.ktor:ktor-client-core:$ktor_version")
