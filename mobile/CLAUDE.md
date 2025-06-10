@@ -48,6 +48,16 @@ This is a Kotlin Multiplatform project, targeting Android and iOS platforms.
    ./gradlew test detekt
    ```
 
+8. **Pre-commit validation** (MANDATORY before all commits):
+   ```bash
+   ./gradlew detekt test
+   ```
+   
+9. **Fix detekt issues automatically** (when possible):
+   ```bash
+   ./gradlew detektFormat
+   ```
+
 ## Architecture Overview
 
 ### Project Structure
@@ -84,11 +94,13 @@ This is a Kotlin Multiplatform project, targeting Android and iOS platforms.
    - JSON model classes use `@SerialName` annotations to map fields
 
 3. **Code Quality & CI/CD**
+   - **CRITICAL**: Run `./gradlew detekt test` before every commit
    - Automated test execution on all pull requests
    - Detekt static analysis with mobile-specific rules
    - Comprehensive reporting in PR comments
    - Artifact generation for detailed test/quality reports
    - 7-day retention for downloadable reports
+   - **ZERO TOLERANCE**: All detekt issues must be resolved before merging
 
 **What is this project?**
 A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South African regional Burning Man event. The app helps participants navigate the event, discover artworks and theme camps, plan their experience, and survive in the harsh Tankwa Karoo desert environment.
@@ -862,6 +874,76 @@ For Bill of Materials (BOM) dependencies like Firebase, use this pattern:
   - **Spacing Guidelines**:
     - Use standard Material spacing: 4.dp, 8.dp, 12.dp, 16.dp, 20.dp, 24.dp, 32.dp
     - For custom dimensions, define them in a `Dimens` object
+- **CRITICAL: Code Quality with Detekt**:
+  - **ALWAYS** run `./gradlew detekt` before committing code
+  - **MANDATORY**: All detekt issues must be resolved before PR submission
+  - **NEVER** ignore detekt warnings - they indicate code quality problems
+  - **PROACTIVE**: Run detekt during development, not just before commits
+  
+  **Common Detekt Issues & Solutions**:
+  - **LongParameterList**: Create data classes to group related parameters
+    ```kotlin
+    // ❌ WRONG - Too many parameters
+    fun MyFunction(a: String, b: String, c: String, d: String, e: String, f: String)
+    
+    // ✅ CORRECT - Use data class
+    data class MyFunctionData(val a: String, val b: String, ...)
+    fun MyFunction(data: MyFunctionData)
+    ```
+  
+  - **LongMethod**: Break large functions into smaller, focused functions
+    ```kotlin
+    // ❌ WRONG - Function too long (>60 lines)
+    @Composable
+    fun MyScreen() {
+        // 80+ lines of code
+    }
+    
+    // ✅ CORRECT - Break into smaller functions
+    @Composable
+    fun MyScreen() {
+        MyScreenHeader()
+        MyScreenContent()
+        MyScreenFooter()
+    }
+    ```
+  
+  - **MagicNumber**: Replace magic numbers with named constants
+    ```kotlin
+    // ❌ WRONG - Magic numbers
+    if (page == 3) { ... }
+    PageIndicator(totalPages = 4)
+    
+    // ✅ CORRECT - Named constants
+    private const val TOTAL_PAGES = 4
+    private const val CONTACT_PAGE = 3
+    if (page == CONTACT_PAGE) { ... }
+    PageIndicator(totalPages = TOTAL_PAGES)
+    ```
+  
+  - **MaxLineLength**: Break long lines (usually >120 characters)
+    ```kotlin
+    // ❌ WRONG - Line too long
+    .padding(horizontal = if (index < totalPages - 1) Dimens.paddingMedium else Dimens.paddingExtraSmall)
+    
+    // ✅ CORRECT - Extract to variable
+    val horizontalPadding = if (index < totalPages - 1) {
+        Dimens.paddingMedium
+    } else {
+        Dimens.paddingExtraSmall
+    }
+    .padding(horizontal = horizontalPadding)
+    ```
+  
+  - **UnusedPrivateMember**: For Compose previews, add suppress annotation
+    ```kotlin
+    // ✅ CORRECT - Suppress for preview functions
+    @Preview
+    @Composable
+    @Suppress("UnusedPrivateMember")
+    private fun MyComponentPreview() { ... }
+    ```
+
 - **NEW**: Be aware of automated CI/CD pipeline:
   - Tests run automatically on PR creation
   - Detekt analysis provides code quality feedback
