@@ -585,6 +585,29 @@ jobs:
           distribution: 'temurin'
           cache: gradle
           
+      - name: Set up Firebase Configuration
+        run: |
+          echo "🔥 Setting up Firebase configuration..."
+          
+          # Create from secret if available
+          if [ ! -z "${{ secrets.GOOGLE_SERVICES_JSON }}" ]; then
+            echo "✅ Creating Firebase config from repository secret."
+            echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/composeApp/google-services.json
+            echo "🔥 Firebase Crashlytics enabled for this build."
+          # Check if file already exists in repo
+          elif [ -f "mobile/composeApp/google-services.json" ]; then
+            echo "✅ Using existing Firebase configuration file."
+            # Check if it's a template or real config
+            if grep -q "your-project-id-here" "mobile/composeApp/google-services.json"; then
+              echo "⚠️ Using template Firebase config. Crashlytics disabled for this build."
+            else
+              echo "✅ Custom Firebase configuration detected."
+            fi
+          else
+            echo "⚠️ No Firebase configuration found. Crashlytics will be disabled."
+            echo "For proper crash reporting, add GOOGLE_SERVICES_JSON as a repository secret."
+          fi
+          
       - name: Make gradlew executable
         run: chmod +x ./gradlew
         working-directory: mobile
