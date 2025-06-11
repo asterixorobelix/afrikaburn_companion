@@ -82,6 +82,7 @@ class ProjectsIntegrationTest {
     @Test
     fun `full flow from data source to UI state should work correctly`() = runTest {
         // Given successful data source
+        (repository as ProjectsRepositoryImpl).clearCache()
         dataSource.setProjectsForType(ProjectType.ART, sampleArtProjects)
         
         // When loading projects in tab view model
@@ -99,6 +100,7 @@ class ProjectsIntegrationTest {
     @Test
     fun `error flow from data source to UI state should work correctly`() = runTest {
         // Given data source that will fail
+        (repository as ProjectsRepositoryImpl).clearCache()
         val originalError = "Failed to load JSON file"
         dataSource.setErrorForType(ProjectType.ART, originalError)
         
@@ -118,6 +120,7 @@ class ProjectsIntegrationTest {
     @Test
     fun `search functionality should work across the full stack`() = runTest {
         // Given loaded projects
+        (repository as ProjectsRepositoryImpl).clearCache()
         dataSource.setProjectsForType(ProjectType.ART, sampleArtProjects)
         projectTabViewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -136,6 +139,7 @@ class ProjectsIntegrationTest {
     @Test
     fun `different project types should load different data`() = runTest {
         // Given different data for different project types
+        (repository as ProjectsRepositoryImpl).clearCache()
         dataSource.setProjectsForType(ProjectType.ART, sampleArtProjects)
         dataSource.setProjectsForType(ProjectType.PERFORMANCES, samplePerformanceProjects)
         
@@ -172,6 +176,7 @@ class ProjectsIntegrationTest {
     @Test
     fun `retry functionality should work across full stack`() = runTest {
         // Given initial error
+        (repository as ProjectsRepositoryImpl).clearCache()
         dataSource.setErrorForType(ProjectType.ART, "Network error")
         projectTabViewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -181,6 +186,7 @@ class ProjectsIntegrationTest {
         assertNotNull(errorState.error)
         
         // When fixing data source and retrying
+        (repository as ProjectsRepositoryImpl).clearCache()
         dataSource.setProjectsForType(ProjectType.ART, sampleArtProjects)
         projectTabViewModel.retryLoading()
         testDispatcher.scheduler.advanceUntilIdle()
