@@ -24,25 +24,27 @@ import io.asterixorobelix.afrikaburn.Dimens
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+data class AboutPageData(
+    val title: String,
+    val content: String,
+    val imagePainter: Painter? = null,
+    val buttonText: String? = null,
+    val url: String? = null,
+    val imageContentDescription: String? = null
+)
+
 @Composable
-fun AboutPageContent(
-    title: String,
-    content: String,
-    imagePainter: Painter? = null,
-    buttonText: String? = null,
-    url: String? = null,
-    imageContentDescription: String? = null
-) {
+fun AboutPageContent(data: AboutPageData) {
     val uriHandler = LocalUriHandler.current
     
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(Dimens.paddingMedium)
     ) {
-        imagePainter?.let { painter ->
+        data.imagePainter?.let { painter ->
             Image(
                 painter = painter,
-                contentDescription = imageContentDescription ?: "About page illustration",
+                contentDescription = data.imageContentDescription ?: "About page illustration",
                 modifier = Modifier
                     .size(120.dp)
                     .clip(MaterialTheme.shapes.large)
@@ -51,24 +53,24 @@ fun AboutPageContent(
         }
         
         Text(
-            text = title,
+            text = data.title,
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
         )
         
         Text(
-            text = content,
+            text = data.content,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center
         )
         
-        if (buttonText != null && url != null) {
+        if (data.buttonText != null && data.url != null) {
             Spacer(modifier = Modifier.height(Dimens.paddingSmall))
             Button(
                 onClick = {
-                    uriHandler.openUri(url)
+                    uriHandler.openUri(data.url)
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary
@@ -76,7 +78,7 @@ fun AboutPageContent(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
-                    text = buttonText,
+                    text = data.buttonText,
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onPrimary
                 )
@@ -87,6 +89,7 @@ fun AboutPageContent(
 
 @Preview
 @Composable
+@Suppress("UnusedPrivateMember")
 private fun AboutPageContentPreview() {
     AppTheme {
         Column(
@@ -94,16 +97,20 @@ private fun AboutPageContentPreview() {
         ) {
             // Without image and button
             AboutPageContent(
-                title = "Welcome to AfrikaBurn",
-                content = "Your companion app for the AfrikaBurn experience in the Tankwa Karoo."
+                data = AboutPageData(
+                    title = "Welcome to AfrikaBurn",
+                    content = "Your companion app for the AfrikaBurn experience in the Tankwa Karoo."
+                )
             )
             
             // With button
             AboutPageContent(
-                title = "About AfrikaBurn",
-                content = "Learn more about this amazing event in the Tankwa Karoo.",
-                buttonText = "Visit Website",
-                url = "https://afrikaburn.com"
+                data = AboutPageData(
+                    title = "About AfrikaBurn",
+                    content = "Learn more about this amazing event in the Tankwa Karoo.",
+                    buttonText = "Visit Website",
+                    url = "https://afrikaburn.com"
+                )
             )
         }
     }

@@ -69,6 +69,10 @@ jobs:
     name: Validate PR Title
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     
     steps:
       - name: Label dependency updates
@@ -115,6 +119,10 @@ jobs:
     name: PR Size Check
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     
     steps:
       - name: Check PR size
@@ -194,6 +202,7 @@ jobs:
           
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+        working-directory: mobile
         
       - name: Run Detekt
         run: ./gradlew detekt --continue
@@ -211,12 +220,12 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const globModule = require('@actions/glob');
             const path = require('path');
             
             try {
-              const globber = await globModule.create('mobile/**/build/reports/detekt/detekt.xml');
-              const files = await globber.glob();
+              // Simple file check instead of using @actions/glob
+              const detektFile = 'mobile/composeApp/build/reports/detekt/detekt.xml';
+              const files = fs.existsSync(detektFile) ? [detektFile] : [];
               
               let totalIssues = 0;
               let detailedResults = '';
@@ -284,8 +293,58 @@ jobs:
           distribution: 'temurin'
           cache: gradle
           
+      - name: Set up Firebase Configuration
+        run: |
+          echo "🔥 Setting up Firebase configuration..."
+          
+          # Create from secret if available
+          if [ ! -z "${{ secrets.GOOGLE_SERVICES_JSON }}" ]; then
+            echo "✅ Creating Firebase config from repository secret."
+            echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/composeApp/google-services.json
+            echo "🔥 Firebase Crashlytics enabled for this build."
+          # Check if file already exists in repo
+          elif [ -f "mobile/composeApp/google-services.json" ]; then
+            echo "✅ Using existing Firebase configuration file."
+          else
+            echo "⚠️ No Firebase configuration found. Creating minimal config for build."
+            # Create a minimal firebase config to prevent build failures
+            mkdir -p mobile/composeApp
+            cat > mobile/composeApp/google-services.json << 'EOF'
+          {
+            "project_info": {
+              "project_number": "000000000000",
+              "project_id": "your-project-id-here",
+              "storage_bucket": "your-project-id-here.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+                  "android_client_info": {
+                    "package_name": "io.asterixorobelix.afrikaburn"
+                  }
+                },
+                "oauth_client": [],
+                "api_key": [
+                  {
+                    "current_key": "fake-api-key-for-build-only"
+                  }
+                ],
+                "services": {
+                  "appinvite_service": {
+                    "other_platform_oauth_client": []
+                  }
+                }
+              }
+            ],
+            "configuration_version": "1"
+          }
+          EOF
+          fi
+        
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+        working-directory: mobile
         
       - name: Build ${{ matrix.variant }}
         run: ./gradlew composeApp:assemble${{ matrix.variant }}
@@ -321,8 +380,32 @@ jobs:
           distribution: 'temurin'
           cache: gradle
           
+      - name: Set up Firebase Configuration
+        run: |
+          echo "🔥 Setting up Firebase configuration..."
+          
+          # Create from secret if available
+          if [ ! -z "${{ secrets.GOOGLE_SERVICES_JSON }}" ]; then
+            echo "✅ Creating Firebase config from repository secret."
+            echo "${{ secrets.GOOGLE_SERVICES_JSON }}" | base64 --decode > mobile/composeApp/google-services.json
+            echo "🔥 Firebase Crashlytics enabled for this build."
+          # Check if file already exists in repo
+          elif [ -f "mobile/composeApp/google-services.json" ]; then
+            echo "✅ Using existing Firebase configuration file."
+            # Check if it's a template or real config
+            if grep -q "your-project-id-here" "mobile/composeApp/google-services.json"; then
+              echo "⚠️ Using template Firebase config. Crashlytics disabled for this build."
+            else
+              echo "✅ Custom Firebase configuration detected."
+            fi
+          else
+            echo "⚠️ No Firebase configuration found. Crashlytics will be disabled."
+            echo "For proper crash reporting, add GOOGLE_SERVICES_JSON as a repository secret."
+          fi
+        
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+        working-directory: mobile
         
       - name: Run Unit Tests
         run: ./gradlew test
@@ -382,11 +465,23 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const globModule = require('@actions/glob');
+            const path = require('path');
             
             try {
-              const globber = await globModule.create('mobile/**/build/test-results/**/TEST-*.xml');
-              const files = await globber.glob();
+              // Check for common test result file locations
+              const testDirs = [
+                'mobile/composeApp/build/test-results/testDebugUnitTest',
+                'mobile/composeApp/build/test-results/testReleaseUnitTest',
+                'mobile/composeApp/build/test-results/test'
+              ];
+              
+              let files = [];
+              for (const dir of testDirs) {
+                if (fs.existsSync(dir)) {
+                  const testFiles = fs.readdirSync(dir).filter(f => f.startsWith('TEST-') && f.endsWith('.xml'));
+                  files.push(...testFiles.map(f => path.join(dir, f)));
+                }
+              }
               
               let totalTests = 0;
               let totalFailures = 0;
@@ -492,6 +587,7 @@ jobs:
           
       - name: Make gradlew executable
         run: chmod +x ./gradlew
+        working-directory: mobile
         
       - name: Build APK
         run: ./gradlew composeApp:assembleDebug

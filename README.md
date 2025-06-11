@@ -1,6 +1,6 @@
 # 🔥 AfrikaBurn App
 
-[![PR Validation](https://github.com/asterixorobelix/afrikaburn_companion/actions/workflows/pr-validation.yaml/badge.svg)](https://github.com/asterixorobelix/afrikaburn_companion/actions/workflows/pr-validation.yaml)
+[![Mobile CI](https://github.com/asterixorobelix/afrikaburn_companion/actions/workflows/mobile-ci.yml/badge.svg)](https://github.com/asterixorobelix/afrikaburn_companion/actions/workflows/mobile-ci.yml)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Kotlin](https://img.shields.io/badge/kotlin-1.9.20-blue.svg?logo=kotlin)](http://kotlinlang.org)
 [![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-1.5.7-blue)](https://github.com/JetBrains/compose-multiplatform)

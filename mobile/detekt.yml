@@ -667,6 +667,9 @@ style:
   UnusedPrivateMember:
     active: true
     allowedNames: '(_|ignored|expected|serialVersionUID)'
+    ignoreAnnotatedFunctions:
+      - 'Composable'  # Mobile-specific: Allow PascalCase for Composable functions
+      - 'Preview'     # Mobile-specific: Allow PascalCase for Preview functions
   UseArrayLiteralsInAnnotations:
     active: true
   UseCheckNotNull:
