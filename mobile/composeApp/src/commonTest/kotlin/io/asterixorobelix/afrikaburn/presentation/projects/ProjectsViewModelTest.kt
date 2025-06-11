@@ -3,7 +3,6 @@ package io.asterixorobelix.afrikaburn.presentation.projects
 import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
-import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -26,7 +25,7 @@ class ProjectsViewModelTest {
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        repository = mockk()
+        repository = StubProjectsRepository()
         viewModel = ProjectsViewModel(repository)
     }
     
@@ -92,5 +91,11 @@ class ProjectsViewModelTest {
         assertEquals(ProjectType.MOBILE_ART, tabs[3])
         assertEquals(ProjectType.VEHICLES, tabs[4])
         assertEquals(ProjectType.CAMPS, tabs[5])
+    }
+}
+
+private class StubProjectsRepository : ProjectsRepository {
+    override suspend fun getProjectsByType(type: ProjectType): Result<List<ProjectItem>> {
+        return Result.success(emptyList())
     }
 }

@@ -8,8 +8,6 @@ import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
 import io.asterixorobelix.afrikaburn.presentation.projects.ProjectTabViewModel
 import io.asterixorobelix.afrikaburn.presentation.projects.ProjectsViewModel
-import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -32,7 +30,7 @@ import kotlin.test.assertTrue
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProjectsIntegrationTest {
     
-    private lateinit var dataSource: JsonResourceDataSource
+    private lateinit var dataSource: MockJsonResourceDataSourceForIntegration
     private lateinit var repository: ProjectsRepository
     private lateinit var projectsViewModel: ProjectsViewModel
     private lateinit var projectTabViewModel: ProjectTabViewModel
@@ -69,8 +67,8 @@ class ProjectsIntegrationTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         
-        // Set up the full dependency chain with MockK
-        dataSource = mockk()
+        // Set up the full dependency chain
+        dataSource = MockJsonResourceDataSourceForIntegration()
         repository = ProjectsRepositoryImpl(dataSource)
         projectsViewModel = ProjectsViewModel(repository)
         projectTabViewModel = ProjectTabViewModel(repository, ProjectType.ART)
@@ -84,7 +82,7 @@ class ProjectsIntegrationTest {
     @Test
     fun `full flow from data source to UI state should work correctly`() = runTest {
         // Given successful data source
-        coEvery { dataSource.loadProjectsByType(ProjectType.ART) } returns sampleArtProjects
+        dataSource.setProjectsForType(ProjectType.ART, sampleArtProjects)
         
         // When loading projects in tab view model
         projectTabViewModel.loadProjects()
@@ -102,7 +100,7 @@ class ProjectsIntegrationTest {
     fun `error flow from data source to UI state should work correctly`() = runTest {
         // Given data source that will fail
         val originalError = "Failed to load JSON file"
-        coEvery { dataSource.loadProjectsByType(ProjectType.ART) } throws Exception(originalError)
+        dataSource.setErrorForType(ProjectType.ART, originalError)
         
         // When loading projects
         projectTabViewModel.loadProjects()
@@ -120,7 +118,7 @@ class ProjectsIntegrationTest {
     @Test
     fun `search functionality should work across the full stack`() = runTest {
         // Given loaded projects
-        coEvery { dataSource.loadProjectsByType(ProjectType.ART) } returns sampleArtProjects
+        dataSource.setProjectsForType(ProjectType.ART, sampleArtProjects)
         projectTabViewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
         
@@ -138,8 +136,8 @@ class ProjectsIntegrationTest {
     @Test
     fun `different project types should load different data`() = runTest {
         // Given different data for different project types
-        coEvery { dataSource.loadProjectsByType(ProjectType.ART) } returns sampleArtProjects
-        coEvery { dataSource.loadProjectsByType(ProjectType.PERFORMANCES) } returns samplePerformanceProjects
+        dataSource.setProjectsForType(ProjectType.ART, sampleArtProjects)
+        dataSource.setProjectsForType(ProjectType.PERFORMANCES, samplePerformanceProjects)
         
         // When creating view models for different types
         val artViewModel = ProjectTabViewModel(repository, ProjectType.ART)
@@ -174,7 +172,7 @@ class ProjectsIntegrationTest {
     @Test
     fun `retry functionality should work across full stack`() = runTest {
         // Given initial error
-        coEvery { dataSource.loadProjectsByType(ProjectType.ART) } throws Exception("Network error")
+        dataSource.setErrorForType(ProjectType.ART, "Network error")
         projectTabViewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
         
@@ -183,7 +181,7 @@ class ProjectsIntegrationTest {
         assertNotNull(errorState.error)
         
         // When fixing data source and retrying
-        coEvery { dataSource.loadProjectsByType(ProjectType.ART) } returns sampleArtProjects
+        dataSource.setProjectsForType(ProjectType.ART, sampleArtProjects)
         projectTabViewModel.retryLoading()
         testDispatcher.scheduler.advanceUntilIdle()
         
@@ -191,5 +189,28 @@ class ProjectsIntegrationTest {
         val successState = projectTabViewModel.uiState.first()
         assertNull(successState.error)
         assertEquals(sampleArtProjects, successState.projects)
+    }
+}
+
+private class MockJsonResourceDataSourceForIntegration : JsonResourceDataSource {
+    private val projectsMap = mutableMapOf<ProjectType, List<ProjectItem>>()
+    private val errorsMap = mutableMapOf<ProjectType, String>()
+    
+    fun setProjectsForType(type: ProjectType, projects: List<ProjectItem>) {
+        projectsMap[type] = projects
+        errorsMap.remove(type)
+    }
+    
+    fun setErrorForType(type: ProjectType, errorMessage: String) {
+        errorsMap[type] = errorMessage
+        projectsMap.remove(type)
+    }
+    
+    override suspend fun loadProjectsByType(type: ProjectType): List<ProjectItem> {
+        errorsMap[type]?.let { error ->
+            throw Exception(error)
+        }
+        
+        return projectsMap[type] ?: emptyList()
     }
 }
