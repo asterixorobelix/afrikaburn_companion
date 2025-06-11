@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.detekt)
     alias(libs.plugins.googleServices)
     alias(libs.plugins.firebaseCrashlytics)
@@ -79,10 +80,15 @@ kotlin {
             implementation(libs.koin.compose)
 
             implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.serialization.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
+        }
+        
+        androidUnitTest.dependencies {
+            implementation(libs.mockk)
         }
     }
 }
@@ -95,8 +101,8 @@ android {
         applicationId = "io.asterixorobelix.afrikaburn"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 3
+        versionName = "2.1"
     }
     packaging {
         resources {

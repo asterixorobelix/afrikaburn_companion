@@ -35,6 +35,10 @@ This is a Kotlin Multiplatform project, targeting Android and iOS platforms.
 
 5. **Run tests**:
    ```bash
+   # Android/JVM unit tests (recommended)
+   ./gradlew :composeApp:testDebugUnitTest
+   
+   # All tests (may have platform compatibility issues)
    ./gradlew test
    ```
 
@@ -45,7 +49,7 @@ This is a Kotlin Multiplatform project, targeting Android and iOS platforms.
 
 7. **Combined quality check**:
    ```bash
-   ./gradlew test detekt
+   ./gradlew :composeApp:testDebugUnitTest detekt
    ```
 
 8. **Pre-commit validation** (MANDATORY before all commits):
@@ -57,6 +61,17 @@ This is a Kotlin Multiplatform project, targeting Android and iOS platforms.
    ```bash
    ./gradlew detektFormat
    ```
+
+### Gradle Wrapper Notes
+
+- If you encounter `ClassNotFoundException: org.gradle.wrapper.GradleWrapperMain`, the gradle wrapper jar may be corrupted
+- To fix: Install gradle via SDKMAN and regenerate wrapper:
+  ```bash
+  curl -s "https://get.sdkman.io" | bash
+  source "$HOME/.sdkman/bin/sdkman-init.sh"
+  sdk install gradle 8.11.1
+  gradle wrapper
+  ```
 
 ## Architecture Overview
 
@@ -225,28 +240,54 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
 
 5. **Spacing and Dimensions**:
    ```kotlin
-   // ✅ CORRECT - Use standard Material spacing
-   .padding(16.dp)        // Standard content padding
-   .padding(8.dp)         // Small spacing
-   .padding(24.dp)        // Large spacing
+   // ✅ CORRECT - Always use Dimens object for all spacing and dimensions
+   import io.asterixorobelix.afrikaburn.Dimens
+   
+   .padding(Dimens.paddingMedium)        // Standard content padding (16.dp)
+   .padding(Dimens.paddingSmall)         // Small spacing (8.dp)
+   .padding(Dimens.paddingLarge)         // Large spacing (24.dp)
+   Spacer(modifier = Modifier.height(Dimens.paddingMedium))
+   
+   // ❌ WRONG - Never hardcode dimensions
+   .padding(16.dp)
+   .padding(8.dp)
+   .padding(24.dp)
    Spacer(modifier = Modifier.height(16.dp))
    
-   // For custom dimensions, create a Dimens object:
+   // Available Dimens values:
    object Dimens {
-       val cardElevation = 4.dp
-       val iconSize = 24.dp
-       val avatarSize = 40.dp
+       // Padding
+       val paddingExtraSmall = 4.dp
+       val paddingSmall = 8.dp
+       val paddingMedium = 16.dp
+       val paddingLarge = 24.dp
+       
+       // Corner Radius
+       val cornerRadiusXSmall = 2.dp
+       val cornerRadiusSmall = 4.dp
+       val cornerRadiusMedium = 8.dp
+       val cornerRadiusLarge = 16.dp
+       
+       // Elevation
+       val elevationSmall = 2.dp
+       val elevationNormal = 8.dp
+       
+       // Other dimensions
+       val dropdownMaxHeight = 200.dp
    }
    ```
 
 6. **Component Usage Examples**:
    ```kotlin
-   // ✅ CORRECT - Proper Material 3 components
+   // ✅ CORRECT - Proper Material 3 components with Dimens
+   import io.asterixorobelix.afrikaburn.Dimens
+   
    Button(
        onClick = { },
        colors = ButtonDefaults.buttonColors(
            containerColor = MaterialTheme.colorScheme.primary
-       )
+       ),
+       modifier = Modifier.padding(Dimens.paddingSmall)
    ) {
        Text(
            text = "Button Text",
@@ -261,21 +302,30 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
            containerColor = MaterialTheme.colorScheme.surface
        ),
        shape = MaterialTheme.shapes.medium,
-       elevation = CardDefaults.cardElevation(defaultElevation = Dimens.cardElevation)
+       elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
    ) {
        Column(
-           modifier = Modifier.padding(Dimens.paddingMedium)
+           modifier = Modifier.padding(Dimens.paddingMedium),
+           verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
        ) {
            Text(
                text = "Card Title",
                style = MaterialTheme.typography.titleMedium,
                color = MaterialTheme.colorScheme.onSurface
            )
+           
+           Spacer(modifier = Modifier.height(Dimens.paddingExtraSmall))
+           
+           Text(
+               text = "Card content with proper spacing",
+               style = MaterialTheme.typography.bodyMedium,
+               color = MaterialTheme.colorScheme.onSurface
+           )
        }
    }
    ```
 
-**ENFORCEMENT**: Any PR with hardcoded colors, typography, or shapes will be rejected. Always use the Material Design 3 theme system.
+**ENFORCEMENT**: Any PR with hardcoded colors, typography, shapes, or dimensions will be rejected. Always use the Material Design 3 theme system and Dimens object for all spacing and dimensions.
 
 **CRITICAL APPTHEME RULE**: `AppTheme` is ONLY declared once in App.kt at the application level. NEVER wrap individual screens or components in `AppTheme` - they inherit theming automatically. Only use `AppTheme` in Preview functions for testing purposes.
 
@@ -342,7 +392,8 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
                modifier = Modifier
                    .fillMaxSize()
                    .background(MaterialTheme.colorScheme.background)
-                   .padding(Dimens.paddingMedium)
+                   .padding(Dimens.paddingMedium),
+               verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
            ) {
                Text(
                    text = stringResource(Res.string.screen_profile_title),
@@ -580,6 +631,229 @@ ui/about/
 ```
 
 **ENFORCEMENT**: Any PR with multiple `@Preview` functions in a single file will be rejected. Any PR with new Composables lacking proper `@Preview` functions and required imports will be rejected.
+
+### Data Class Organization
+**MANDATORY for all AI assistants working on this mobile project:**
+
+#### Always Place Data Classes in Separate Files in Models Folder
+All data classes must be organized in individual files within the `models` package for better maintainability and reusability.
+
+1. **Models Folder Structure**:
+   ```
+   composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/models/
+   ├── Artist.kt
+   ├── ProjectItem.kt
+   ├── TabDataSource.kt
+   └── [OtherModel].kt
+   ```
+
+2. **One Data Class Per File Rule**:
+   ```kotlin
+   // ✅ CORRECT - Each data class in its own file
+   
+   // File: models/Artist.kt
+   package io.asterixorobelix.afrikaburn.models
+   
+   import kotlinx.serialization.SerialName
+   import kotlinx.serialization.Serializable
+   
+   @Serializable
+   data class Artist(
+       @SerialName("s") val name: String = ""
+   )
+   
+   // File: models/ProjectItem.kt
+   package io.asterixorobelix.afrikaburn.models
+   
+   import kotlinx.serialization.SerialName
+   import kotlinx.serialization.Serializable
+   
+   @Serializable
+   data class ProjectItem(
+       @SerialName("Name") val name: String,
+       @SerialName("Description") val description: String,
+       @SerialName("Artist") val artist: Artist = Artist(),
+       @SerialName("code") val code: String = "",
+       @SerialName("status") val status: String = ""
+   )
+   ```
+
+3. **Import Models in UI Files**:
+   ```kotlin
+   // ✅ CORRECT - Import models from dedicated package
+   import io.asterixorobelix.afrikaburn.models.Artist
+   import io.asterixorobelix.afrikaburn.models.ProjectItem
+   import io.asterixorobelix.afrikaburn.models.TabDataSource
+   
+   @Composable
+   fun ProjectsScreen() {
+       // Use imported models
+       var projects by remember { mutableStateOf<List<ProjectItem>?>(null) }
+   }
+   
+   // ❌ WRONG - Data classes defined in UI files
+   @Composable
+   fun SomeScreen() {
+       // UI implementation
+   }
+   
+   data class SomeModel(val name: String) // <- This is INCORRECT
+   ```
+
+4. **Serialization Best Practices**:
+   ```kotlin
+   // ✅ CORRECT - Proper serialization annotations
+   @Serializable
+   data class Event(
+       @SerialName("Name") val name: String,
+       @SerialName("Description") val description: String,
+       @SerialName("Artist") val artist: Artist = Artist(),
+       @SerialName("code") val code: String = "",
+       @SerialName("status") val status: String = ""
+   )
+   
+   // ✅ CORRECT - Non-serializable internal models
+   data class TabDataSource(
+       val fileName: String,
+       val displayName: String
+   )
+   ```
+
+5. **File Naming Conventions**:
+   - Use PascalCase for file names matching the data class name
+   - File name must exactly match the data class name
+   - Examples: `Artist.kt`, `ProjectItem.kt`, `EventDetails.kt`
+
+**CRITICAL RULES**:
+- **NEVER** define data classes in UI files (screens, components)
+- **ALWAYS** create a separate file for each data class in the `models` package
+- **ALWAYS** use proper package declaration: `package io.asterixorobelix.afrikaburn.models`
+- **INCLUDE** appropriate serialization annotations when needed
+- **IMPORT** models explicitly in files that use them
+- **FOLLOW** consistent naming conventions
+
+**ENFORCEMENT**: Any PR with data classes defined outside the `models` package or multiple data classes in a single file will be rejected. All data models must be properly organized for maintainability and reusability.
+
+### Dimensions and Spacing Management
+**MANDATORY for all AI assistants working on this mobile project:**
+
+#### Always Use Dimens Object for All Spacing and Dimensions
+All spacing, padding, margins, sizes, and other dimensions must use the centralized Dimens object for consistency and maintainability.
+
+1. **Required Import and Usage**:
+   ```kotlin
+   // ✅ CORRECT - Always import and use Dimens
+   import io.asterixorobelix.afrikaburn.Dimens
+   
+   @Composable
+   fun MyComponent() {
+       Column(
+           modifier = Modifier
+               .fillMaxWidth()
+               .padding(Dimens.paddingMedium),
+           verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
+       ) {
+           Card(
+               modifier = Modifier.fillMaxWidth(),
+               elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
+           ) {
+               Text(
+                   text = "Content",
+                   modifier = Modifier.padding(Dimens.paddingMedium)
+               )
+           }
+           
+           Spacer(modifier = Modifier.height(Dimens.paddingLarge))
+       }
+   }
+   
+   // ❌ WRONG - Never hardcode dimensions
+   Column(
+       modifier = Modifier.padding(16.dp), // INCORRECT
+       verticalArrangement = Arrangement.spacedBy(8.dp) // INCORRECT
+   ) {
+       // content
+   }
+   ```
+
+2. **Available Dimens Values**:
+   ```kotlin
+   object Dimens {
+       // Padding - Use for margins, padding, spacing
+       val paddingExtraSmall = 4.dp
+       val paddingSmall = 8.dp
+       val paddingMedium = 16.dp
+       val paddingLarge = 24.dp
+       
+       // Corner Radius - Use for shape definitions
+       val cornerRadiusXSmall = 2.dp
+       val cornerRadiusSmall = 4.dp
+       val cornerRadiusMedium = 8.dp
+       val cornerRadiusLarge = 16.dp
+       
+       // Elevation - Use for card and surface elevation
+       val elevationSmall = 2.dp
+       val elevationNormal = 8.dp
+       
+       // Specific Dimensions
+       val dropdownMaxHeight = 200.dp
+   }
+   ```
+
+3. **Common Usage Patterns**:
+   ```kotlin
+   // ✅ CORRECT - Standard spacing patterns
+   
+   // Screen-level padding
+   .padding(Dimens.paddingMedium)
+   
+   // Component spacing
+   verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
+   
+   // Card content padding
+   .padding(Dimens.paddingMedium)
+   
+   // Small gaps between elements
+   Spacer(modifier = Modifier.height(Dimens.paddingSmall))
+   
+   // Large section separators
+   Spacer(modifier = Modifier.height(Dimens.paddingLarge))
+   
+   // Card elevation
+   elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
+   ```
+
+4. **Adding New Dimensions**:
+   ```kotlin
+   // ✅ CORRECT - Add new dimensions to existing Dimens object in Theme.kt
+   object Dimens {
+       // Existing dimensions...
+       
+       // New dimensions (add with descriptive names)
+       val iconSizeSmall = 16.dp
+       val iconSizeMedium = 24.dp
+       val iconSizeLarge = 32.dp
+       val searchBarHeight = 56.dp
+       val tabBarHeight = 48.dp
+   }
+   
+   // ❌ WRONG - Never create separate dimension objects or hardcode
+   object MyComponentDimens { // INCORRECT
+       val customPadding = 12.dp
+   }
+   
+   val customSize = 20.dp // INCORRECT
+   ```
+
+**CRITICAL RULES**:
+- **NEVER** hardcode any dimension values (dp values) in Composables
+- **ALWAYS** import and use `io.asterixorobelix.afrikaburn.Dimens`
+- **ALWAYS** use appropriate Dimens values for spacing, padding, margins, sizes
+- **ADD** new dimensions to the existing Dimens object in Theme.kt when needed
+- **USE** descriptive names when adding new dimensions
+- **MAINTAIN** consistency across the app by using standard Dimens values
+
+**ENFORCEMENT**: Any PR with hardcoded dimension values will be rejected. All spacing and dimensions must use the centralized Dimens object for maintainability and design consistency.
 
 ### Testing Strategy
 - Unit tests for business logic (80%+ coverage)
@@ -841,7 +1115,8 @@ For Bill of Materials (BOM) dependencies like Firebase, use this pattern:
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
-                    .padding(16.dp) // Use standard Material spacing
+                    .padding(Dimens.paddingMedium), // Always use Dimens for spacing
+                verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
             ) {
                 Text(
                     text = "Title",
@@ -853,9 +1128,15 @@ For Bill of Materials (BOM) dependencies like Firebase, use this pattern:
                     colors = CardDefaults.cardColors(
                         containerColor = MaterialTheme.colorScheme.surface
                     ),
-                    shape = MaterialTheme.shapes.medium
+                    shape = MaterialTheme.shapes.medium,
+                    elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall),
+                    modifier = Modifier.padding(Dimens.paddingExtraSmall)
                 ) {
-                    // Card content
+                    Column(
+                        modifier = Modifier.padding(Dimens.paddingMedium)
+                    ) {
+                        // Card content
+                    }
                 }
             }
         }
@@ -874,6 +1155,10 @@ For Bill of Materials (BOM) dependencies like Firebase, use this pattern:
     - Body text: `MaterialTheme.typography.bodyLarge/Medium/Small`
     - Labels: `MaterialTheme.typography.labelLarge/Medium/Small`
   - **Spacing Guidelines**:
+    - **ALWAYS** use Dimens object for all spacing and dimensions
+    - **NEVER** hardcode spacing values like 4.dp, 8.dp, 16.dp, etc.
+    - Available spacing: Dimens.paddingExtraSmall, Dimens.paddingSmall, Dimens.paddingMedium, Dimens.paddingLarge
+    - For custom dimensions, add them to the existing Dimens object in Theme.kt
     - Use standard Material spacing: 4.dp, 8.dp, 12.dp, 16.dp, 20.dp, 24.dp, 32.dp
     - For custom dimensions, define them in a `Dimens` object
 - **CRITICAL: Code Quality with Detekt**:

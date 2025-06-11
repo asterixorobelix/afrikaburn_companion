@@ -14,6 +14,7 @@
     <string name="about_page4_title">Contact Me</string>
     <string name="about_page4_content">I am an app developer</string>
     <string name="direction_title">Event location</string>
+    <string name="direction_sub_title">Driving to Afrikaburn</string>
     <string name="direction_content">Afrikaburn is NOT in the Tankwa Karoo National Park! You will lose cellphone reception while driving, so be sure to download an offline version of the route in Google Maps. The AfrikaBurn event takes place at Quaggafontein, a private farm in the Tankwa Karoo. The farm is located about 3 hours drive from Cape Town, and 2 hours drive from Ceres. The nearest town is Calvinia, which is about 1 hour away. The GPS coordinates for Quaggafontein are: -32.482474, 19.897824. Please note that the AfrikaBurn event is not held in the Tankwa Karoo National Park.</string>
     
     <!-- About URLs -->
@@ -21,7 +22,7 @@
     <string name="about_page2_url">https://quaggapedia.afrikaburn.com/index.php?title=Main_Page/</string>
     <string name="about_page3_url">https://tickets.afrikaburn.org/afrikaburn-2025-theme/</string>
     <string name="about_page4_url">https://www.linkedin.com/in/nathan-stasin</string>
-    <string name="direction_url">https://www.google.com/maps/place/32%C2%B028\'56.9%22S+19%C2%B053\'52.2%22E/@-32.4824742,19.8952495,17z/data=!3m1!4b1!4m4!3m3!8m2!3d-32.4824742!4d19.8978244?entry=ttu&amp;g_ep=EgoyMDI1MDQwMi4xIKXMDSoJLDEwMjExNDUzSAFQAw%3D%3D</string>
+    <string name="direction_url">https://www.google.com/maps/place/32%C2%B028&apos;56.9&quot;S+19%C2%B053&apos;52.2&quot;E/@-32.4824742,19.8952495,17z/data=!3m1!4b1!4m4!3m3!8m2!3d-32.4824742!4d19.8978244?entry=ttu&amp;g_ep=EgoyMDI1MDQwMi4xIKXMDSoJLDEwMjExNDUzSAFQAw%3D%3D</string>
     
     <!-- Button texts -->
     <string name="button_learn_more">Learn More</string>
@@ -30,9 +31,44 @@
     <string name="button_contact">Contact</string>
     <string name="button_directions">Google maps</string>
     
+    <!-- Projects tabs -->
+    <string name="tab_art">Art</string>
+    <string name="tab_performances">Performances</string>
+    <string name="tab_events">Events</string>
+    <string name="tab_mobile_art">Mobile Art</string>
+    <string name="tab_vehicles">Vehicles</string>
+    <string name="tab_camps">Camps</string>
+    
+    <!-- Search and UI states -->
+    <string name="search_placeholder">Search %1$s...</string>
+    <string name="loading_projects">Loading projects...</string>
+    <string name="error_loading_projects">Failed to load projects</string>
+    <string name="button_retry">Retry</string>
+    <string name="no_results_found">No %1$s found</string>
+    <string name="no_results_for_query">No results for \"%1$s\"</string>
+    
+    <!-- Family filter -->
+    <string name="filter_family_friendly">Family Friendly</string>
+    <string name="filter_family_friendly_short">Child friendly</string>
+    <string name="filter_family_friendly_description">Show only family-friendly camps</string>
+    
+    <!-- Time filters -->
+    <string name="filter_time_all">All Times</string>
+    <string name="filter_time_daytime">Daytime</string>
+    <string name="filter_time_nighttime">Nighttime</string>
+    <string name="filter_time_description">Filter camps by operating time</string>
+    
     <!-- Content descriptions -->
     <string name="cd_projects_icon">Projects icon</string>
     <string name="cd_directions_icon">Directions icon</string>
+    <string name="cd_search_icon">Search</string>
+    <string name="cd_clear_search">Clear search</string>
+    <string name="cd_error_icon">Error</string>
+    <string name="cd_no_results_icon">No results</string>
+    <string name="cd_retry_button">Retry</string>
+    <string name="cd_artist_icon">Artist</string>
+    <string name="cd_family_filter">Family filter</string>
+    <string name="cd_time_filter">Time filter</string>
     <string name="cd_page_indicator">Page %1$d of %2$d</string>
     <string name="cd_about_pager">About information carousel</string>
     <string name="cd_about_page1_image">Compose Multiplatform logo</string>
