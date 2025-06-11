@@ -10,11 +10,18 @@ import afrikaburn.composeapp.generated.resources.Res
 class JsonResourceDataSourceImpl : JsonResourceDataSource {
 
     @OptIn(ExperimentalResourceApi::class)
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun loadProjectsByType(type: ProjectType): List<ProjectItem> {
         return try {
             val fileContent = Res.readBytes("files/${type.fileName}").decodeToString()
             Json.decodeFromString<List<ProjectItem>>(fileContent)
-        } catch (e: Exception) {
+        } catch (e: kotlinx.serialization.SerializationException) {
+            throw DataSourceException("Failed to parse JSON for ${type.displayName}: ${e.message}", e)
+        } catch (e: IllegalArgumentException) {
+            throw DataSourceException("Invalid resource path for ${type.displayName}: ${e.message}", e)
+        } catch (e: OutOfMemoryError) {
+            throw DataSourceException("Resource too large for ${type.displayName}: ${e.message}", e)
+        } catch (e: RuntimeException) {
             throw DataSourceException("Failed to load ${type.displayName}: ${e.message}", e)
         }
     }

@@ -409,67 +409,79 @@ private fun ProjectCard(project: ProjectItem) {
                 .fillMaxWidth()
                 .padding(Dimens.paddingLarge)
         ) {
-            // Title
+            ProjectCardHeader(project = project)
+            ProjectCardDescription(description = project.description)
+            ProjectCardStatusBadge(status = project.status)
+        }
+    }
+}
+
+@Composable
+private fun ProjectCardHeader(project: ProjectItem) {
+    Text(
+        text = project.name,
+        style = MaterialTheme.typography.headlineSmall,
+        color = MaterialTheme.colorScheme.onSurface,
+        modifier = Modifier.padding(bottom = Dimens.paddingSmall)
+    )
+    
+    if (project.artist.name.isNotEmpty()) {
+        ProjectCardArtistInfo(artistName = project.artist.name)
+        Divider(
+            color = MaterialTheme.colorScheme.outlineVariant,
+            modifier = Modifier.padding(bottom = Dimens.paddingSmall)
+        )
+    }
+}
+
+@Composable
+private fun ProjectCardArtistInfo(artistName: String) {
+    Row(
+        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+        modifier = Modifier.padding(bottom = Dimens.paddingSmall)
+    ) {
+        Icon(
+            imageVector = Icons.Default.Person,
+            contentDescription = stringResource(Res.string.cd_artist_icon),
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(Dimens.paddingMedium)
+        )
+        Spacer(modifier = Modifier.width(Dimens.paddingSmall))
+        Text(
+            text = artistName,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun ProjectCardDescription(description: String) {
+    Text(
+        text = description,
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurface,
+        lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
+    )
+}
+
+@Composable
+private fun ProjectCardStatusBadge(status: String) {
+    if (status.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(Dimens.paddingMedium))
+        Surface(
+            shape = MaterialTheme.shapes.small,
+            color = MaterialTheme.colorScheme.primaryContainer
+        ) {
             Text(
-                text = project.name,
-                style = MaterialTheme.typography.headlineSmall,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(bottom = Dimens.paddingSmall)
-            )
-            
-            // Artist info with icon
-            if (project.artist.name.isNotEmpty()) {
-                Row(
-                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
-                    modifier = Modifier.padding(bottom = Dimens.paddingSmall)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = stringResource(Res.string.cd_artist_icon),
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(Dimens.paddingMedium)
-                    )
-                    Spacer(modifier = Modifier.width(Dimens.paddingSmall))
-                    Text(
-                        text = project.artist.name,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-            
-            // Divider for visual separation
-            if (project.artist.name.isNotEmpty()) {
-                Divider(
-                    color = MaterialTheme.colorScheme.outlineVariant,
-                    modifier = Modifier.padding(bottom = Dimens.paddingSmall)
+                text = status,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                modifier = Modifier.padding(
+                    horizontal = Dimens.paddingSmall,
+                    vertical = Dimens.paddingExtraSmall
                 )
-            }
-            
-            // Description
-            Text(
-                text = project.description,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
             )
-            
-            // Status badge
-            if (project.status.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(Dimens.paddingMedium))
-                Surface(
-                    shape = MaterialTheme.shapes.small,
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    modifier = Modifier
-                ) {
-                    Text(
-                        text = project.status,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.padding(horizontal = Dimens.paddingSmall, vertical = Dimens.paddingExtraSmall)
-                    )
-                }
-            }
         }
     }
 }
@@ -542,10 +554,3 @@ private fun FilterChipsRow(
     }
 }
 
-@Preview
-@Composable
-private fun ProjectsScreenPreview() {
-    io.asterixorobelix.afrikaburn.AppTheme {
-        ProjectsScreen()
-    }
-}

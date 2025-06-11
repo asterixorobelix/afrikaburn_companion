@@ -14,6 +14,7 @@ class ProjectsRepositoryImpl(
     // In-memory cache for loaded projects
     private val cache = mutableMapOf<ProjectType, List<ProjectItem>>()
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun getProjectsByType(type: ProjectType): Result<List<ProjectItem>> {
         return try {
             // Check cache first
