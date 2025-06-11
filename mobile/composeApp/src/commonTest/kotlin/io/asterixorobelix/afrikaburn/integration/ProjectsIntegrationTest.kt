@@ -101,18 +101,18 @@ class ProjectsIntegrationTest {
     @Test
     fun `error flow from data source to UI state should work correctly`() = runTest {
         // Given data source that will fail
-        val errorMessage = "Failed to load JSON file"
-        coEvery { dataSource.loadProjectsByType(ProjectType.ART) } throws Exception(errorMessage)
+        val originalError = "Failed to load JSON file"
+        coEvery { dataSource.loadProjectsByType(ProjectType.ART) } throws Exception(originalError)
         
         // When loading projects
         projectTabViewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
         
-        // Then UI state should reflect error
+        // Then UI state should reflect wrapped error message
         val uiState = projectTabViewModel.uiState.first()
         assertFalse(uiState.isLoading)
         assertNotNull(uiState.error)
-        assertEquals(errorMessage, uiState.error)
+        assertEquals("Unexpected error loading Art", uiState.error)
         assertTrue(uiState.projects.isEmpty())
         assertTrue(uiState.filteredProjects.isEmpty())
     }

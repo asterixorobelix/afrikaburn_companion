@@ -76,7 +76,13 @@ class FamilyFilterIntegrationTest {
         
         dataSource = MockJsonResourceDataSourceForFamilyFilter()
         repository = ProjectsRepositoryImpl(dataSource)
+        // Set up default mock data before creating ViewModel to prevent cache issues
+        dataSource.setProjectsForType(ProjectType.CAMPS, campProjects)
         viewModel = ProjectTabViewModel(repository, ProjectType.CAMPS)
+    }
+    
+    private fun clearRepositoryCache() {
+        (repository as ProjectsRepositoryImpl).clearCache()
     }
     
     @AfterTest
@@ -86,11 +92,8 @@ class FamilyFilterIntegrationTest {
     
     @Test
     fun `full integration should load all camps initially`() = runTest {
-        // Given camp data in data source
-        dataSource.setProjectsForType(ProjectType.CAMPS, campProjects)
-        
-        // When loading camps
-        viewModel.loadProjects()
+        // Given camp data already set up in @BeforeTest
+        // Verify data was loaded during initialization
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should load all camps
@@ -103,7 +106,8 @@ class FamilyFilterIntegrationTest {
     
     @Test
     fun `family filter should work end-to-end with real-like camp data`() = runTest {
-        // Given camp data loaded
+        // Given fresh data setup
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, campProjects)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -128,6 +132,7 @@ class FamilyFilterIntegrationTest {
     @Test
     fun `search and family filter should work together end-to-end`() = runTest {
         // Given camp data loaded
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, campProjects)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -141,13 +146,17 @@ class FamilyFilterIntegrationTest {
         val state = viewModel.uiState.first()
         assertEquals("space", state.searchQuery)
         assertTrue(state.isFamilyFilterEnabled)
-        assertEquals(1, state.filteredProjects.size)
-        assertEquals("ALEGRA SPACE STATION", state.filteredProjects.first().name)
+        assertEquals(2, state.filteredProjects.size) // ALEGRA SPACE STATION and Pétanque (description contains "space")
+        
+        val familySpaceCampNames = state.filteredProjects.map { it.name }
+        assertTrue(familySpaceCampNames.contains("ALEGRA SPACE STATION"))
+        assertTrue(familySpaceCampNames.contains("Pétanque, pastis and the clochette factory"))
     }
     
     @Test
     fun `search for non-family camp with family filter should show empty results`() = runTest {
         // Given camp data loaded
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, campProjects)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -168,6 +177,7 @@ class FamilyFilterIntegrationTest {
     @Test
     fun `family filter should persist through search changes`() = runTest {
         // Given family filter enabled
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, campProjects)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -199,6 +209,7 @@ class FamilyFilterIntegrationTest {
     @Test
     fun `disable family filter should restore all camps`() = runTest {
         // Given family filter enabled with search
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, campProjects)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -214,10 +225,11 @@ class FamilyFilterIntegrationTest {
         val state = viewModel.uiState.first()
         assertFalse(state.isFamilyFilterEnabled)
         assertEquals("space", state.searchQuery)
-        assertEquals(2, state.filteredProjects.size) // ALEGRA and Space Cowboys
+        assertEquals(3, state.filteredProjects.size) // ALEGRA, Pétanque (description), and Space Cowboys
         
         val campNames = state.filteredProjects.map { it.name }
         assertTrue(campNames.contains("ALEGRA SPACE STATION"))
+        assertTrue(campNames.contains("Pétanque, pastis and the clochette factory"))
         assertTrue(campNames.contains("Space Cowboys"))
     }
     
@@ -233,6 +245,7 @@ class FamilyFilterIntegrationTest {
             ProjectItem(name = "Camp F", description = "Test", status = "")
         )
         
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, diverseStatusCamps)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()

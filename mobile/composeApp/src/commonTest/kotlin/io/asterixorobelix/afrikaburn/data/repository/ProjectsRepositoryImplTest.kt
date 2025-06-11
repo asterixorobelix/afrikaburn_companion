@@ -49,19 +49,19 @@ class ProjectsRepositoryImplTest {
     @Test
     fun `getProjectsByType should return failure when data source throws exception`() = runTest {
         // Given data source that throws exception
-        val errorMessage = "Failed to load JSON file"
+        val originalError = "Failed to load JSON file"
         val dataSource = MockJsonResourceDataSourceForRepository().apply {
-            setErrorResponse(errorMessage)
+            setErrorResponse(originalError)
         }
         val repository: ProjectsRepository = ProjectsRepositoryImpl(dataSource)
         
         // When getting projects
         val result = repository.getProjectsByType(ProjectType.ART)
         
-        // Then should return failure
+        // Then should return failure with wrapped error message
         assertTrue(result.isFailure)
         assertNotNull(result.exceptionOrNull())
-        assertEquals(errorMessage, result.exceptionOrNull()?.message)
+        assertEquals("Unexpected error loading Art", result.exceptionOrNull()?.message)
     }
     
     @Test

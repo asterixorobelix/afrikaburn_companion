@@ -112,7 +112,13 @@ class TimeFilterIntegrationTest {
         
         dataSource = MockJsonResourceDataSourceForTimeFilter()
         repository = ProjectsRepositoryImpl(dataSource)
+        // Set up default mock data before creating ViewModel to prevent cache issues
+        dataSource.setProjectsForType(ProjectType.CAMPS, realCampData)
         viewModel = ProjectTabViewModel(repository, ProjectType.CAMPS)
+    }
+    
+    private fun clearRepositoryCache() {
+        (repository as ProjectsRepositoryImpl).clearCache()
     }
     
     @AfterTest
@@ -122,11 +128,8 @@ class TimeFilterIntegrationTest {
     
     @Test
     fun `full integration should load all camps with default ALL time filter`() = runTest {
-        // Given camp data in data source
-        dataSource.setProjectsForType(ProjectType.CAMPS, realCampData)
-        
-        // When loading camps
-        viewModel.loadProjects()
+        // Given camp data already set up in @BeforeTest
+        // Verify data was loaded during initialization
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should load all camps with ALL time filter
@@ -139,7 +142,8 @@ class TimeFilterIntegrationTest {
     
     @Test
     fun `daytime filter should work end-to-end with real camp data`() = runTest {
-        // Given camp data loaded
+        // Given fresh data setup
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, realCampData)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -167,7 +171,8 @@ class TimeFilterIntegrationTest {
     
     @Test
     fun `nighttime filter should work end-to-end with real camp data`() = runTest {
-        // Given camp data loaded
+        // Given fresh data setup
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, realCampData)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -195,7 +200,8 @@ class TimeFilterIntegrationTest {
     
     @Test
     fun `family and time filters should work together end-to-end`() = runTest {
-        // Given camp data loaded
+        // Given fresh data setup
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, realCampData)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -221,7 +227,8 @@ class TimeFilterIntegrationTest {
     
     @Test
     fun `search with time filter should work end-to-end`() = runTest {
-        // Given camp data loaded
+        // Given fresh data setup
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, realCampData)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -235,13 +242,17 @@ class TimeFilterIntegrationTest {
         val state = viewModel.uiState.first()
         assertEquals("space", state.searchQuery)
         assertEquals(TimeFilter.NIGHTTIME, state.timeFilter)
-        assertEquals(1, state.filteredProjects.size)
-        assertEquals("Space Cowboys", state.filteredProjects.first().name)
+        assertEquals(2, state.filteredProjects.size) // Space Cowboys and Garden of Weeden (contains "spaces")
+        
+        val campNames = state.filteredProjects.map { it.name }
+        assertTrue(campNames.contains("Space Cowboys"))
+        assertTrue(campNames.contains("Garden of Weeden"))
     }
     
     @Test
     fun `all three filters should work together end-to-end`() = runTest {
-        // Given camp data loaded
+        // Given fresh data setup
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, realCampData)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -265,6 +276,7 @@ class TimeFilterIntegrationTest {
     fun `time filter with no matches should show empty results`() = runTest {
         // Given only "Other" camps (no specific time)
         val otherCamps = realCampData.filter { it.status.contains("Other") }
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, otherCamps)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -283,6 +295,7 @@ class TimeFilterIntegrationTest {
     @Test
     fun `resetting time filter should restore all camps`() = runTest {
         // Given daytime filter applied
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, realCampData)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -302,7 +315,8 @@ class TimeFilterIntegrationTest {
     
     @Test
     fun `complex filter combinations should work correctly`() = runTest {
-        // Given camp data loaded
+        // Given fresh data setup
+        clearRepositoryCache()
         dataSource.setProjectsForType(ProjectType.CAMPS, realCampData)
         viewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()

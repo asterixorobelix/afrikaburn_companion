@@ -305,11 +305,12 @@ class TimeFilterViewModelTest {
         val state = viewModel.uiState.first()
         assertEquals("Camp", state.searchQuery)
         assertEquals(TimeFilter.NIGHTTIME, state.timeFilter)
-        assertEquals(2, state.filteredProjects.size) // 24/7 Camp matches both
+        assertEquals(1, state.filteredProjects.size) // Only 24/7 Camp matches both search and nighttime filter
         
         val projectNames = state.filteredProjects.map { it.name }
         assertTrue(projectNames.contains("24/7 Camp"))
-        assertTrue(projectNames.contains("Flexible Schedule Camp") == false) // Doesn't match time filter
+        assertFalse(projectNames.contains("Flexible Schedule Camp")) // Doesn't match time filter
+        assertFalse(projectNames.contains("Morning Coffee Camp")) // Doesn't match time filter
     }
     
     @Test
