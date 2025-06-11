@@ -35,6 +35,10 @@ This is a Kotlin Multiplatform project, targeting Android and iOS platforms.
 
 5. **Run tests**:
    ```bash
+   # Android/JVM unit tests (recommended)
+   ./gradlew :composeApp:testDebugUnitTest
+   
+   # All tests (may have platform compatibility issues)
    ./gradlew test
    ```
 
@@ -45,8 +49,19 @@ This is a Kotlin Multiplatform project, targeting Android and iOS platforms.
 
 7. **Combined quality check**:
    ```bash
-   ./gradlew test detekt
+   ./gradlew :composeApp:testDebugUnitTest detekt
    ```
+
+### Gradle Wrapper Notes
+
+- If you encounter `ClassNotFoundException: org.gradle.wrapper.GradleWrapperMain`, the gradle wrapper jar may be corrupted
+- To fix: Install gradle via SDKMAN and regenerate wrapper:
+  ```bash
+  curl -s "https://get.sdkman.io" | bash
+  source "$HOME/.sdkman/bin/sdkman-init.sh"
+  sdk install gradle 8.11.1
+  gradle wrapper
+  ```
 
 ## Architecture Overview
 

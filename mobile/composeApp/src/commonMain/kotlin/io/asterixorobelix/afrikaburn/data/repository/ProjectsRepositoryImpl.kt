@@ -21,9 +21,6 @@ class ProjectsRepositoryImpl(
                 return Result.success(cachedProjects)
             }
 
-            // Simulate network delay for realistic UX
-            delay(500)
-
             // Load from data source
             val projects = jsonDataSource.loadProjectsByType(type)
             

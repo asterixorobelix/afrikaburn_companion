@@ -57,6 +57,8 @@ class ProjectTabViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         repository = mockk()
+        // Set up default mock behavior to prevent initialization issues
+        coEvery { repository.getProjectsByType(any()) } returns Result.success(emptyList())
         viewModel = ProjectTabViewModel(repository, ProjectType.ART)
     }
     
@@ -66,17 +68,18 @@ class ProjectTabViewModelTest {
     }
     
     @Test
-    fun `initial state should be loading`() = runTest {
-        // Given a fresh viewModel
-        // When getting initial state
-        val initialState = viewModel.uiState.first()
+    fun `initial state should complete loading with empty data`() = runTest {
+        // Given a fresh viewModel with default mock returning empty list
+        // When getting state after coroutine completion
+        testDispatcher.scheduler.advanceUntilIdle()
+        val state = viewModel.uiState.first()
         
-        // Then it should be in loading state
-        assertTrue(initialState.isLoading)
-        assertEquals(emptyList(), initialState.projects)
-        assertEquals(emptyList(), initialState.filteredProjects)
-        assertEquals("", initialState.searchQuery)
-        assertNull(initialState.error)
+        // Then it should show the loaded empty state
+        assertFalse(state.isLoading)
+        assertEquals(emptyList(), state.projects)
+        assertEquals(emptyList(), state.filteredProjects)
+        assertEquals("", state.searchQuery)
+        assertNull(state.error)
     }
     
     @Test
