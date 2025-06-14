@@ -194,14 +194,15 @@ jobs:
         path: mobile/composeApp/build/outputs/bundle/release/*.aab
 
   build-ios:
-    runs-on: macos-latest
+    runs-on: macos-14  # Use specific runner version
+    timeout-minutes: 45  # Add overall timeout
     needs: version-and-build
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        ref: main # Get the updated version from the previous job
+        ref: main
     
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -215,8 +216,10 @@ jobs:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          ~/.konan
+        key: ${{ runner.os }}-gradle-konan-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
+          ${{ runner.os }}-gradle-konan-
           ${{ runner.os }}-gradle-
     
     - name: Set up Firebase Configuration for iOS Release
@@ -247,38 +250,50 @@ jobs:
         cd mobile
         gradle wrapper --gradle-version 8.11.1
     
-    - name: Build iOS Framework
+    - name: Configure Gradle for CI
       run: |
         cd mobile
-        ./gradlew :composeApp:assembleReleaseXCFramework
+        # Create gradle.properties for CI optimization
+        cat >> gradle.properties << EOF
+        # CI Optimizations
+        org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1g -XX:+UseG1GC
+        org.gradle.parallel=false
+        org.gradle.daemon=false
+        org.gradle.configureondemand=false
+        
+        # Kotlin/Native optimizations
+        kotlin.native.ignoreDisabledTargets=true
+        kotlin.native.useXcodeMessageStyle=true
+        kotlin.incremental.native=false
+        
+        # Disable unnecessary features for CI
+        android.useAndroidX=true
+        android.enableJetifier=false
+        EOF
+    
+    - name: Build iOS Framework (Sequential)
+      timeout-minutes: 30
+      run: |
+        cd mobile
+        echo "🔨 Building iOS framework targets sequentially to avoid memory issues..."
+        
+        # Build each target separately to reduce memory pressure
+        echo "📱 Building iOS Arm64 target..."
+        ./gradlew :composeApp:linkReleaseFrameworkIosArm64 --no-daemon --max-workers=1
+        
+        echo "📱 Building iOS X64 target..."
+        ./gradlew :composeApp:linkReleaseFrameworkIosX64 --no-daemon --max-workers=1
+        
+        echo "📱 Building iOS Simulator Arm64 target..."
+        ./gradlew :composeApp:linkReleaseFrameworkIosSimulatorArm64 --no-daemon --max-workers=1
+        
+        echo "🔗 Creating XCFramework..."
+        ./gradlew :composeApp:assembleReleaseXCFramework --no-daemon --max-workers=1
     
     - name: Set up Xcode
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: latest-stable
-    
-    - name: Build iOS IPA
-      run: |
-        cd mobile/iosApp
-        
-        # Configure build settings
-        xcodebuild \
-          -project iosApp.xcodeproj \
-          -scheme iosApp \
-          -configuration Release \
-          -destination generic/platform=iOS \
-          -archivePath build/iosApp.xcarchive \
-          archive \
-          CODE_SIGN_IDENTITY="" \
-          CODE_SIGNING_REQUIRED=NO \
-          CODE_SIGNING_ALLOWED=NO
-        
-        # Export IPA
-        xcodebuild \
-          -archivePath build/iosApp.xcarchive \
-          -exportArchive \
-          -exportPath build/ \
-          -exportOptionsPlist ../exportOptions.plist
+        xcode-version: '15.4'  # Use specific version
     
     - name: Create exportOptions.plist
       run: |
@@ -303,6 +318,34 @@ jobs:
         </dict>
         </plist>
         EOF
+    
+    - name: Build iOS IPA
+      timeout-minutes: 15
+      run: |
+        cd mobile/iosApp
+        
+        echo "🍎 Building iOS app archive..."
+        # Configure build settings
+        xcodebuild \
+          -project iosApp.xcodeproj \
+          -scheme iosApp \
+          -configuration Release \
+          -destination generic/platform=iOS \
+          -archivePath build/iosApp.xcarchive \
+          archive \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO \
+          -quiet
+        
+        echo "📦 Exporting IPA..."
+        # Export IPA
+        xcodebuild \
+          -archivePath build/iosApp.xcarchive \
+          -exportArchive \
+          -exportPath build/ \
+          -exportOptionsPlist ../exportOptions.plist \
+          -quiet
     
     - name: Upload IPA artifact
       uses: actions/upload-artifact@v4
