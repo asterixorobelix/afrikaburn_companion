@@ -476,7 +476,10 @@ jobs:
           
           # Install provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp mobile/ios_provisioning_profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          # Get the UUID from the provisioning profile for proper naming
+          PROFILE_UUID=$(security cms -D -i mobile/ios_provisioning_profile.mobileprovision | plutil -extract UUID raw -)
+          cp mobile/ios_provisioning_profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_UUID.mobileprovision
+          echo "📱 Provisioning profile installed with UUID: $PROFILE_UUID"
           
           echo "✅ iOS signing credentials installed successfully"
           echo "SIGNING_AVAILABLE=true" >> $GITHUB_ENV
@@ -514,7 +517,10 @@ jobs:
               -destination generic/platform=iOS \
               -archivePath build/iosApp.xcarchive \
               archive \
-              APPLE_TEAM_ID="${{ secrets.APPLE_TEAM_ID }}"
+              APPLE_TEAM_ID="${{ secrets.APPLE_TEAM_ID }}" \
+              CODE_SIGN_STYLE=Manual \
+              DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}" \
+              CODE_SIGN_IDENTITY="iPhone Distribution"
             
             echo "✅ Archive completed at $(date)"
             echo "📦 Exporting signed IPA..."
@@ -538,10 +544,11 @@ jobs:
               -destination generic/platform=iOS \
               -archivePath build/iosApp.xcarchive \
               archive \
+              CODE_SIGN_STYLE=Manual \
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
               CODE_SIGNING_ALLOWED=NO \
-              APPLE_TEAM_ID="${{ secrets.APPLE_TEAM_ID }}"
+              DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}"
             
             echo "✅ Unsigned archive completed at $(date)"
             echo "📦 Creating unsigned app bundle..."
