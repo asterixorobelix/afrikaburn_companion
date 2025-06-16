@@ -1,6 +1,6 @@
 val ktor_version = "2.3.12"
 val kotlin_version = "2.1.21"
-val logback_version = "1.4.11"
+val logback_version = "1.5.13"
 val exposed_version = "0.44.1"
 
 plugins {
@@ -53,7 +53,7 @@ dependencies {
     
     // Database Drivers
     implementation("com.h2database:h2:2.1.214")         // Development
-    implementation("org.postgresql:postgresql:42.6.0")  // Production
+    implementation("org.postgresql:postgresql:42.7.7")  // Production
     
     // HTTP Client for AI APIs
     implementation("io.ktor:ktor-client-core:$ktor_version")
