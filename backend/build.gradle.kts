@@ -1,6 +1,6 @@
 val ktor_version = "2.3.12"
 val kotlin_version = "2.1.21"
-val logback_version = "1.5.13"
+val logback_version = "1.5.18"
 val exposed_version = "0.44.1"
 
 plugins {
