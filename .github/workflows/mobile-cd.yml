@@ -410,17 +410,28 @@ jobs:
         # Create appropriate exportOptions.plist based on signing availability
         if [ -f "ios_distribution_certificate.p12" ] && [ -f "ios_provisioning_profile.mobileprovision" ]; then
           echo "📝 Creating exportOptions.plist for signed build..."
+          # Extract bundle identifier from Xcode config
+          BUNDLE_ID=$(grep 'PRODUCT_BUNDLE_IDENTIFIER' iosApp/Configuration/Config.xcconfig | cut -d'=' -f2)
+          echo "📱 Using bundle identifier: $BUNDLE_ID"
+          
           cat > exportOptions.plist << EOF
         <?xml version="1.0" encoding="UTF-8"?>
         <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
         <plist version="1.0">
         <dict>
             <key>method</key>
-            <string>ad-hoc</string>
+            <string>release-testing</string>
             <key>teamID</key>
             <string>\${{ secrets.APPLE_TEAM_ID }}</string>
             <key>signingStyle</key>
             <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+                <key>\${BUNDLE_ID}</key>
+                <string>\${IOS_PROVISIONING_PROFILE_UUID}</string>
+            </dict>
+            <key>signingCertificate</key>
+            <string>iPhone Distribution</string>
             <key>stripSwiftSymbols</key>
             <true/>
             <key>compileBitcode</key>
@@ -429,6 +440,8 @@ jobs:
             <false/>
             <key>uploadSymbols</key>
             <true/>
+            <key>thinning</key>
+            <string>&lt;none&gt;</string>
         </dict>
         </plist>
         EOF
@@ -443,6 +456,8 @@ jobs:
             <string>development</string>
             <key>teamID</key>
             <string>\${{ secrets.APPLE_TEAM_ID }}</string>
+            <key>signingStyle</key>
+            <string>automatic</string>
             <key>stripSwiftSymbols</key>
             <true/>
             <key>compileBitcode</key>
@@ -474,13 +489,43 @@ jobs:
           security import mobile/ios_distribution_certificate.p12 -k ios_signing.keychain -P "${{ secrets.IOS_CERTIFICATE_PASSWORD }}" -T /usr/bin/codesign
           security set-key-partition-list -S apple-tool:,apple: -s -k "temp_keychain_password" ios_signing.keychain
           
+          # Verify certificate installation
+          echo "🔍 Installed certificates:"
+          security find-identity -v -p codesigning ios_signing.keychain || echo "No code signing certificates found"
+          
           # Install provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           # Get the UUID from the provisioning profile for proper naming
           PROFILE_UUID=$(security cms -D -i mobile/ios_provisioning_profile.mobileprovision | plutil -extract UUID raw -)
+          PROFILE_NAME=$(security cms -D -i mobile/ios_provisioning_profile.mobileprovision | plutil -extract Name raw -)
+          BUNDLE_ID=$(security cms -D -i mobile/ios_provisioning_profile.mobileprovision | plutil -extract Entitlements.application-identifier raw - | sed 's/.*\.//')
+          
+          echo "🔍 Provisioning Profile Details:"
+          echo "   UUID: $PROFILE_UUID"
+          echo "   Name: $PROFILE_NAME"
+          echo "   Bundle ID: $BUNDLE_ID"
+          
+          # Validate bundle ID matches
+          EXPECTED_BUNDLE_ID=$(grep 'PRODUCT_BUNDLE_IDENTIFIER' mobile/iosApp/Configuration/Config.xcconfig | cut -d'=' -f2)
+          if [ "$BUNDLE_ID" != "$EXPECTED_BUNDLE_ID" ]; then
+            echo "⚠️ WARNING: Bundle ID mismatch!"
+            echo "   Provisioning Profile: $BUNDLE_ID"
+            echo "   Xcode Config: $EXPECTED_BUNDLE_ID"
+          else
+            echo "✅ Bundle ID matches Xcode configuration"
+          fi
+          
           cp mobile/ios_provisioning_profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_UUID.mobileprovision
           echo "📱 Provisioning profile installed with UUID: $PROFILE_UUID"
           echo "IOS_PROVISIONING_PROFILE_UUID=$PROFILE_UUID" >> $GITHUB_ENV
+          
+          # Verify installation
+          if [ -f "~/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision" ]; then
+            echo "✅ Provisioning profile successfully installed"
+          else
+            echo "❌ Failed to install provisioning profile"
+            ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "Profile directory doesn't exist"
+          fi
           
           echo "✅ iOS signing credentials installed successfully"
           echo "SIGNING_AVAILABLE=true" >> $GITHUB_ENV
@@ -526,14 +571,43 @@ jobs:
               PROVISIONING_PROFILE_SPECIFIER="$IOS_PROVISIONING_PROFILE_UUID"
             
             echo "✅ Archive completed at $(date)"
+            
+            # Validate archive before export
+            echo "🔍 Validating archive contents..."
+            if [ -d "build/iosApp.xcarchive" ]; then
+              echo "✅ Archive exists"
+              ls -la build/iosApp.xcarchive/
+              ls -la build/iosApp.xcarchive/Products/Applications/ || echo "No Applications found"
+            else
+              echo "❌ Archive not found!"
+              exit 1
+            fi
+            
+            # Debug export options
+            echo "📋 Export options file content:"
+            cat ../exportOptions.plist
+            
+            # Verify provisioning profiles are available
+            echo "🔍 Installed provisioning profiles:"
+            ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No profiles found"
+            
             echo "📦 Exporting signed IPA..."
             echo "⏱️ Starting IPA export at $(date)"
-            # Export IPA
-            xcodebuild \
+            # Export IPA with verbose output
+            if xcodebuild \
               -archivePath build/iosApp.xcarchive \
               -exportArchive \
               -exportPath build/ \
-              -exportOptionsPlist ../exportOptions.plist
+              -exportOptionsPlist ../exportOptions.plist \
+              -verbose; then
+              echo "✅ IPA export completed successfully"
+              ls -la build/*.ipa || echo "No IPA files found"
+            else
+              echo "❌ IPA export failed"
+              echo "📋 Checking export logs..."
+              ls -la build/ || echo "Build directory empty"
+              exit 1
+            fi
             
             echo "✅ IPA export completed at $(date)"
           else
