@@ -268,7 +268,7 @@ jobs:
         
         # Set up iOS Firebase config if available
         if [ ! -z "${{ secrets.IOS_FIREBASE_CONFIG_PLIST }}" ]; then
-          echo '${{ secrets.IOS_FIREBASE_CONFIG_PLIST }}' > mobile/iosApp/iosApp/GoogleService-Info.plist
+          echo "${{ secrets.IOS_FIREBASE_CONFIG_PLIST }}" | base64 --decode > mobile/iosApp/iosApp/GoogleService-Info.plist
           echo "✅ iOS Firebase configuration set up - Crashlytics enabled."
         else
           echo "⚠️ iOS Firebase configuration not found. Add IOS_FIREBASE_CONFIG_PLIST secret for iOS Crashlytics."
