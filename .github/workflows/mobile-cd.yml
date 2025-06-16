@@ -513,7 +513,8 @@ jobs:
               -configuration Release \
               -destination generic/platform=iOS \
               -archivePath build/iosApp.xcarchive \
-              archive
+              archive \
+              APPLE_TEAM_ID="${{ secrets.APPLE_TEAM_ID }}"
             
             echo "✅ Archive completed at $(date)"
             echo "📦 Exporting signed IPA..."
@@ -539,7 +540,8 @@ jobs:
               archive \
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
-              CODE_SIGNING_ALLOWED=NO
+              CODE_SIGNING_ALLOWED=NO \
+              APPLE_TEAM_ID="${{ secrets.APPLE_TEAM_ID }}"
             
             echo "✅ Unsigned archive completed at $(date)"
             echo "📦 Creating unsigned app bundle..."

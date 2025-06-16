@@ -1,4 +1,4 @@
-TEAM_ID=
+TEAM_ID=$(APPLE_TEAM_ID)
 
 PRODUCT_NAME=Afrikaburn
 PRODUCT_BUNDLE_IDENTIFIER=io.asterixorobelix.afrikaburn
