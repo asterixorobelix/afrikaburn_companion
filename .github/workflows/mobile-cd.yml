@@ -436,6 +436,13 @@ jobs:
         cd mobile/iosApp
         
         echo "🍎 Building iOS app archive..."
+        echo "📍 Current directory: $(pwd)"
+        echo "📂 Directory contents:"
+        ls -la
+        echo "🔍 Xcode version:"
+        xcodebuild -version
+        echo "⚙️ Available schemes:"
+        xcodebuild -project iosApp.xcodeproj -list
         
         # Check if we can build with current Xcode setup
         if xcodebuild -project iosApp.xcodeproj -list >/dev/null 2>&1; then
@@ -443,6 +450,7 @@ jobs:
           
           if [ "$SIGNING_AVAILABLE" = "true" ]; then
             echo "🔐 Building signed IPA..."
+            echo "⏱️ Starting archive build at $(date)"
             # Configure build settings for signed build
             xcodebuild \
               -project iosApp.xcodeproj \
@@ -450,19 +458,22 @@ jobs:
               -configuration Release \
               -destination generic/platform=iOS \
               -archivePath build/iosApp.xcarchive \
-              archive \
-              -quiet
+              archive
             
+            echo "✅ Archive completed at $(date)"
             echo "📦 Exporting signed IPA..."
+            echo "⏱️ Starting IPA export at $(date)"
             # Export IPA
             xcodebuild \
               -archivePath build/iosApp.xcarchive \
               -exportArchive \
               -exportPath build/ \
-              -exportOptionsPlist ../exportOptions.plist \
-              -quiet
+              -exportOptionsPlist ../exportOptions.plist
+            
+            echo "✅ IPA export completed at $(date)"
           else
             echo "⚠️ Building unsigned archive..."
+            echo "⏱️ Starting unsigned archive build at $(date)"
             # Configure build settings for unsigned build
             xcodebuild \
               -project iosApp.xcodeproj \
@@ -473,13 +484,13 @@ jobs:
               archive \
               CODE_SIGN_IDENTITY="" \
               CODE_SIGNING_REQUIRED=NO \
-              CODE_SIGNING_ALLOWED=NO \
-              -quiet
+              CODE_SIGNING_ALLOWED=NO
             
+            echo "✅ Unsigned archive completed at $(date)"
             echo "📦 Creating unsigned app bundle..."
             # Create unsigned app for distribution
             cp -r build/iosApp.xcarchive/Products/Applications/iosApp.app build/
-            echo "Unsigned iOS app created at build/iosApp.app"
+            echo "✅ Unsigned iOS app created at build/iosApp.app"
           fi
           
           echo "✅ iOS build completed successfully"
