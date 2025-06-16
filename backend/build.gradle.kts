@@ -1,4 +1,4 @@
-val ktor_version = "2.3.12"
+val ktor_version = "3.1.3"
 val kotlin_version = "2.1.21"
 val logback_version = "1.5.18"
 val exposed_version = "0.61.0"
@@ -42,7 +42,7 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-call-logging-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-rate-limit-jvm:$ktor_version")
-    implementation("com.auth0:java-jwt:4.4.0")
+    implementation("com.auth0:java-jwt:4.5.0")
     
     // Database (Exposed ORM)
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
@@ -67,7 +67,7 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
-    testImplementation("io.mockk:mockk:1.13.8")
+    testImplementation("io.mockk:mockk:1.14.2")
 }
 
 // Fat JAR for deployment
