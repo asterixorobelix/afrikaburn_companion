@@ -5,9 +5,9 @@ val exposed_version = "0.44.1"
 
 plugins {
     kotlin("jvm") version "1.9.24"
-    id("io.ktor.plugin") version "2.3.12"
+    id("io.ktor.plugin") version "3.1.3"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.1.21"
-    id("io.gitlab.arturbosch.detekt") version "1.23.1"
+    id("io.gitlab.arturbosch.detekt") version "1.23.8"
 }
 
 group = "io.asterixorobelix.afrikaburn"
@@ -52,7 +52,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:6.3.0")
     
     // Database Drivers
-    implementation("com.h2database:h2:2.1.214")         // Development
+    implementation("com.h2database:h2:2.3.232")         // Development
     implementation("org.postgresql:postgresql:42.7.7")  // Production
     
     // HTTP Client for AI APIs

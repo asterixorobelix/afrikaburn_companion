@@ -12,9 +12,19 @@ import io.asterixorobelix.afrikaburn.plugins.configureSerialization
 import io.asterixorobelix.afrikaburn.plugins.configureStatusPages
 
 fun main() {
-    val port = System.getenv("PORT")?.toInt() ?: 8080
-    embeddedServer(Netty, port = port, host = "0.0.0.0", module = Application::module)
-        .start(wait = true)
+    val defaultPort = 9080
+    val shutdownGracePeriod = 1000L
+    val shutdownTimeout = 5000L
+
+    val port = System.getenv("PORT")?.toInt() ?: defaultPort
+    val server = embeddedServer(Netty, port = port, host = "0.0.0.0", module = Application::module)
+
+    // Add shutdown hook for graceful shutdown
+    Runtime.getRuntime().addShutdownHook(Thread {
+        server.stop(shutdownGracePeriod, shutdownTimeout)
+    })
+
+    server.start(wait = true)
 }
 
 fun Application.module() {
