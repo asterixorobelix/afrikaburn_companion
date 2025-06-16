@@ -194,15 +194,47 @@ jobs:
         path: mobile/composeApp/build/outputs/bundle/release/*.aab
 
   build-ios:
-    runs-on: macos-14  # Use specific runner version
+    runs-on: macos-latest  # Use latest available macOS runner
     timeout-minutes: 45  # Add overall timeout
     needs: version-and-build
+    if: always()  # Run even if version-and-build has issues
     
     steps:
+    - name: Debug - Job Started
+      run: |
+        echo "🚀 iOS build job started successfully!"
+        echo "📅 Job started at: $(date)"
+        echo "🖥️ Runner OS: ${{ runner.os }}"
+        echo "📍 Working directory: $(pwd)"
+        echo "👤 Runner user: $(whoami)"
+        echo "🔍 Available disk space:"
+        df -h
+        echo "💾 Available memory:"
+        vm_stat || echo "vm_stat not available"
+        echo "📂 Current directory contents:"
+        ls -la
+    
     - name: Checkout code
       uses: actions/checkout@v4
       with:
         ref: main
+    
+    - name: Debug - After Checkout
+      run: |
+        echo "✅ Checkout completed successfully!"
+        echo "📂 Repository contents:"
+        ls -la
+        echo "📱 Mobile directory exists:"
+        ls -la mobile/ || echo "❌ Mobile directory not found"
+        echo "🍎 iOS app directory exists:"
+        ls -la mobile/iosApp/ || echo "❌ iOS app directory not found"
+    
+    - name: Debug - Check Job Dependencies
+      run: |
+        echo "🔗 Checking dependencies from version-and-build job:"
+        echo "📊 New version: ${{ needs.version-and-build.outputs.new_version }}"
+        echo "🔢 Version code: ${{ needs.version-and-build.outputs.version_code }}"
+        echo "✅ Dependencies check completed"
     
     - name: Set up JDK 17
       uses: actions/setup-java@v4
