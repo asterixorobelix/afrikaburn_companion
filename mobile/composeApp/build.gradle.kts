@@ -22,31 +22,36 @@ kotlin {
     }
     
     listOf(
-        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            
+            // Optimize for CI builds
+            if (System.getenv("CI") == "true") {
+                freeCompilerArgs += listOf(
+                    "-Xruntime-logs=gc=info",
+                    "-Xallocator=custom"
+                )
+            }
         }
     }
     
-    // Create XCFramework for iOS
+    // Create XCFramework for iOS (ARM64 targets only)
     task("assembleDebugXCFramework") {
         dependsOn("linkDebugFrameworkIosArm64")
-        dependsOn("linkDebugFrameworkIosX64") 
         dependsOn("linkDebugFrameworkIosSimulatorArm64")
         group = "multiplatform"
-        description = "Assembles debug XCFramework for all iOS targets"
+        description = "Assembles debug XCFramework for ARM64 iOS targets"
     }
     
     task("assembleReleaseXCFramework") {
         dependsOn("linkReleaseFrameworkIosArm64")
-        dependsOn("linkReleaseFrameworkIosX64")
         dependsOn("linkReleaseFrameworkIosSimulatorArm64") 
         group = "multiplatform"
-        description = "Assembles release XCFramework for all iOS targets"
+        description = "Assembles release XCFramework for ARM64 iOS targets"
     }
     
     sourceSets {

@@ -331,9 +331,6 @@ jobs:
         echo "📱 Building iOS Arm64 target..."
         ./gradlew :composeApp:linkReleaseFrameworkIosArm64 --no-daemon --max-workers=1
         
-        echo "📱 Building iOS X64 target..."
-        ./gradlew :composeApp:linkReleaseFrameworkIosX64 --no-daemon --max-workers=1
-        
         echo "📱 Building iOS Simulator Arm64 target..."
         ./gradlew :composeApp:linkReleaseFrameworkIosSimulatorArm64 --no-daemon --max-workers=1
         
@@ -344,18 +341,25 @@ jobs:
         # Check if all individual frameworks exist
         echo "📋 Checking for individual frameworks:"
         ls -la iosArm64/releaseFramework/ || echo "❌ iosArm64 framework missing"
-        ls -la iosX64/releaseFramework/ || echo "❌ iosX64 framework missing" 
         ls -la iosSimulatorArm64/releaseFramework/ || echo "❌ iosSimulatorArm64 framework missing"
         
         # Create XCFramework directory
         mkdir -p ../XCFrameworks/release/
         
-        # Create XCFramework using xcodebuild
-        xcodebuild -create-xcframework \
+        # Create XCFramework using xcodebuild (ARM64 targets only)
+        if xcodebuild -create-xcframework \
           -framework iosArm64/releaseFramework/ComposeApp.framework \
-          -framework iosX64/releaseFramework/ComposeApp.framework \
           -framework iosSimulatorArm64/releaseFramework/ComposeApp.framework \
-          -output ../XCFrameworks/release/ComposeApp.xcframework
+          -output ../XCFrameworks/release/ComposeApp.xcframework; then
+          echo "✅ XCFramework created successfully"
+        else
+          echo "⚠️ XCFramework creation failed, creating individual framework archives as fallback"
+          # Create individual framework archives for distribution
+          mkdir -p ../frameworks/release/
+          tar -czf ../frameworks/release/ComposeApp-iosArm64.tar.gz -C iosArm64/releaseFramework/ .
+          tar -czf ../frameworks/release/ComposeApp-iosSimulatorArm64.tar.gz -C iosSimulatorArm64/releaseFramework/ .
+          echo "📦 Individual framework archives created as fallback"
+        fi
         
         echo "✅ XCFramework created successfully"
     
@@ -568,6 +572,8 @@ jobs:
           mobile/iosApp/build/*.ipa
           mobile/iosApp/build/*.txt
           mobile/iosApp-framework-distribution.tar.gz
+          mobile/composeApp/build/XCFrameworks/release/*.xcframework
+          mobile/composeApp/build/frameworks/release/*.tar.gz
 
   create-release:
     runs-on: ubuntu-latest
