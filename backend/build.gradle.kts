@@ -1,10 +1,10 @@
 val ktor_version = "2.3.12"
 val kotlin_version = "2.1.21"
-val logback_version = "1.5.13"
-val exposed_version = "0.44.1"
+val logback_version = "1.5.18"
+val exposed_version = "0.61.0"
 
 plugins {
-    kotlin("jvm") version "1.9.24"
+    kotlin("jvm") version "2.1.21"
     id("io.ktor.plugin") version "3.1.3"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.1.21"
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
@@ -66,7 +66,7 @@ dependencies {
     // Testing
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
-    testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
+    testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
     testImplementation("io.mockk:mockk:1.13.8")
 }
 
