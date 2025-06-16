@@ -337,8 +337,27 @@ jobs:
         echo "📱 Building iOS Simulator Arm64 target..."
         ./gradlew :composeApp:linkReleaseFrameworkIosSimulatorArm64 --no-daemon --max-workers=1
         
-        echo "🔗 Creating XCFramework..."
-        ./gradlew :composeApp:assembleReleaseXCFramework --no-daemon --max-workers=1
+        echo "🔗 Creating XCFramework from pre-built frameworks..."
+        # Use xcodebuild to create XCFramework from already built individual frameworks
+        cd composeApp/build/bin
+        
+        # Check if all individual frameworks exist
+        echo "📋 Checking for individual frameworks:"
+        ls -la iosArm64/releaseFramework/ || echo "❌ iosArm64 framework missing"
+        ls -la iosX64/releaseFramework/ || echo "❌ iosX64 framework missing" 
+        ls -la iosSimulatorArm64/releaseFramework/ || echo "❌ iosSimulatorArm64 framework missing"
+        
+        # Create XCFramework directory
+        mkdir -p ../XCFrameworks/release/
+        
+        # Create XCFramework using xcodebuild
+        xcodebuild -create-xcframework \
+          -framework iosArm64/releaseFramework/ComposeApp.framework \
+          -framework iosX64/releaseFramework/ComposeApp.framework \
+          -framework iosSimulatorArm64/releaseFramework/ComposeApp.framework \
+          -output ../XCFrameworks/release/ComposeApp.xcframework
+        
+        echo "✅ XCFramework created successfully"
     
     - name: Set up Xcode
       uses: maxim-lobanov/setup-xcode@v1
