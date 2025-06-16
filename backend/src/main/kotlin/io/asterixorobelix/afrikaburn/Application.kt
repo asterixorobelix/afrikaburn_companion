@@ -1,5 +1,8 @@
 package io.asterixorobelix.afrikaburn
 
+import io.asterixorobelix.afrikaburn.CONSTANTS.DEFAULT_PORT
+import io.asterixorobelix.afrikaburn.CONSTANTS.SHUTDOWN_PERIOD
+import io.asterixorobelix.afrikaburn.CONSTANTS.SHUTDOWN_TIMEOUT
 import io.ktor.server.application.Application
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -12,19 +15,24 @@ import io.asterixorobelix.afrikaburn.plugins.configureSerialization
 import io.asterixorobelix.afrikaburn.plugins.configureStatusPages
 
 fun main() {
-    val defaultPort = 9080
-    val shutdownGracePeriod = 1000L
-    val shutdownTimeout = 5000L
 
-    val port = System.getenv("PORT")?.toInt() ?: defaultPort
+    val port = System.getenv("PORT")?.toInt() ?: DEFAULT_PORT
     val server = embeddedServer(Netty, port = port, host = "0.0.0.0", module = Application::module)
 
     // Add shutdown hook for graceful shutdown
     Runtime.getRuntime().addShutdownHook(Thread {
-        server.stop(shutdownGracePeriod, shutdownTimeout)
+        server.stop(SHUTDOWN_PERIOD, SHUTDOWN_TIMEOUT)
     })
 
     server.start(wait = true)
+
+
+}
+
+object CONSTANTS {
+    const val DEFAULT_PORT = 9080
+    const val SHUTDOWN_PERIOD = 1000L
+    const val SHUTDOWN_TIMEOUT = 5000L
 }
 
 fun Application.module() {
