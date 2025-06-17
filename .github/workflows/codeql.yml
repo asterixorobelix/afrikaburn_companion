@@ -56,8 +56,29 @@ jobs:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
 
+    - name: Check for Backend Changes
+      if: matrix.build-dir == 'backend'
+      id: backend-changes
+      run: |
+        echo "Checking for backend-related changes..."
+        # Check if this is a push/PR that affects backend files
+        if [ "${{ github.event_name }}" = "schedule" ]; then
+          echo "Scheduled run - analyzing backend"
+          echo "should-run=true" >> $GITHUB_OUTPUT
+        else
+          # For push/PR events, check if backend files were changed
+          changed_files=$(git diff --name-only ${{ github.event.before }}..${{ github.sha }} 2>/dev/null || git diff --name-only HEAD~1)
+          if echo "$changed_files" | grep -E '^backend/|\.gradle\.kts$|gradle/' || [ -z "$changed_files" ]; then
+            echo "Backend changes detected or unable to determine changes - analyzing backend"
+            echo "should-run=true" >> $GITHUB_OUTPUT
+          else
+            echo "No backend changes detected - skipping backend analysis"
+            echo "should-run=false" >> $GITHUB_OUTPUT
+          fi
+        fi
+
     - name: Build Backend
-      if: matrix.language == 'java-kotlin' && matrix.build-dir == 'backend'
+      if: matrix.language == 'java-kotlin' && matrix.build-dir == 'backend' && steps.backend-changes.outputs.should-run == 'true'
       run: |
         cd backend
         # Ensure Kotlin compilation is captured by CodeQL
@@ -65,8 +86,29 @@ jobs:
         gradle detekt
         gradle build -x test
 
+    - name: Check for Mobile Changes
+      if: matrix.build-dir == 'mobile'
+      id: mobile-changes
+      run: |
+        echo "Checking for mobile-related changes..."
+        # Check if this is a push/PR that affects mobile files
+        if [ "${{ github.event_name }}" = "schedule" ]; then
+          echo "Scheduled run - analyzing mobile"
+          echo "should-run=true" >> $GITHUB_OUTPUT
+        else
+          # For push/PR events, check if mobile files were changed
+          changed_files=$(git diff --name-only ${{ github.event.before }}..${{ github.sha }} 2>/dev/null || git diff --name-only HEAD~1)
+          if echo "$changed_files" | grep -E '^mobile/|\.gradle\.kts$|gradle/' || [ -z "$changed_files" ]; then
+            echo "Mobile changes detected or unable to determine changes - analyzing mobile"
+            echo "should-run=true" >> $GITHUB_OUTPUT
+          else
+            echo "No mobile changes detected - skipping mobile analysis"
+            echo "should-run=false" >> $GITHUB_OUTPUT
+          fi
+        fi
+
     - name: Setup Firebase Config for Mobile
-      if: matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
+      if: matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile' && steps.mobile-changes.outputs.should-run == 'true'
       run: |
         # Check if the existing google-services.json file is valid
         if [ -f mobile/composeApp/google-services.json ]; then
@@ -156,25 +198,46 @@ jobs:
         fi
 
     - name: Build Mobile
-      if: matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
+      if: matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile' && steps.mobile-changes.outputs.should-run == 'true'
       run: |
         cd mobile
         gradle build -x test
 
-    - name: Setup Gradle for Swift
+    - name: Check for iOS Changes
       if: matrix.language == 'swift'
+      id: ios-changes
+      run: |
+        echo "Checking for iOS-related changes..."
+        # Check if this is a push/PR that affects iOS files
+        if [ "${{ github.event_name }}" = "schedule" ]; then
+          echo "Scheduled run - analyzing iOS"
+          echo "should-run=true" >> $GITHUB_OUTPUT
+        else
+          # For push/PR events, check if iOS files were changed
+          changed_files=$(git diff --name-only ${{ github.event.before }}..${{ github.sha }} 2>/dev/null || git diff --name-only HEAD~1)
+          if echo "$changed_files" | grep -E '^mobile/.*\.swift$|^mobile/iosApp/|^mobile/.*iOS|\.gradle\.kts$|gradle/' || [ -z "$changed_files" ]; then
+            echo "iOS changes detected or unable to determine changes - analyzing iOS"
+            echo "should-run=true" >> $GITHUB_OUTPUT
+          else
+            echo "No iOS changes detected - skipping iOS analysis"
+            echo "should-run=false" >> $GITHUB_OUTPUT
+          fi
+        fi
+
+    - name: Setup Gradle for Swift
+      if: matrix.language == 'swift' && steps.ios-changes.outputs.should-run == 'true'
       uses: gradle/actions/setup-gradle@v4
       with:
         gradle-version: 8.11.1
 
     - name: Setup Xcode
-      if: matrix.language == 'swift'
+      if: matrix.language == 'swift' && steps.ios-changes.outputs.should-run == 'true'
       uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: 'latest-stable'
     
     - name: Create dummy gradlew for iOS build
-      if: matrix.language == 'swift'
+      if: matrix.language == 'swift' && steps.ios-changes.outputs.should-run == 'true'
       run: |
         cd mobile
         echo '#!/bin/bash' > gradlew
@@ -182,12 +245,16 @@ jobs:
         chmod +x gradlew
     
     - name: Build iOS App
-      if: matrix.language == 'swift'
+      if: matrix.language == 'swift' && steps.ios-changes.outputs.should-run == 'true'
       run: |
         cd mobile/iosApp
         xcodebuild -project iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
     - name: Perform CodeQL Analysis
+      if: |
+        (matrix.build-dir == 'backend' && steps.backend-changes.outputs.should-run == 'true') ||
+        (matrix.build-dir == 'mobile' && matrix.language == 'java-kotlin' && steps.mobile-changes.outputs.should-run == 'true') ||
+        (matrix.language == 'swift' && steps.ios-changes.outputs.should-run == 'true')
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{matrix.language}}-${{matrix.build-dir}}"
