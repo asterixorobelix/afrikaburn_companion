@@ -9,10 +9,33 @@ on:
     - cron: '20 19 * * 1'
 
 jobs:
+  # Job to detect which files changed
+  changes:
+    runs-on: ubuntu-latest
+    # Always run, but output different values for scheduled vs non-scheduled
+    outputs:
+      backend: ${{ github.event_name == 'schedule' && 'true' || steps.changes.outputs.backend || 'false' }}
+      mobile: ${{ github.event_name == 'schedule' && 'true' || steps.changes.outputs.mobile || 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: changes
+        if: github.event_name != 'schedule'
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            mobile:
+              - 'mobile/**'
+
   analyze:
-    name: Analyze (${{ matrix.language }})
+    name: Analyze (${{ matrix.language }}-${{ matrix.build-dir }})
     runs-on: ${{ matrix.language == 'swift' && 'macos-latest' || 'ubuntu-latest' }}
     timeout-minutes: 360
+    needs: [changes]
+    if: |
+      (matrix.build-dir == 'backend' && needs.changes.outputs.backend == 'true') ||
+      (matrix.build-dir == 'mobile' && needs.changes.outputs.mobile == 'true')
     permissions:
       security-events: write
       packages: read
