@@ -60,6 +60,8 @@ jobs:
       if: matrix.language == 'java-kotlin' && matrix.build-dir == 'backend'
       run: |
         cd backend
+        # Ensure Kotlin compilation is captured by CodeQL
+        gradle compileKotlin
         gradle detekt
         gradle build -x test
 
