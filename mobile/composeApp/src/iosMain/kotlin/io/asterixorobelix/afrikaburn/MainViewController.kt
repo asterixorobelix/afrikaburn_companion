@@ -1,15 +1,21 @@
 package io.asterixorobelix.afrikaburn
 
 import androidx.compose.ui.window.ComposeUIViewController
-import org.koin.core.error.KoinAppAlreadyStartedException
+
+private var isKoinInitialized = false
 
 @Suppress("FunctionNaming")
 fun MainViewController() = ComposeUIViewController { 
     // Initialize Koin if not already done
-    try {
-        KoinInitializer.init()
-    } catch (e: KoinAppAlreadyStartedException) {
-        // Koin already initialized, continue
+    if (!isKoinInitialized) {
+        try {
+            KoinInitializer.init()
+            isKoinInitialized = true
+        } catch (e: IllegalStateException) {
+            // Koin is already initialized, which is expected
+            println("Koin already initialized: ${e.message}")
+            isKoinInitialized = true
+        }
     }
     App() 
 }
