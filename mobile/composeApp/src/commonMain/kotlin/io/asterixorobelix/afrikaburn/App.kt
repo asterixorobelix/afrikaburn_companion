@@ -15,7 +15,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import io.asterixorobelix.afrikaburn.di.appModule
 import io.asterixorobelix.afrikaburn.navigation.BottomNavigationBar
 import io.asterixorobelix.afrikaburn.navigation.NavigationDestination
 import io.asterixorobelix.afrikaburn.platform.CrashLogger
@@ -25,27 +24,23 @@ import io.asterixorobelix.afrikaburn.ui.projects.ProjectsScreen
 import io.asterixorobelix.afrikaburn.ui.about.AboutScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
-import org.koin.compose.KoinApplication
 
 @Composable
 @Preview
 fun App() {
     val isDarkTheme = isSystemInDarkTheme()
 
-    KoinApplication(application = {
-        modules(appModule)
-    }) {
-        // Initialize crash logging
-        val crashLogger: CrashLogger = koinInject()
-        LaunchedEffect(Unit) {
-            crashLogger.initialize()
-            crashLogger.log("App started successfully")
-            
-            // Check Firebase configuration status
-            FirebaseConfigChecker.logConfigurationStatus(crashLogger)
-        }
+    // Initialize crash logging
+    val crashLogger: CrashLogger = koinInject()
+    LaunchedEffect(Unit) {
+        crashLogger.initialize()
+        crashLogger.log("App started successfully")
         
-        AppTheme(useDarkTheme = isDarkTheme) {
+        // Check Firebase configuration status
+        FirebaseConfigChecker.logConfigurationStatus(crashLogger)
+    }
+    
+    AppTheme(useDarkTheme = isDarkTheme) {
             val navController = rememberNavController()
             val currentBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = currentBackStackEntry?.destination?.route
@@ -85,4 +80,3 @@ fun App() {
             }
         }
     }
-}
