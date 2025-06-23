@@ -18,7 +18,7 @@ jobs:
       mobile: ${{ github.event_name == 'schedule' && 'true' || steps.changes.outputs.mobile || 'false' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@v3
         id: changes
         if: github.event_name != 'schedule'
         with:
