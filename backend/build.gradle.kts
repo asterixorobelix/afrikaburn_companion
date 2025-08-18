@@ -66,7 +66,7 @@ dependencies {
     // Testing
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
-    testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
+    testImplementation("io.kotest:kotest-runner-junit5:6.0.0")
     testImplementation("io.mockk:mockk:1.14.2")
 }
 
