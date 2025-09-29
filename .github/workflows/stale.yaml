@@ -17,7 +17,7 @@ jobs:
     
     steps:
       - name: Stale Issues and PRs
-        uses: actions/stale@v9
+        uses: actions/stale@v10
         with:
           # Authentication
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -97,7 +97,7 @@ jobs:
     
     steps:
       - name: Stale Draft PRs
-        uses: actions/stale@v9
+        uses: actions/stale@v10
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           
