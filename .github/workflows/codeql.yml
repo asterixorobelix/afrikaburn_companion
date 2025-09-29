@@ -17,7 +17,7 @@ jobs:
       backend: ${{ github.event_name == 'schedule' && 'true' || steps.changes.outputs.backend || 'false' }}
       mobile: ${{ github.event_name == 'schedule' && 'true' || steps.changes.outputs.mobile || 'false' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dorny/paths-filter@v3
         id: changes
         if: github.event_name != 'schedule'
@@ -58,7 +58,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Set up JDK 17
       if: matrix.language == 'java-kotlin'
