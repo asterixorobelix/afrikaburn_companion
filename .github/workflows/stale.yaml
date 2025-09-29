@@ -150,7 +150,7 @@ jobs:
     
     steps:
       - name: Find PRs awaiting review
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const { owner, repo } = context.repo;
@@ -225,7 +225,7 @@ jobs:
     
     steps:
       - name: Remove stale labels from closed issues
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const { owner, repo } = context.repo;
@@ -265,7 +265,7 @@ jobs:
     
     steps:
       - name: Generate stale statistics
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const { owner, repo } = context.repo;
