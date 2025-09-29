@@ -60,6 +60,11 @@ When creating this spec from a user prompt:
 - Q: What specific battery consumption targets should the app meet for "extended use in remote locations"? → A: 24+ hours with moderate usage pattern
 - Q: How should the app handle authentication and user identity for community features? → A: Anonymous participation with device-based identity
 - Q: What is the maximum acceptable delay for syncing new data when connectivity becomes available? → A: 48 hours
+- Q: What is the data storage size limit for offline content pre-download and smart sync? → A: 2GB - Comprehensive content with images
+- Q: How should the personal schedule builder handle scheduling conflicts when users try to add overlapping events? → A: Allow addition but highlight conflicts
+- Q: What specific criteria determine when time-released content becomes available during the event? → A: User location allows unlock, regardless of time. Time unlock if user location does not match tankwa event location
+- Q: What frequency should weather alerts and dust storm warnings be updated when network connectivity is available? → A: 24 hours
+- Q: How should MOOP tracking and reporting handle offline situations when users want to report environmental issues? → A: Store reports locally, sync when online
 
 ### Proposed Features Update
 The following comprehensive feature set has been defined with detailed functionality across multiple categories:
@@ -178,10 +183,10 @@ As an AfrikaBurn participant traveling to the remote Tankwa Karoo desert, I need
 - **FR-030**: System MUST provide fallback content when primary data sources are unavailable
 
 #### Smart Sync and Pre-Download Features
-- **FR-031**: System MUST provide smart sync functionality to download all content before leaving for the event
-- **FR-032**: System MUST pre-download images, schedules, and multimedia content for offline access
-- **FR-033**: System MUST support time-released content that becomes available only during the event
-- **FR-034**: System MUST provide location-based content unlocks when users arrive at specific areas
+- **FR-031**: System MUST provide smart sync functionality to download all content before leaving for the event with a 2GB storage limit for comprehensive content including images
+- **FR-032**: System MUST pre-download images, schedules, and multimedia content for offline access within the 2GB storage allocation
+- **FR-033**: System MUST support time-released content that becomes available based on user location (immediate unlock at Tankwa event location) or scheduled time unlock for users outside the event location
+- **FR-034**: System MUST provide location-based content unlocks when users arrive at specific areas within the event grounds
 
 #### Interactive Discovery and Search
 - **FR-035**: System MUST provide interactive artwork map with artist details and photos
@@ -190,8 +195,8 @@ As an AfrikaBurn participant traveling to the remote Tankwa Karoo desert, I need
 - **FR-038**: System MUST make events, art, performances, mobile art, mutant vehicles and camps searchable on both map and list views
 
 #### Planning and Timeline Features  
-- **FR-039**: System MUST provide personal schedule builder with conflict detection
-- **FR-040**: System MUST integrate real-time Tankwa Karoo weather alerts and forecasts
+- **FR-039**: System MUST provide personal schedule builder with conflict detection that allows addition of overlapping events but highlights conflicts to the user
+- **FR-040**: System MUST integrate Tankwa Karoo weather alerts and forecasts with updates every 24 hours when connectivity is available
 - **FR-041**: System MUST provide tailored packing checklists for desert survival conditions
 - **FR-042**: System MUST display event schedule for current day and next hour prominently
 
@@ -202,7 +207,7 @@ As an AfrikaBurn participant traveling to the remote Tankwa Karoo desert, I need
 - **FR-046**: System MUST provide developer contact information (Nathan Stasin)
 
 #### MOOP and Environmental Features
-- **FR-047**: System MUST include MOOP (Matter Out of Place) tracking and reporting features
+- **FR-047**: System MUST include MOOP (Matter Out of Place) tracking and reporting features that store reports locally when offline and sync when connectivity is available
 - **FR-048**: System MUST provide leave-no-trace guidelines and environmental impact education
 - **FR-049**: System MUST support resource location features (water, ice, help stations)
 
