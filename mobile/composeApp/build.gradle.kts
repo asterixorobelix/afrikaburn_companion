@@ -9,8 +9,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.detekt)
-    alias(libs.plugins.googleServices)
-    alias(libs.plugins.firebaseCrashlytics)
+    alias(libs.plugins.googleServices) apply false
+    alias(libs.plugins.firebaseCrashlytics) apply false
 }
 
 kotlin {
@@ -62,10 +62,7 @@ kotlin {
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.material)
             
-            // Firebase for Android
-            implementation(project.dependencies.platform(libs.firebase.bom))
-            implementation(libs.firebase.crashlytics)
-            implementation(libs.firebase.analytics)
+            // Firebase for Android - moved to conditional dependencies section
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -98,6 +95,12 @@ kotlin {
     }
 }
 
+// Apply Google Services plugin conditionally
+if (file("google-services.json").exists() || file("src/google-services.json").exists()) {
+    apply(plugin = "com.google.gms.google-services")
+    apply(plugin = "com.google.firebase.crashlytics")
+}
+
 android {
     namespace = "io.asterixorobelix.afrikaburn"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -127,6 +130,13 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    
+    // Add Firebase dependencies only if Google Services is available
+    if (file("google-services.json").exists() || file("src/google-services.json").exists()) {
+        implementation(project.dependencies.platform(libs.firebase.bom))
+        implementation(libs.firebase.crashlytics)
+        implementation(libs.firebase.analytics)
+    }
 }
 
 // Configure detekt for this subproject
