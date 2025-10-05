@@ -63,12 +63,12 @@ specs/001-a-comprehensive-mobile/
 - **Mobile**: Kotlin 2.1.21+ with Compose Multiplatform 1.8.1+, Koin DI, SQLDelight, Ktor Client, Material Design 3
 - **Backend**: Kotlin with Ktor 3.1.3+, Supabase PostgreSQL hosting
 - **Architecture**: MVVM + Clean Architecture, offline-first design
-- **Testing**: Kotlin Test framework, 80% backend coverage requirement
+- **Testing**: Kotlin Test framework, Jacoco coverage reports, 80% minimum coverage requirement for all code
 
 ## Key Development Principles
 - **Offline-First**: All core functionality must work without network connectivity
 - **Material Design 3**: Consistent UI using MD3 tokens, no hardcoded values
-- **Test-Driven Development**: Write failing tests before implementation
+- **Test-Driven Development**: Write passing tests with 80% minimum coverage, measure with Jacoco
 - **Cross-Platform**: Maximize code sharing between iOS and Android
 - **Portfolio Quality**: Professional-grade architecture demonstrating best practices
 
@@ -76,8 +76,11 @@ specs/001-a-comprehensive-mobile/
 
 ### Mobile Development
 ```bash
-# Run mobile tests
-./mobile/gradlew -p mobile test
+# Run mobile tests with coverage
+./mobile/gradlew -p mobile test jacocoTestReport
+
+# Verify 80% coverage requirement
+./mobile/gradlew -p mobile jacocoTestCoverageVerification
 
 # Run Android app
 ./mobile/gradlew -p mobile :composeApp:installDebug
@@ -94,8 +97,11 @@ cd mobile/iosApp && xcodebuild
 # Run backend locally
 ./backend/gradlew -p backend run
 
-# Run backend tests
-./backend/gradlew -p backend test
+# Run backend tests with coverage
+./backend/gradlew -p backend test jacocoTestReport
+
+# Verify 80% coverage requirement
+./backend/gradlew -p backend jacocoTestCoverageVerification
 
 # Detekt code analysis
 ./backend/gradlew -p backend detekt
@@ -105,7 +111,7 @@ cd mobile/iosApp && xcodebuild
 - **Kotlin**: Follow official Kotlin coding conventions
 - **Compose**: Use Material Design 3 tokens exclusively
 - **Architecture**: Repository pattern, Clean Architecture layers
-- **Testing**: TDD approach with comprehensive test coverage
+- **Testing**: TDD approach with comprehensive test coverage, 80% minimum Jacoco coverage required
 - **Documentation**: Clear inline comments for complex business logic
 
 ## File Path Conventions

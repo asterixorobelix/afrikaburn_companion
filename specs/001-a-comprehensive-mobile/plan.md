@@ -37,7 +37,7 @@ A comprehensive offline-first mobile application for AfrikaBurn participants bui
 **Language/Version**: Kotlin 2.1.21+ with Compose Multiplatform 1.8.1+  
 **Primary Dependencies**: Compose Multiplatform, Koin DI, SQLDelight, Ktor Client, Material Design 3  
 **Storage**: SQLDelight with local database, 2GB offline content storage, Supabase backend  
-**Testing**: Kotlin Test, UI Testing Framework, JUnit for backend, 80% coverage requirement  
+**Testing**: Kotlin Test, UI Testing Framework, JUnit for backend, Jacoco coverage reports, 80% minimum coverage requirement  
 **Target Platform**: iOS 15+ and Android API 24+, Compose Multiplatform shared UI
 **Project Type**: Mobile + API (Compose Multiplatform with Kotlin backend)  
 **Performance Goals**: 24+ hour battery life, <3 second map loads, 60fps smooth UI  
@@ -50,7 +50,7 @@ A comprehensive offline-first mobile application for AfrikaBurn participants bui
 - [x] **Offline-First Architecture**: Complete offline functionality implemented with SQLDelight local storage and smart sync
 - [x] **Community-Centric Design**: Features align with AfrikaBurn's Ten Principles, supports gifting and non-commercial interactions
 - [x] **Material Design 3 Consistency**: Compose Multiplatform with MD3 tokens, centralized Dimens, no hardcoded values
-- [x] **Test-First Development**: TDD with Kotlin Test, 80% backend coverage, UI tests for critical flows
+- [x] **Test-First Development**: TDD with Kotlin Test, Jacoco coverage verification, 80% minimum coverage for all code, UI tests for critical flows
 - [x] **Cross-Platform Code Sharing**: Compose Multiplatform maximizes shared code, platform-specific only for native APIs
 - [x] **Portfolio-Quality Development**: Clean Architecture + MVVM, demonstrates modern mobile development patterns
 - [x] **Event Information Secrecy**: Location and time-based content unlocking system implemented
@@ -153,11 +153,12 @@ shared/                             # Shared models between app and backend
 3. **Generate contract tests** from contracts:
    - One test file per endpoint
    - Assert request/response schemas
-   - Tests must fail (no implementation yet)
+   - Tests must pass with proper implementation
+   - Ensure 80% code coverage with Jacoco verification
 
 4. **Extract test scenarios** from user stories:
-   - Each story → integration test scenario
-   - Quickstart test = story validation steps
+   - Each story → integration test scenario with 80% coverage target
+   - Quickstart test = story validation steps with coverage verification
 
 5. **Update agent file incrementally** (O(1) operation):
    - Run `.specify/scripts/bash/update-agent-context.sh claude`
@@ -168,7 +169,7 @@ shared/                             # Shared models between app and backend
    - Keep under 150 lines for token efficiency
    - Output to repository root
 
-**Output**: data-model.md, /contracts/*, failing tests, quickstart.md, agent-specific file
+**Output**: data-model.md, /contracts/*, passing tests with 80% coverage, quickstart.md, agent-specific file
 
 ## Phase 2: Task Planning Approach
 *This section describes what the /tasks command will do - DO NOT execute during /plan*
@@ -176,14 +177,15 @@ shared/                             # Shared models between app and backend
 **Task Generation Strategy**:
 - Load `.specify/templates/tasks-template.md` as base
 - Generate tasks from Phase 1 design docs (contracts, data model, quickstart)
-- Each contract → contract test task [P]
-- Each entity → model creation task [P] 
-- Each user story → integration test task
-- Implementation tasks to make tests pass
+- Each contract → contract test task with 80% coverage [P]
+- Each entity → model creation task with unit tests [P] 
+- Each user story → integration test task with coverage verification
+- Implementation tasks to achieve passing tests and 80% coverage
 
 **Ordering Strategy**:
-- TDD order: Tests before implementation 
+- TDD order: Write comprehensive tests achieving 80% coverage before implementation 
 - Dependency order: Models before services before UI
+- Coverage verification: Jacoco reports must show 80% minimum before moving to next task
 - Mark [P] for parallel execution (independent files)
 
 **Estimated Output**: 25-30 numbered, ordered tasks in tasks.md
