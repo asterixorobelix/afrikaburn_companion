@@ -52,7 +52,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:7.0.2")
     
     // Database Drivers
-    implementation("com.h2database:h2:2.3.232")         // Development
+    implementation("com.h2database:h2:2.4.240")         // Development
     implementation("org.postgresql:postgresql:42.7.8")  // Production
     
     // HTTP Client for AI APIs
