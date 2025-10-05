@@ -1,14 +1,14 @@
 <!--
 Sync Impact Report:
-Version change: [CONSTITUTION_VERSION] → 1.0.0
-Modified principles: Complete initialization from template
-Added sections: All core principles, Development Standards, Quality Gates, Governance
-Removed sections: Template placeholders removed
+Version change: 1.3.0 → 1.3.1
+Modified principles: None
+Added sections: Remote Observability Requirements under Development Standards
+Removed sections: None
 Templates requiring updates:
-  ✅ Updated plan-template.md version reference
-  ✅ Updated spec-template.md alignment
-  ✅ Updated tasks-template.md alignment
-Follow-up TODOs: None - all placeholders resolved
+  ✅ plan-template.md version reference updated (1.3.0 → 1.3.1)
+  ✅ spec-template.md alignment maintained
+  ✅ tasks-template.md alignment maintained
+Follow-up TODOs: None - all content requirements met
 -->
 
 # AfrikaBurn Companion App Constitution
@@ -40,6 +40,18 @@ Compose Multiplatform enables maximum code sharing between Android and iOS. Plat
 
 **Rationale**: Resource efficiency and feature parity across platforms ensure all participants have equal access regardless of device choice.
 
+### VI. Portfolio-Quality Development (NON-NEGOTIABLE)
+This codebase MUST serve as a mobile developer portfolio project demonstrating industry best practices and modern architecture patterns. All code, documentation, and architectural decisions MUST reflect professional mobile development standards suitable for career advancement. Single developer velocity considerations MUST be balanced with best practice adherence - choose patterns that enable rapid development while maintaining code quality and demonstrable expertise.
+
+**Rationale**: The project serves dual purposes as both a functional app and a career portfolio piece. Professional-grade architecture and best practices are essential for demonstrating competency to potential employers while enabling efficient solo development.
+
+### VII. Event Information Secrecy & Data Management (NON-NEGOTIABLE)
+Event-specific information MUST remain hidden until the event begins or the user enters the Tankwa Karoo location. Sensitive information includes: theme camps, mutant vehicles, performances, art installations, events, and mobile art. Location-based or temporal gates MUST be implemented to control access. Non-sensitive, year-to-year consistent information (driving directions, general About content, safety guidelines) may be displayed at any time.
+
+Previous year's event information is NOT sensitive and may be used for development, testing, and demonstration purposes. Current year information MUST be kept secret until appropriate disclosure conditions are met. The architecture MUST support graceful handling of incomplete, messy, or last-minute data from the AfrikaBurn organization, including partial data sets, format inconsistencies, and late-arriving updates.
+
+**Rationale**: AfrikaBurn's annual secrecy tradition preserves the mystery and discovery aspect essential to the event experience. Early disclosure would undermine community anticipation and the principle of immediacy. The organization's volunteer nature and complex logistics often result in incomplete or last-minute data that the app must handle gracefully without compromising user experience.
+
 ## Development Standards
 
 ### Code Quality Requirements
@@ -49,6 +61,16 @@ Compose Multiplatform enables maximum code sharing between Android and iOS. Plat
 - Clean Architecture with MVVM presentation layer
 - Domain-Driven Design principles in backend services
 
+### Portfolio & Solo Developer Standards
+- Modern mobile architecture patterns (MVVM, Repository, Clean Architecture) prominently demonstrated
+- Comprehensive documentation for portfolio presentation and future maintenance
+- Git commit history MUST demonstrate professional development practices and clear progression
+- Code organization MUST showcase understanding of separation of concerns and modular design
+- Feature branches and descriptive commit messages for demonstrable development workflow
+- Automated CI/CD pipeline showcasing DevOps understanding
+- Performance optimization and memory management best practices clearly implemented
+- Solo developer productivity patterns: prefer composition over complex inheritance, favor proven libraries over custom solutions, prioritize readable code over clever optimizations
+
 ### Technology Stack Compliance
 - Kotlin 2.1.21+ for all components
 - Ktor 3.1.3+ for backend services
@@ -56,12 +78,29 @@ Compose Multiplatform enables maximum code sharing between Android and iOS. Plat
 - SQLDelight for local data persistence
 - Multi-provider AI integration support
 
+### Data Management Architecture
+- Year-based data versioning with clear separation between current/previous year datasets
+- Robust data validation with graceful degradation for incomplete information
+- Flexible schema support for inconsistent data formats from external sources
+- Fallback mechanisms when current year data is unavailable or incomplete
+- Previous year data integration for development and testing environments
+- Temporal and location-based access controls for sensitive information disclosure
+
 ### Security Standards
 - Input sanitization on all user inputs
 - Rate limiting on all API endpoints
 - CORS configuration for web interfaces
 - Environment variables for all secrets
 - No hardcoded credentials or API keys
+
+### Remote Observability Requirements
+- Comprehensive remote logging for desert environment debugging where direct device access is impossible
+- Structured logging with contextual information (user actions, app state, network conditions)
+- Crash reporting and error tracking with sufficient detail for remote diagnosis
+- Performance monitoring for memory usage, battery consumption, and app responsiveness
+- Privacy-conscious logging: no sensitive user data or location information beyond general area
+- Offline log storage with intelligent sync when connectivity is available
+- Debug-level logging in development builds, essential-only logging in production builds
 
 ## Quality Gates
 
@@ -71,13 +110,19 @@ Compose Multiplatform enables maximum code sharing between Android and iOS. Plat
 3. Constitution compliance verified
 4. Code coverage thresholds met (80% backend minimum)
 5. String externalization complete (no hardcoded text)
+6. Portfolio quality assessment: architecture patterns clearly demonstrated
+7. Documentation updated for portfolio presentation where applicable
+8. Remote observability verification: logging and error tracking implemented for new features
 
-### Review Process
+### Review Process (Solo Developer Self-Review)
 - All PRs require constitution compliance check
 - Material Design 3 token usage verified
 - Offline functionality tested for new features
 - Community principle alignment assessed
 - Cross-platform compatibility validated
+- Portfolio value assessment: does this change demonstrate professional mobile development skills?
+- Solo developer efficiency check: is this the simplest sustainable solution that meets requirements?
+- Remote observability assessment: can issues with this feature be diagnosed remotely in the desert?
 
 ### Release Criteria
 - Full offline functionality demonstration
@@ -104,4 +149,4 @@ Constitution changes require:
 ### Compliance Review
 All development activities MUST verify compliance with this constitution. Project leads conduct quarterly compliance audits. Non-compliance blocks releases until resolved.
 
-**Version**: 1.0.0 | **Ratified**: 2025-09-29 | **Last Amended**: 2025-09-29
+**Version**: 1.3.1 | **Ratified**: 2025-09-29 | **Last Amended**: 2025-09-29
