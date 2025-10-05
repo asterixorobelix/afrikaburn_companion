@@ -1,12 +1,12 @@
 val ktor_version = "3.1.3"
-val kotlin_version = "2.1.21"
+val kotlin_version = "2.2.20"
 val logback_version = "1.5.18"
 val exposed_version = "0.61.0"
 
 plugins {
-    kotlin("jvm") version "2.1.21"
-    id("io.ktor.plugin") version "3.2.0"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.21"
+    kotlin("jvm") version "2.2.20"
+    id("io.ktor.plugin") version "3.3.0"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20"
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
 }
 
@@ -49,11 +49,11 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposed_version")
     implementation("org.jetbrains.exposed:exposed-java-time:$exposed_version")
-    implementation("com.zaxxer:HikariCP:6.3.0")
+    implementation("com.zaxxer:HikariCP:7.0.2")
     
     // Database Drivers
     implementation("com.h2database:h2:2.3.232")         // Development
-    implementation("org.postgresql:postgresql:42.7.7")  // Production
+    implementation("org.postgresql:postgresql:42.7.8")  // Production
     
     // HTTP Client for AI APIs
     implementation("io.ktor:ktor-client-core:$ktor_version")
@@ -66,8 +66,8 @@ dependencies {
     // Testing
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
-    testImplementation("io.kotest:kotest-runner-junit5:5.9.1")
-    testImplementation("io.mockk:mockk:1.14.2")
+    testImplementation("io.kotest:kotest-runner-junit5:6.0.3")
+    testImplementation("io.mockk:mockk:1.14.5")
 }
 
 // Fat JAR for deployment
