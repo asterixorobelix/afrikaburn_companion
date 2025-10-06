@@ -39,41 +39,41 @@
 **CRITICAL: These tests MUST be written and MUST FAIL before ANY implementation**
 
 ### Contract Tests for Backend API
-- [ ] T006 [P] Contract test GET /events in backend/src/test/kotlin/api/EventsApiTest.kt
-- [ ] T007 [P] Contract test GET /events/{eventId}/theme-camps in backend/src/test/kotlin/api/ThemeCampsApiTest.kt
-- [ ] T008 [P] Contract test GET /events/{eventId}/art-installations in backend/src/test/kotlin/api/ArtInstallationsApiTest.kt
-- [ ] T009 [P] Contract test GET /events/{eventId}/mutant-vehicles in backend/src/test/kotlin/api/MutantVehiclesApiTest.kt
-- [ ] T010 [P] Contract test POST /sync/full in backend/src/test/kotlin/api/SyncApiTest.kt
-- [ ] T011 [P] Contract test POST /events/{eventId}/moop-reports in backend/src/test/kotlin/api/MoopReportsApiTest.kt
-- [ ] T012 [P] Contract test GET /events/{eventId}/weather-alerts in backend/src/test/kotlin/api/WeatherAlertsApiTest.kt
+- [X] T006 [P] Contract test GET /events in backend/src/test/kotlin/api/EventsApiTest.kt
+- [X] T007 [P] Contract test GET /events/{eventId}/theme-camps in backend/src/test/kotlin/api/ThemeCampsApiTest.kt
+- [X] T008 [P] Contract test GET /events/{eventId}/art-installations in backend/src/test/kotlin/api/ArtInstallationsApiTest.kt
+- [X] T009 [P] Contract test GET /events/{eventId}/mutant-vehicles in backend/src/test/kotlin/api/MutantVehiclesApiTest.kt
+- [X] T010 [P] Contract test POST /sync/full in backend/src/test/kotlin/api/SyncApiTest.kt
+- [X] T011 [P] Contract test POST /events/{eventId}/moop-reports in backend/src/test/kotlin/api/MoopReportsApiTest.kt
+- [X] T012 [P] Contract test GET /events/{eventId}/weather-alerts in backend/src/test/kotlin/api/WeatherAlertsApiTest.kt
 
 ### Integration Tests for Mobile Features
-- [ ] T013 [P] Integration test offline map loading in mobile/composeApp/src/commonTest/kotlin/integration/OfflineMapTest.kt
-- [ ] T014 [P] Integration test personal schedule conflict detection in mobile/composeApp/src/commonTest/kotlin/integration/ScheduleConflictTest.kt
-- [ ] T015 [P] Integration test location-based content unlocking in mobile/composeApp/src/commonTest/kotlin/integration/ContentUnlockingTest.kt
-- [ ] T016 [P] Integration test MOOP reporting offline sync in mobile/composeApp/src/commonTest/kotlin/integration/MoopOfflineSyncTest.kt
-- [ ] T017 [P] Integration test smart sync priority system in mobile/composeApp/src/commonTest/kotlin/integration/SmartSyncPriorityTest.kt
-- [ ] T018 [P] Integration test camp location marking and navigation in mobile/composeApp/src/commonTest/kotlin/integration/CampLocationTest.kt
+- [X] T013 [P] Integration test offline map loading in mobile/composeApp/src/commonTest/kotlin/integration/OfflineMapTest.kt
+- [X] T014 [P] Integration test personal schedule conflict detection in mobile/composeApp/src/commonTest/kotlin/integration/ScheduleConflictTest.kt
+- [X] T015 [P] Integration test location-based content unlocking in mobile/composeApp/src/commonTest/kotlin/integration/ContentUnlockingTest.kt
+- [X] T016 [P] Integration test MOOP reporting offline sync in mobile/composeApp/src/commonTest/kotlin/integration/MoopOfflineSyncTest.kt
+- [X] T017 [P] Integration test smart sync priority system in mobile/composeApp/src/commonTest/kotlin/integration/SmartSyncPriorityTest.kt
+- [X] T018 [P] Integration test camp location marking and navigation in mobile/composeApp/src/commonTest/kotlin/integration/CampLocationTest.kt
 
 ## Phase 3.3: Core Data Models (ONLY after tests are failing)
 
 ### Database Schema and Models
-- [ ] T019 [P] Participant entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/Participant.kt
-- [ ] T020 [P] Event entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/Event.kt
-- [ ] T021 [P] ThemeCamp entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/ThemeCamp.kt
-- [ ] T022 [P] ArtInstallation entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/ArtInstallation.kt
-- [ ] T023 [P] MutantVehicle entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/MutantVehicle.kt
-- [ ] T024 [P] EventPerformance entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/EventPerformance.kt
-- [ ] T025 [P] PersonalScheduleItem entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/PersonalScheduleItem.kt
-- [ ] T026 [P] CampLocation entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/CampLocation.kt
-- [ ] T027 [P] OfflineMap entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/OfflineMap.kt
-- [ ] T028 [P] MapPin entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/MapPin.kt
-- [ ] T029 [P] EmergencyContact entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/EmergencyContact.kt
-- [ ] T030 [P] ResourceLocation entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/ResourceLocation.kt
-- [ ] T031 [P] MOOPReport entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/MOOPReport.kt
-- [ ] T032 [P] WeatherAlert entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/WeatherAlert.kt
-- [ ] T033 [P] SyncManager entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/SyncManager.kt
-- [ ] T034 [P] ContentPackage entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/ContentPackage.kt
+- [X] T019 [P] Participant entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/Participant.kt
+- [X] T020 [P] Event entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/Event.kt
+- [X] T021 [P] ThemeCamp entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/ThemeCamp.kt
+- [X] T022 [P] ArtInstallation entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/ArtInstallation.kt
+- [X] T023 [P] MutantVehicle entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/MutantVehicle.kt
+- [X] T024 [P] EventPerformance entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/EventPerformance.kt
+- [X] T025 [P] PersonalScheduleItem entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/PersonalScheduleItem.kt
+- [X] T026 [P] CampLocation entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/CampLocation.kt
+- [X] T027 [P] OfflineMap entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/OfflineMap.kt
+- [X] T028 [P] MapPin entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/MapPin.kt
+- [X] T029 [P] EmergencyContact entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/EmergencyContact.kt
+- [X] T030 [P] ResourceLocation entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/ResourceLocation.kt
+- [X] T031 [P] MOOPReport entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/MOOPReport.kt
+- [X] T032 [P] WeatherAlert entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/WeatherAlert.kt
+- [X] T033 [P] SyncManager entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/SyncManager.kt
+- [X] T034 [P] ContentPackage entity in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/model/ContentPackage.kt
 
 ## Phase 3.4: Repository Layer and Data Access
 
