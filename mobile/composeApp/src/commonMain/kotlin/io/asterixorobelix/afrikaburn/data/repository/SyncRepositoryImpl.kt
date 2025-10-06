@@ -8,6 +8,7 @@ import io.asterixorobelix.afrikaburn.data.local.SyncQueries
 import io.asterixorobelix.afrikaburn.data.remote.SyncApi
 import io.asterixorobelix.afrikaburn.data.storage.StoragePriorityManager
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +31,7 @@ class SyncRepositoryImpl(
         private const val SYNC_BATCH_SIZE = 50
         private const val HIGH_PRIORITY_THRESHOLD = 0.8 // 80% storage usage triggers cleanup
         private const val EMERGENCY_CLEANUP_THRESHOLD = 0.95 // 95% triggers emergency cleanup
+        private const val MIN_AVAILABLE_STORAGE_RATIO = 0.1 // 10% minimum available storage
     }
     
     override suspend fun syncAllContent(
@@ -38,101 +40,57 @@ class SyncRepositoryImpl(
         priority: SyncPriority
     ): Flow<SyncProgress> = flow {
         try {
-            emit(SyncProgress(
-                eventId = eventId,
-                totalItems = 0,
-                completedItems = 0,
-                currentItem = "Initializing sync...",
-                status = SyncStatus.SYNCING,
-                storageUsed = getCurrentStorageUsage(),
-                storageLimit = MAX_STORAGE_BYTES
-            ))
+            emitInitialProgress(eventId)
+            checkAndCleanupStorage(priority)
             
-            // Check storage before starting sync
-            val availableStorage = getAvailableStorage()
-            if (availableStorage < (MAX_STORAGE_BYTES * 0.1)) { // Less than 10% available
-                performStorageCleanup(priority)
-            }
-            
-            // Get sync manifest from server
             val manifest = syncApi.getSyncManifest(eventId, forceRefresh)
-            val totalItems = manifest.items.size
+            emitStartProgress(eventId, manifest.items.size)
             
-            emit(SyncProgress(
-                eventId = eventId,
-                totalItems = totalItems,
-                completedItems = 0,
-                currentItem = "Starting content sync...",
-                status = SyncStatus.SYNCING,
-                storageUsed = getCurrentStorageUsage(),
-                storageLimit = MAX_STORAGE_BYTES
-            ))
-            
-            var completedItems = 0
-            
-            // Sync items in priority order
-            val sortedItems = manifest.items.sortedByDescending { it.priority.ordinal }
-            
-            for (item in sortedItems) {
-                // Check if we have enough storage for this item
-                if (item.sizeBytes > getAvailableStorage()) {
-                    // Try to free up space
-                    if (!freeUpSpace(item.sizeBytes, priority)) {
-                        // Skip this item if we can't free up space
-                        continue
-                    }
-                }
-                
-                emit(SyncProgress(
-                    eventId = eventId,
-                    totalItems = totalItems,
-                    completedItems = completedItems,
-                    currentItem = "Syncing ${item.type}: ${item.name}",
-                    status = SyncStatus.SYNCING,
-                    storageUsed = getCurrentStorageUsage(),
-                    storageLimit = MAX_STORAGE_BYTES
-                ))
-                
-                // Sync the item based on its type
-                syncItem(item)
-                
-                completedItems++
-                
-                emit(SyncProgress(
-                    eventId = eventId,
-                    totalItems = totalItems,
-                    completedItems = completedItems,
-                    currentItem = "Completed ${item.type}: ${item.name}",
-                    status = SyncStatus.SYNCING,
-                    storageUsed = getCurrentStorageUsage(),
-                    storageLimit = MAX_STORAGE_BYTES
-                ))
-            }
-            
-            // Update last sync timestamp
+            val completedItems = syncManifestItems(eventId, manifest.items, priority)
             updateLastSyncTimestamp(eventId, System.currentTimeMillis())
-            
-            emit(SyncProgress(
-                eventId = eventId,
-                totalItems = totalItems,
-                completedItems = completedItems,
-                currentItem = "Sync completed successfully",
-                status = SyncStatus.COMPLETED,
-                storageUsed = getCurrentStorageUsage(),
-                storageLimit = MAX_STORAGE_BYTES
-            ))
+            emitCompletedProgress(eventId, completedItems, manifest.items.size)
             
         } catch (exception: Exception) {
-            emit(SyncProgress(
-                eventId = eventId,
-                totalItems = 0,
-                completedItems = 0,
-                currentItem = "Sync failed: ${exception.message}",
-                status = SyncStatus.FAILED,
-                storageUsed = getCurrentStorageUsage(),
-                storageLimit = MAX_STORAGE_BYTES
-            ))
+            emitFailedProgress(eventId, exception)
         }
+    }
+    
+    private suspend fun FlowCollector<SyncProgress>.emitInitialProgress(eventId: String) {
+        emit(createSyncProgress(eventId, 0, 0, "Initializing sync...", SyncStatus.SYNCING))
+    }
+    
+    private suspend fun FlowCollector<SyncProgress>.emitStartProgress(eventId: String, totalItems: Int) {
+        emit(createSyncProgress(eventId, totalItems, 0, "Starting content sync...", SyncStatus.SYNCING))
+    }
+    
+    private suspend fun FlowCollector<SyncProgress>.emitCompletedProgress(
+        eventId: String, 
+        completedItems: Int, 
+        totalItems: Int
+    ) {
+        emit(createSyncProgress(eventId, totalItems, completedItems, "Sync completed successfully", SyncStatus.COMPLETED))
+    }
+    
+    private suspend fun FlowCollector<SyncProgress>.emitFailedProgress(eventId: String, exception: Exception) {
+        emit(createSyncProgress(eventId, 0, 0, "Sync failed: ${exception.message}", SyncStatus.FAILED))
+    }
+    
+    private fun createSyncProgress(
+        eventId: String,
+        totalItems: Int,
+        completedItems: Int,
+        currentItem: String,
+        status: SyncStatus
+    ): SyncProgress {
+        return SyncProgress(
+            eventId = eventId,
+            totalItems = totalItems,
+            completedItems = completedItems,
+            currentItem = currentItem,
+            status = status,
+            storageUsed = 0L, // Will be updated by caller
+            storageLimit = MAX_STORAGE_BYTES
+        )
     }
     
     override suspend fun syncIncrementalContent(
@@ -140,83 +98,20 @@ class SyncRepositoryImpl(
         lastSyncTimestamp: Long
     ): Flow<SyncProgress> = flow {
         try {
-            emit(SyncProgress(
-                eventId = eventId,
-                totalItems = 0,
-                completedItems = 0,
-                currentItem = "Checking for updates...",
-                status = SyncStatus.SYNCING,
-                storageUsed = getCurrentStorageUsage(),
-                storageLimit = MAX_STORAGE_BYTES
-            ))
+            emit(createSyncProgress(eventId, 0, 0, "Checking for updates...", SyncStatus.SYNCING))
             
-            // Get incremental changes from server
             val changes = syncApi.getIncrementalChanges(eventId, lastSyncTimestamp)
             
             if (changes.isEmpty()) {
-                emit(SyncProgress(
-                    eventId = eventId,
-                    totalItems = 0,
-                    completedItems = 0,
-                    currentItem = "No updates available",
-                    status = SyncStatus.COMPLETED,
-                    storageUsed = getCurrentStorageUsage(),
-                    storageLimit = MAX_STORAGE_BYTES
-                ))
+                emit(createSyncProgress(eventId, 0, 0, "No updates available", SyncStatus.COMPLETED))
                 return@flow
             }
             
-            val totalItems = changes.size
-            var completedItems = 0
-            
-            emit(SyncProgress(
-                eventId = eventId,
-                totalItems = totalItems,
-                completedItems = 0,
-                currentItem = "Applying ${totalItems} updates...",
-                status = SyncStatus.SYNCING,
-                storageUsed = getCurrentStorageUsage(),
-                storageLimit = MAX_STORAGE_BYTES
-            ))
-            
-            for (change in changes) {
-                applyIncrementalChange(change)
-                completedItems++
-                
-                emit(SyncProgress(
-                    eventId = eventId,
-                    totalItems = totalItems,
-                    completedItems = completedItems,
-                    currentItem = "Applied update: ${change.type}",
-                    status = SyncStatus.SYNCING,
-                    storageUsed = getCurrentStorageUsage(),
-                    storageLimit = MAX_STORAGE_BYTES
-                ))
-            }
-            
-            // Update last sync timestamp
+            processIncrementalChanges(eventId, changes)
             updateLastSyncTimestamp(eventId, System.currentTimeMillis())
             
-            emit(SyncProgress(
-                eventId = eventId,
-                totalItems = totalItems,
-                completedItems = completedItems,
-                currentItem = "Incremental sync completed",
-                status = SyncStatus.COMPLETED,
-                storageUsed = getCurrentStorageUsage(),
-                storageLimit = MAX_STORAGE_BYTES
-            ))
-            
         } catch (exception: Exception) {
-            emit(SyncProgress(
-                eventId = eventId,
-                totalItems = 0,
-                completedItems = 0,
-                currentItem = "Incremental sync failed: ${exception.message}",
-                status = SyncStatus.FAILED,
-                storageUsed = getCurrentStorageUsage(),
-                storageLimit = MAX_STORAGE_BYTES
-            ))
+            emit(createSyncProgress(eventId, 0, 0, "Incremental sync failed: ${exception.message}", SyncStatus.FAILED))
         }
     }
     
@@ -281,6 +176,70 @@ class SyncRepositoryImpl(
         updateSyncStatus(eventId, SyncStatus.CANCELLED)
     }
     
+    /**
+     * Check storage and perform cleanup if needed
+     */
+    private suspend fun checkAndCleanupStorage(priority: SyncPriority) {
+        val availableStorage = getAvailableStorage()
+        val minAvailableThreshold = (MAX_STORAGE_BYTES * MIN_AVAILABLE_STORAGE_RATIO).toLong()
+        if (availableStorage < minAvailableThreshold) {
+            performStorageCleanup(priority)
+        }
+    }
+    
+    /**
+     * Sync all items in manifest and return completed count
+     */
+    private suspend fun FlowCollector<SyncProgress>.syncManifestItems(
+        eventId: String,
+        items: List<SyncManifestItem>,
+        priority: SyncPriority
+    ): Int {
+        var completedItems = 0
+        val sortedItems = items.sortedByDescending { it.priority.ordinal }
+        
+        for (item in sortedItems) {
+            if (canSyncItem(item, priority)) {
+                emit(createSyncProgress(eventId, items.size, completedItems, "Syncing ${item.type}: ${item.name}", SyncStatus.SYNCING))
+                syncItem(item)
+                completedItems++
+                emit(createSyncProgress(eventId, items.size, completedItems, "Completed ${item.type}: ${item.name}", SyncStatus.SYNCING))
+            }
+        }
+        return completedItems
+    }
+    
+    /**
+     * Process incremental changes and emit progress
+     */
+    private suspend fun FlowCollector<SyncProgress>.processIncrementalChanges(
+        eventId: String,
+        changes: List<IncrementalChange>
+    ) {
+        val totalItems = changes.size
+        var completedItems = 0
+        
+        emit(createSyncProgress(eventId, totalItems, 0, "Applying $totalItems updates...", SyncStatus.SYNCING))
+        
+        for (change in changes) {
+            applyIncrementalChange(change)
+            completedItems++
+            emit(createSyncProgress(eventId, totalItems, completedItems, "Applied update: ${change.operation}", SyncStatus.SYNCING))
+        }
+        
+        emit(createSyncProgress(eventId, totalItems, completedItems, "Incremental sync completed", SyncStatus.COMPLETED))
+    }
+    
+    /**
+     * Check if item can be synced based on storage constraints
+     */
+    private suspend fun canSyncItem(item: SyncManifestItem, priority: SyncPriority): Boolean {
+        if (item.sizeBytes <= getAvailableStorage()) {
+            return true
+        }
+        return freeUpSpace(item.sizeBytes, priority)
+    }
+
     /**
      * Perform storage cleanup when approaching limits
      */

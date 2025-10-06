@@ -86,11 +86,11 @@
 - [X] T040 [P] UserPreferencesRepository interface in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/repository/UserPreferencesRepository.kt
 
 ### Repository Implementations  
-- [ ] T041 EventRepositoryImpl with SQLDelight local storage in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/data/repository/EventRepositoryImpl.kt
-- [ ] T042 ThemeCampRepositoryImpl with offline caching in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/data/repository/ThemeCampRepositoryImpl.kt
-- [ ] T043 ArtInstallationRepositoryImpl with image caching in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/data/repository/ArtInstallationRepositoryImpl.kt
-- [ ] T044 MapRepositoryImpl with offline tile management in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/data/repository/MapRepositoryImpl.kt
-- [ ] T045 SyncRepositoryImpl with priority-based syncing in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/data/repository/SyncRepositoryImpl.kt
+- [X] T041 EventRepositoryImpl with SQLDelight local storage in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/data/repository/EventRepositoryImpl.kt
+- [X] T042 ThemeCampRepositoryImpl with offline caching in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/data/repository/ThemeCampRepositoryImpl.kt
+- [X] T043 ArtInstallationRepositoryImpl with image caching in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/data/repository/ArtInstallationRepositoryImpl.kt
+- [X] T044 MapRepositoryImpl with offline tile management in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/data/repository/MapRepositoryImpl.kt
+- [X] T045 SyncRepositoryImpl with priority-based syncing in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/data/repository/SyncRepositoryImpl.kt
 
 ## Phase 3.5: Use Cases and Business Logic
 
