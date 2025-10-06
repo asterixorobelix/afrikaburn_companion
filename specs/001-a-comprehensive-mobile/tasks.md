@@ -78,12 +78,12 @@
 ## Phase 3.4: Repository Layer and Data Access
 
 ### Repository Interfaces
-- [ ] T035 [P] EventRepository interface in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/repository/EventRepository.kt
-- [ ] T036 [P] ThemeCampRepository interface in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/repository/ThemeCampRepository.kt  
-- [ ] T037 [P] ArtInstallationRepository interface in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/repository/ArtInstallationRepository.kt
-- [ ] T038 [P] MapRepository interface in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/repository/MapRepository.kt
-- [ ] T039 [P] SyncRepository interface in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/repository/SyncRepository.kt
-- [ ] T040 [P] UserPreferencesRepository interface in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/repository/UserPreferencesRepository.kt
+- [X] T035 [P] EventRepository interface in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/repository/EventRepository.kt
+- [X] T036 [P] ThemeCampRepository interface in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/repository/ThemeCampRepository.kt  
+- [X] T037 [P] ArtInstallationRepository interface in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/repository/ArtInstallationRepository.kt
+- [X] T038 [P] MapRepository interface in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/repository/MapRepository.kt
+- [X] T039 [P] SyncRepository interface in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/repository/SyncRepository.kt
+- [X] T040 [P] UserPreferencesRepository interface in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/repository/UserPreferencesRepository.kt
 
 ### Repository Implementations  
 - [ ] T041 EventRepositoryImpl with SQLDelight local storage in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/data/repository/EventRepositoryImpl.kt
