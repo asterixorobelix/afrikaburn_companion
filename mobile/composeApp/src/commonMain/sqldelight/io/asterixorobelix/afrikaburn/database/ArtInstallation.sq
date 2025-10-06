@@ -1,0 +1,70 @@
+CREATE TABLE ArtInstallation (
+    id TEXT NOT NULL PRIMARY KEY,
+    eventId TEXT NOT NULL,
+    name TEXT NOT NULL,
+    artistName TEXT NOT NULL,
+    description TEXT,
+    latitude REAL NOT NULL,
+    longitude REAL NOT NULL,
+    photoUrls TEXT, -- JSON array stored as string
+    artistBio TEXT,
+    interactiveFeatures TEXT, -- JSON array stored as string
+    isHidden INTEGER NOT NULL DEFAULT 0,
+    unlockTimestamp INTEGER,
+    qrCode TEXT,
+    lastUpdated INTEGER NOT NULL,
+    FOREIGN KEY (eventId) REFERENCES Event(id) ON DELETE CASCADE
+);
+
+selectAll:
+SELECT * FROM ArtInstallation;
+
+selectById:
+SELECT * FROM ArtInstallation WHERE id = ?;
+
+selectByEventId:
+SELECT * FROM ArtInstallation WHERE eventId = ?;
+
+selectVisibleByEventId:
+SELECT * FROM ArtInstallation WHERE eventId = ? AND isHidden = 0;
+
+selectUnlockedByEventId:
+SELECT * FROM ArtInstallation 
+WHERE eventId = ? 
+AND (isHidden = 0 OR unlockTimestamp <= ?);
+
+selectByArtist:
+SELECT * FROM ArtInstallation WHERE eventId = ? AND artistName LIKE '%' || ? || '%';
+
+selectByLocation:
+SELECT * FROM ArtInstallation 
+WHERE eventId = ? 
+AND latitude BETWEEN ? AND ? 
+AND longitude BETWEEN ? AND ?;
+
+insertArtInstallation:
+INSERT OR REPLACE INTO ArtInstallation(
+    id, 
+    eventId, 
+    name, 
+    artistName, 
+    description, 
+    latitude, 
+    longitude, 
+    photoUrls, 
+    artistBio, 
+    interactiveFeatures, 
+    isHidden, 
+    unlockTimestamp, 
+    qrCode, 
+    lastUpdated
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateVisibility:
+UPDATE ArtInstallation SET isHidden = ? WHERE id = ?;
+
+deleteArtInstallation:
+DELETE FROM ArtInstallation WHERE id = ?;
+
+deleteByEventId:
+DELETE FROM ArtInstallation WHERE eventId = ?;

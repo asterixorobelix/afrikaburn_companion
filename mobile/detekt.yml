@@ -518,16 +518,24 @@ style:
       - 'TODO:'
       - 'FIXME:'
       - 'STOPSHIP:'
+      - 'HACK'     # Constitutional: No hack solutions
+      - 'XXX'      # Constitutional: No temporary fixes
     allowedPatterns: ''
   ForbiddenImport:
     active: false
     imports: []
     forbiddenPatterns: ''
   ForbiddenMethodCall:
-    active: false
+    active: true
     methods:
       - 'kotlin.io.println'
       - 'kotlin.io.print'
+      - 'java.lang.System.out.println'  # Constitutional: Use proper logging
+      - 'java.lang.System.err.println'  # Constitutional: Use proper logging
+      - 'android.util.Log.d'            # Constitutional: Use structured logging
+      - 'android.util.Log.i'            # Constitutional: Use structured logging
+      - 'android.util.Log.w'            # Constitutional: Use structured logging
+      - 'android.util.Log.e'            # Constitutional: Use structured logging
   ForbiddenPublicDataClass:
     active: false  # Mobile-specific: More lenient for UI state classes
     ignorePackages:
@@ -563,10 +571,15 @@ style:
       - '0'
       - '1'
       - '2'
-      - '8'    # Mobile-specific: Common for dp values
-      - '16'   # Mobile-specific: Common for dp values
-      - '24'   # Mobile-specific: Common for dp values
-      - '32'   # Mobile-specific: Common for dp values
+      - '3'    # Constitutional: Common count value
+      - '4'    # Constitutional: Common default padding
+      - '5'    # Constitutional: Event radius and common values
+      - '8'    # Constitutional: Common dp values
+      - '16'   # Constitutional: Common dp values (Dimens.paddingMedium)
+      - '24'   # Constitutional: Common dp values (Dimens.paddingLarge)
+      - '32'   # Constitutional: Common dp values
+      - '100'  # Constitutional: Common percentage values
+      - '2000000000'  # Constitutional: 2GB storage limit
     ignoreHashCodeFunction: true
     ignorePropertyDeclaration: false
     ignoreLocalVariableDeclaration: false

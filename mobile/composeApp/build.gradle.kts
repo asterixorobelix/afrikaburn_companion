@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.sqldelight)
     alias(libs.plugins.googleServices) apply false
     alias(libs.plugins.firebaseCrashlytics) apply false
 }
@@ -62,6 +63,12 @@ kotlin {
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.material)
             
+            // SQLDelight Android driver
+            implementation(libs.sqldelight.android.driver)
+            
+            // Ktor Android client
+            implementation(libs.ktor.client.android)
+            
             // Firebase for Android - moved to conditional dependencies section
         }
         commonMain.dependencies {
@@ -83,6 +90,16 @@ kotlin {
 
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.serialization.json)
+            
+            // SQLDelight for local database
+            implementation(libs.sqldelight.runtime)
+            implementation(libs.sqldelight.coroutines.extensions)
+            
+            // Ktor Client for networking
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.logging)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -91,6 +108,14 @@ kotlin {
         
         androidUnitTest.dependencies {
             implementation(libs.mockk)
+        }
+        
+        iosMain.dependencies {
+            // SQLDelight iOS driver  
+            implementation(libs.sqldelight.native.driver)
+            
+            // Ktor iOS client
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
@@ -136,6 +161,16 @@ dependencies {
         implementation(project.dependencies.platform(libs.firebase.bom))
         implementation(libs.firebase.crashlytics)
         implementation(libs.firebase.analytics)
+    }
+}
+
+// Configure SQLDelight
+sqldelight {
+    databases {
+        create("AfrikaBurnDatabase") {
+            packageName.set("io.asterixorobelix.afrikaburn.database")
+            srcDirs.setFrom("src/commonMain/sqldelight")
+        }
     }
 }
 

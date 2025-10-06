@@ -1,0 +1,41 @@
+CREATE TABLE SyncManager (
+    id TEXT NOT NULL PRIMARY KEY,
+    lastFullSync INTEGER NOT NULL DEFAULT 0,
+    lastIncrementalSync INTEGER NOT NULL DEFAULT 0,
+    totalStorageUsed INTEGER NOT NULL DEFAULT 0,
+    maxStorageLimit INTEGER NOT NULL DEFAULT 2000000000, -- 2GB
+    syncStatus TEXT NOT NULL DEFAULT 'idle' CHECK(syncStatus IN ('idle', 'syncing', 'error')),
+    errorMessage TEXT,
+    networkType TEXT CHECK(networkType IN ('wifi', 'cellular', 'none'))
+);
+
+-- Single row table pattern
+insertOrUpdateSyncManager:
+INSERT OR REPLACE INTO SyncManager(
+    id, 
+    lastFullSync, 
+    lastIncrementalSync, 
+    totalStorageUsed, 
+    maxStorageLimit, 
+    syncStatus, 
+    errorMessage, 
+    networkType
+) VALUES ('singleton', ?, ?, ?, ?, ?, ?, ?);
+
+selectSyncManager:
+SELECT * FROM SyncManager WHERE id = 'singleton';
+
+updateSyncStatus:
+UPDATE SyncManager SET syncStatus = ?, errorMessage = ? WHERE id = 'singleton';
+
+updateLastFullSync:
+UPDATE SyncManager SET lastFullSync = ? WHERE id = 'singleton';
+
+updateLastIncrementalSync:
+UPDATE SyncManager SET lastIncrementalSync = ? WHERE id = 'singleton';
+
+updateStorageUsed:
+UPDATE SyncManager SET totalStorageUsed = ? WHERE id = 'singleton';
+
+updateNetworkType:
+UPDATE SyncManager SET networkType = ? WHERE id = 'singleton';

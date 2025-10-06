@@ -1,0 +1,57 @@
+CREATE TABLE ContentPackage (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    priority INTEGER NOT NULL,
+    sizeBytes INTEGER NOT NULL,
+    version INTEGER NOT NULL,
+    isDownloaded INTEGER NOT NULL DEFAULT 0,
+    downloadProgress REAL NOT NULL DEFAULT 0.0,
+    lastDownloaded INTEGER NOT NULL DEFAULT 0,
+    expiryDate INTEGER
+);
+
+selectAll:
+SELECT * FROM ContentPackage;
+
+selectById:
+SELECT * FROM ContentPackage WHERE id = ?;
+
+selectByPriority:
+SELECT * FROM ContentPackage ORDER BY priority ASC;
+
+selectDownloaded:
+SELECT * FROM ContentPackage WHERE isDownloaded = 1;
+
+selectNotDownloaded:
+SELECT * FROM ContentPackage WHERE isDownloaded = 0;
+
+selectExpired:
+SELECT * FROM ContentPackage WHERE expiryDate IS NOT NULL AND expiryDate <= ?;
+
+getTotalDownloadedSize:
+SELECT SUM(sizeBytes) FROM ContentPackage WHERE isDownloaded = 1;
+
+insertContentPackage:
+INSERT OR REPLACE INTO ContentPackage(
+    id, 
+    name, 
+    priority, 
+    sizeBytes, 
+    version, 
+    isDownloaded, 
+    downloadProgress, 
+    lastDownloaded, 
+    expiryDate
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateDownloadProgress:
+UPDATE ContentPackage SET downloadProgress = ? WHERE id = ?;
+
+updateDownloadStatus:
+UPDATE ContentPackage SET isDownloaded = ?, lastDownloaded = ? WHERE id = ?;
+
+deleteContentPackage:
+DELETE FROM ContentPackage WHERE id = ?;
+
+deleteExpired:
+DELETE FROM ContentPackage WHERE expiryDate IS NOT NULL AND expiryDate <= ?;

@@ -1,0 +1,65 @@
+CREATE TABLE MOOPReport (
+    id TEXT NOT NULL PRIMARY KEY,
+    deviceId TEXT NOT NULL,
+    latitude REAL NOT NULL,
+    longitude REAL NOT NULL,
+    description TEXT NOT NULL,
+    photoPath TEXT,
+    severity TEXT NOT NULL CHECK(severity IN ('low', 'medium', 'high')),
+    status TEXT NOT NULL DEFAULT 'reported' CHECK(status IN ('reported', 'in_progress', 'resolved')),
+    reportedTimestamp INTEGER NOT NULL,
+    isSynced INTEGER NOT NULL DEFAULT 0,
+    lastUpdated INTEGER NOT NULL,
+    FOREIGN KEY (deviceId) REFERENCES Participant(deviceId) ON DELETE CASCADE
+);
+
+selectAll:
+SELECT * FROM MOOPReport;
+
+selectById:
+SELECT * FROM MOOPReport WHERE id = ?;
+
+selectByDeviceId:
+SELECT * FROM MOOPReport WHERE deviceId = ? ORDER BY reportedTimestamp DESC;
+
+selectUnsynced:
+SELECT * FROM MOOPReport WHERE isSynced = 0 ORDER BY reportedTimestamp;
+
+selectBySeverity:
+SELECT * FROM MOOPReport WHERE severity = ? ORDER BY reportedTimestamp DESC;
+
+selectByStatus:
+SELECT * FROM MOOPReport WHERE status = ? ORDER BY reportedTimestamp DESC;
+
+selectByLocation:
+SELECT * FROM MOOPReport 
+WHERE latitude BETWEEN ? AND ? 
+AND longitude BETWEEN ? AND ?
+ORDER BY reportedTimestamp DESC;
+
+insertMOOPReport:
+INSERT OR REPLACE INTO MOOPReport(
+    id, 
+    deviceId, 
+    latitude, 
+    longitude, 
+    description, 
+    photoPath, 
+    severity, 
+    status, 
+    reportedTimestamp, 
+    isSynced, 
+    lastUpdated
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateSyncStatus:
+UPDATE MOOPReport SET isSynced = ? WHERE id = ?;
+
+updateStatus:
+UPDATE MOOPReport SET status = ?, lastUpdated = ? WHERE id = ?;
+
+deleteMOOPReport:
+DELETE FROM MOOPReport WHERE id = ?;
+
+deleteByDeviceId:
+DELETE FROM MOOPReport WHERE deviceId = ?;

@@ -1,0 +1,69 @@
+CREATE TABLE PersonalScheduleItem (
+    id TEXT NOT NULL PRIMARY KEY,
+    deviceId TEXT NOT NULL,
+    eventPerformanceId TEXT,
+    customTitle TEXT,
+    customDescription TEXT,
+    startTime TEXT NOT NULL, -- ISO datetime string
+    endTime TEXT NOT NULL, -- ISO datetime string
+    hasConflict INTEGER NOT NULL DEFAULT 0,
+    isReminder INTEGER NOT NULL DEFAULT 1,
+    createdTimestamp INTEGER NOT NULL,
+    lastUpdated INTEGER NOT NULL,
+    FOREIGN KEY (deviceId) REFERENCES Participant(deviceId) ON DELETE CASCADE
+);
+
+selectAll:
+SELECT * FROM PersonalScheduleItem;
+
+selectById:
+SELECT * FROM PersonalScheduleItem WHERE id = ?;
+
+selectByDeviceId:
+SELECT * FROM PersonalScheduleItem WHERE deviceId = ? ORDER BY startTime;
+
+selectConflicts:
+SELECT * FROM PersonalScheduleItem 
+WHERE deviceId = ? 
+AND hasConflict = 1 
+ORDER BY startTime;
+
+selectByTimeRange:
+SELECT * FROM PersonalScheduleItem 
+WHERE deviceId = ? 
+AND startTime <= ? 
+AND endTime >= ?
+ORDER BY startTime;
+
+selectOverlapping:
+SELECT * FROM PersonalScheduleItem 
+WHERE deviceId = ? 
+AND id != ?
+AND ((startTime < ? AND endTime > ?) OR (startTime < ? AND endTime > ?));
+
+insertScheduleItem:
+INSERT OR REPLACE INTO PersonalScheduleItem(
+    id, 
+    deviceId, 
+    eventPerformanceId, 
+    customTitle, 
+    customDescription, 
+    startTime, 
+    endTime, 
+    hasConflict, 
+    isReminder, 
+    createdTimestamp, 
+    lastUpdated
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateConflictStatus:
+UPDATE PersonalScheduleItem SET hasConflict = ? WHERE id = ?;
+
+updateReminderStatus:
+UPDATE PersonalScheduleItem SET isReminder = ? WHERE id = ?;
+
+deleteScheduleItem:
+DELETE FROM PersonalScheduleItem WHERE id = ?;
+
+deleteByDeviceId:
+DELETE FROM PersonalScheduleItem WHERE deviceId = ?;

@@ -28,11 +28,11 @@
 
 ## Phase 3.1: Setup and Dependencies
 
-- [ ] T001 Update mobile/composeApp/build.gradle.kts with new dependencies (SQLDelight, Ktor Client, Location services)
-- [ ] T002 Update backend/build.gradle.kts with Supabase PostgreSQL driver and additional Ktor modules  
-- [ ] T003 [P] Configure SQLDelight database schema in mobile/composeApp/src/commonMain/sqldelight/
-- [ ] T004 [P] Update mobile/detekt.yml with constitutional code quality rules
-- [ ] T005 Create mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/database/ directory structure
+- [X] T001 Update mobile/composeApp/build.gradle.kts with new dependencies (SQLDelight, Ktor Client, Location services)
+- [X] T002 Update backend/build.gradle.kts with Supabase PostgreSQL driver and additional Ktor modules  
+- [X] T003 [P] Configure SQLDelight database schema in mobile/composeApp/src/commonMain/sqldelight/
+- [X] T004 [P] Update mobile/detekt.yml with constitutional code quality rules
+- [X] T005 Create mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/database/ directory structure
 
 ## Phase 3.2: Database and Data Models (TDD) ⚠️ MUST COMPLETE BEFORE 3.3
 

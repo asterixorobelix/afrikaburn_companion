@@ -60,6 +60,17 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     
+    // Additional Ktor modules for AfrikaBurn features
+    implementation("io.ktor:ktor-server-websockets-jvm:$ktor_version")
+    implementation("io.ktor:ktor-server-compression-jvm:$ktor_version")
+    implementation("io.ktor:ktor-server-caching-headers-jvm:$ktor_version")
+    implementation("io.ktor:ktor-server-partial-content-jvm:$ktor_version")
+    
+    // PostGIS extension for geospatial features
+    implementation("org.postgresql:postgresql:42.7.8")  // Already present but ensuring latest
+    implementation("net.postgis:postgis-jdbc:2023.1.0")
+    implementation("org.jetbrains.exposed:exposed-json:$exposed_version")
+    
     // Logging
     implementation("ch.qos.logback:logback-classic:$logback_version")
     

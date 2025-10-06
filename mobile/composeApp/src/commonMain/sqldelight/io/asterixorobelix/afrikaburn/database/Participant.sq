@@ -1,0 +1,36 @@
+CREATE TABLE Participant (
+    deviceId TEXT NOT NULL PRIMARY KEY,
+    isDarkModeEnabled INTEGER NOT NULL DEFAULT 0,
+    preferredLanguage TEXT NOT NULL DEFAULT 'en',
+    hasCompletedOnboarding INTEGER NOT NULL DEFAULT 0,
+    lastSyncTimestamp INTEGER NOT NULL DEFAULT 0,
+    batteryOptimizationEnabled INTEGER NOT NULL DEFAULT 1
+);
+
+selectAll:
+SELECT * FROM Participant;
+
+selectByDeviceId:
+SELECT * FROM Participant WHERE deviceId = ?;
+
+insertParticipant:
+INSERT OR REPLACE INTO Participant(
+    deviceId, 
+    isDarkModeEnabled, 
+    preferredLanguage, 
+    hasCompletedOnboarding, 
+    lastSyncTimestamp, 
+    batteryOptimizationEnabled
+) VALUES (?, ?, ?, ?, ?, ?);
+
+updateLastSyncTimestamp:
+UPDATE Participant SET lastSyncTimestamp = ? WHERE deviceId = ?;
+
+updateOnboardingStatus:
+UPDATE Participant SET hasCompletedOnboarding = ? WHERE deviceId = ?;
+
+updateDarkMode:
+UPDATE Participant SET isDarkModeEnabled = ? WHERE deviceId = ?;
+
+deleteParticipant:
+DELETE FROM Participant WHERE deviceId = ?;

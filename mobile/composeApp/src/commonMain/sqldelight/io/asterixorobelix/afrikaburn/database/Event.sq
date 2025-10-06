@@ -1,0 +1,44 @@
+CREATE TABLE Event (
+    id TEXT NOT NULL PRIMARY KEY,
+    year INTEGER NOT NULL,
+    startDate TEXT NOT NULL,
+    endDate TEXT NOT NULL,
+    centerLatitude REAL NOT NULL,
+    centerLongitude REAL NOT NULL,
+    radiusKm REAL NOT NULL DEFAULT 5.0,
+    theme TEXT NOT NULL,
+    isCurrentYear INTEGER NOT NULL DEFAULT 0,
+    lastUpdated INTEGER NOT NULL
+);
+
+selectAll:
+SELECT * FROM Event;
+
+selectById:
+SELECT * FROM Event WHERE id = ?;
+
+selectCurrentYear:
+SELECT * FROM Event WHERE isCurrentYear = 1;
+
+selectByYear:
+SELECT * FROM Event WHERE year = ?;
+
+insertEvent:
+INSERT OR REPLACE INTO Event(
+    id, 
+    year, 
+    startDate, 
+    endDate, 
+    centerLatitude, 
+    centerLongitude, 
+    radiusKm, 
+    theme, 
+    isCurrentYear, 
+    lastUpdated
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+updateCurrentYearStatus:
+UPDATE Event SET isCurrentYear = ? WHERE id = ?;
+
+deleteEvent:
+DELETE FROM Event WHERE id = ?;
