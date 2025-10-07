@@ -3,6 +3,7 @@ package io.asterixorobelix.afrikaburn.models
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class ProjectItemTest {
     
@@ -99,9 +100,8 @@ class ProjectItemTest {
         )
         
         expectedFields.forEach { field ->
-            assert(jsonString.contains(field)) {
-                "JSON should contain $field, but was: $jsonString"
-            }
+            assertTrue(jsonString.contains(field),
+                "JSON should contain $field, but was: $jsonString")
         }
     }
     
