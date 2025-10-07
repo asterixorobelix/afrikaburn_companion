@@ -1,5 +1,15 @@
 package io.asterixorobelix.afrikaburn.plugins
 
+import io.asterixorobelix.afrikaburn.api.artInstallationsApi
+import io.asterixorobelix.afrikaburn.api.emergencyApi
+import io.asterixorobelix.afrikaburn.api.eventsApi
+import io.asterixorobelix.afrikaburn.api.moopApi
+import io.asterixorobelix.afrikaburn.api.performancesApi
+import io.asterixorobelix.afrikaburn.api.mutantVehiclesApi
+import io.asterixorobelix.afrikaburn.api.resourcesApi
+import io.asterixorobelix.afrikaburn.api.syncApi
+import io.asterixorobelix.afrikaburn.api.themeCampsApi
+import io.asterixorobelix.afrikaburn.api.weatherRoutes
 import io.asterixorobelix.afrikaburn.domain.HealthResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
@@ -24,5 +34,17 @@ fun Application.configureRouting() {
                 )
             )
         }
+        
+        // API routes
+        eventsApi()
+        themeCampsApi()
+        artInstallationsApi()
+        mutantVehiclesApi()
+        performancesApi()
+        syncApi()
+        emergencyApi()
+        resourcesApi()
+        moopApi()
+        weatherRoutes()
     }
 }

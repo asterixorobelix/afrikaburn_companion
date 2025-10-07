@@ -95,22 +95,22 @@
 ## Phase 3.5: Use Cases and Business Logic
 
 ### Core Use Cases
-- [ ] T046 [P] GetEventsUseCase in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/GetEventsUseCase.kt
-- [ ] T047 [P] SyncContentUseCase with 2GB limit logic in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/SyncContentUseCase.kt
-- [ ] T048 [P] UnlockContentUseCase with location/time logic in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/UnlockContentUseCase.kt
-- [ ] T049 [P] ManagePersonalScheduleUseCase with conflict detection in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/ManagePersonalScheduleUseCase.kt
-- [ ] T050 [P] MarkCampLocationUseCase in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/MarkCampLocationUseCase.kt
-- [ ] T051 [P] ReportMOOPUseCase with offline storage in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/ReportMOOPUseCase.kt
-- [ ] T052 [P] GetWeatherAlertsUseCase in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/GetWeatherAlertsUseCase.kt
+- [X] T046 [P] GetEventsUseCase in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/GetEventsUseCase.kt
+- [X] T047 [P] SyncContentUseCase with 2GB limit logic in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/SyncContentUseCase.kt
+- [X] T048 [P] UnlockContentUseCase with location/time logic in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/UnlockContentUseCase.kt
+- [X] T049 [P] ManagePersonalScheduleUseCase with conflict detection in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/ManagePersonalScheduleUseCase.kt
+- [X] T050 [P] MarkCampLocationUseCase in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/MarkCampLocationUseCase.kt
+- [X] T051 [P] ReportMOOPUseCase with offline storage in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/ReportMOOPUseCase.kt
+- [X] T052 [P] GetWeatherAlertsUseCase in mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/domain/usecase/GetWeatherAlertsUseCase.kt
 
 ## Phase 3.6: Backend API Implementation
 
 ### Event Management Endpoints
-- [ ] T053 GET /events endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/EventsApi.kt
-- [ ] T054 GET /events/{eventId}/theme-camps endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/ThemeCampsApi.kt  
-- [ ] T055 GET /events/{eventId}/art-installations endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/ArtInstallationsApi.kt
-- [ ] T056 GET /events/{eventId}/mutant-vehicles endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/MutantVehiclesApi.kt
-- [ ] T057 GET /events/{eventId}/performances endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/PerformancesApi.kt
+- [X] T053 GET /events endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/EventsApi.kt
+- [X] T054 GET /events/{eventId}/theme-camps endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/ThemeCampsApi.kt  
+- [X] T055 GET /events/{eventId}/art-installations endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/ArtInstallationsApi.kt
+- [X] T056 GET /events/{eventId}/mutant-vehicles endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/MutantVehiclesApi.kt
+- [X] T057 GET /events/{eventId}/performances endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/PerformancesApi.kt
 
 ### Smart Sync Endpoints
 - [ ] T058 POST /sync/full endpoint with 2GB limit logic in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/SyncApi.kt

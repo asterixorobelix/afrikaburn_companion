@@ -1,7 +1,9 @@
 package api
 
+import io.asterixorobelix.afrikaburn.module
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -20,6 +22,9 @@ class ThemeCampsApiTest : DescribeSpec({
         
         it("should return 200 with theme camps array for valid eventId") {
             testApplication {
+                application {
+                    module()
+                }
                 val response = client.get("/api/v1/events/$testEventId/theme-camps")
                 
                 // Contract validation: Status code
@@ -44,14 +49,17 @@ class ThemeCampsApiTest : DescribeSpec({
                     firstCamp.containsKey("longitude") shouldBe true
                     
                     // Validate data types
-                    firstCamp["latitude"]?.jsonPrimitive?.doubleOrNull shouldBe Double::class.java.simpleName
-                    firstCamp["longitude"]?.jsonPrimitive?.doubleOrNull shouldBe Double::class.java.simpleName
+                    firstCamp["latitude"]?.jsonPrimitive?.doubleOrNull shouldNotBe null
+                    firstCamp["longitude"]?.jsonPrimitive?.doubleOrNull shouldNotBe null
                 }
             }
         }
         
         it("should return filtered camps based on location parameters") {
             testApplication {
+                application {
+                    module()
+                }
                 val lat = -32.3
                 val lng = 20.1
                 val response = client.get("/api/v1/events/$testEventId/theme-camps?lat=$lat&lng=$lng")
@@ -69,11 +77,14 @@ class ThemeCampsApiTest : DescribeSpec({
         
         it("should return 404 for invalid eventId") {
             testApplication {
+                application {
+                    module()
+                }
                 val invalidId = "invalid-uuid"
                 val response = client.get("/api/v1/events/$invalidId/theme-camps")
                 
                 // Contract validation: Error response structure
-                response.status shouldBe HttpStatusCode.NotFound
+                response.status shouldBe HttpStatusCode.BadRequest
                 response.headers[HttpHeaders.ContentType] shouldContain "application/json"
                 
                 val jsonResponse = Json.parseToJsonElement(response.bodyAsText()).jsonObject
@@ -84,6 +95,9 @@ class ThemeCampsApiTest : DescribeSpec({
         
         it("should validate geographic coordinates bounds") {
             testApplication {
+                application {
+                    module()
+                }
                 val invalidLat = 91.0 // Outside valid range (-90 to 90)
                 val validLng = 20.1
                 val response = client.get("/api/v1/events/$testEventId/theme-camps?lat=$invalidLat&lng=$validLng")

@@ -58,3 +58,37 @@ fun calculateDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): D
     
     return earthRadiusKm * c
 }
+
+/**
+ * Calculate bearing between two coordinates (KMP compatible)
+ */
+fun calculateBearing(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Double {
+    val lat1Rad = toRadians(lat1)
+    val lat2Rad = toRadians(lat2)
+    val deltaLonRad = toRadians(lon2 - lon1)
+    
+    val x = kotlin.math.sin(deltaLonRad) * kotlin.math.cos(lat2Rad)
+    val y = kotlin.math.cos(lat1Rad) * kotlin.math.sin(lat2Rad) -
+            kotlin.math.sin(lat1Rad) * kotlin.math.cos(lat2Rad) * kotlin.math.cos(deltaLonRad)
+    
+    val bearing = kotlin.math.atan2(x, y)
+    
+    // Convert from radians to degrees and normalize to 0-360
+    return (toDegrees(bearing) + 360) % 360
+}
+
+/**
+ * Convert radians to degrees (KMP compatible)
+ */
+fun toDegrees(radians: Double): Double {
+    return radians * 180.0 / kotlin.math.PI
+}
+
+/**
+ * Convert bearing to compass direction (KMP compatible)
+ */
+fun Double.toCompassDirection(): String {
+    val directions = arrayOf("N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW")
+    val index = kotlin.math.round(this / 22.5).toInt() % 16
+    return directions[index]
+}
