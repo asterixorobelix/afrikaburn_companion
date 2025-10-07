@@ -113,14 +113,14 @@
 - [X] T057 GET /events/{eventId}/performances endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/PerformancesApi.kt
 
 ### Smart Sync Endpoints
-- [ ] T058 POST /sync/full endpoint with 2GB limit logic in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/SyncApi.kt
-- [ ] T059 POST /sync/incremental endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/SyncApi.kt (same file as T058)
+- [X] T058 POST /sync/full endpoint with 2GB limit logic in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/SyncApi.kt
+- [X] T059 POST /sync/incremental endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/SyncApi.kt (same file as T058)
 
 ### Safety and Emergency Endpoints  
-- [ ] T060 GET /events/{eventId}/emergency-contacts endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/EmergencyApi.kt
-- [ ] T061 GET /events/{eventId}/resource-locations endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/ResourcesApi.kt
-- [ ] T062 POST /events/{eventId}/moop-reports endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/MoopApi.kt
-- [ ] T063 GET /events/{eventId}/weather-alerts endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/WeatherApi.kt
+- [X] T060 GET /events/{eventId}/emergency-contacts endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/EmergencyApi.kt
+- [X] T061 GET /events/{eventId}/resource-locations endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/ResourcesApi.kt
+- [X] T062 POST /events/{eventId}/moop-reports endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/MoopApi.kt
+- [X] T063 GET /events/{eventId}/weather-alerts endpoint in backend/src/main/kotlin/io/asterixorobelix/afrikaburn/api/WeatherApi.kt
 
 ## Phase 3.7: Mobile UI - Update Existing Screens
 
