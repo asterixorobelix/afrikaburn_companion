@@ -158,6 +158,61 @@ A Compose Multiplatform mobile app (iOS + Android) for AfrikaBurn, the South Afr
 - Prefer immutable data structures
 - Write comprehensive tests
 
+### Compilation Verification Requirements
+**MANDATORY for all AI assistants working on this mobile project:**
+
+#### Regular Compilation Checks
+After every significant codebase change (approximately 5 file changes), AI assistants MUST verify that the code compiles successfully. This prevents accumulation of errors and ensures continuous code quality.
+
+1. **When to Check Compilation**:
+   - After modifying approximately 5 files
+   - After any significant refactoring
+   - After adding new dependencies
+   - After changing repository interfaces or implementations
+   - Before marking any task as complete
+
+2. **How to Verify Mobile Compilation**:
+   ```bash
+   # Quick compilation check for Android (recommended - faster)
+   ./gradlew :composeApp:compileDebugKotlinAndroid
+   
+   # Full build verification (slower but more thorough)
+   ./gradlew build
+   
+   # If working on iOS-specific code
+   ./gradlew :composeApp:compileKotlinIosArm64
+   ./gradlew :composeApp:compileKotlinIosX64
+   ```
+
+3. **How to Verify Backend Compilation** (when in backend directory):
+   ```bash
+   # Quick compilation check
+   ./gradlew compileKotlin
+   
+   # Full build verification
+   ./gradlew build
+   ```
+
+4. **Handling Compilation Errors**:
+   - If compilation fails, STOP and fix all errors before proceeding
+   - Read error messages carefully - they usually indicate the exact issue
+   - Common issues include:
+     - Missing imports
+     - Type mismatches
+     - Unresolved references
+     - Suspend function call outside coroutine
+     - Missing expect/actual implementations
+   - After fixing errors, run compilation check again
+   - Only proceed with new changes after successful compilation
+
+5. **Best Practices**:
+   - Use the quick compilation check (`compileDebugKotlinAndroid`) for faster feedback
+   - Run full build before finalizing large changes
+   - Keep compilation output visible to track progress
+   - If errors seem unclear, check recent changes with `git diff`
+
+**ENFORCEMENT**: This is a mandatory practice. Accumulating compilation errors makes debugging exponentially harder and wastes development time.
+
 ### Material Design 3 Implementation Rules
 **MANDATORY for all AI assistants working on this mobile project:**
 

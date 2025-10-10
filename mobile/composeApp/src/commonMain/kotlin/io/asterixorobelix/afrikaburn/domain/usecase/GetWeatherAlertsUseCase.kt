@@ -1,7 +1,7 @@
 package io.asterixorobelix.afrikaburn.domain.usecase
 
 import io.asterixorobelix.afrikaburn.domain.model.WeatherAlert
-import io.asterixorobelix.afrikaburn.domain.model.WeatherAlertSeverity
+import io.asterixorobelix.afrikaburn.domain.model.WeatherSeverity
 import io.asterixorobelix.afrikaburn.domain.repository.WeatherRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -24,19 +24,17 @@ class GetWeatherAlertsUseCase(
      * @return Flow of weather alerts, updated when new data is available
      */
     operator fun invoke(
-        minSeverity: WeatherAlertSeverity? = null,
+        minSeverity: WeatherSeverity? = null,
         forceRefresh: Boolean = false
     ): Flow<List<WeatherAlert>> {
         return weatherRepository.getWeatherAlerts(
-            latitude = EVENT_LATITUDE,
-            longitude = EVENT_LONGITUDE,
             forceRefresh = forceRefresh
         ).map { alerts ->
-            val now = Clock.System.now()
+            val now = Clock.System.now().toEpochMilliseconds()
             
             // Filter active alerts
             val activeAlerts = alerts.filter { alert ->
-                alert.startTime <= now && alert.endTime > now
+                alert.startTime <= now && (alert.endTime == null || alert.endTime > now)
             }
             
             // Apply severity filter if requested
@@ -76,7 +74,7 @@ class GetWeatherAlertsUseCase(
      * Includes dust storms, extreme heat, and other life-threatening conditions.
      */
     fun getCriticalAlerts(): Flow<List<WeatherAlert>> {
-        return invoke(minSeverity = WeatherAlertSeverity.EXTREME)
+        return invoke(minSeverity = WeatherSeverity.EXTREME)
     }
     
     /**
@@ -90,7 +88,7 @@ class GetWeatherAlertsUseCase(
         
         return invoke().map { alerts ->
             alerts.filter { alert ->
-                typeSet.contains(alert.type)
+                typeSet.contains(alert.alertType.name)
             }
         }
     }
@@ -103,12 +101,12 @@ class GetWeatherAlertsUseCase(
         return invoke().map { alerts ->
             WeatherAlertSummary(
                 totalActiveAlerts = alerts.size,
-                criticalAlerts = alerts.count { it.severity == WeatherAlertSeverity.EXTREME },
-                severeAlerts = alerts.count { it.severity == WeatherAlertSeverity.SEVERE },
-                moderateAlerts = alerts.count { it.severity == WeatherAlertSeverity.MODERATE },
-                minorAlerts = alerts.count { it.severity == WeatherAlertSeverity.MINOR },
-                hasDustStorm = alerts.any { it.type == ALERT_TYPE_DUST_STORM },
-                hasExtremeHeat = alerts.any { it.type == ALERT_TYPE_EXTREME_HEAT }
+                criticalAlerts = alerts.count { it.severity == WeatherSeverity.EXTREME },
+                severeAlerts = alerts.count { it.severity == WeatherSeverity.HIGH },
+                moderateAlerts = alerts.count { it.severity == WeatherSeverity.MEDIUM },
+                minorAlerts = alerts.count { it.severity == WeatherSeverity.LOW },
+                hasDustStorm = alerts.any { it.alertType.name == ALERT_TYPE_DUST_STORM },
+                hasExtremeHeat = alerts.any { it.alertType.name == ALERT_TYPE_EXTREME_HEAT }
             )
         }
     }

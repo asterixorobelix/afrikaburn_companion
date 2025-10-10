@@ -279,11 +279,11 @@ data class MutantVehicle(
     /**
      * Get location status description
      */
-    fun getLocationStatus(): LocationStatus {
+    fun getLocationStatus(): VehicleLocationStatus {
         return when {
-            currentLatitude == null || currentLongitude == null -> LocationStatus.NO_LOCATION
-            !hasRecentLocation() -> LocationStatus.STALE_LOCATION
-            else -> LocationStatus.CURRENT_LOCATION
+            currentLatitude == null || currentLongitude == null -> VehicleLocationStatus.NO_LOCATION
+            !hasRecentLocation() -> VehicleLocationStatus.STALE_LOCATION
+            else -> VehicleLocationStatus.CURRENT_LOCATION
         }
     }
     
@@ -381,9 +381,9 @@ enum class SafetyComplianceStatus(val displayName: String) {
 }
 
 /**
- * Location tracking status
+ * Vehicle location tracking status
  */
-enum class LocationStatus(val displayName: String) {
+enum class VehicleLocationStatus(val displayName: String) {
     CURRENT_LOCATION("Current Location"),
     STALE_LOCATION("Stale Location"),
     NO_LOCATION("Location Unknown")

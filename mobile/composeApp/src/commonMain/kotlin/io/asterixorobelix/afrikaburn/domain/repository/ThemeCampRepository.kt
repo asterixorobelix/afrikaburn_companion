@@ -140,4 +140,19 @@ interface ThemeCampRepository {
      * Get theme camps that provide essential services
      */
     suspend fun getServiceThemeCamps(eventId: String): List<ThemeCamp>
+    
+    /**
+     * Get favorite theme camp IDs
+     */
+    suspend fun getFavoriteCampIds(): Set<String>
+    
+    /**
+     * Add theme camp to favorites
+     */
+    suspend fun addFavoriteCamp(campId: String)
+    
+    /**
+     * Remove theme camp from favorites
+     */
+    suspend fun removeFavoriteCamp(campId: String)
 }

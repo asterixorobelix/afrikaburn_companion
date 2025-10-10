@@ -1,5 +1,8 @@
 package io.asterixorobelix.afrikaburn.domain.model
 
+import kotlin.math.log10
+import kotlin.math.pow
+
 /**
  * Domain model representing offline map data for the AfrikaBurn event
  * 
@@ -485,4 +488,19 @@ enum class LayerType {
     EMERGENCY,       // Emergency services
     USER_MARKERS,    // User-created markers
     EVENT_BOUNDARIES // Event area boundaries
+}
+
+/**
+ * Extension function to convert bytes to human-readable size format
+ */
+fun Long.toHumanReadableSize(): String {
+    if (this <= 0) return "0 B"
+    
+    val units = arrayOf("B", "KB", "MB", "GB", "TB")
+    val digitGroups = (log10(this.toDouble()) / log10(1024.0)).toInt()
+    
+    return "%.1f %s".format(
+        this / 1024.0.pow(digitGroups.toDouble()),
+        units[digitGroups]
+    )
 }

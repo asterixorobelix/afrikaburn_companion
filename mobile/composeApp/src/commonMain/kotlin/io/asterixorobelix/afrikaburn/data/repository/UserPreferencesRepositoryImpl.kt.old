@@ -1,0 +1,28 @@
+package io.asterixorobelix.afrikaburn.data.repository
+
+import io.asterixorobelix.afrikaburn.domain.repository.UserPreferencesRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+class UserPreferencesRepositoryImpl : UserPreferencesRepository {
+    private val preferencesFlow = MutableStateFlow(emptyMap<String, Any>())
+    
+    override fun getPreferences(): Flow<Map<String, Any>> = preferencesFlow.asStateFlow()
+    
+    override suspend fun setPreference(key: String, value: Any) {
+        val currentPrefs = preferencesFlow.value.toMutableMap()
+        currentPrefs[key] = value
+        preferencesFlow.value = currentPrefs
+    }
+    
+    override suspend fun removePreference(key: String) {
+        val currentPrefs = preferencesFlow.value.toMutableMap()
+        currentPrefs.remove(key)
+        preferencesFlow.value = currentPrefs
+    }
+    
+    override suspend fun clearPreferences() {
+        preferencesFlow.value = emptyMap()
+    }
+}

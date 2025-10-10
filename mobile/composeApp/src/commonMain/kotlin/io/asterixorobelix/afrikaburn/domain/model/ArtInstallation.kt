@@ -11,7 +11,7 @@ data class ArtInstallation(
     val id: String,
     val eventId: String,
     val name: String,
-    val artist: String,
+    val artistName: String,
     val description: String?,
     val latitude: Double,
     val longitude: Double,
@@ -23,6 +23,8 @@ data class ArtInstallation(
     val accessibilityNotes: String?,
     val qrCode: String?,
     val photoUrls: List<String> = emptyList(),
+    val artistBio: String? = null,
+    val interactiveFeatures: List<String> = emptyList(),
     val isHidden: Boolean = false,
     val unlockTimestamp: Long?,
     val lastUpdated: Long
@@ -63,7 +65,7 @@ data class ArtInstallation(
         return id.isNotBlank() &&
                eventId.isNotBlank() &&
                name.isNotBlank() &&
-               artist.isNotBlank() &&
+               artistName.isNotBlank() &&
                isValidCoordinates() &&
                isValidQrCode() &&
                photoUrls.size <= MAX_PHOTOS &&

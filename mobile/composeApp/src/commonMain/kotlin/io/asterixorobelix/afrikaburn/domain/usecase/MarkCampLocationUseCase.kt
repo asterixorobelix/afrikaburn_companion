@@ -8,6 +8,7 @@ import io.asterixorobelix.afrikaburn.domain.model.getCurrentTimestamp
 import io.asterixorobelix.afrikaburn.domain.repository.MapRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 /**
@@ -32,6 +33,7 @@ class MarkCampLocationUseCase(
      * @param altitude Elevation in meters (optional)
      * @return Result with success or validation errors
      */
+    @OptIn(ExperimentalUuidApi::class)
     suspend fun saveCampLocation(
         deviceId: String,
         latitude: Double,

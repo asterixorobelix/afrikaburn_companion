@@ -125,13 +125,13 @@ data class ThemeCamp(
     /**
      * Get camp type based on activities
      */
-    fun getCampType(): CampType {
+    fun getCampType(): ThemeCampType {
         return when {
-            hasActivity("Music") || hasActivity("Performance") -> CampType.ENTERTAINMENT
-            hasActivity("Workshop") || hasActivity("Learning") -> CampType.EDUCATIONAL
-            hasActivity("Healing") || hasActivity("Meditation") -> CampType.WELLNESS
-            hasActivity("Art") || hasActivity("Craft") -> CampType.ARTISTIC
-            else -> CampType.COMMUNITY
+            hasActivity("Music") || hasActivity("Performance") -> ThemeCampType.ENTERTAINMENT
+            hasActivity("Workshop") || hasActivity("Learning") -> ThemeCampType.EDUCATIONAL
+            hasActivity("Healing") || hasActivity("Meditation") -> ThemeCampType.WELLNESS
+            hasActivity("Art") || hasActivity("Craft") -> ThemeCampType.ARTISTIC
+            else -> ThemeCampType.COMMUNITY
         }
     }
     
@@ -177,7 +177,7 @@ data class ThemeCamp(
 /**
  * Theme camp classification
  */
-enum class CampType {
+enum class ThemeCampType {
     ENTERTAINMENT,
     EDUCATIONAL,
     WELLNESS,

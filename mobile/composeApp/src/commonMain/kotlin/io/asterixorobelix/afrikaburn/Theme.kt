@@ -35,24 +35,30 @@ val LightColors = lightColorScheme(
     onErrorContainer = Color(0xFF410E0B),
 )
 
+// Desert nighttime optimized dark theme - designed for reduced eye strain
+// in low-light conditions with better contrast for outdoor use
 @Suppress("MagicNumber")
 val DarkColors = darkColorScheme(
-    primary = Color(0xFFD0BCFF),
-    onPrimary = Color(0xFF381E72),
-    primaryContainer = Color(0xFF4F378B),
-    onPrimaryContainer = Color(0xFFEADDFF),
-    secondary = Color(0xFFCCC2DC),
-    onSecondary = Color(0xFF332D41),
-    secondaryContainer = Color(0xFF4A4458),
-    onSecondaryContainer = Color(0xFFE8DEF8),
-    background = Color(0xFF1C1B1F),
-    onBackground = Color(0xFFE6E1E5),
-    surface = Color(0xFF1C1B1F),
-    onSurface = Color(0xFFE6E1E5),
-    error = Color(0xFFF2B8B5),
-    onError = Color(0xFF601410),
+    primary = Color(0xFFFF9800),  // Warm orange for primary actions (like firelight)
+    onPrimary = Color(0xFF3E2723),
+    primaryContainer = Color(0xFF795548),
+    onPrimaryContainer = Color(0xFFFFE0B2),
+    secondary = Color(0xFFFFEB3B),  // Yellow for secondary (starlight)
+    onSecondary = Color(0xFF3E2723),
+    secondaryContainer = Color(0xFF5D4037),
+    onSecondaryContainer = Color(0xFFFFF9C4),
+    background = Color(0xFF000000),  // True black for OLED battery saving
+    onBackground = Color(0xFFF5F5F5),  // High contrast text
+    surface = Color(0xFF1A1A1A),  // Very dark surface
+    onSurface = Color(0xFFF5F5F5),
+    error = Color(0xFFFF5252),  // Bright red for visibility
+    onError = Color(0xFF000000),
     errorContainer = Color(0xFF8C1D18),
-    onErrorContainer = Color(0xFFF9DEDC),
+    onErrorContainer = Color(0xFFFFCDD2),
+    tertiary = Color(0xFF81C784),  // Green for safety/environmental features
+    onTertiary = Color(0xFF1B5E20),
+    tertiaryContainer = Color(0xFF2E7D32),
+    onTertiaryContainer = Color(0xFFC8E6C9),
 )
 
 val AppShapes = Shapes(
@@ -158,6 +164,8 @@ object Dimens {
     val cornerRadiusMedium = 8.dp
     val cornerRadiusLarge = 16.dp
     val dropdownMaxHeight = 200.dp
+    val buttonHeightSmall = 40.dp
+    val chipHeight = 24.dp
 
     // Elevation
     val elevationSmall = 2.dp

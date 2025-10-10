@@ -226,17 +226,13 @@ data class EmergencyContact(
                 type in listOf(EmergencyContactType.MEDICAL, EmergencyContactType.EMERGENCY_SERVICES) ||
                 capabilities.any { it.contains("medical", ignoreCase = true) }
             }
-            EmergencyType.FIRE -> {
+            EmergencyType.FIRE_SAFETY -> {
                 type in listOf(EmergencyContactType.FIRE_SAFETY, EmergencyContactType.EMERGENCY_SERVICES) ||
                 capabilities.any { it.contains("fire", ignoreCase = true) }
             }
             EmergencyType.SECURITY -> {
                 type in listOf(EmergencyContactType.SECURITY, EmergencyContactType.RANGERS) ||
                 capabilities.any { it.contains("security", ignoreCase = true) }
-            }
-            EmergencyType.VEHICLE -> {
-                type == EmergencyContactType.VEHICLE_RECOVERY ||
-                capabilities.any { it.contains("vehicle", ignoreCase = true) || it.contains("recovery", ignoreCase = true) }
             }
             EmergencyType.SEARCH_RESCUE -> {
                 type in listOf(EmergencyContactType.SEARCH_RESCUE, EmergencyContactType.RANGERS) ||
@@ -410,18 +406,8 @@ enum class ContactReliability {
     EMERGENCY_ONLY      // Only works in emergencies
 }
 
-/**
- * Emergency types for contact matching
- */
-enum class EmergencyType {
-    MEDICAL,
-    FIRE,
-    SECURITY,
-    VEHICLE,
-    SEARCH_RESCUE,
-    COMMUNICATION,
-    GENERAL
-}
+// EmergencyType enum is already defined in CampLocation.kt
+// Using the existing enum from that file
 
 /**
  * Simplified emergency contact summary

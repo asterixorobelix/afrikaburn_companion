@@ -69,6 +69,9 @@ kotlin {
             // Ktor Android client
             implementation(libs.ktor.client.android)
             
+            // Location services
+            implementation(libs.play.services.location)
+            
             // Firebase for Android - moved to conditional dependencies section
         }
         commonMain.dependencies {
