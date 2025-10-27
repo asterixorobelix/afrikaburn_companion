@@ -261,7 +261,7 @@ jobs:
         ./gradlew composeApp:assembleDebug
         
     - name: Upload test results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: mobile-test-results
@@ -274,7 +274,7 @@ jobs:
         find mobile -name "detekt.*" -type f 2>/dev/null || echo "No detekt reports found"
         
     - name: Upload detekt results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       if: always()
       with:
         name: mobile-detekt-results

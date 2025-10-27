@@ -188,7 +188,7 @@ jobs:
         keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
     
     - name: Upload AAB artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: android-aab
         path: mobile/composeApp/build/outputs/bundle/release/*.aab
@@ -651,7 +651,7 @@ jobs:
         fi
     
     - name: Upload iOS Artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: ios-ipa
         path: |
