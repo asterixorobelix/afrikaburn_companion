@@ -672,13 +672,13 @@ jobs:
         ref: main
     
     - name: Download Android AAB
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: android-aab
         path: ./artifacts/
     
     - name: Download iOS IPA
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v6
       with:
         name: ios-ipa
         path: ./artifacts/
