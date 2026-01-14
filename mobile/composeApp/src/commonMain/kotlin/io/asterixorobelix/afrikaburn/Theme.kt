@@ -189,6 +189,22 @@ object Dimens {
     val skeletonLineHeightLarge = 24.dp
     val skeletonBadgeHeight = 28.dp
     val skeletonBadgeWidth = 100.dp
+
+    // Page indicator dimensions
+    val indicatorDotSizeSmall = 8.dp
+    val indicatorDotSizeLarge = 12.dp
+    val indicatorSpacing = 10.dp
+
+    // Image sizes
+    val aboutImageSize = 160.dp
+    val aboutImageSizeLarge = 200.dp
+
+    // Card dimensions
+    val cardContentPaddingHorizontal = 20.dp
+    val cardContentPaddingVertical = 24.dp
+
+    // Swipe hint dimensions
+    val swipeHintIconSize = 20.dp
 }
 
 @Composable
