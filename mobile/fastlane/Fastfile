@@ -1,0 +1,400 @@
+# Fastfile for AfrikaBurn Companion
+# Compose Multiplatform app deployment automation
+#
+# Documentation: https://docs.fastlane.tools
+
+default_platform(:android)
+
+# ============================================================================
+# ANDROID LANES
+# ============================================================================
+platform :android do
+
+  desc "Run Android unit tests"
+  lane :test do
+    gradle(
+      project_dir: "..",
+      task: ":composeApp:testDebugUnitTest"
+    )
+  end
+
+  desc "Run detekt code analysis"
+  lane :lint do
+    gradle(
+      project_dir: "..",
+      task: "detekt"
+    )
+  end
+
+  desc "Build debug APK"
+  lane :build_debug do
+    gradle(
+      project_dir: "..",
+      task: ":composeApp:assembleDebug"
+    )
+
+    APK_LOCATION = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
+    UI.success("Debug APK built: #{APK_LOCATION}")
+  end
+
+  desc "Build release AAB for Play Store"
+  lane :build_release do
+    # Ensure we have signing configuration
+    ensure_env_vars(
+      env_vars: ["KEYSTORE_PATH", "KEYSTORE_PASSWORD", "KEY_ALIAS", "KEY_PASSWORD"]
+    )
+
+    gradle(
+      project_dir: "..",
+      task: ":composeApp:bundleRelease",
+      properties: {
+        "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
+        "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["KEY_PASSWORD"]
+      }
+    )
+
+    AAB_LOCATION = "../composeApp/build/outputs/bundle/release/composeApp-release.aab"
+    UI.success("Release AAB built: #{AAB_LOCATION}")
+  end
+
+  desc "Build release APK (for direct distribution)"
+  lane :build_release_apk do
+    ensure_env_vars(
+      env_vars: ["KEYSTORE_PATH", "KEYSTORE_PASSWORD", "KEY_ALIAS", "KEY_PASSWORD"]
+    )
+
+    gradle(
+      project_dir: "..",
+      task: ":composeApp:assembleRelease",
+      properties: {
+        "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
+        "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["KEY_PASSWORD"]
+      }
+    )
+  end
+
+  desc "Increment version code"
+  lane :bump_version do
+    # Read current version from build.gradle.kts
+    build_file = "../composeApp/build.gradle.kts"
+    content = File.read(build_file)
+
+    # Extract and increment version code
+    current_version_code = content.match(/versionCode = (\d+)/)[1].to_i
+    new_version_code = current_version_code + 1
+
+    # Update version code
+    new_content = content.gsub(/versionCode = \d+/, "versionCode = #{new_version_code}")
+    File.write(build_file, new_content)
+
+    UI.success("Version code bumped: #{current_version_code} -> #{new_version_code}")
+    new_version_code
+  end
+
+  desc "Deploy to Play Store Internal Testing track"
+  lane :internal do
+    test
+    lint
+    bump_version
+    build_release
+
+    upload_to_play_store(
+      track: "internal",
+      aab: "../composeApp/build/outputs/bundle/release/composeApp-release.aab",
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+      release_status: "completed"
+    )
+
+    UI.success("Successfully deployed to Internal Testing!")
+  end
+
+  desc "Deploy to Play Store Beta (Open Testing)"
+  lane :beta do
+    test
+    lint
+    bump_version
+    build_release
+
+    upload_to_play_store(
+      track: "beta",
+      aab: "../composeApp/build/outputs/bundle/release/composeApp-release.aab",
+      skip_upload_metadata: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+
+    UI.success("Successfully deployed to Beta!")
+  end
+
+  desc "Deploy to Play Store Production (with staged rollout)"
+  lane :release do |options|
+    rollout_percentage = options[:rollout] || 0.1
+
+    test
+    lint
+    bump_version
+    build_release
+
+    upload_to_play_store(
+      track: "production",
+      aab: "../composeApp/build/outputs/bundle/release/composeApp-release.aab",
+      rollout: rollout_percentage.to_s
+    )
+
+    UI.success("Successfully deployed to Production with #{(rollout_percentage * 100).to_i}% rollout!")
+  end
+
+  desc "Promote Internal to Beta"
+  lane :promote_to_beta do
+    upload_to_play_store(
+      track: "internal",
+      track_promote_to: "beta",
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+
+    UI.success("Promoted Internal to Beta!")
+  end
+
+  desc "Promote Beta to Production"
+  lane :promote_to_production do |options|
+    rollout_percentage = options[:rollout] || 0.1
+
+    upload_to_play_store(
+      track: "beta",
+      track_promote_to: "production",
+      rollout: rollout_percentage.to_s,
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+
+    UI.success("Promoted Beta to Production with #{(rollout_percentage * 100).to_i}% rollout!")
+  end
+
+end
+
+# ============================================================================
+# iOS LANES
+# ============================================================================
+platform :ios do
+
+  desc "Sync code signing certificates and provisioning profiles"
+  lane :certificates do
+    match(
+      type: "appstore",
+      readonly: is_ci,
+      app_identifier: "io.asterixorobelix.afrikaburn"
+    )
+  end
+
+  desc "Sync development certificates"
+  lane :certificates_dev do
+    match(
+      type: "development",
+      readonly: is_ci,
+      app_identifier: "io.asterixorobelix.afrikaburn"
+    )
+  end
+
+  desc "Build Kotlin Multiplatform framework"
+  lane :build_framework do
+    gradle(
+      project_dir: "..",
+      task: ":composeApp:assembleReleaseXCFramework"
+    )
+
+    UI.success("XCFramework built successfully!")
+  end
+
+  desc "Build iOS app for App Store"
+  lane :build do
+    # First build the Kotlin framework
+    build_framework
+
+    # Sync certificates
+    certificates
+
+    # Build the iOS app
+    build_app(
+      workspace: "../iosApp/iosApp.xcodeproj/project.xcworkspace",
+      scheme: "iosApp",
+      export_method: "app-store",
+      output_directory: "./build",
+      output_name: "AfrikaBurnCompanion.ipa",
+      clean: true
+    )
+
+    UI.success("iOS app built successfully!")
+  end
+
+  desc "Build iOS app for development/testing"
+  lane :build_dev do
+    build_framework
+    certificates_dev
+
+    build_app(
+      workspace: "../iosApp/iosApp.xcodeproj/project.xcworkspace",
+      scheme: "iosApp",
+      export_method: "development",
+      output_directory: "./build",
+      output_name: "AfrikaBurnCompanion-dev.ipa"
+    )
+  end
+
+  desc "Deploy to TestFlight"
+  lane :beta do
+    build
+
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      distribute_external: false,
+      notify_external_testers: false,
+      changelog: generate_changelog
+    )
+
+    UI.success("Successfully deployed to TestFlight!")
+  end
+
+  desc "Deploy to TestFlight with external testers"
+  lane :beta_external do
+    build
+
+    upload_to_testflight(
+      skip_waiting_for_build_processing: false,
+      distribute_external: true,
+      notify_external_testers: true,
+      groups: ["Beta Testers"],
+      changelog: generate_changelog
+    )
+
+    UI.success("Successfully deployed to TestFlight for external testers!")
+  end
+
+  desc "Submit to App Store for review"
+  lane :release do
+    build
+
+    upload_to_app_store(
+      submit_for_review: false,
+      automatic_release: false,
+      force: true,
+      precheck_include_in_app_purchases: false,
+      submission_information: {
+        add_id_info_uses_idfa: false
+      }
+    )
+
+    UI.success("Successfully uploaded to App Store Connect!")
+    UI.important("Remember to submit for review manually in App Store Connect")
+  end
+
+  desc "Submit to App Store and request review"
+  lane :release_submit do
+    build
+
+    upload_to_app_store(
+      submit_for_review: true,
+      automatic_release: true,
+      force: true,
+      precheck_include_in_app_purchases: false,
+      submission_information: {
+        add_id_info_uses_idfa: false
+      }
+    )
+
+    UI.success("Successfully submitted to App Store for review!")
+  end
+
+end
+
+# ============================================================================
+# SHARED / UTILITY LANES
+# ============================================================================
+
+desc "Generate changelog from recent git commits"
+private_lane :generate_changelog do
+  changelog = changelog_from_git_commits(
+    commits_count: 10,
+    pretty: "- %s",
+    date_format: "short",
+    merge_commit_filtering: "exclude_merges"
+  )
+
+  # Limit length for App Store
+  if changelog.length > 4000
+    changelog = changelog[0..3990] + "..."
+  end
+
+  changelog
+end
+
+desc "Print changelog (useful for release notes)"
+lane :changelog do
+  puts generate_changelog
+end
+
+desc "Run all tests (Android)"
+lane :test_all do
+  android_test
+end
+
+desc "Clean build artifacts"
+lane :clean do
+  gradle(
+    project_dir: "..",
+    task: "clean"
+  )
+
+  # Clean fastlane build directory
+  sh("rm -rf ./build")
+
+  UI.success("Build artifacts cleaned!")
+end
+
+desc "Check if all environment variables are configured"
+lane :check_env do
+  required_vars = [
+    "KEYSTORE_PATH",
+    "KEYSTORE_PASSWORD",
+    "KEY_ALIAS",
+    "KEY_PASSWORD"
+  ]
+
+  ios_vars = [
+    "MATCH_PASSWORD",
+    "MATCH_GIT_URL"
+  ]
+
+  UI.header("Android Environment Check")
+  required_vars.each do |var|
+    if ENV[var].nil? || ENV[var].empty?
+      UI.error("Missing: #{var}")
+    else
+      UI.success("Found: #{var}")
+    end
+  end
+
+  UI.header("iOS Environment Check")
+  ios_vars.each do |var|
+    if ENV[var].nil? || ENV[var].empty?
+      UI.error("Missing: #{var}")
+    else
+      UI.success("Found: #{var}")
+    end
+  end
+end
+
+# Error handling
+error do |lane, exception|
+  UI.error("Lane #{lane} failed with error: #{exception.message}")
+end

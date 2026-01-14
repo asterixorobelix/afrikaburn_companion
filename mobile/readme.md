@@ -74,6 +74,47 @@ This project includes comprehensive automated testing and code quality analysis:
 - Performance monitoring (APK size tracking)
 - Clear action items for any issues found
 
+## 🚀 Fastlane Deployment
+
+This project uses **Fastlane** for automated deployments to Google Play Store and Apple App Store.
+
+### Quick Start
+```bash
+# Install dependencies
+make setup
+
+# Configure credentials
+cp fastlane/.env.default fastlane/.env
+# Edit fastlane/.env with your credentials
+
+# Verify setup
+make check-env
+```
+
+### Common Commands
+
+| Task | Command |
+|------|---------|
+| Run tests | `make test` |
+| Build debug APK | `make build-debug` |
+| Deploy to Internal Testing | `make deploy-internal` |
+| Deploy to Beta | `make deploy-beta` |
+| Deploy to Production | `make deploy-release` |
+| iOS TestFlight | `make ios-beta` |
+| iOS App Store | `make ios-release` |
+
+### What Fastlane Automates
+- **Version bumping** - Automatic version code increment
+- **Code signing** - Match handles iOS certificates automatically
+- **Build & upload** - One command for complete deployment
+- **Release notes** - Generated from git commits
+
+### Setup Requirements
+- **Android**: Keystore file + Play Store service account
+- **iOS**: Apple Developer account + private certificate repo
+
+📖 **Full setup guide**: [FASTLANE_SETUP.md](FASTLANE_SETUP.md)
+
 ## 📁 Project Structure
 
 ```
@@ -82,7 +123,13 @@ mobile/
 │   ├── commonMain/      # Platform-agnostic code
 │   ├── androidMain/     # Android-specific code
 │   └── iosMain/         # iOS-specific code
-└── iosApp/              # iOS app entry point
+├── iosApp/              # iOS app entry point
+├── fastlane/            # Deployment automation
+│   ├── Fastfile         # Lane definitions
+│   ├── Appfile          # App identifiers
+│   ├── Matchfile        # iOS code signing
+│   └── .env.default     # Environment template
+└── Makefile             # Simplified commands
 ```
 
 ## 🛠️ Development

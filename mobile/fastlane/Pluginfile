@@ -1,0 +1,24 @@
+# Pluginfile - Fastlane Plugins
+# Documentation: https://docs.fastlane.tools/plugins/using-plugins/
+#
+# Install plugins with: bundle exec fastlane install_plugins
+
+# Uncomment and install plugins as needed:
+
+# Version code management for Android
+# gem 'fastlane-plugin-increment_version_code'
+
+# Better changelog management
+# gem 'fastlane-plugin-changelog'
+
+# Add beta badges to app icons
+# gem 'fastlane-plugin-badge'
+
+# Firebase App Distribution (alternative to Play Store for beta)
+# gem 'fastlane-plugin-firebase_app_distribution'
+
+# Versioning helpers
+# gem 'fastlane-plugin-versioning'
+
+# Slack notifications
+# gem 'fastlane-plugin-slack'

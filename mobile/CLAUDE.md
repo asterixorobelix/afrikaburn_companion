@@ -73,6 +73,60 @@ This is a Kotlin Multiplatform project, targeting Android and iOS platforms.
   gradle wrapper
   ```
 
+### Fastlane Deployment Commands
+
+This project uses Fastlane for automated deployments to Google Play Store and Apple App Store. See [FASTLANE_SETUP.md](FASTLANE_SETUP.md) for complete setup instructions.
+
+**Quick Commands (via Makefile):**
+```bash
+# Setup
+make setup              # Install Ruby dependencies
+make check-env          # Verify environment configuration
+
+# Development
+make test               # Run unit tests
+make lint               # Run detekt analysis
+make build-debug        # Build debug APK
+
+# Android Deployment
+make deploy-internal    # Deploy to Play Store Internal Testing
+make deploy-beta        # Deploy to Play Store Beta
+make deploy-release     # Deploy to Play Store Production (10% rollout)
+
+# iOS Deployment
+make ios-certs          # Sync code signing certificates
+make ios-beta           # Deploy to TestFlight
+make ios-release        # Upload to App Store
+```
+
+**Direct Fastlane Commands:**
+```bash
+# Android
+bundle exec fastlane android test           # Run tests
+bundle exec fastlane android build_debug    # Build debug APK
+bundle exec fastlane android internal       # Deploy to Internal Testing
+bundle exec fastlane android beta           # Deploy to Beta
+bundle exec fastlane android release        # Deploy to Production
+
+# iOS
+bundle exec fastlane ios certificates       # Sync signing certs
+bundle exec fastlane ios beta               # Deploy to TestFlight
+bundle exec fastlane ios release            # Upload to App Store
+
+# Utility
+bundle exec fastlane changelog              # Generate release notes
+bundle exec fastlane clean                  # Clean build artifacts
+```
+
+**Environment Setup:**
+1. Copy `fastlane/.env.default` to `fastlane/.env`
+2. Fill in your credentials (keystore, Play Store API, Apple ID)
+3. Run `make check-env` to verify configuration
+
+**Required Credentials:**
+- Android: Keystore file, Play Store service account JSON
+- iOS: Apple Developer account, Match certificate repository
+
 ## Architecture Overview
 
 ### Project Structure

@@ -1,0 +1,12 @@
+# Gemfile - Ruby dependencies for Fastlane
+# Run `bundle install` to install dependencies
+# Run `bundle update` to update to latest versions
+
+source "https://rubygems.org"
+
+# Fastlane - the core automation tool
+gem "fastlane", "~> 2.225"
+
+# Plugins are managed via Pluginfile
+plugins_path = File.join(File.dirname(__FILE__), 'Pluginfile')
+eval_gemfile(plugins_path) if File.exist?(plugins_path)

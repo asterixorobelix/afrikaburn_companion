@@ -16,3 +16,23 @@ captures
 !*.xcodeproj/project.xcworkspace/
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
+
+# Fastlane
+fastlane/.env
+fastlane/.env.*
+!fastlane/.env.default
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+fastlane/build/
+fastlane/play-store-credentials.json
+fastlane/README.md
+
+# Signing keys (NEVER commit these)
+*.jks
+*.keystore
+*.p12
+*.mobileprovision
+*.cer
+GoogleService-Info.plist

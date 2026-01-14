@@ -1,0 +1,40 @@
+# Appfile - App identifiers for AfrikaBurn Companion
+# Documentation: https://docs.fastlane.tools/advanced/Appfile/
+
+# ============================================================================
+# ANDROID CONFIGURATION
+# ============================================================================
+
+# Path to your Google Play Console service account JSON key
+# Generate at: https://play.google.com/console -> Setup -> API access
+json_key_file(ENV["PLAY_STORE_JSON_KEY"] || "fastlane/play-store-credentials.json")
+
+# Android package name
+package_name("io.asterixorobelix.afrikaburn")
+
+# ============================================================================
+# iOS CONFIGURATION
+# ============================================================================
+
+# Apple ID (email) for App Store Connect
+apple_id(ENV["APPLE_ID"] || "your-apple-id@email.com")
+
+# iOS app bundle identifier
+app_identifier("io.asterixorobelix.afrikaburn")
+
+# App Store Connect Team ID (numeric)
+# Find at: https://appstoreconnect.apple.com -> Users and Access -> Team ID
+itc_team_id(ENV["ITC_TEAM_ID"] || "YOUR_ITC_TEAM_ID")
+
+# Apple Developer Team ID (alphanumeric)
+# Find at: https://developer.apple.com/account -> Membership -> Team ID
+team_id(ENV["APPLE_TEAM_ID"] || "YOUR_DEV_TEAM_ID")
+
+# ============================================================================
+# ENVIRONMENT-SPECIFIC OVERRIDES
+# ============================================================================
+
+# You can override values per lane like this:
+# for_lane :beta do
+#   app_identifier("io.asterixorobelix.afrikaburn.beta")
+# end

@@ -1,0 +1,57 @@
+# Matchfile - iOS Code Signing Configuration
+# Documentation: https://docs.fastlane.tools/actions/match/
+#
+# Match stores your certificates and provisioning profiles in a private git repo
+# This eliminates "code signing hell" and makes CI/CD simple
+
+# ============================================================================
+# REPOSITORY CONFIGURATION
+# ============================================================================
+
+# Git repository URL for storing certificates
+# Create a PRIVATE repo for this (e.g., github.com/yourusername/certificates)
+git_url(ENV["MATCH_GIT_URL"] || "git@github.com:yourusername/afrikaburn-certificates.git")
+
+# Storage mode - git is recommended for solo developers
+storage_mode("git")
+
+# ============================================================================
+# APP CONFIGURATION
+# ============================================================================
+
+# Bundle identifier(s) for the app
+app_identifier(["io.asterixorobelix.afrikaburn"])
+
+# Apple Developer account email
+username(ENV["APPLE_ID"] || "your-apple-id@email.com")
+
+# Apple Developer Team ID
+team_id(ENV["APPLE_TEAM_ID"] || "YOUR_DEV_TEAM_ID")
+
+# ============================================================================
+# CERTIFICATE TYPES
+# ============================================================================
+
+# Default type - can be overridden per lane
+# Options: appstore, adhoc, development, enterprise
+type("appstore")
+
+# ============================================================================
+# SECURITY OPTIONS
+# ============================================================================
+
+# Don't generate new certificates if they don't exist (safer for CI)
+# Set to false when first setting up
+readonly(false)
+
+# Clone depth for faster checkout
+clone_branch_directly(true)
+shallow_clone(true)
+
+# ============================================================================
+# KEYCHAIN (for CI environments)
+# ============================================================================
+
+# On CI, create a temporary keychain
+# keychain_name(ENV["MATCH_KEYCHAIN_NAME"] || "fastlane_keychain")
+# keychain_password(ENV["MATCH_KEYCHAIN_PASSWORD"] || "")
