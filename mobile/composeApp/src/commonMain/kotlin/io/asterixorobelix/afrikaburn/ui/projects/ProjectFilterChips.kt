@@ -1,9 +1,10 @@
 package io.asterixorobelix.afrikaburn.ui.projects
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,8 +17,10 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import afrikaburn.composeapp.generated.resources.Res
 import afrikaburn.composeapp.generated.resources.filter_family_friendly_short
 import afrikaburn.composeapp.generated.resources.filter_section_header
@@ -27,6 +30,8 @@ import afrikaburn.composeapp.generated.resources.filter_time_nighttime
 import io.asterixorobelix.afrikaburn.AppTheme
 import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.models.TimeFilter
+import io.asterixorobelix.afrikaburn.ui.components.animateSelectionScale
+import io.asterixorobelix.afrikaburn.ui.components.shortDurationTween
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -106,28 +111,57 @@ private fun FamilyFilterChip(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    FilterChip(
-        onClick = onClick,
-        label = {
-            Text(
-                text = stringResource(Res.string.filter_family_friendly_short),
-                style = MaterialTheme.typography.labelMedium
-            )
+    val scale = animateSelectionScale(isSelected = isSelected)
+
+    val containerColor by animateColorAsState(
+        targetValue = if (isSelected) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surface
         },
-        selected = isSelected,
-        colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
-            selectedLabelColor = MaterialTheme.colorScheme.onPrimaryContainer,
-            containerColor = MaterialTheme.colorScheme.surface,
-            labelColor = MaterialTheme.colorScheme.onSurface
-        ),
-        border = FilterChipDefaults.filterChipBorder(
-            enabled = true,
-            selected = isSelected,
-            borderColor = MaterialTheme.colorScheme.outline,
-            selectedBorderColor = MaterialTheme.colorScheme.primary
-        )
+        animationSpec = shortDurationTween(),
+        label = "familyChipContainerColor"
     )
+
+    val labelColor by animateColorAsState(
+        targetValue = if (isSelected) {
+            MaterialTheme.colorScheme.onPrimaryContainer
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        },
+        animationSpec = shortDurationTween(),
+        label = "familyChipLabelColor"
+    )
+
+    Box(
+        modifier = Modifier.graphicsLayer {
+            scaleX = scale
+            scaleY = scale
+        }
+    ) {
+        FilterChip(
+            onClick = onClick,
+            label = {
+                Text(
+                    text = stringResource(Res.string.filter_family_friendly_short),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            selected = isSelected,
+            colors = FilterChipDefaults.filterChipColors(
+                selectedContainerColor = containerColor,
+                selectedLabelColor = labelColor,
+                containerColor = containerColor,
+                labelColor = labelColor
+            ),
+            border = FilterChipDefaults.filterChipBorder(
+                enabled = true,
+                selected = isSelected,
+                borderColor = MaterialTheme.colorScheme.outline,
+                selectedBorderColor = MaterialTheme.colorScheme.primary
+            )
+        )
+    }
 }
 
 @Composable
@@ -136,32 +170,61 @@ private fun TimeFilterChip(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    FilterChip(
-        onClick = onClick,
-        label = {
-            Text(
-                text = when (filter) {
-                    TimeFilter.ALL -> stringResource(Res.string.filter_time_all)
-                    TimeFilter.DAYTIME -> stringResource(Res.string.filter_time_daytime)
-                    TimeFilter.NIGHTTIME -> stringResource(Res.string.filter_time_nighttime)
-                },
-                style = MaterialTheme.typography.labelMedium
-            )
+    val scale = animateSelectionScale(isSelected = isSelected)
+
+    val containerColor by animateColorAsState(
+        targetValue = if (isSelected) {
+            MaterialTheme.colorScheme.secondaryContainer
+        } else {
+            MaterialTheme.colorScheme.surface
         },
-        selected = isSelected,
-        colors = FilterChipDefaults.filterChipColors(
-            selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-            selectedLabelColor = MaterialTheme.colorScheme.onSecondaryContainer,
-            containerColor = MaterialTheme.colorScheme.surface,
-            labelColor = MaterialTheme.colorScheme.onSurface
-        ),
-        border = FilterChipDefaults.filterChipBorder(
-            enabled = true,
-            selected = isSelected,
-            borderColor = MaterialTheme.colorScheme.outline,
-            selectedBorderColor = MaterialTheme.colorScheme.secondary
-        )
+        animationSpec = shortDurationTween(),
+        label = "timeChipContainerColor"
     )
+
+    val labelColor by animateColorAsState(
+        targetValue = if (isSelected) {
+            MaterialTheme.colorScheme.onSecondaryContainer
+        } else {
+            MaterialTheme.colorScheme.onSurface
+        },
+        animationSpec = shortDurationTween(),
+        label = "timeChipLabelColor"
+    )
+
+    Box(
+        modifier = Modifier.graphicsLayer {
+            scaleX = scale
+            scaleY = scale
+        }
+    ) {
+        FilterChip(
+            onClick = onClick,
+            label = {
+                Text(
+                    text = when (filter) {
+                        TimeFilter.ALL -> stringResource(Res.string.filter_time_all)
+                        TimeFilter.DAYTIME -> stringResource(Res.string.filter_time_daytime)
+                        TimeFilter.NIGHTTIME -> stringResource(Res.string.filter_time_nighttime)
+                    },
+                    style = MaterialTheme.typography.labelMedium
+                )
+            },
+            selected = isSelected,
+            colors = FilterChipDefaults.filterChipColors(
+                selectedContainerColor = containerColor,
+                selectedLabelColor = labelColor,
+                containerColor = containerColor,
+                labelColor = labelColor
+            ),
+            border = FilterChipDefaults.filterChipBorder(
+                enabled = true,
+                selected = isSelected,
+                borderColor = MaterialTheme.colorScheme.outline,
+                selectedBorderColor = MaterialTheme.colorScheme.secondary
+            )
+        )
+    }
 }
 
 @Preview

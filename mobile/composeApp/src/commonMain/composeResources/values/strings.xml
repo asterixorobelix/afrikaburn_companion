@@ -97,4 +97,18 @@
     <string name="cd_about_page2_image">AfrikaBurn Quaggapedia Out of the Blue theme artwork</string>
     <string name="cd_about_page3_image">AfrikaBurn event photography by Laura Niggeschmidt</string>
     <string name="cd_about_page4_image">Developer contact image</string>
+
+    <!-- Project Detail Screen -->
+    <string name="project_detail_title">Project Details</string>
+    <string name="project_detail_artist_label">Artist/Creator</string>
+    <string name="project_detail_description_label">Description</string>
+    <string name="project_detail_status_label">Status</string>
+    <string name="project_detail_code_label">Project Code</string>
+    <string name="button_add_to_schedule">Add to Schedule</string>
+    <string name="button_share">Share</string>
+    <string name="snackbar_added_to_schedule">Added to schedule</string>
+    <string name="snackbar_share_not_available">Share functionality coming soon</string>
+    <string name="cd_back_button">Navigate back</string>
+    <string name="cd_share_button">Share project</string>
+    <string name="cd_add_to_schedule_button">Add project to schedule</string>
 </resources>

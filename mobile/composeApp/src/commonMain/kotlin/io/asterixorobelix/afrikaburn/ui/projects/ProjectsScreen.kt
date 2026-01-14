@@ -59,7 +59,9 @@ private const val CONTENT_STATE_EMPTY = "empty"
 private const val CONTENT_STATE_SUCCESS = "success"
 
 @Composable
-fun ProjectsScreen() {
+fun ProjectsScreen(
+    onProjectClick: ((io.asterixorobelix.afrikaburn.models.ProjectItem) -> Unit)? = null
+) {
     val viewModel = koinProjectsViewModel()
     val screenState by viewModel.screenUiState.collectAsState()
 
@@ -99,7 +101,10 @@ fun ProjectsScreen() {
             modifier = Modifier.fillMaxSize()
         ) { page ->
             val projectType = screenState.tabs[page]
-            ProjectTabContent(projectType = projectType)
+            ProjectTabContent(
+                projectType = projectType,
+                onProjectClick = onProjectClick
+            )
         }
     }
 }
@@ -133,7 +138,10 @@ private fun ProjectsTabRow(
 }
 
 @Composable
-private fun ProjectTabContent(projectType: ProjectType) {
+private fun ProjectTabContent(
+    projectType: ProjectType,
+    onProjectClick: ((io.asterixorobelix.afrikaburn.models.ProjectItem) -> Unit)? = null
+) {
     val tabViewModel = koinProjectTabViewModel(projectType)
     val uiState by tabViewModel.uiState.collectAsState()
 
@@ -173,7 +181,8 @@ private fun ProjectTabContent(projectType: ProjectType) {
             onRetry = tabViewModel::retryLoading,
             onDismissError = tabViewModel::clearError,
             onClearSearch = tabViewModel::clearSearchQuery,
-            onClearFilters = tabViewModel::clearFilters
+            onClearFilters = tabViewModel::clearFilters,
+            onProjectClick = onProjectClick
         )
     }
 }
@@ -191,7 +200,8 @@ private fun AnimatedContentState(
     onRetry: () -> Unit,
     onDismissError: () -> Unit,
     onClearSearch: () -> Unit,
-    onClearFilters: () -> Unit
+    onClearFilters: () -> Unit,
+    onProjectClick: ((io.asterixorobelix.afrikaburn.models.ProjectItem) -> Unit)? = null
 ) {
     val contentState = when {
         isLoading -> CONTENT_STATE_LOADING
@@ -233,7 +243,10 @@ private fun AnimatedContentState(
                     onClearFilters = onClearFilters
                 )
             }
-            CONTENT_STATE_SUCCESS -> ProjectList(projects = filteredProjects)
+            CONTENT_STATE_SUCCESS -> ProjectList(
+                projects = filteredProjects,
+                onProjectClick = onProjectClick
+            )
         }
     }
 }

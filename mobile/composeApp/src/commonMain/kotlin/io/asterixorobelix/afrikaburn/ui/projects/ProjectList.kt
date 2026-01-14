@@ -37,7 +37,8 @@ private const val SLIDE_IN_OFFSET_DIVISOR = 4
 @Composable
 fun ProjectList(
     projects: List<ProjectItem>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onProjectClick: ((ProjectItem) -> Unit)? = null
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -53,7 +54,8 @@ fun ProjectList(
         ) { index, project ->
             AnimatedProjectCard(
                 project = project,
-                index = index
+                index = index,
+                onClick = onProjectClick?.let { { it(project) } }
             )
         }
     }
@@ -62,7 +64,8 @@ fun ProjectList(
 @Composable
 private fun AnimatedProjectCard(
     project: ProjectItem,
-    index: Int
+    index: Int,
+    onClick: (() -> Unit)? = null
 ) {
     var visible by remember { mutableStateOf(false) }
 
@@ -86,7 +89,7 @@ private fun AnimatedProjectCard(
             initialOffsetY = { fullHeight -> fullHeight / SLIDE_IN_OFFSET_DIVISOR }
         )
     ) {
-        ProjectCard(project = project)
+        ProjectCard(project = project, onClick = onClick)
     }
 }
 
