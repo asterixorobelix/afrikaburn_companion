@@ -22,7 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
@@ -40,7 +39,6 @@ import afrikaburn.composeapp.generated.resources.button_retry
 import afrikaburn.composeapp.generated.resources.cd_error_icon
 import afrikaburn.composeapp.generated.resources.cd_retry_button
 import afrikaburn.composeapp.generated.resources.error_loading_projects
-import afrikaburn.composeapp.generated.resources.loading_projects
 import afrikaburn.composeapp.generated.resources.tab_art
 import afrikaburn.composeapp.generated.resources.tab_camps
 import afrikaburn.composeapp.generated.resources.tab_events
@@ -242,25 +240,7 @@ private fun AnimatedContentState(
 
 @Composable
 private fun LoadingContent() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(Dimens.spacingLarge)
-        ) {
-            CircularProgressIndicator(
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(Dimens.iconSizeLarge)
-            )
-            Text(
-                text = stringResource(Res.string.loading_projects),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
-    }
+    ProjectListSkeleton()
 }
 
 @Composable

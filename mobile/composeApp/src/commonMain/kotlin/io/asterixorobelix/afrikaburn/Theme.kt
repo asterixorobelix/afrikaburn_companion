@@ -182,6 +182,13 @@ object Dimens {
     const val animationDurationMedium = 300
     const val animationDurationLong = 450
     const val staggerDelayPerItem = 50
+
+    // Skeleton loading dimensions
+    val skeletonLineHeightSmall = 14.dp
+    val skeletonLineHeightMedium = 18.dp
+    val skeletonLineHeightLarge = 24.dp
+    val skeletonBadgeHeight = 28.dp
+    val skeletonBadgeWidth = 100.dp
 }
 
 @Composable
