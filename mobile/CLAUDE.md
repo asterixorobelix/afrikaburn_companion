@@ -872,19 +872,50 @@ All spacing, padding, margins, sizes, and other dimensions must use the centrali
        val paddingSmall = 8.dp
        val paddingMedium = 16.dp
        val paddingLarge = 24.dp
-       
+       val paddingExtraLarge = 32.dp
+
+       // Spacing (for arrangement and gaps between elements)
+       val spacingExtraSmall = 4.dp
+       val spacingSmall = 8.dp
+       val spacingMedium = 12.dp
+       val spacingLarge = 16.dp
+       val spacingExtraLarge = 24.dp
+       val sectionSpacing = 20.dp
+
+       // Icon sizes
+       val iconSizeSmall = 16.dp
+       val iconSizeMedium = 24.dp
+       val iconSizeLarge = 48.dp
+       val iconSizeExtraLarge = 64.dp
+       val iconSizeHero = 96.dp
+
        // Corner Radius - Use for shape definitions
        val cornerRadiusXSmall = 2.dp
        val cornerRadiusSmall = 4.dp
        val cornerRadiusMedium = 8.dp
        val cornerRadiusLarge = 16.dp
-       
+
        // Elevation - Use for card and surface elevation
        val elevationSmall = 2.dp
+       val elevationMedium = 4.dp
        val elevationNormal = 8.dp
-       
+
        // Specific Dimensions
        val dropdownMaxHeight = 200.dp
+       val dividerThickness = 1.dp
+
+       // Animation durations (in milliseconds)
+       const val animationDurationShort = 150
+       const val animationDurationMedium = 300
+       const val animationDurationLong = 450
+       const val staggerDelayPerItem = 50
+
+       // Skeleton loading dimensions
+       val skeletonLineHeightSmall = 14.dp
+       val skeletonLineHeightMedium = 18.dp
+       val skeletonLineHeightLarge = 24.dp
+       val skeletonBadgeHeight = 28.dp
+       val skeletonBadgeWidth = 100.dp
    }
    ```
 
@@ -1027,6 +1058,147 @@ if (BuildConfig.DEBUG) {
 ```
 
 **ENFORCEMENT**: All error-prone operations must include proper crash logging.
+
+### Image Loading with Coil
+**MANDATORY for all AI assistants working on this mobile project:**
+
+This project uses **Coil 3.x** for async image loading across all platforms.
+
+#### Usage Patterns
+```kotlin
+// ✅ CORRECT - Use AppAsyncImage for URL-based images
+import io.asterixorobelix.afrikaburn.ui.components.AppAsyncImage
+
+@Composable
+fun ProjectCard(project: Project) {
+    AppAsyncImage(
+        model = project.imageUrl,
+        contentDescription = stringResource(Res.string.cd_project_image),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(Dimens.imageHeight),
+        contentScale = ContentScale.Crop
+    )
+}
+
+// ✅ CORRECT - Simple variant for better performance when custom states aren't needed
+AppAsyncImageSimple(
+    model = imageUrl,
+    contentDescription = "Image description",
+    placeholder = painterResource(Res.drawable.placeholder),
+    error = painterResource(Res.drawable.error_placeholder)
+)
+
+// ✅ CORRECT - With state observation for custom handling
+AppAsyncImageWithState(
+    model = imageUrl,
+    contentDescription = "Image description",
+    onState = { state ->
+        when (state) {
+            is AsyncImagePainter.State.Loading -> { /* handle loading */ }
+            is AsyncImagePainter.State.Success -> { /* handle success */ }
+            is AsyncImagePainter.State.Error -> { /* handle error */ }
+            else -> { }
+        }
+    }
+)
+
+// ❌ WRONG - Don't use raw Coil APIs directly
+AsyncImage(model = url, contentDescription = null) // INCORRECT
+```
+
+#### Features
+- Automatic memory and disk caching
+- Crossfade animations on load
+- Material Design 3 themed loading/error states
+- Platform-agnostic (works on Android and iOS)
+
+**ENFORCEMENT**: Always use `AppAsyncImage` variants for image loading to ensure consistent styling and caching behavior.
+
+### Micro-Interactions and Animations
+**MANDATORY for all AI assistants working on this mobile project:**
+
+#### Available Animation Modifiers
+```kotlin
+import io.asterixorobelix.afrikaburn.ui.components.pressableScale
+import io.asterixorobelix.afrikaburn.ui.components.bounceClick
+import io.asterixorobelix.afrikaburn.ui.components.animateSelectionScale
+import io.asterixorobelix.afrikaburn.ui.components.animatedScale
+
+// ✅ CORRECT - Press scale effect for cards/buttons
+Card(
+    modifier = Modifier.pressableScale(
+        enabled = true,
+        pressedScale = 0.96f,
+        onClick = { /* handle click */ }
+    )
+) { /* content */ }
+
+// ✅ CORRECT - Bounce effect for chips/toggles
+FilterChip(
+    modifier = Modifier.bounceClick(
+        enabled = true,
+        onClick = { onFilterSelected() }
+    )
+)
+
+// ✅ CORRECT - Selection animation for toggleable items
+val scale = animateSelectionScale(isSelected = isSelected)
+Box(modifier = Modifier.graphicsLayer { scaleX = scale; scaleY = scale })
+
+// ✅ CORRECT - Animation timing helpers
+import io.asterixorobelix.afrikaburn.ui.components.shortDurationTween
+import io.asterixorobelix.afrikaburn.ui.components.mediumDurationTween
+
+animateColorAsState(
+    targetValue = if (selected) selectedColor else normalColor,
+    animationSpec = shortDurationTween()
+)
+```
+
+#### Animation Guidelines
+- Use `pressableScale` for interactive cards and large touch targets
+- Use `bounceClick` for filter chips and toggle buttons
+- Always use `Dimens.animationDurationShort/Medium/Long` for custom animations
+- Spring animations are preferred for natural feel
+
+### Skeleton Loading
+**MANDATORY for all AI assistants working on this mobile project:**
+
+#### Usage Patterns
+```kotlin
+import io.asterixorobelix.afrikaburn.ui.projects.ShimmerBox
+import io.asterixorobelix.afrikaburn.ui.projects.ProjectCardSkeleton
+import io.asterixorobelix.afrikaburn.ui.projects.ProjectListSkeleton
+
+// ✅ CORRECT - Show skeleton while loading
+@Composable
+fun ProjectsScreen(viewModel: ProjectsViewModel) {
+    val state by viewModel.state.collectAsState()
+
+    when (state) {
+        is ProjectsState.Loading -> ProjectListSkeleton(itemCount = 5)
+        is ProjectsState.Success -> ProjectList(projects = state.projects)
+        is ProjectsState.Error -> ErrorContent(message = state.message)
+    }
+}
+
+// ✅ CORRECT - Basic shimmer box for custom skeletons
+ShimmerBox(
+    modifier = Modifier
+        .fillMaxWidth()
+        .height(Dimens.skeletonLineHeightLarge)
+)
+
+// ❌ WRONG - CircularProgressIndicator for list loading
+CircularProgressIndicator() // INCORRECT - use skeletons instead
+```
+
+#### Skeleton Guidelines
+- Use `ProjectListSkeleton` for loading project lists
+- Use `ShimmerBox` to build custom skeleton layouts
+- Match skeleton dimensions to actual content layout
+- Use `Dimens.skeletonLineHeight*` values for text placeholders
 
 ### Dependency Management with Version Catalogs
 **MANDATORY for all AI assistants working on this mobile project:**

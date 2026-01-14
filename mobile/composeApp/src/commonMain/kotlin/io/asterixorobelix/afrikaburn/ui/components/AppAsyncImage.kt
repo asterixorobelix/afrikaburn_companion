@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BrokenImage
-import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,7 +39,7 @@ private const val DEFAULT_CROSSFADE_DURATION_MS = 300
  * Supports URL-based and resource-based images with placeholder, error, and loading states.
  *
  * Features:
- * - Automatic placeholder while loading
+ * - Automatic placeholder while loading (with circular progress indicator)
  * - Error state display on failure
  * - Crossfade animation on successful load
  * - Memory and disk caching handled automatically by Coil
@@ -50,7 +49,6 @@ private const val DEFAULT_CROSSFADE_DURATION_MS = 300
  * @param contentDescription Accessibility description for the image
  * @param modifier Modifier for the image component
  * @param contentScale How the image should be scaled within its bounds
- * @param placeholderIcon Icon to display while loading (defaults to Image icon)
  * @param errorIcon Icon to display on load failure (defaults to BrokenImage icon)
  * @param crossfadeDurationMs Duration of the crossfade animation in milliseconds
  * @param colorFilter Optional color filter to apply to the image
@@ -61,7 +59,6 @@ fun AppAsyncImage(
     contentDescription: String?,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
-    placeholderIcon: ImageVector = Icons.Default.Image,
     errorIcon: ImageVector = Icons.Default.BrokenImage,
     crossfadeDurationMs: Int = DEFAULT_CROSSFADE_DURATION_MS,
     colorFilter: ColorFilter? = null
@@ -81,7 +78,6 @@ fun AppAsyncImage(
         colorFilter = colorFilter,
         loading = {
             ImageLoadingPlaceholder(
-                icon = placeholderIcon,
                 modifier = Modifier.fillMaxSize()
             )
         },
@@ -181,14 +177,12 @@ fun AppAsyncImageWithState(
 
 /**
  * Placeholder composable displayed while an image is loading.
- * Shows a centered icon with a subtle background.
+ * Shows a centered loading indicator with a subtle background.
  *
- * @param icon The icon to display
  * @param modifier Modifier for the placeholder container
  */
 @Composable
 private fun ImageLoadingPlaceholder(
-    icon: ImageVector,
     modifier: Modifier = Modifier
 ) {
     Box(

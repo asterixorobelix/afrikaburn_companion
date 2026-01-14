@@ -166,6 +166,41 @@ mobile/
 - **Koin**: Dependency injection
 - **MVVM**: ViewModel pattern with Compose State
 - **Firebase Crashlytics**: Cross-platform crash reporting
+- **Coil 3.x**: Cross-platform async image loading with caching
+
+### UI Components
+
+This project includes reusable UI components for consistent user experience:
+
+| Component | Purpose | Location |
+|-----------|---------|----------|
+| `AppAsyncImage` | Async image loading with loading/error states | `ui/components/AppAsyncImage.kt` |
+| `ShimmerBox` | Shimmer animation for skeleton loading | `ui/projects/ShimmerEffect.kt` |
+| `ProjectCardSkeleton` | Loading placeholder for project cards | `ui/projects/ProjectCardSkeleton.kt` |
+| `pressableScale` | Press-down animation modifier | `ui/components/InteractionModifiers.kt` |
+| `bounceClick` | Bounce animation for toggles | `ui/components/InteractionModifiers.kt` |
+| `EmptyStateContent` | Context-aware empty state messages | `ui/projects/EmptyStateContent.kt` |
+
+**Usage Example:**
+```kotlin
+// Async image loading
+AppAsyncImage(
+    model = imageUrl,
+    contentDescription = "Project image",
+    modifier = Modifier.fillMaxWidth()
+)
+
+// Press animation on cards
+Card(
+    modifier = Modifier.pressableScale(onClick = { /* action */ })
+) { /* content */ }
+
+// Skeleton loading
+when (state) {
+    is Loading -> ProjectListSkeleton(itemCount = 5)
+    is Success -> ProjectList(projects)
+}
+```
 
 ## 🔥 Firebase Crashlytics Features
 

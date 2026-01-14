@@ -34,6 +34,8 @@ sealed class NavigationDestination(
     )
     
     companion object {
-        val allDestinations = listOf(Projects, Directions, About)
+        val allDestinations: List<NavigationDestination> by lazy {
+            listOf(Projects, Directions, About)
+        }
     }
 }
