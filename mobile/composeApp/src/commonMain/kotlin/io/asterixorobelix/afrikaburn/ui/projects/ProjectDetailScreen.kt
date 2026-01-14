@@ -1,17 +1,11 @@
 package io.asterixorobelix.afrikaburn.ui.projects
 
 import afrikaburn.composeapp.generated.resources.Res
-import afrikaburn.composeapp.generated.resources.button_add_to_schedule
-import afrikaburn.composeapp.generated.resources.button_share
-import afrikaburn.composeapp.generated.resources.cd_add_to_schedule_button
 import afrikaburn.composeapp.generated.resources.cd_back_button
-import afrikaburn.composeapp.generated.resources.cd_share_button
 import afrikaburn.composeapp.generated.resources.cd_artist_icon
 import afrikaburn.composeapp.generated.resources.project_detail_artist_label
 import afrikaburn.composeapp.generated.resources.project_detail_code_label
 import afrikaburn.composeapp.generated.resources.project_detail_description_label
-import afrikaburn.composeapp.generated.resources.snackbar_added_to_schedule
-import afrikaburn.composeapp.generated.resources.snackbar_share_not_available
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +13,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,35 +20,25 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.asterixorobelix.afrikaburn.AppTheme
 import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -69,11 +52,6 @@ fun ProjectDetailScreen(
     project: ProjectItem,
     onBackClick: () -> Unit
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
-    val addedToScheduleMessage = stringResource(Res.string.snackbar_added_to_schedule)
-    val shareNotAvailableMessage = stringResource(Res.string.snackbar_share_not_available)
-
     Scaffold(
         topBar = {
             ProjectDetailTopBar(
@@ -81,21 +59,10 @@ fun ProjectDetailScreen(
                 onBackClick = onBackClick
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = MaterialTheme.colorScheme.background
     ) { paddingValues ->
         ProjectDetailContent(
             project = project,
-            onAddToScheduleClick = {
-                coroutineScope.launch {
-                    snackbarHostState.showSnackbar(addedToScheduleMessage)
-                }
-            },
-            onShareClick = {
-                coroutineScope.launch {
-                    snackbarHostState.showSnackbar(shareNotAvailableMessage)
-                }
-            },
             modifier = Modifier.padding(paddingValues)
         )
     }
@@ -135,8 +102,6 @@ private fun ProjectDetailTopBar(
 @Composable
 private fun ProjectDetailContent(
     project: ProjectItem,
-    onAddToScheduleClick: () -> Unit,
-    onShareClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -157,15 +122,6 @@ private fun ProjectDetailContent(
         if (project.code.isNotEmpty()) {
             ProjectCodeSection(code = project.code)
         }
-
-        Spacer(modifier = Modifier.height(Dimens.spacingMedium))
-
-        ProjectActionButtons(
-            onAddToScheduleClick = onAddToScheduleClick,
-            onShareClick = onShareClick
-        )
-
-        Spacer(modifier = Modifier.height(Dimens.paddingMedium))
     }
 }
 
@@ -315,54 +271,6 @@ private fun ProjectCodeSection(code: String) {
                     )
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun ProjectActionButtons(
-    onAddToScheduleClick: () -> Unit,
-    onShareClick: () -> Unit
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(Dimens.spacingMedium)
-    ) {
-        Button(
-            onClick = onAddToScheduleClick,
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            )
-        ) {
-            Icon(
-                imageVector = Icons.Default.Add,
-                contentDescription = stringResource(Res.string.cd_add_to_schedule_button),
-                modifier = Modifier.size(Dimens.iconSizeSmall)
-            )
-            Spacer(modifier = Modifier.width(Dimens.spacingSmall))
-            Text(
-                text = stringResource(Res.string.button_add_to_schedule),
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
-
-        OutlinedButton(
-            onClick = onShareClick,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Icon(
-                imageVector = Icons.Default.Share,
-                contentDescription = stringResource(Res.string.cd_share_button),
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(Dimens.iconSizeSmall)
-            )
-            Spacer(modifier = Modifier.width(Dimens.spacingSmall))
-            Text(
-                text = stringResource(Res.string.button_share),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary
-            )
         }
     }
 }

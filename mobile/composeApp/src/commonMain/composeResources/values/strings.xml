@@ -13,9 +13,57 @@
     <string name="about_page3_content">Out Of The Blue: The Ocean. The Horizon. The Sky. Anything under the sun, and anything under the sea. Something old, something new, something borrowed, something once in a blue moon. Lazy days, hazy days, singing the blues. Your biggest dreams and boldest ideas. Your greatest wonders and biggest fears. The drop of a hat, and a flash in the pan. Anything you can dream up, dress up, make up, or fess up. It’s a whole new expanse. The next big thing. Anything.</string>
     <string name="about_page4_title">Contact Me</string>
     <string name="about_page4_content">I am an app developer</string>
-    <string name="direction_title">Event location</string>
+    <string name="direction_title">Getting There</string>
     <string name="direction_sub_title">Driving to Afrikaburn</string>
     <string name="direction_content">Afrikaburn is NOT in the Tankwa Karoo National Park! You will lose cellphone reception while driving, so be sure to download an offline version of the route in Google Maps. The AfrikaBurn event takes place at Quaggafontein, a private farm in the Tankwa Karoo. The farm is located about 3 hours drive from Cape Town, and 2 hours drive from Ceres. The nearest town is Calvinia, which is about 1 hour away. The GPS coordinates for Quaggafontein are: -32.482474, 19.897824. Please note that the AfrikaBurn event is not held in the Tankwa Karoo National Park.</string>
+
+    <!-- Directions Screen - Section Headers -->
+    <string name="directions_section_location">Event Location</string>
+    <string name="directions_section_travel_times">Travel Times</string>
+    <string name="directions_section_important_notes">Important Notes</string>
+    <string name="directions_section_gps">GPS Coordinates</string>
+
+    <!-- Directions Screen - Location Info -->
+    <string name="directions_location_name">Quaggafontein Farm</string>
+    <string name="directions_location_area">Tankwa Karoo, Western Cape</string>
+    <string name="directions_location_country">South Africa</string>
+
+    <!-- Directions Screen - Travel Times -->
+    <string name="directions_travel_cape_town">From Cape Town</string>
+    <string name="directions_travel_cape_town_time">~3 hours</string>
+    <string name="directions_travel_ceres">From Ceres</string>
+    <string name="directions_travel_ceres_time">~2 hours</string>
+    <string name="directions_travel_calvinia">From Calvinia</string>
+    <string name="directions_travel_calvinia_time">~1 hour</string>
+
+    <!-- Directions Screen - Important Notes -->
+    <string name="directions_note_not_national_park">NOT in Tankwa Karoo National Park</string>
+    <string name="directions_note_not_national_park_detail">Do not navigate to the national park - the event is on a private farm</string>
+    <string name="directions_note_no_signal">No Cell Signal</string>
+    <string name="directions_note_no_signal_detail">Download offline maps before you leave. You will lose reception on the drive</string>
+    <string name="directions_note_fuel">Fill Up First</string>
+    <string name="directions_note_fuel_detail">Limited fuel stations on the route. Fill up in Ceres or before leaving Cape Town</string>
+
+    <!-- Directions Screen - GPS -->
+    <string name="directions_gps_latitude">Latitude</string>
+    <string name="directions_gps_latitude_value">-32.482474</string>
+    <string name="directions_gps_longitude">Longitude</string>
+    <string name="directions_gps_longitude_value">19.897824</string>
+    <string name="directions_gps_copy">Copy coordinates</string>
+    <string name="directions_gps_copied">Coordinates copied to clipboard</string>
+
+    <!-- Directions Screen - Buttons -->
+    <string name="directions_open_maps">Open in Maps</string>
+    <string name="directions_download_offline">Download for Offline Use</string>
+
+    <!-- Directions Screen - Content Descriptions -->
+    <string name="cd_directions_location_icon">Location</string>
+    <string name="cd_directions_car_icon">Travel time</string>
+    <string name="cd_directions_warning_icon">Important note</string>
+    <string name="cd_directions_gps_icon">GPS coordinates</string>
+    <string name="cd_directions_copy_icon">Copy to clipboard</string>
+    <string name="cd_directions_expand">Expand section</string>
+    <string name="cd_directions_collapse">Collapse section</string>
     
     <!-- About URLs -->
     <string name="about_page1_url">https://www.afrikaburn.org</string>

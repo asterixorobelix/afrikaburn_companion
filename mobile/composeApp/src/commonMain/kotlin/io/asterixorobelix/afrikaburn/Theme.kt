@@ -205,6 +205,14 @@ object Dimens {
 
     // Swipe hint dimensions
     val swipeHintIconSize = 20.dp
+
+    // Directions screen dimensions
+    val directionsHeroIconSize = 72.dp
+    val directionsHeroContainerSize = 120.dp
+    val directionsSectionIconSize = 28.dp
+    val travelTimeCardMinWidth = 100.dp
+    val noteCardIconSize = 40.dp
+    val gpsRowHeight = 56.dp
 }
 
 @Composable
