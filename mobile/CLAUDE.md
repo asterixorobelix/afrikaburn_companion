@@ -8,7 +8,41 @@ This is a Kotlin Multiplatform project, targeting Android and iOS platforms.
 
 ## Build Commands
 
-### Building and Running
+### Quick Reference (Makefile - Recommended)
+
+Run `make help` to see all available commands. These are the most commonly used:
+
+```bash
+# Setup & Build
+make setup              # Install all dependencies (first time)
+make build              # Build debug APK
+make install            # Build and install on device
+
+# Testing & Quality (MANDATORY before commits)
+make test               # Run unit tests
+make lint               # Run detekt analysis
+make pre-commit         # Run ALL checks (lint + test) - USE THIS!
+
+# Coverage
+make test-coverage      # Run tests with Jacoco report
+make quality            # Full quality check with coverage verification
+
+# iOS
+make ios-framework      # Build XCFramework
+make ios-open           # Open Xcode project
+
+# Cleaning
+make clean              # Clean all build artifacts
+```
+
+### VS Code / Cursor Integration
+
+Press `Cmd+Shift+B` for default build task, or `Cmd+Shift+P` → "Tasks: Run Task" to see all available tasks.
+
+### Direct Gradle Commands (Alternative)
+
+<details>
+<summary>Click to expand Gradle commands</summary>
 
 1. **Build the entire project**:
    ```bash
@@ -31,13 +65,11 @@ This is a Kotlin Multiplatform project, targeting Android and iOS platforms.
    ./gradlew clean
    ```
 
-### Code Quality & Testing
-
 5. **Run tests**:
    ```bash
    # Android/JVM unit tests (recommended)
    ./gradlew :composeApp:testDebugUnitTest
-   
+
    # All tests (may have platform compatibility issues)
    ./gradlew test
    ```
@@ -56,11 +88,13 @@ This is a Kotlin Multiplatform project, targeting Android and iOS platforms.
    ```bash
    ./gradlew detekt test
    ```
-   
+
 9. **Fix detekt issues automatically** (when possible):
    ```bash
    ./gradlew detektFormat
    ```
+
+</details>
 
 ### Gradle Wrapper Notes
 

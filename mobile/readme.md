@@ -28,34 +28,48 @@ Compose Multiplatform mobile app targeting Android and iOS platforms with Fireba
 - ❌ **Crashlytics**: Disabled until you add your Firebase config
 
 ### Development Commands
+
+This project includes a **Makefile** for simplified commands. Run `make help` to see all options.
+
 ```bash
-# Build the entire project
+# Quick start
+make setup              # Install all dependencies
+make test               # Run unit tests
+make build              # Build debug APK
+make install            # Install on connected device
+
+# Quality checks
+make lint               # Run detekt analysis
+make pre-commit         # Run all checks (lint + test)
+make test-coverage      # Run tests with coverage report
+
+# iOS
+make ios-framework      # Build XCFramework
+make ios-open           # Open Xcode project
+```
+
+**VS Code / Cursor Users**: Press `Cmd+Shift+B` (build) or `Cmd+Shift+P` → "Tasks: Run Task" to access all commands.
+
+<details>
+<summary>Direct Gradle commands (without Make)</summary>
+
+```bash
+# Build
 ./gradlew build
+./gradlew :composeApp:assembleDebug
+./gradlew :composeApp:installDebug
 
-# Run tests
-./gradlew test
+# Test
+./gradlew :composeApp:testDebugUnitTest
+./gradlew :composeApp:jacocoTestReport
 
-# Run code quality analysis
+# Quality
 ./gradlew detekt
 
-# Combined quality check
-./gradlew test detekt
-
-# Build Android APK
-./gradlew composeApp:assembleDebug
-
-# Build iOS XCFramework
+# iOS
 ./gradlew :composeApp:assembleReleaseXCFramework
 ```
-
-### Platform-Specific
-```bash
-# Android installation
-./gradlew composeApp:installDebug
-
-# iOS (after XCFramework build)
-# Open iosApp/iosApp.xcodeproj in Xcode and run
-```
+</details>
 
 ## 🔄 CI/CD Integration
 
@@ -129,6 +143,8 @@ mobile/
 │   ├── Appfile          # App identifiers
 │   ├── Matchfile        # iOS code signing
 │   └── .env.default     # Environment template
+├── .vscode/             # VS Code / Cursor configuration
+│   └── tasks.json       # Build and test tasks
 └── Makefile             # Simplified commands
 ```
 
