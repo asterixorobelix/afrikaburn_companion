@@ -98,6 +98,23 @@ class ProjectTabViewModel(
         loadProjects()
     }
 
+    fun clearSearchQuery() {
+        updateSearchQuery("")
+    }
+
+    fun clearFilters() {
+        _uiState.value = _uiState.value.copy(
+            isFamilyFilterEnabled = false,
+            timeFilter = TimeFilter.ALL,
+            filteredProjects = filterProjects(
+                projects = _uiState.value.projects,
+                searchQuery = _uiState.value.searchQuery,
+                familyFilter = false,
+                timeFilter = TimeFilter.ALL
+            )
+        )
+    }
+
     private fun filterProjects(
         projects: List<ProjectItem>, 
         searchQuery: String,

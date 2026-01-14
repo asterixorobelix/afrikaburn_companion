@@ -160,6 +160,7 @@ object Dimens {
     val iconSizeMedium = 24.dp
     val iconSizeLarge = 48.dp
     val iconSizeExtraLarge = 64.dp
+    val iconSizeHero = 96.dp
 
     // Sizes
     val cornerRadiusXSmall = 2.dp

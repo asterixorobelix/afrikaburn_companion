@@ -20,7 +20,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,12 +38,9 @@ import androidx.compose.ui.text.style.TextAlign
 import afrikaburn.composeapp.generated.resources.Res
 import afrikaburn.composeapp.generated.resources.button_retry
 import afrikaburn.composeapp.generated.resources.cd_error_icon
-import afrikaburn.composeapp.generated.resources.cd_no_results_icon
 import afrikaburn.composeapp.generated.resources.cd_retry_button
 import afrikaburn.composeapp.generated.resources.error_loading_projects
 import afrikaburn.composeapp.generated.resources.loading_projects
-import afrikaburn.composeapp.generated.resources.no_results_for_query
-import afrikaburn.composeapp.generated.resources.no_results_found
 import afrikaburn.composeapp.generated.resources.tab_art
 import afrikaburn.composeapp.generated.resources.tab_camps
 import afrikaburn.composeapp.generated.resources.tab_events
@@ -177,7 +173,9 @@ private fun ProjectTabContent(projectType: ProjectType) {
             timeFilter = uiState.timeFilter,
             filteredProjects = uiState.filteredProjects,
             onRetry = tabViewModel::retryLoading,
-            onDismissError = tabViewModel::clearError
+            onDismissError = tabViewModel::clearError,
+            onClearSearch = tabViewModel::clearSearchQuery,
+            onClearFilters = tabViewModel::clearFilters
         )
     }
 }
@@ -193,7 +191,9 @@ private fun AnimatedContentState(
     timeFilter: TimeFilter,
     filteredProjects: List<io.asterixorobelix.afrikaburn.models.ProjectItem>,
     onRetry: () -> Unit,
-    onDismissError: () -> Unit
+    onDismissError: () -> Unit,
+    onClearSearch: () -> Unit,
+    onClearFilters: () -> Unit
 ) {
     val contentState = when {
         isLoading -> CONTENT_STATE_LOADING
@@ -219,12 +219,22 @@ private fun AnimatedContentState(
                 error = error ?: "Unknown error",
                 onRetry = onRetry
             )
-            CONTENT_STATE_EMPTY -> EmptySearchContent(
-                searchQuery = searchQuery,
-                projectType = projectType.displayName,
-                isFamilyFilterEnabled = isFamilyFilterEnabled,
-                timeFilter = timeFilter
-            )
+            CONTENT_STATE_EMPTY -> {
+                val emptyStateType = determineEmptyStateType(
+                    searchQuery = searchQuery,
+                    isFamilyFilterEnabled = isFamilyFilterEnabled,
+                    timeFilter = timeFilter,
+                    hasProjects = filteredProjects.isNotEmpty()
+                )
+                EmptyStateContent(
+                    emptyStateType = emptyStateType,
+                    projectType = projectType,
+                    searchQuery = searchQuery,
+                    hasActiveFilters = hasActiveFilters(isFamilyFilterEnabled, timeFilter),
+                    onClearSearch = onClearSearch,
+                    onClearFilters = onClearFilters
+                )
+            }
             CONTENT_STATE_SUCCESS -> ProjectList(projects = filteredProjects)
         }
     }
@@ -312,77 +322,3 @@ private fun ErrorContent(
     }
 }
 
-@Composable
-private fun EmptySearchContent(
-    searchQuery: String,
-    projectType: String,
-    isFamilyFilterEnabled: Boolean = false,
-    timeFilter: TimeFilter = TimeFilter.ALL
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(Dimens.paddingLarge),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = stringResource(Res.string.cd_no_results_icon),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.size(Dimens.iconSizeExtraLarge)
-        )
-
-        Spacer(modifier = Modifier.height(Dimens.spacingLarge))
-
-        Text(
-            text = stringResource(Res.string.no_results_found, projectType.lowercase()),
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Center
-        )
-
-        Spacer(modifier = Modifier.height(Dimens.spacingSmall))
-
-        Text(
-            text = buildEmptySearchMessage(
-                searchQuery = searchQuery,
-                projectType = projectType,
-                isFamilyFilterEnabled = isFamilyFilterEnabled,
-                timeFilter = timeFilter
-            ),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Composable
-private fun buildEmptySearchMessage(
-    searchQuery: String,
-    projectType: String,
-    isFamilyFilterEnabled: Boolean,
-    timeFilter: TimeFilter
-): String {
-    val noResultsForQuery = stringResource(Res.string.no_results_for_query, searchQuery)
-
-    return when {
-        searchQuery.isNotEmpty() && isFamilyFilterEnabled && timeFilter != TimeFilter.ALL ->
-            "No results for \"$searchQuery\" with filters"
-        searchQuery.isNotEmpty() && isFamilyFilterEnabled ->
-            "No results for \"$searchQuery\" with family filter"
-        searchQuery.isNotEmpty() && timeFilter != TimeFilter.ALL ->
-            "No results for \"$searchQuery\" with ${timeFilter.displayName.lowercase()} filter"
-        searchQuery.isNotEmpty() ->
-            noResultsForQuery
-        isFamilyFilterEnabled && timeFilter != TimeFilter.ALL ->
-            "No family-friendly ${timeFilter.displayName.lowercase()} ${projectType.lowercase()} found"
-        isFamilyFilterEnabled ->
-            "No family-friendly ${projectType.lowercase()} found"
-        timeFilter != TimeFilter.ALL ->
-            "No ${timeFilter.displayName.lowercase()} ${projectType.lowercase()} found"
-        else ->
-            "No ${projectType.lowercase()} found"
-    }
-}
