@@ -51,6 +51,7 @@
     <string name="filter_family_friendly">Family Friendly</string>
     <string name="filter_family_friendly_short">Child friendly</string>
     <string name="filter_family_friendly_description">Show only family-friendly camps</string>
+    <string name="filter_section_header">Filters</string>
     
     <!-- Time filters -->
     <string name="filter_time_all">All Times</string>

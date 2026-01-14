@@ -145,6 +145,15 @@ object Dimens {
     val paddingSmall = 8.dp
     val paddingMedium = 16.dp
     val paddingLarge = 24.dp
+    val paddingExtraLarge = 32.dp
+
+    // Spacing (for arrangement and gaps between elements)
+    val spacingExtraSmall = 4.dp
+    val spacingSmall = 8.dp
+    val spacingMedium = 12.dp
+    val spacingLarge = 16.dp
+    val spacingExtraLarge = 24.dp
+    val sectionSpacing = 20.dp
 
     // Icon sizes
     val iconSizeSmall = 16.dp
@@ -161,7 +170,17 @@ object Dimens {
 
     // Elevation
     val elevationSmall = 2.dp
+    val elevationMedium = 4.dp
     val elevationNormal = 8.dp
+
+    // Divider
+    val dividerThickness = 1.dp
+
+    // Animation durations (in milliseconds)
+    const val animationDurationShort = 150
+    const val animationDurationMedium = 300
+    const val animationDurationLong = 450
+    const val staggerDelayPerItem = 50
 }
 
 @Composable
