@@ -66,15 +66,19 @@ fun AboutScreen() {
         verticalArrangement = Arrangement.spacedBy(Dimens.paddingMedium)
     ) {
         AboutScreenTitle()
-        
+
         val pagerState = rememberPagerState(pageCount = { TOTAL_PAGES })
-        
-        AboutScreenPager(pagerState)
-        
+
+        Box(modifier = Modifier.weight(1f)) {
+            AboutScreenPager(pagerState)
+        }
+
         PageIndicator(
             currentPage = pagerState.currentPage,
             totalPages = TOTAL_PAGES,
-            modifier = Modifier.padding(vertical = Dimens.paddingMedium).fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = Dimens.paddingMedium)
         )
     }
 }

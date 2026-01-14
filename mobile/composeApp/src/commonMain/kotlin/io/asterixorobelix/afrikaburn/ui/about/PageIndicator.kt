@@ -22,6 +22,10 @@ import io.asterixorobelix.afrikaburn.AppTheme
 import io.asterixorobelix.afrikaburn.Dimens
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+private val INDICATOR_SIZE_SELECTED = 12.dp
+private val INDICATOR_SIZE_UNSELECTED = 8.dp
+private const val UNSELECTED_ALPHA = 0.3f
+
 @Composable
 fun PageIndicator(
     currentPage: Int,
@@ -35,7 +39,10 @@ fun PageIndicator(
             .semantics {
                 contentDescription = "Page ${currentPage + 1} of $totalPages"
             },
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.spacedBy(
+            Dimens.paddingSmall,
+            Alignment.CenterHorizontally
+        ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         repeat(totalPages) { index ->
@@ -43,21 +50,14 @@ fun PageIndicator(
             val indicatorColor = if (isSelected) {
                 MaterialTheme.colorScheme.primary
             } else {
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
+                MaterialTheme.colorScheme.onSurface.copy(alpha = UNSELECTED_ALPHA)
             }
 
-            val horizontalPadding = if (index < totalPages - 1) {
-                Dimens.paddingMedium
-            } else {
-                Dimens.paddingExtraSmall
-            }
-            
             Box(
                 modifier = Modifier
-                    .size(if (isSelected) 20.dp else 12.dp)
+                    .size(if (isSelected) INDICATOR_SIZE_SELECTED else INDICATOR_SIZE_UNSELECTED)
                     .clip(CircleShape)
                     .background(indicatorColor)
-                    .padding(horizontal = horizontalPadding)
             )
         }
     }
