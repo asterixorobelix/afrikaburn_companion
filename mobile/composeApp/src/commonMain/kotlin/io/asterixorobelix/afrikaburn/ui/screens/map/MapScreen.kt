@@ -20,6 +20,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -30,8 +32,11 @@ import androidx.compose.ui.unit.dp
 import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.di.koinMapViewModel
 import io.asterixorobelix.afrikaburn.models.ProjectItem
+import io.asterixorobelix.afrikaburn.platform.PermissionState
 import io.asterixorobelix.afrikaburn.presentation.map.MapUiState
 import io.asterixorobelix.afrikaburn.presentation.map.MapViewModel
+import io.github.dellisd.spatialk.geojson.Feature as GeoJsonFeature
+import io.github.dellisd.spatialk.geojson.Point
 import io.github.dellisd.spatialk.geojson.Position
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.maplibre.compose.camera.CameraPosition
@@ -42,10 +47,10 @@ import org.maplibre.compose.expressions.dsl.const
 import org.maplibre.compose.expressions.dsl.eq
 import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.map.MaplibreMap
-import org.maplibre.compose.util.ClickResult
 import org.maplibre.compose.sources.GeoJsonData
 import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
+import org.maplibre.compose.util.ClickResult
 
 private const val MAP_STYLE_PATH = "files/maps/style.json"
 private const val MOCK_LOCATIONS_PATH = "files/maps/mock-locations.geojson"
@@ -54,17 +59,22 @@ private const val MOCK_LOCATIONS_PATH = "files/maps/mock-locations.geojson"
 private val CAMP_MARKER_COLOR = Color(0xFFBB86FC)
 // Material Design 3 teal for artworks
 private val ARTWORK_MARKER_COLOR = Color(0xFF03DAC6)
+// Material Design 3 blue for user location
+private val USER_LOCATION_COLOR = Color(0xFF2196F3)
 private val MARKER_STROKE_COLOR = Color.White
 
 private val CAMP_MARKER_RADIUS = 12.dp
 private val ARTWORK_MARKER_RADIUS = 10.dp
+private val USER_LOCATION_RADIUS = 8.dp
 private val MARKER_STROKE_WIDTH = 2.dp
+private val USER_LOCATION_STROKE_WIDTH = 3.dp
 
 /**
  * Main map screen composable.
  *
  * Displays an interactive offline map of the Tankwa Karoo region
- * centered on the AfrikaBurn event location.
+ * centered on the AfrikaBurn event location. Shows user GPS location
+ * as a blue dot and provides a My Location FAB to center on position.
  *
  * @param onProjectClick Callback invoked when a marker is tapped with the matching ProjectItem
  */
@@ -74,6 +84,18 @@ fun MapScreen(
 ) {
     val viewModel = koinMapViewModel()
     val uiState by viewModel.uiState.collectAsState()
+
+    // Check permission and start tracking when screen becomes visible
+    LaunchedEffect(Unit) {
+        viewModel.checkAndRequestLocation()
+    }
+
+    // Stop tracking when leaving screen to conserve battery
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.stopLocationTracking()
+        }
+    }
 
     when (val state = uiState) {
         is MapUiState.Loading -> LoadingContent()
@@ -164,6 +186,42 @@ private fun MapContent(
                 radius = const(ARTWORK_MARKER_RADIUS),
                 strokeColor = const(MARKER_STROKE_COLOR),
                 strokeWidth = const(MARKER_STROKE_WIDTH)
+            )
+
+            // User location marker (blue dot)
+            if (state.hasUserLocation) {
+                val userLocationFeature = GeoJsonFeature(
+                    geometry = Point(
+                        coordinates = Position(
+                            longitude = state.userLongitude!!,
+                            latitude = state.userLatitude!!
+                        )
+                    )
+                )
+
+                val userLocationSource = rememberGeoJsonSource(
+                    data = GeoJsonData.Features(userLocationFeature)
+                )
+
+                CircleLayer(
+                    id = "user-location",
+                    source = userLocationSource,
+                    color = const(USER_LOCATION_COLOR),
+                    radius = const(USER_LOCATION_RADIUS),
+                    strokeColor = const(MARKER_STROKE_COLOR),
+                    strokeWidth = const(USER_LOCATION_STROKE_WIDTH)
+                )
+            }
+        }
+
+        // My Location FAB - bottom end corner
+        if (state.locationPermissionState == PermissionState.GRANTED) {
+            MyLocationButton(
+                onClick = viewModel::centerOnUserLocation,
+                enabled = state.hasUserLocation,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(Dimens.paddingMedium)
             )
         }
     }
