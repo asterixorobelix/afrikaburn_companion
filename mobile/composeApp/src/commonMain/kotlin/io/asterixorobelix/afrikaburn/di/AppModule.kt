@@ -7,6 +7,7 @@ val appModule = module {
         crashLoggingModule,
         dataModule,
         domainModule,
-        presentationModule
+        presentationModule,
+        locationModule
     )
 }
