@@ -1,0 +1,149 @@
+{
+  "version": 8,
+  "name": "AfrikaBurn Offline",
+  "metadata": {
+    "description": "Offline map style for Tankwa Karoo region"
+  },
+  "sources": {
+    "openmaptiles": {
+      "type": "vector",
+      "url": "pmtiles://asset://files/maps/tankwa-karoo.pmtiles"
+    }
+  },
+  "glyphs": "asset://files/maps/fonts/{fontstack}/{range}.pbf",
+  "sprite": "asset://files/maps/sprites/osm-bright",
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": {
+        "background-color": "#f5f3e8"
+      }
+    },
+    {
+      "id": "landuse-desert",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landuse",
+      "filter": ["all", ["==", "class", "sand"]],
+      "paint": {
+        "fill-color": "#e8e0c8"
+      }
+    },
+    {
+      "id": "landuse-scrub",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landuse",
+      "filter": ["all", ["==", "class", "scrub"]],
+      "paint": {
+        "fill-color": "#d4d9b0"
+      }
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "water",
+      "paint": {
+        "fill-color": "#a0c8dc"
+      }
+    },
+    {
+      "id": "waterway",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "waterway",
+      "paint": {
+        "line-color": "#a0c8dc",
+        "line-width": 1
+      }
+    },
+    {
+      "id": "road-minor",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": ["all", ["in", "class", "minor", "service", "path", "track"]],
+      "paint": {
+        "line-color": "#c8b88a",
+        "line-width": {
+          "stops": [[12, 0.5], [16, 2]]
+        }
+      }
+    },
+    {
+      "id": "road-secondary",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": ["all", ["in", "class", "secondary", "tertiary"]],
+      "paint": {
+        "line-color": "#b0a06a",
+        "line-width": {
+          "stops": [[10, 1], [16, 4]]
+        }
+      }
+    },
+    {
+      "id": "road-primary",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": ["all", ["==", "class", "primary"]],
+      "paint": {
+        "line-color": "#9c8858",
+        "line-width": {
+          "stops": [[8, 1], [16, 6]]
+        }
+      }
+    },
+    {
+      "id": "road-main",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": ["all", ["in", "class", "trunk", "motorway"]],
+      "paint": {
+        "line-color": "#8b7a4a",
+        "line-width": {
+          "stops": [[6, 1], [16, 8]]
+        }
+      }
+    },
+    {
+      "id": "place-village",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "place",
+      "filter": ["all", ["==", "class", "village"]],
+      "layout": {
+        "text-field": "{name}",
+        "text-font": ["Noto Sans Regular"],
+        "text-size": 12
+      },
+      "paint": {
+        "text-color": "#4a4a4a",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1
+      }
+    },
+    {
+      "id": "place-town",
+      "type": "symbol",
+      "source": "openmaptiles",
+      "source-layer": "place",
+      "filter": ["all", ["==", "class", "town"]],
+      "layout": {
+        "text-field": "{name}",
+        "text-font": ["Noto Sans Regular"],
+        "text-size": 14
+      },
+      "paint": {
+        "text-color": "#3a3a3a",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 1
+      }
+    }
+  ]
+}
