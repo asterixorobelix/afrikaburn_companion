@@ -78,29 +78,29 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MAP-01 | TBD | Pending |
-| MAP-02 | TBD | Pending |
-| MAP-03 | TBD | Pending |
-| MAP-04 | TBD | Pending |
-| MARK-01 | TBD | Pending |
-| MARK-02 | TBD | Pending |
-| MARK-03 | TBD | Pending |
-| MARK-04 | TBD | Pending |
-| MARK-05 | TBD | Pending |
-| LOC-01 | TBD | Pending |
-| LOC-02 | TBD | Pending |
-| LOC-03 | TBD | Pending |
-| PIN-01 | TBD | Pending |
-| PIN-02 | TBD | Pending |
-| PIN-03 | TBD | Pending |
-| PIN-04 | TBD | Pending |
-| NAV-01 | TBD | Pending |
-| NAV-02 | TBD | Pending |
+| MAP-01 | Phase 1 | Pending |
+| MAP-02 | Phase 1 | Pending |
+| MAP-03 | Phase 1 | Pending |
+| MAP-04 | Phase 1 | Pending |
+| NAV-01 | Phase 1 | Pending |
+| NAV-02 | Phase 1 | Pending |
+| MARK-01 | Phase 2 | Pending |
+| MARK-02 | Phase 2 | Pending |
+| MARK-03 | Phase 2 | Pending |
+| MARK-04 | Phase 2 | Pending |
+| MARK-05 | Phase 2 | Pending |
+| LOC-01 | Phase 3 | Pending |
+| LOC-02 | Phase 3 | Pending |
+| LOC-03 | Phase 3 | Pending |
+| PIN-01 | Phase 4 | Pending |
+| PIN-02 | Phase 4 | Pending |
+| PIN-03 | Phase 4 | Pending |
+| PIN-04 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 18 total
-- Mapped to phases: 0
-- Unmapped: 18 (will be mapped during roadmap creation)
+- Mapped to phases: 18 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-01-18*
