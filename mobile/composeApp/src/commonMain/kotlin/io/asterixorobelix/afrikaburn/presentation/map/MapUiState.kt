@@ -1,5 +1,7 @@
 package io.asterixorobelix.afrikaburn.presentation.map
 
+import io.asterixorobelix.afrikaburn.models.ProjectItem
+
 /**
  * UI state for the map screen.
  *
@@ -20,11 +22,13 @@ sealed interface MapUiState {
      * @param centerLatitude The latitude of the map center (default: Tankwa Karoo center)
      * @param centerLongitude The longitude of the map center (default: Tankwa Karoo center)
      * @param zoomLevel The current zoom level (default: 12.0 for overview)
+     * @param projects List of projects for marker tap matching
      */
     data class Success(
         val centerLatitude: Double = DEFAULT_CENTER_LATITUDE,
         val centerLongitude: Double = DEFAULT_CENTER_LONGITUDE,
-        val zoomLevel: Double = DEFAULT_ZOOM_LEVEL
+        val zoomLevel: Double = DEFAULT_ZOOM_LEVEL,
+        val projects: List<ProjectItem> = emptyList()
     ) : MapUiState
 
     /**
