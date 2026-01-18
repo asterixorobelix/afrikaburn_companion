@@ -8,7 +8,7 @@
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
 | 1 | Foundation & Basic Map | MAP-01, MAP-02, MAP-03, MAP-04, NAV-01, NAV-02 | ✓ Complete |
-| 2 | Markers & Detail Navigation | MARK-01, MARK-02, MARK-03, MARK-04, MARK-05 | Pending |
+| 2 | Markers & Detail Navigation | MARK-01, MARK-02, MARK-03, MARK-04, MARK-05 | ✓ Complete |
 | 3 | User Location | LOC-01, LOC-02, LOC-03 | Pending |
 | 4 | User Camp Pin | PIN-01, PIN-02, PIN-03, PIN-04 | Pending |
 
@@ -49,11 +49,11 @@
 **Goal:** Display camp and artwork markers that navigate to detail pages when tapped.
 
 **Requirements:**
-- [ ] MARK-01: User sees camp locations displayed as markers with distinct icon
-- [ ] MARK-02: User sees artwork locations displayed as markers with distinct icon
-- [ ] MARK-03: User can tap a camp marker to view camp details
-- [ ] MARK-04: User can tap an artwork marker to view artwork details
-- [ ] MARK-05: User can visually distinguish camp markers from artwork markers
+- [x] MARK-01: User sees camp locations displayed as markers with distinct icon
+- [x] MARK-02: User sees artwork locations displayed as markers with distinct icon
+- [x] MARK-03: User can tap a camp marker to view camp details
+- [x] MARK-04: User can tap an artwork marker to view artwork details
+- [x] MARK-05: User can visually distinguish camp markers from artwork markers
 
 **Success Criteria:**
 1. Camp markers appear on map at correct coordinates
@@ -152,4 +152,4 @@ Phase 1 (Foundation)
 ---
 
 *Roadmap created: 2026-01-18*
-*Last updated: 2026-01-18 (Phase 1 complete)*
+*Last updated: 2026-01-18 (Phase 2 complete)*

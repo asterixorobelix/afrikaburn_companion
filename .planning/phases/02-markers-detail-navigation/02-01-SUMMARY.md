@@ -1,8 +1,8 @@
 # Plan 02-01 Summary: Interactive Marker Tap to Detail
 
-**Status**: COMPLETE
-**Duration**: ~45 minutes
-**Commits**: 6
+**Status**: COMPLETE (Human Verified)
+**Duration**: ~90 minutes
+**Commits**: 10
 
 ## Objective
 
@@ -81,8 +81,33 @@ b2146a6 feat(02-01): add marker tap handling to MapScreen
 
 - [x] Build succeeds: `./gradlew :composeApp:assembleDebug`
 - [x] Tests pass: `./gradlew :composeApp:testDebugUnitTest` (13 tests)
-- [ ] Human verification: Run app, tap markers, verify navigation to detail screen
+- [x] Human verification: Markers tappable, navigation to detail works
+
+## Additional Work
+
+After initial implementation, additional fixes were needed:
+
+1. **Style simplification** - Removed missing asset references (PMTiles, sprites, fonts) that caused ANR on map load
+2. **PMTiles extraction** - Added 574KB PMTiles from Protomaps for terrain context
+3. **Style fixes** - Simplified layer filters for sparse desert region
+
+### Additional Commits
+
+```
+36c563e fix(02-01): simplify map style to work without PMTiles
+32817c8 feat(02-01): add PMTiles for Tankwa Karoo terrain
+75f4f07 fix(02-01): simplify style layers for remote desert region
+```
+
+## Requirements Verified
+
+- [x] MARK-01: Camp markers visible (purple circles)
+- [x] MARK-02: Artwork markers visible (teal circles)
+- [x] MARK-03: Tap camp marker → opens detail
+- [x] MARK-04: Tap artwork marker → opens detail
+- [x] MARK-05: Camp/artwork markers visually distinguishable
 
 ## Notes
 
-The detekt task fails with "Invalid value (23) passed to --jvm-target" - this is a pre-existing infrastructure issue where the host JVM version (23) is not supported by detekt 1.23.8. This is unrelated to plan 02-01 changes.
+- The Tankwa Karoo is extremely remote desert with sparse OSM road data - this is expected
+- Detekt JVM target issue is pre-existing infrastructure problem, not related to this plan
