@@ -10,11 +10,9 @@
 
 # Git repository URL for storing certificates
 # Create a PRIVATE repo for this (e.g., github.com/yourusername/certificates)
-git_url(ENV["MATCH_GIT_URL"] || "git@github.com:yourusername/afrikaburn-certificates.git")
-
-# Storage mode - git is recommended for solo developers
-storage_mode("git")
-
+  git_url("https://github.com/asterixorobelix/fastlane-certificates")
+  storage_mode("git")
+  type("appstore") # or "development", "adhoc"
 # ============================================================================
 # APP CONFIGURATION
 # ============================================================================

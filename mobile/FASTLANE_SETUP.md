@@ -110,14 +110,26 @@ KEY_PASSWORD=your_key_password
 
 ### Step 3: Set Up Google Play Console API Access
 
-1. Go to [Google Play Console](https://play.google.com/console)
-2. Navigate to **Setup** → **API access**
-3. Create a new **Service Account**:
-   - Click "Create new service account"
-   - Follow the link to Google Cloud Console
-   - Create a service account with "Service Account User" role
-   - Create a JSON key and download it
-4. Back in Play Console, grant the service account **Release manager** permissions
+1. Go to [Google Cloud Console - Create Service Account](https://console.cloud.google.com/iam-admin/serviceaccounts/create?previousPage=%2Fapis%2Fapi%2Fandroidpublisher.googleapis.com%2Fcredentials&project=api-8884311451644643561-193695)
+2. Create a service account:
+   - Name: `fastlane-deploy`
+   - Description: `Fastlane deployment for AfrikaBurn`
+   - Click **"CREATE AND CONTINUE"**
+   - Skip the role selection (click **"CONTINUE"**)
+   - Click **"DONE"**
+3. Create JSON key:
+   - Click on the service account you just created
+   - Go to **"Keys"** tab
+   - Click **"ADD KEY"** → **"Create new key"**
+   - Select **JSON** format → Click **"CREATE"**
+   - This downloads the JSON file
+4. Grant permissions in [Google Play Console](https://play.google.com/console):
+   - Go to **Users & Permissions** in the left sidebar
+   - Click **"Invite new users"**
+   - Enter your service account email (find it in the JSON file under `"client_email"`)
+   - Under **App permissions**, select the AfrikaBurn app
+   - Enable: **Release to production** and **Release apps to testing tracks**
+   - Click **"Invite user"** → **"Send invite"**
 5. Save the JSON file as `fastlane/play-store-credentials.json`
 
 ```bash
