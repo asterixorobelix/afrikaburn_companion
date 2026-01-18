@@ -7,7 +7,7 @@
 
 | Phase | Name | Requirements | Status |
 |-------|------|--------------|--------|
-| 1 | Foundation & Basic Map | MAP-01, MAP-02, MAP-03, MAP-04, NAV-01, NAV-02 | Pending |
+| 1 | Foundation & Basic Map | MAP-01, MAP-02, MAP-03, MAP-04, NAV-01, NAV-02 | ✓ Complete |
 | 2 | Markers & Detail Navigation | MARK-01, MARK-02, MARK-03, MARK-04, MARK-05 | Pending |
 | 3 | User Location | LOC-01, LOC-02, LOC-03 | Pending |
 | 4 | User Camp Pin | PIN-01, PIN-02, PIN-03, PIN-04 | Pending |
@@ -21,12 +21,12 @@
 **Goal:** Display an offline map in a new Map tab with basic navigation controls.
 
 **Requirements:**
-- [ ] MAP-01: User sees offline map tiles covering Tankwa Karoo region
-- [ ] MAP-02: User can pan the map by dragging
-- [ ] MAP-03: User can zoom the map by pinch gesture
-- [ ] MAP-04: User can zoom in by double-tapping
-- [ ] NAV-01: User sees a Map tab in the bottom navigation
-- [ ] NAV-02: User can switch between Projects, Map, Directions, and About tabs
+- [x] MAP-01: User sees offline map tiles covering Tankwa Karoo region (infrastructure ready, PMTiles user-provided)
+- [x] MAP-02: User can pan the map by dragging
+- [x] MAP-03: User can zoom the map by pinch gesture
+- [x] MAP-04: User can zoom in by double-tapping
+- [x] NAV-01: User sees a Map tab in the bottom navigation
+- [x] NAV-02: User can switch between Projects, Map, Directions, and About tabs
 
 **Success Criteria:**
 1. Map tab appears in bottom navigation between Projects and Directions
@@ -152,4 +152,4 @@ Phase 1 (Foundation)
 ---
 
 *Roadmap created: 2026-01-18*
-*Last updated: 2026-01-18*
+*Last updated: 2026-01-18 (Phase 1 complete)*

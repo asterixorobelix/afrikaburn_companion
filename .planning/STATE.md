@@ -1,23 +1,23 @@
 # Project State
 
 **Last Updated:** 2026-01-18
-**Current Phase:** Phase 1 - Foundation & Basic Map (In Progress)
+**Current Phase:** Phase 1 - Foundation & Basic Map (Complete)
 
 ## Current Position
 
 Phase: 1 of 4 (Foundation & Basic Map)
-Plan: 1 of 2 in current phase
-Status: In progress
-Last activity: 2026-01-18 - Completed 01-01-PLAN.md
+Plan: 2 of 2 in current phase
+Status: Complete
+Last activity: 2026-01-18 - Completed Phase 1
 
-Progress: █░░░░░░░░░ 5%
+Progress: ███░░░░░░░ 25%
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-01-18)
 
 **Core value:** Participants can discover and navigate to AfrikaBurn theme camps and artworks without internet connectivity.
-**Current focus:** v3.0 Offline Map milestone - Plan 01-02 ready for execution
+**Current focus:** v3.0 Offline Map milestone - Phase 1 complete, ready for Phase 2
 
 ## Milestone Progress
 
@@ -25,27 +25,27 @@ See: `.planning/PROJECT.md` (updated 2026-01-18)
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 1 | Foundation & Basic Map | ◐ In Progress | 50% |
+| 1 | Foundation & Basic Map | ✓ Complete | 100% |
 | 2 | Markers & Detail Navigation | ○ Pending | 0% |
 | 3 | User Location | ○ Pending | 0% |
 | 4 | User Camp Pin | ○ Pending | 0% |
 
-**Overall:** 0/18 requirements complete (0%)
+**Overall:** 6/18 requirements complete (33%)
 
-## Phase 1 Plans
+## Phase 1 Plans (Complete)
 
 | Plan | Name | Wave | Status | Dependencies |
 |------|------|------|--------|--------------|
-| 01-01 | Map Infrastructure & Dependencies | 1 | Complete | None |
-| 01-02 | Navigation Integration & Gestures | 2 | Ready | 01-01 |
+| 01-01 | Map Infrastructure & Dependencies | 1 | ✓ Complete | None |
+| 01-02 | Navigation Integration & Gestures | 2 | ✓ Complete | 01-01 |
 
-**Requirements covered:**
-- MAP-01: Offline map tiles covering Tankwa Karoo region
-- MAP-02: Pan map by dragging
-- MAP-03: Zoom map by pinch gesture
-- MAP-04: Zoom in by double-tapping
-- NAV-01: Map tab in bottom navigation
-- NAV-02: Switch between Projects, Map, Directions, About tabs
+**Requirements completed:**
+- [x] MAP-01: Offline map tiles covering Tankwa Karoo region (infrastructure ready, PMTiles user-provided)
+- [x] MAP-02: Pan map by dragging
+- [x] MAP-03: Zoom map by pinch gesture
+- [x] MAP-04: Zoom in by double-tapping
+- [x] NAV-01: Map tab in bottom navigation
+- [x] NAV-02: Switch between Projects, Map, Directions, About tabs
 
 ## Key Decisions Log
 
@@ -57,10 +57,12 @@ See: `.planning/PROJECT.md` (updated 2026-01-18)
 | 2026-01-18 | Defer search to v3.1 | Reduce scope for v3.0 |
 | 2026-01-18 | Camps + artworks only | Performances/events deferred |
 | 2026-01-18 | spatialk.geojson.Position | MapLibre uses this for coordinates (transitive dep) |
+| 2026-01-18 | CircleLayer for markers | Programmatic markers work better than style.json inline GeoJSON |
+| 2026-01-18 | Dark mode map style | Background #1a1a2e to match app theme |
 
 ## Blockers
 
-**User Action Required (before map can display):**
+**User Action Required (before map shows terrain/roads):**
 - Download/generate PMTiles file for Tankwa Karoo region (~20-50MB, zoom 10-16)
 - Place at: `mobile/composeApp/src/commonMain/composeResources/files/maps/tankwa-karoo.pmtiles`
 - Sources: Protomaps, MapTiler Data, or custom extraction
@@ -68,15 +70,15 @@ See: `.planning/PROJECT.md` (updated 2026-01-18)
 ## Session Continuity
 
 Last session: 2026-01-18
-Stopped at: Completed 01-01-PLAN.md
+Stopped at: Completed Phase 1
 Resume file: None
 
 ## Next Steps
 
-1. Run Plan 01-02 (Navigation Integration & Gestures)
-2. Integrate MapScreen into bottom navigation
-3. Verify map gestures (pan, zoom, double-tap)
+1. `/gsd:plan-phase 2` to plan Markers & Detail Navigation phase
+2. Add latitude/longitude to ProjectItem model
+3. Wire marker taps to ProjectDetailScreen navigation
 
 ---
 
-*State updated: 2026-01-18 after Plan 01-01 complete*
+*State updated: 2026-01-18 after Phase 1 complete*
