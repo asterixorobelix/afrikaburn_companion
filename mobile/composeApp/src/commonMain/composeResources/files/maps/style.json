@@ -1,13 +1,109 @@
 {
   "version": 8,
-  "name": "AfrikaBurn Offline",
+  "name": "AfrikaBurn Dark",
   "metadata": {
-    "description": "Offline map style for Tankwa Karoo region"
+    "description": "Dark mode offline map style for Tankwa Karoo region"
   },
   "sources": {
     "openmaptiles": {
       "type": "vector",
       "url": "pmtiles://asset://files/maps/tankwa-karoo.pmtiles"
+    },
+    "camps": {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": { "name": "The Vagabonds", "type": "camp" },
+            "geometry": { "type": "Point", "coordinates": [19.4485, -32.3480] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "Space Cowboys", "type": "camp" },
+            "geometry": { "type": "Point", "coordinates": [19.4520, -32.3510] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "Luminosity Lounge", "type": "camp" },
+            "geometry": { "type": "Point", "coordinates": [19.4465, -32.3525] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "Sunset Oasis", "type": "camp" },
+            "geometry": { "type": "Point", "coordinates": [19.4505, -32.3465] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "aTypical Bar", "type": "camp" },
+            "geometry": { "type": "Point", "coordinates": [19.4540, -32.3495] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "Cactus Rising", "type": "camp" },
+            "geometry": { "type": "Point", "coordinates": [19.4450, -32.3540] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "Zodiac", "type": "camp" },
+            "geometry": { "type": "Point", "coordinates": [19.4475, -32.3455] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "Disko Dolce", "type": "camp" },
+            "geometry": { "type": "Point", "coordinates": [19.4555, -32.3520] }
+          }
+        ]
+      }
+    },
+    "artworks": {
+      "type": "geojson",
+      "data": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "properties": { "name": "Bee Cool Build", "artist": "Megan Cleary", "type": "artwork" },
+            "geometry": { "type": "Point", "coordinates": [19.4500, -32.3500] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "OBSCURA", "artist": "Tiaan van Deventer", "type": "artwork" },
+            "geometry": { "type": "Point", "coordinates": [19.4510, -32.3485] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "Twist", "artist": "Mari Schroeder", "type": "artwork" },
+            "geometry": { "type": "Point", "coordinates": [19.4490, -32.3515] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "Star Tree 3", "artist": "Conrad Hubbe", "type": "artwork" },
+            "geometry": { "type": "Point", "coordinates": [19.4525, -32.3475] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "Song Catcher", "artist": "Charles Starling", "type": "artwork" },
+            "geometry": { "type": "Point", "coordinates": [19.4480, -32.3530] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "Switch Off to Switch On", "artist": "Christophe Dardeau", "type": "artwork" },
+            "geometry": { "type": "Point", "coordinates": [19.4545, -32.3490] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "Amphibitheatre", "artist": "Casio Cowboy Collective", "type": "artwork" },
+            "geometry": { "type": "Point", "coordinates": [19.4460, -32.3505] }
+          },
+          {
+            "type": "Feature",
+            "properties": { "name": "Dissolve in the Desert", "artist": "Bur69", "type": "artwork" },
+            "geometry": { "type": "Point", "coordinates": [19.4530, -32.3545] }
+          }
+        ]
+      }
     }
   },
   "glyphs": "asset://files/maps/fonts/{fontstack}/{range}.pbf",
@@ -17,7 +113,7 @@
       "id": "background",
       "type": "background",
       "paint": {
-        "background-color": "#f5f3e8"
+        "background-color": "#1a1a2e"
       }
     },
     {
@@ -27,7 +123,7 @@
       "source-layer": "landuse",
       "filter": ["all", ["==", "class", "sand"]],
       "paint": {
-        "fill-color": "#e8e0c8"
+        "fill-color": "#252540"
       }
     },
     {
@@ -37,7 +133,7 @@
       "source-layer": "landuse",
       "filter": ["all", ["==", "class", "scrub"]],
       "paint": {
-        "fill-color": "#d4d9b0"
+        "fill-color": "#2a2a45"
       }
     },
     {
@@ -46,7 +142,7 @@
       "source": "openmaptiles",
       "source-layer": "water",
       "paint": {
-        "fill-color": "#a0c8dc"
+        "fill-color": "#16213e"
       }
     },
     {
@@ -55,7 +151,7 @@
       "source": "openmaptiles",
       "source-layer": "waterway",
       "paint": {
-        "line-color": "#a0c8dc",
+        "line-color": "#16213e",
         "line-width": 1
       }
     },
@@ -66,7 +162,7 @@
       "source-layer": "transportation",
       "filter": ["all", ["in", "class", "minor", "service", "path", "track"]],
       "paint": {
-        "line-color": "#c8b88a",
+        "line-color": "#3a3a5c",
         "line-width": {
           "stops": [[12, 0.5], [16, 2]]
         }
@@ -79,7 +175,7 @@
       "source-layer": "transportation",
       "filter": ["all", ["in", "class", "secondary", "tertiary"]],
       "paint": {
-        "line-color": "#b0a06a",
+        "line-color": "#4a4a6a",
         "line-width": {
           "stops": [[10, 1], [16, 4]]
         }
@@ -92,7 +188,7 @@
       "source-layer": "transportation",
       "filter": ["all", ["==", "class", "primary"]],
       "paint": {
-        "line-color": "#9c8858",
+        "line-color": "#5a5a7a",
         "line-width": {
           "stops": [[8, 1], [16, 6]]
         }
@@ -105,10 +201,66 @@
       "source-layer": "transportation",
       "filter": ["all", ["in", "class", "trunk", "motorway"]],
       "paint": {
-        "line-color": "#8b7a4a",
+        "line-color": "#6a6a8a",
         "line-width": {
           "stops": [[6, 1], [16, 8]]
         }
+      }
+    },
+    {
+      "id": "camp-markers",
+      "type": "circle",
+      "source": "camps",
+      "paint": {
+        "circle-radius": 10,
+        "circle-color": "#bb86fc",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff"
+      }
+    },
+    {
+      "id": "artwork-markers",
+      "type": "circle",
+      "source": "artworks",
+      "paint": {
+        "circle-radius": 8,
+        "circle-color": "#03dac6",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff"
+      }
+    },
+    {
+      "id": "camp-labels",
+      "type": "symbol",
+      "source": "camps",
+      "layout": {
+        "text-field": ["get", "name"],
+        "text-font": ["Noto Sans Regular"],
+        "text-size": 11,
+        "text-offset": [0, 1.5],
+        "text-anchor": "top"
+      },
+      "paint": {
+        "text-color": "#e0e0e0",
+        "text-halo-color": "#1a1a2e",
+        "text-halo-width": 1.5
+      }
+    },
+    {
+      "id": "artwork-labels",
+      "type": "symbol",
+      "source": "artworks",
+      "layout": {
+        "text-field": ["get", "name"],
+        "text-font": ["Noto Sans Regular"],
+        "text-size": 10,
+        "text-offset": [0, 1.3],
+        "text-anchor": "top"
+      },
+      "paint": {
+        "text-color": "#b0e0d8",
+        "text-halo-color": "#1a1a2e",
+        "text-halo-width": 1.5
       }
     },
     {
@@ -123,8 +275,8 @@
         "text-size": 12
       },
       "paint": {
-        "text-color": "#4a4a4a",
-        "text-halo-color": "#ffffff",
+        "text-color": "#b0b0c0",
+        "text-halo-color": "#1a1a2e",
         "text-halo-width": 1
       }
     },
@@ -140,8 +292,8 @@
         "text-size": 14
       },
       "paint": {
-        "text-color": "#3a3a3a",
-        "text-halo-color": "#ffffff",
+        "text-color": "#c0c0d0",
+        "text-halo-color": "#1a1a2e",
         "text-halo-width": 1
       }
     }
