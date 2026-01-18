@@ -1,6 +1,7 @@
 package io.asterixorobelix.afrikaburn.presentation.map
 
 import io.asterixorobelix.afrikaburn.models.ProjectItem
+import io.asterixorobelix.afrikaburn.platform.PermissionState
 
 /**
  * UI state for the map screen.
@@ -23,13 +24,25 @@ sealed interface MapUiState {
      * @param centerLongitude The longitude of the map center (default: Tankwa Karoo center)
      * @param zoomLevel The current zoom level (default: 12.0 for overview)
      * @param projects List of projects for marker tap matching
+     * @param userLatitude The user's current GPS latitude (null if not tracking)
+     * @param userLongitude The user's current GPS longitude (null if not tracking)
+     * @param locationPermissionState The current location permission state
+     * @param isTrackingLocation Whether location tracking is currently active
      */
     data class Success(
         val centerLatitude: Double = DEFAULT_CENTER_LATITUDE,
         val centerLongitude: Double = DEFAULT_CENTER_LONGITUDE,
         val zoomLevel: Double = DEFAULT_ZOOM_LEVEL,
-        val projects: List<ProjectItem> = emptyList()
-    ) : MapUiState
+        val projects: List<ProjectItem> = emptyList(),
+        val userLatitude: Double? = null,
+        val userLongitude: Double? = null,
+        val locationPermissionState: PermissionState = PermissionState.NOT_DETERMINED,
+        val isTrackingLocation: Boolean = false
+    ) : MapUiState {
+        /** True if we have valid user location coordinates */
+        val hasUserLocation: Boolean
+            get() = userLatitude != null && userLongitude != null
+    }
 
     /**
      * An error occurred while loading the map.
