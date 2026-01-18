@@ -29,13 +29,21 @@
       }
     },
     {
-      "id": "landuse-park",
+      "id": "landcover",
+      "type": "fill",
+      "source": "protomaps",
+      "source-layer": "landcover",
+      "paint": {
+        "fill-color": "#2a2a45"
+      }
+    },
+    {
+      "id": "landuse",
       "type": "fill",
       "source": "protomaps",
       "source-layer": "landuse",
-      "filter": ["any", ["==", "pmap:kind", "park"], ["==", "pmap:kind", "nature_reserve"]],
       "paint": {
-        "fill-color": "#2a2a45"
+        "fill-color": "#2d2d4a"
       }
     },
     {
@@ -48,36 +56,24 @@
       }
     },
     {
-      "id": "roads-minor",
+      "id": "roads-all",
       "type": "line",
       "source": "protomaps",
       "source-layer": "roads",
-      "filter": ["any", ["==", "pmap:kind", "minor_road"], ["==", "pmap:kind", "path"]],
       "paint": {
-        "line-color": "#3a3a5c",
-        "line-width": {"stops": [[12, 0.5], [15, 2]]}
-      }
-    },
-    {
-      "id": "roads-medium",
-      "type": "line",
-      "source": "protomaps",
-      "source-layer": "roads",
-      "filter": ["any", ["==", "pmap:kind", "medium_road"]],
-      "paint": {
-        "line-color": "#4a4a6a",
+        "line-color": "#5a5a7a",
         "line-width": {"stops": [[10, 1], [15, 3]]}
       }
     },
     {
-      "id": "roads-major",
+      "id": "boundaries",
       "type": "line",
       "source": "protomaps",
-      "source-layer": "roads",
-      "filter": ["any", ["==", "pmap:kind", "major_road"], ["==", "pmap:kind", "highway"]],
+      "source-layer": "boundaries",
       "paint": {
-        "line-color": "#5a5a7a",
-        "line-width": {"stops": [[8, 1], [15, 5]]}
+        "line-color": "#4a4a6a",
+        "line-width": 1,
+        "line-dasharray": [2, 2]
       }
     }
   ]
