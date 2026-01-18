@@ -4,9 +4,13 @@ import afrikaburn.composeapp.generated.resources.Res
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.asterixorobelix.afrikaburn.models.ProjectItem
+import io.asterixorobelix.afrikaburn.platform.LocationService
+import io.asterixorobelix.afrikaburn.platform.PermissionState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -14,10 +18,12 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 /**
  * ViewModel for the map screen.
  *
- * Manages camera position state, loads project data, and handles map interactions.
- * Initially loads with Tankwa Karoo center coordinates.
+ * Manages camera position state, loads project data, handles map interactions,
+ * and provides location tracking for user position display.
  */
-class MapViewModel : ViewModel() {
+class MapViewModel(
+    private val locationService: LocationService
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MapUiState>(MapUiState.Loading)
 
@@ -32,6 +38,7 @@ class MapViewModel : ViewModel() {
     }
 
     private var loadedProjects: List<ProjectItem> = emptyList()
+    private var locationJob: Job? = null
 
     init {
         loadProjects()
@@ -53,7 +60,7 @@ class MapViewModel : ViewModel() {
                 loadedProjects = camps + artworks
 
                 _uiState.value = MapUiState.Success(projects = loadedProjects)
-            } catch (e: Exception) {
+            } catch (@Suppress("SwallowedException") e: Exception) {
                 // Even if loading fails, show map with default position but no projects
                 _uiState.value = MapUiState.Success(projects = emptyList())
             }
@@ -107,5 +114,102 @@ class MapViewModel : ViewModel() {
      */
     fun resetToDefaultPosition() {
         _uiState.value = MapUiState.Success(projects = loadedProjects)
+    }
+
+    // ===== Location Tracking Methods =====
+
+    /**
+     * Check location permission and start tracking if granted.
+     */
+    fun checkAndRequestLocation() {
+        viewModelScope.launch {
+            val permission = locationService.checkPermission()
+            updatePermissionState(permission)
+
+            if (permission == PermissionState.GRANTED) {
+                startLocationTracking()
+            }
+        }
+    }
+
+    /**
+     * Request location permission from the user.
+     */
+    fun requestLocationPermission() {
+        viewModelScope.launch {
+            val permission = locationService.requestPermission()
+            updatePermissionState(permission)
+
+            if (permission == PermissionState.GRANTED) {
+                startLocationTracking()
+            }
+        }
+    }
+
+    /**
+     * Start tracking user location.
+     */
+    private fun startLocationTracking() {
+        locationJob?.cancel()
+        locationJob = viewModelScope.launch {
+            locationService.startLocationUpdates()
+                .catch { /* Log error, continue without location */ }
+                .collect { location ->
+                    updateUserLocation(location.latitude, location.longitude)
+                }
+        }
+        updateTrackingState(isTracking = true)
+    }
+
+    /**
+     * Stop location tracking to conserve battery.
+     */
+    fun stopLocationTracking() {
+        locationJob?.cancel()
+        locationJob = null
+        locationService.stopLocationUpdates()
+        updateTrackingState(isTracking = false)
+    }
+
+    /**
+     * Center map on user's current location.
+     */
+    fun centerOnUserLocation() {
+        val currentState = _uiState.value
+        if (currentState is MapUiState.Success && currentState.hasUserLocation) {
+            _uiState.value = currentState.copy(
+                centerLatitude = currentState.userLatitude!!,
+                centerLongitude = currentState.userLongitude!!
+            )
+        }
+    }
+
+    private fun updateUserLocation(lat: Double, lng: Double) {
+        val currentState = _uiState.value
+        if (currentState is MapUiState.Success) {
+            _uiState.value = currentState.copy(
+                userLatitude = lat,
+                userLongitude = lng
+            )
+        }
+    }
+
+    private fun updatePermissionState(state: PermissionState) {
+        val currentState = _uiState.value
+        if (currentState is MapUiState.Success) {
+            _uiState.value = currentState.copy(locationPermissionState = state)
+        }
+    }
+
+    private fun updateTrackingState(isTracking: Boolean) {
+        val currentState = _uiState.value
+        if (currentState is MapUiState.Success) {
+            _uiState.value = currentState.copy(isTrackingLocation = isTracking)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopLocationTracking() // Clean up when ViewModel is destroyed
     }
 }

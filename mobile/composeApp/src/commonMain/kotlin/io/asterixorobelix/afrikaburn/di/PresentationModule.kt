@@ -14,6 +14,6 @@ val presentationModule = module {
         ProjectTabViewModel(get(), projectType)
     }
 
-    // Factory for MapViewModel
-    factory { MapViewModel() }
+    // Factory for MapViewModel with LocationService injection
+    factory { MapViewModel(get()) }
 }
