@@ -148,6 +148,12 @@
     <string name="cd_swipe_hint">Swipe to see more pages</string>
     <string name="about_swipe_hint">Swipe to explore</string>
 
+    <!-- Map Screen -->
+    <string name="map_tab_title">Map</string>
+    <string name="map_tab_content_description">View map of event area</string>
+    <string name="map_loading">Loading map...</string>
+    <string name="map_error">Unable to load map</string>
+
     <!-- Project Detail Screen -->
     <string name="project_detail_title">Project Details</string>
     <string name="project_detail_artist_label">Artist/Creator</string>
