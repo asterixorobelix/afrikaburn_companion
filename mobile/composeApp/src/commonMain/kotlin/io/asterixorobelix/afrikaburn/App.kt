@@ -94,7 +94,12 @@ fun App() {
                         )
                     }
                     composable(NavigationDestination.Map.route) {
-                        MapScreen()
+                        MapScreen(
+                            onProjectClick = { project ->
+                                selectedProject = project
+                                navController.navigate(PROJECT_DETAIL_ROUTE)
+                            }
+                        )
                     }
                     composable(NavigationDestination.Directions.route) {
                         DirectionsScreen()
