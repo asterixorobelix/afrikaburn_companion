@@ -2,50 +2,106 @@
 
 This directory contains assets for offline map rendering in the AfrikaBurn Companion app.
 
-## Required Files
+## Current Status
 
-### PMTiles File (USER ACTION REQUIRED)
+**Without PMTiles:** Map shows dark background (#1a1a2e) with camp/artwork markers. Fully functional for navigation.
 
-The app requires a PMTiles file for offline map tiles:
+**With PMTiles:** Map shows terrain, roads, and place names in addition to markers.
 
-**File:** `tankwa-karoo.pmtiles`
+## How to Add PMTiles (Optional)
 
-**Location:** Place in this directory alongside style.json
+### Step 1: Download from Protomaps (Easiest)
 
-**Region:** Tankwa Karoo, South Africa (approximately -32.35, 19.45)
+1. Visit **https://app.protomaps.com/downloads/osm**
+2. Draw a bounding box around the Tankwa Karoo region:
+   - Approximate bounds: `19.75, -32.60` to `20.05, -32.35`
+   - Center: `-32.48, 19.90` (AfrikaBurn location)
+3. Select zoom levels 10-16
+4. Download as PMTiles format
+5. Rename to `tankwa-karoo.pmtiles`
+6. Place in this directory
 
-**Recommended specifications:**
-- Zoom levels: 10-16
-- Target size: 20-50MB
-- Format: OpenMapTiles schema
+### Step 2: Update style.json
 
-### How to Obtain
+Replace the simplified style.json with the full version:
 
-1. **Protomaps** (recommended):
-   - Visit https://protomaps.com/
-   - Extract region covering Tankwa Karoo
-   - Download as PMTiles
+```json
+{
+  "version": 8,
+  "name": "AfrikaBurn Dark",
+  "sources": {
+    "openmaptiles": {
+      "type": "vector",
+      "url": "pmtiles://asset://files/maps/tankwa-karoo.pmtiles"
+    }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": { "background-color": "#1a1a2e" }
+    },
+    {
+      "id": "landuse-desert",
+      "type": "fill",
+      "source": "openmaptiles",
+      "source-layer": "landuse",
+      "filter": ["all", ["==", "class", "sand"]],
+      "paint": { "fill-color": "#252540" }
+    },
+    {
+      "id": "road-minor",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": ["all", ["in", "class", "minor", "service", "path", "track"]],
+      "paint": {
+        "line-color": "#3a3a5c",
+        "line-width": { "stops": [[12, 0.5], [16, 2]] }
+      }
+    },
+    {
+      "id": "road-primary",
+      "type": "line",
+      "source": "openmaptiles",
+      "source-layer": "transportation",
+      "filter": ["all", ["==", "class", "primary"]],
+      "paint": {
+        "line-color": "#5a5a7a",
+        "line-width": { "stops": [[8, 1], [16, 6]] }
+      }
+    }
+  ]
+}
+```
 
-2. **MapTiler Data**:
-   - Visit https://data.maptiler.com/
-   - Download OpenStreetMap tiles for South Africa
-   - Extract Tankwa region
+### Alternative: pmtiles CLI
 
-3. **Custom extraction**:
-   - Use `pmtiles` CLI tool
-   - Extract from larger regional dataset
+```bash
+# Install
+npm install -g pmtiles
 
-### Optional: Fonts and Sprites
+# Or with pip
+pip install pmtiles
 
-For label rendering, you may also need:
-
-- `fonts/` directory with .pbf glyph files
-- `sprites/` directory with sprite images
-
-These are optional - the map will render without labels if fonts are unavailable.
+# Extract from larger dataset
+pmtiles extract south-africa.pmtiles tankwa-karoo.pmtiles \
+  --bbox=19.75,-32.60,20.05,-32.35 \
+  --minzoom=10 --maxzoom=16
+```
 
 ## Files in this Directory
 
-- `style.json` - Map style configuration for MapLibre
-- `README.md` - This file
-- `tankwa-karoo.pmtiles` - (USER PROVIDED) Offline map tiles
+| File | Status | Description |
+|------|--------|-------------|
+| `style.json` | ✓ Included | Map style (works with or without PMTiles) |
+| `mock-locations.geojson` | ✓ Included | Camp and artwork marker locations |
+| `tankwa-karoo.pmtiles` | ⚠️ Optional | Offline map tiles for terrain/roads |
+| `README.md` | ✓ Included | This file |
+
+## Recommended PMTiles Specs
+
+- **Zoom levels:** 10-16
+- **Target size:** 20-50MB
+- **Format:** OpenMapTiles schema
+- **Region:** Tankwa Karoo (-32.48, 19.90)
