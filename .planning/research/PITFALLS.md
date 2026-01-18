@@ -1,460 +1,559 @@
-# KMP/CMP Pitfalls Research
+# Pitfalls Research: Offline Maps
 
-> Research compiled: January 2026
-> Target: Kotlin Multiplatform + Compose Multiplatform production template for solo developers
-> Platforms: Android API 24+, iOS 14+
+**Research Date:** 2026-01-18
+**Milestone:** v3.0 Offline Map
 
 ---
 
 ## Critical Pitfalls
 
-### 1. Building All iOS Architectures Unnecessarily
+### 1. MapLibre Compose Library API Instability
 
-**Description**: The Kotlin/Native compiler builds separate binaries for each iOS architecture (arm64 device, x64 simulator, arm64 simulator). Building all three takes roughly 3x as long as building one.
-
-**Warning Signs**:
-- iOS CI builds taking 15-30+ minutes
-- Local iOS builds significantly slower than Android
-- Xcode building when running iOS simulator tests
-
-**Impact**: HIGH - Build times can exceed 20 minutes unnecessarily
-
-**Prevention**:
-- Use `embedAndSignAppleFrameworkForXcode` for local development (auto-selects correct architecture)
-- In CI, run only the architecture you need: `iosSimulatorArm64Test` OR `iosX64Test`
-- Never run global `build` task in CI when only testing iOS
-
-**Phase**: Phase 1 (Project Setup)
-
-**Confidence**: HIGH
-
-**Sources**:
-- [Touchlab: Beware of Build Time Bloat](https://touchlab.co/touchlab-build-only-what-you-need)
-- [How I Fixed My KMP iOS Build](https://medium.com/@houssembababendermel/how-i-fixed-my-kmp-ios-build-from-20-minute-builds-to-lightning-fast-c4f0f5c102b0)
-
----
-
-### 2. Using CocoaPods with SPM Dependencies (Transitive Conflicts)
-
-**Description**: When a KMP CocoaPods dependency uses the same Google/Firebase dependency as an SPM dependency in your iOS app, you get mysterious linker errors and framework conflicts.
+**Description**: MapLibre Compose for Kotlin Multiplatform is relatively new (first released late 2024). A large subset of MapLibre's features are supported, but the full breadth of the MapLibre SDKs is not yet covered. API stability is not guaranteed as they're still exploring how best to express an interactive map API in Compose.
 
 **Warning Signs**:
-- "Framework not found" errors after adding new iOS dependencies
-- Linker errors mentioning duplicate symbols
-- Strange runtime crashes after CocoaPods update
-- Privacy manifest conflicts (especially with Google SDKs)
+- Breaking changes between minor versions
+- Features documented in MapLibre Native not available in Compose wrapper
+- Inconsistent behavior between Android and iOS implementations
 
-**Impact**: HIGH - Can block iOS builds entirely
+**Impact**: HIGH - May require significant code changes during development
 
 **Prevention**:
-- Prefer direct framework linking over CocoaPods for KMP
-- Use `embedAndSignAppleFrameworkForXcode` instead of SPM for local builds
-- If using CocoaPods: always open `.xcworkspace`, never `.xcodeproj`
-- Audit transitive dependencies before adding new SDKs
-
-**Phase**: Phase 1 (Project Setup)
-
-**Confidence**: HIGH
+- Pin to a specific MapLibre Compose version
+- Test thoroughly on both platforms before upgrading
+- Keep a migration strategy ready for API changes
+- Monitor the [MapLibre Compose roadmap](https://maplibre.org/maplibre-compose/roadmap/)
 
 **Sources**:
-- [Touchlab: Local or Remote Framework Integration](https://touchlab.co/ios-framework-local-or-remote)
-- [Taming the KMP Beast: Firebase & CocoaPods](https://medium.com/@hgarcia.alberto/taming-the-kmp-beast-my-firebase-cocoapods-saga-on-ios-and-how-you-can-win-too-313a6a52d382)
+- [MapLibre Compose Roadmap](https://maplibre.org/maplibre-compose/roadmap/)
+- [MapLibre Native Compose Multiplatform Library Issue](https://github.com/maplibre/maplibre-native/issues/2638)
 
 ---
 
-### 3. Gradle Version Incompatibilities with KMP
+### 2. Duplicate Class Conflicts (Android)
 
-**Description**: KMP has specific Gradle version requirements. Using incompatible versions causes deprecation warnings, build failures, or subtle runtime issues.
+**Description**: MapLibre was forked from Mapbox, and some package names were not updated from "com.mapbox.*" to "org.maplibre.*", specifically for plugins. Both `org.maplibre.gl:android-sdk-geojson` and `com.mapbox.mapboxsdk:mapbox-sdk-geojson` use the same class names, causing duplicate class errors.
 
 **Warning Signs**:
-- Deprecation warnings about `withJava()` function
-- Build failures after Gradle upgrade
-- "Incompatible ABI version" errors
-- Android Gradle Plugin compatibility warnings
+- Build failures with "Duplicate class" errors
+- Runtime crashes with class loading issues
+- Conflicts when adding other mapping-related dependencies
 
-**Impact**: HIGH - Can break builds completely
+**Impact**: CRITICAL - Blocks Android builds completely
 
 **Prevention**:
-- Check [KMP Compatibility Guide](https://kotlinlang.org/docs/multiplatform/multiplatform-compatibility-guide.html) before upgrading
-- Kotlin 2.0.20-2.1.10 works with Gradle 8.0-8.6 (8.7+ has caveats)
-- Remove `withJava()` for Gradle 8.7+ (Java source sets created by default in Kotlin 2.1.20+)
-- Don't use Gradle Application plugin with KMP on Gradle 8.7+
-- Plan for AGP 9.0 (Q4 2025) deprecation of current KMP APIs
-
-**Phase**: Phase 1 (Project Setup)
-
-**Confidence**: HIGH
+- Audit all transitive dependencies for Mapbox/MapLibre conflicts
+- Use Gradle dependency resolution strategies to exclude duplicates
+- Avoid using both MapLibre and Mapbox libraries in the same project
+- Check plugin dependencies carefully before adding
 
 **Sources**:
-- [Kotlin Multiplatform Compatibility Guide](https://kotlinlang.org/docs/multiplatform/multiplatform-compatibility-guide.html)
-- [Android Gradle Library Plugin for KMP](https://developer.android.com/kotlin/multiplatform/plugin)
+- [MapLibre Native Compose Multiplatform Discussion](https://github.com/maplibre/maplibre-native/issues/2638)
 
 ---
 
-### 4. Navigation State Loss in Compose Multiplatform
+### 3. iOS Framework Not Found (Xcode 16.3+)
 
-**Description**: Navigation state (including ViewModel instances) can be unexpectedly reset when navigating between screens, especially with bottom navigation on iOS.
+**Description**: Users with Xcode 16.3+ encounter issues where the MapLibre framework is not found, resulting in linker warnings like "Could not find or use auto-linked framework 'MapLibre'" and undefined symbols errors for architecture arm64.
 
 **Warning Signs**:
-- ViewModels recreated when returning to a screen
-- Bottom navigation tabs losing scroll position
-- Form data disappearing when switching tabs
-- iOS behaving differently than Android for navigation
+- Linker errors after Xcode update
+- "Framework not found" errors in Xcode
+- Build succeeds on older Xcode versions but fails on newer ones
 
-**Impact**: HIGH - Poor UX, data loss, user complaints
+**Impact**: CRITICAL - Blocks iOS builds
 
 **Prevention**:
-- Test navigation thoroughly on BOTH platforms early
-- Consider Decompose or PreCompose for complex navigation
-- For nested NavHost, be aware that iOS doesn't save state automatically (as of April 2024)
-- Use SavedStateHandle for critical state preservation
-- Implement manual state persistence for complex screens
-
-**Phase**: Phase 3 (Core Features)
-
-**Confidence**: HIGH
+- Update Kotlin to version 2.1.21+ to resolve Xcode compatibility issues
+- Verify CocoaPods integration is using correct paths
+- Always open `.xcworkspace`, never `.xcodeproj` when using CocoaPods
+- Test builds after every Xcode update
 
 **Sources**:
-- [JetBrains Issue #5072: ViewModel and navigation](https://github.com/JetBrains/compose-multiplatform/issues/5072)
-- [JetBrains Issue #4735: Nested NavHostController state](https://github.com/JetBrains/compose-multiplatform/issues/4735)
-- [PreCompose Library](https://github.com/Tlaster/PreCompose)
+- [MapLibre Native Issues](https://github.com/maplibre/maplibre-native/issues/2638)
+- [Kotlin Slack Multiplatform Channel](https://slack-chats.kotlinlang.org/t/28525432/i-am-trying-to-use-cocoapods-gradle-plugin-to-get-maplibre-w)
 
 ---
 
-### 5. Firebase Integration Without Platform-Specific Setup
+### 4. Offline Tiles Not Displaying When Offline
 
-**Description**: Firebase doesn't initialize automatically in KMP projects. The `google-services.json` isn't picked up in the new project structure, and iOS requires separate dSYM upload configuration.
+**Description**: Even after downloading offline regions, tiles may not display when the device is truly offline. This can happen when the style requires online resources (fonts/glyphs, sprites) or when cache headers prevent offline use.
 
 **Warning Signs**:
-- "Firebase(app) not initialized correctly" crashes
-- iOS crashes not appearing in Crashlytics dashboard
-- "Missing UUID" in Kotlin crash stack traces
-- Analytics events not recording
+- Map works during download but blank when offline
+- Tiles visible online but missing offline
+- Style loads but no features render
 
-**Impact**: HIGH - No crash reporting or analytics in production
+**Impact**: CRITICAL - Core offline functionality broken in the Tankwa Karoo
 
 **Prevention**:
-- Manually call `Firebase.initialize(context)` on Android
-- Set up dSYM upload build phase for iOS (especially for dynamic frameworks)
-- Use expect/actual pattern for Firebase interfaces
-- Test crash reporting on BOTH platforms before release
-- Consider GitLive firebase-kotlin-sdk for multiplatform support
-
-**Phase**: Phase 2 (Infrastructure)
-
-**Confidence**: HIGH
+- Download ALL required resources: tiles, style JSON, fonts/glyphs, sprites
+- Host style resources locally as bundled assets
+- Use local asset paths in style: `"sprite": "asset://sprites/bright-v8"`, `"glyphs": "asset://glyphs/{fontstack}/{range}.pbf"`
+- Test in airplane mode BEFORE going to the event
+- Reset database and clear ambient cache to troubleshoot
 
 **Sources**:
-- [GitLive Firebase SDK Issue #560](https://github.com/GitLiveApp/firebase-kotlin-sdk/issues/560)
-- [Firebase Crashlytics KMP Setup](https://slack-chats.kotlinlang.org/t/22739156/to-make-firebase-crashlytics-work-in-a-up-to-date-kmp-projec)
-- [KMP Firebase Setup Guide](https://funkymuse.dev/posts/kmp-firebase/)
+- [Tiles Offline Regions do not display while offline](https://github.com/maplibre/maplibre-native/issues/633)
+- [How to display offline maps using Maplibre on Android](https://medium.com/@ty2/how-to-display-offline-maps-using-maplibre-mapbox-39ad0f3c7543)
 
 ---
 
-### 6. iOS Privacy Manifest Missing/Incomplete
+### 5. Memory Crashes (Out of Memory)
 
-**Description**: Since Spring 2024, Apple requires privacy manifests explaining why your app uses certain APIs. KMP apps are particularly vulnerable because the Kotlin runtime uses APIs that require disclosure.
+**Description**: Since MapLibre 11.8.0+, there are reports of frequent crashes caused by system out of memory, particularly during rendering. The crashes occur on the RenderThread with `java.lang.Error: std::bad_alloc` errors.
 
 **Warning Signs**:
-- App Store Connect warnings about privacy manifest
-- Rejection during App Store review
-- No privacy manifest file in your iOS bundle
+- App crashes during map interactions (zooming, panning)
+- Crashes more frequent on lower-end devices
+- Memory warnings before crash
+- Crashes in native layer (RenderThread)
 
-**Impact**: CRITICAL - App Store rejection
+**Impact**: CRITICAL - App crashes lose user data and trust
 
 **Prevention**:
-- Add privacy manifest to your iOS target before first submission
-- Follow [JetBrains Privacy Manifest Guide](https://kotlinlang.org/docs/multiplatform/multiplatform-privacy-manifest.html)
-- Audit third-party SDKs for their required reason API usage
-- Test with Xcode's privacy report feature before submission
-
-**Phase**: Phase 4 (Release)
-
-**Confidence**: HIGH
+- Test on low-memory devices (Android Go, older iPhones)
+- Limit zoom levels in offline regions (fewer tiles = less memory)
+- Implement proper cleanup when map is disposed
+- Consider downgrading MapLibre version if crashes occur
+- Monitor memory usage during development
 
 **Sources**:
-- [Kotlin Multiplatform Privacy Manifest](https://kotlinlang.org/docs/multiplatform/multiplatform-privacy-manifest.html)
-- [App Store 2024 Privacy Changes](https://www.marcogomiero.com/posts/2024/kmp-ci-ios/)
+- [Very frequent crashes caused by system out of memory](https://github.com/maplibre/maplibre-native/issues/3309)
+- [Memory leak on map.remove()](https://github.com/maplibre/maplibre-gl-js/issues/4811)
 
 ---
 
-### 7. MockK Not Working on iOS/Native Targets
+## Performance Pitfalls
 
-**Description**: MockK only supports JVM and Android targets. Attempting to use it in commonTest for iOS tests causes build failures or silent test skipping.
+### 6. Battery Drain from Continuous GPS
+
+**Description**: Continuous GPS usage for location tracking can drain battery extremely fast - critical in the Tankwa Karoo where charging is limited. High accuracy GPS is particularly power-hungry.
 
 **Warning Signs**:
-- "Unresolved reference" errors when running iOS tests
-- Tests passing on Android but failing/skipping on iOS
-- "Test event was not received" for iOS targets
-- MockK dependency causing multiplatform build to fail
+- Battery draining rapidly when app is open
+- Device warming up during map use
+- Users reporting poor battery life
 
-**Impact**: MEDIUM - Inadequate test coverage on iOS
+**Impact**: HIGH - Users may not be able to use the app when they need it most
 
 **Prevention**:
-- Use Mockative or MocKMP for true multiplatform mocking
-- Write tests in JVM source set for common code when possible
-- Consider fake objects instead of mocks for critical paths
-- Clearly separate platform-specific tests from common tests
-
-**Phase**: Phase 2 (Infrastructure)
-
-**Confidence**: HIGH
+- Use `PRIORITY_BALANCED_POWER_ACCURACY` instead of high accuracy when possible
+- Implement location update timeouts - don't track forever
+- Stop location updates immediately when not needed (`stopUpdatingLocation()` / `removeLocationUpdates()`)
+- On iOS, set `pausesLocationUpdatesAutomatically = true`
+- Set appropriate `activityType` on iOS Core Location
+- Use deferred location updates for background tracking
+- Allow users to control location tracking manually
+- Show battery impact warnings to users
 
 **Sources**:
-- [MockK Issue #1019](https://github.com/mockk/mockk/issues/1019)
-- [Mockative Library](https://github.com/mockative/mockative)
-- [KMM Testing Architecture](https://medium.com/@maruchin/kmm-architecture-7-testing-93efd01f3952)
+- [Android Location and Battery Life](https://developer.android.com/develop/sensors-and-location/location/battery)
+- [Apple Energy Efficiency Guide - Location Best Practices](https://developer.apple.com/library/archive/documentation/Performance/Conceptual/EnergyGuide-iOS/LocationBestPractices.html)
+- [Optimizing iOS location services](https://rangle.io/blog/optimizing-ios-location-services)
 
 ---
 
-### 8. Compose Multiplatform UI Performance on iOS
+### 7. Location Updates Not Stopped Properly
 
-**Description**: Compose Multiplatform on iOS can have significant performance overhead: +5ms per frame average, +25-50MB memory baseline, frame drops during animations.
+**Description**: A common source of battery drain is failing to remove location updates when they're no longer needed. This happens when `requestLocationUpdates()` is called in `onStart()`/`onResume()` without a corresponding `removeLocationUpdates()` in `onPause()`/`onStop()`.
 
 **Warning Signs**:
-- Visible jank during scrolling or animations on iOS
-- High CPU usage causing device to warm up
-- Memory warnings or app crashes on iOS
-- User reviews mentioning iOS being "slower" than Android version
+- GPS icon stays active after leaving map screen
+- Battery usage high even when app backgrounded
+- Location callbacks firing when not expected
 
-**Impact**: HIGH - Poor user experience, negative reviews
+**Impact**: HIGH - Severe battery drain, poor user reviews
 
 **Prevention**:
-- Profile early and often on real iOS devices
-- Avoid deeply nested Composables
-- Use lazy layouts (LazyColumn/LazyRow) for lists
-- Minimize custom Canvas drawing
-- Test on older iOS devices (not just latest)
-- Consider native UI for performance-critical screens
-- Use static frameworks with `-dead_strip` linker option
-
-**Phase**: Phase 3 (Core Features)
-
-**Confidence**: HIGH
+- Always pair location request with removal in lifecycle methods
+- Set reasonable timeout for location updates
+- Use lifecycle-aware location components
+- Test that GPS actually stops when leaving map screen
+- Monitor GPS indicator during QA testing
 
 **Sources**:
-- [Compose Multiplatform iOS Performance Issue #4912](https://github.com/JetBrains/compose-multiplatform/issues/4912)
-- [Should You Trust CMP with Your Established App?](https://medium.com/@naufalprakoso24/should-you-trust-compose-multiplatform-with-your-established-app-9f921a9a47aa)
-- [KotlinConf 2024: CMP Performance on iOS](https://kotlinconf.com/2024/talks/578918/)
+- [Android Location Battery Optimization](https://developer.android.com/develop/sensors-and-location/location/battery/optimize)
 
 ---
 
-## Technical Debt Patterns
+### 8. Style Diffing Causes Full Map Reload
 
-| Pattern | Description | Early Warning | Prevention | Phase |
-|---------|-------------|--------------|------------|-------|
-| Monolithic shared module | All code in single `shared` module | Build times > 2 min, hard to navigate | Split into feature modules early | Phase 1 |
-| Platform code in common | Using expect/actual when abstraction unnecessary | Many empty `actual` implementations | Only use expect/actual for true platform differences | Phase 2 |
-| Skipping compilation checks | Not running `compileDebugKotlinAndroid` after changes | Errors accumulate, debugging becomes hard | Compile after every 5 file changes | All phases |
-| Hardcoded strings in Composables | `Text("Hello")` instead of `stringResource()` | No localization capability | Use Compose Resources from day one | Phase 2 |
-| Missing content descriptions | Icons without accessibility text | App fails accessibility audits | Add contentDescription to all interactive elements | Phase 3 |
-| Ignoring Detekt/lint warnings | Suppressing warnings instead of fixing | Technical debt accumulates | Fix warnings as part of PR process | All phases |
-| Manual dependency versions | Not using version catalog | Version conflicts, inconsistent updates | Use `libs.versions.toml` exclusively | Phase 1 |
-| No offline-first design | Always fetching from network | App unusable without internet | Design repository layer for offline from start | Phase 2 |
+**Description**: Changes in sprites (icons) or glyphs (fonts) cannot be diffed incrementally. If sprites or fonts differ in any way between styles, MapLibre forces a full map reload, removing the current style and rebuilding from scratch.
 
----
+**Warning Signs**:
+- Map flickers when switching themes
+- Slow style changes
+- High CPU during theme switching
+- Map goes blank momentarily during style updates
 
-## Integration Gotchas
+**Impact**: MEDIUM - Poor user experience, unnecessary rendering work
 
-| Integration | Gotcha | Solution | Confidence |
-|-------------|--------|----------|------------|
-| Firebase Crashlytics (iOS) | dSYMs not uploaded, Kotlin crashes show "Missing UUID" | Add build phase to upload Kotlin framework dSYM separately | HIGH |
-| Firebase Analytics | Platform-specific initialization required | Use expect/actual with platform initializers | HIGH |
-| Ktor Client | Different engines per platform have different timeout/SSL options | Configure engine-specific options in platform source sets | HIGH |
-| SQLDelight | FreezingException with new memory model + old coroutines | Upgrade to SQLDelight 2.x, use new memory model | HIGH |
-| Room | KMP support requires specific Kotlin/KSP versions | Check Room KMP compatibility matrix | MEDIUM |
-| Stripe/Payment SDKs | No KMP support, requires native UI interop | Use UIKitViewController/AndroidView for payment screens | HIGH |
-| Google Sign-In | No official KMP library | Use expect/actual with native SDKs | HIGH |
-| Push Notifications | Platform-specific token handling | Abstract behind common interface, implement per platform | HIGH |
-| Deep Linking | Navigation library differences | Test deep links on both platforms thoroughly | MEDIUM |
-| Biometric Auth | Different APIs (BiometricPrompt vs LocalAuthentication) | Use expect/actual, handle fallbacks consistently | HIGH |
+**Prevention**:
+- Use consistent sprite and glyph sets across all styles
+- Avoid runtime style switching if possible
+- Pre-load all styles at app startup
+- Consider using a single style with dynamic layers instead of multiple styles
+
+**Sources**:
+- [MapLibre Style Spec - Root](https://maplibre.org/maplibre-style-spec/root/)
 
 ---
 
-## Performance Traps
+### 9. OpenGL/Metal Renderer Crashes
 
-| Trap | Impact | Detection | Mitigation | Phase |
-|------|--------|-----------|------------|-------|
-| Building all iOS architectures | 3x slower builds | CI taking 15-30+ minutes | Build only needed architecture | Phase 1 |
-| Large framework size | Slow app startup, large download | IPA > 100MB | Use static framework, enable dead stripping | Phase 4 |
-| Recomposition storms | UI jank, high CPU | Profiler shows many recompositions | Use `remember`, `derivedStateOf`, stable types | Phase 3 |
-| Missing Gradle caching | Slow CI, repeated work | Same tasks rebuilding | Enable configuration cache, dependency caching | Phase 1 |
-| Synchronous IO on main thread | ANRs, frozen UI | StrictMode violations, user reports | Use `withContext(Dispatchers.IO)` | Phase 2 |
-| Large images in memory | OOM crashes, especially iOS | Memory profiler warnings | Use Coil/Kamel with proper sizing | Phase 3 |
-| Excessive logging in production | Performance degradation | Large log outputs | Set `minLogLevel` to INFO in release builds | Phase 4 |
-| Network calls without timeout | Hanging requests, poor UX | No timeout configured in Ktor | Configure request/connect/socket timeouts | Phase 2 |
+**Description**: MapLibre uses OpenGL on Android and is transitioning to Metal on iOS (OpenGL deprecated). Both renderers have known crash scenarios, particularly with complex styles or on emulators.
 
----
+**Warning Signs**:
+- Crashes on Android emulator API <= 30
+- `GL error 0x500` errors
+- Metal rendering crashes on iOS (especially CarPlay)
+- `EXC_BAD_ACCESS` on complex camera movements
 
-## Security Mistakes
+**Impact**: HIGH - App crashes, particularly on older devices/emulators
 
-| Mistake | Risk | Detection | Prevention | Phase |
-|---------|------|-----------|------------|-------|
-| API keys in source code | Key exposure via reverse engineering | Git history, APK/IPA analysis | Use BuildConfig/environment variables | Phase 1 |
-| Storing secrets in SharedPreferences/UserDefaults | Plaintext secrets on device | File system inspection | Use Android Keystore/iOS Keychain | Phase 2 |
-| Missing certificate pinning | MITM attacks | Proxy interception works | Configure SSL pinning in Ktor engine | Phase 2 |
-| Ignoring supply chain vulnerabilities | Compromised dependencies | No scanning in place | Enable Dependabot/Snyk/OSV scanning | Phase 1 |
-| Logging sensitive data | PII/credentials in logs | Log inspection | Never log tokens, passwords, PII | All phases |
-| Missing ProGuard rules | Serialization models stripped | Runtime crashes | Add keep rules for serialization, Ktor, Koin | Phase 4 |
-| Insecure JWT storage | Token theft | Security audit | Store tokens in secure storage only | Phase 2 |
-| Missing input validation | Injection attacks, crashes | Fuzzing, security testing | Validate all user input and API responses | Phase 2 |
+**Prevention**:
+- Test on real devices, not just emulators
+- Avoid extremely complex styles with many layers
+- On iOS, Metal is still being stabilized - test thoroughly
+- For Android emulator, use API > 30 for development
+- Keep styles simple for better compatibility
+
+**Sources**:
+- [Metal Renderer iOS Early Access](https://github.com/maplibre/maplibre-native/issues/1609)
+- [Crash on startup with Android Emulator API <= 30](https://github.com/maplibre/maplibre-native/issues/2369)
+- [iOS Metal CarPlay issues](https://github.com/maplibre/maplibre-native/issues/375)
 
 ---
 
-## UX Pitfalls
+## Integration Pitfalls
 
-| Pitfall | User Impact | Detection | Fix | Phase |
-|---------|-------------|-----------|-----|-------|
-| Material Design on iOS | App feels "foreign" to iOS users | User feedback, low ratings | Use platform-specific styling or native UI | Phase 3 |
-| iOS navigation not native | Transitions feel wrong | Side-by-side comparison with native iOS | Consider native navigation for complex flows | Phase 3 |
-| Missing iOS-specific gestures | Swipe-to-go-back doesn't work | User testing | Handle touch interop properly | Phase 3 |
-| Inconsistent loading states | Jarring experience | UX review | Use skeleton loaders, consistent patterns | Phase 3 |
-| Poor error messages | Users don't know what went wrong | Support tickets | Provide actionable, user-friendly error messages | Phase 3 |
-| Missing offline indicators | Users confused when offline | User testing | Show network status, queue actions | Phase 3 |
-| Accessibility not tested | App unusable for some users | Accessibility scanner | Test with TalkBack/VoiceOver regularly | Phase 3 |
-| Text fields behave differently | iOS battery-saving mode causes jumping | iOS device testing | Test on iOS in battery-saving mode | Phase 3 |
+### 10. UIKitView Memory Leaks (iOS)
 
----
+**Description**: `ComposeUIViewController` references are not freed when navigating back. Memory usage increases on navigation and doesn't decrease, eventually causing OOM crashes.
 
-## "Looks Done But Isn't" Checklist
+**Warning Signs**:
+- Memory grows with each map screen visit
+- `DisposableEffect.onDispose` not called
+- App crashes after navigating to map multiple times
 
-Before marking a feature complete, verify:
+**Impact**: HIGH - Memory leaks accumulate, causing crashes
 
-### Build & CI
-- [ ] Builds successfully on clean checkout (no local caches)
-- [ ] CI passes for both Android and iOS
-- [ ] No new Detekt/lint warnings introduced
-- [ ] Build time hasn't increased significantly
+**Prevention**:
+- Use `AndroidView` overload with `onReset` callback for view reuse
+- Implement proper cleanup: `onRelease = { view -> view.lifecycle = null }`
+- Test navigation memory profile thoroughly
+- Consider using `placedAsOverlay` flag on iOS for better lifecycle handling
+- Monitor memory during repeated navigation to map screen
 
-### Platform Parity
-- [ ] Tested on real Android device (not just emulator)
-- [ ] Tested on real iOS device (not just simulator)
-- [ ] Tested on iOS in battery-saving mode
-- [ ] Navigation works identically on both platforms
-- [ ] Keyboard handling works on both platforms
-
-### State Management
-- [ ] State survives configuration change (Android rotation)
-- [ ] State survives process death (Android background kill)
-- [ ] Back navigation preserves expected state
-- [ ] Tab switching preserves state (if applicable)
-
-### Error Handling
-- [ ] Network errors handled gracefully
-- [ ] Empty states displayed appropriately
-- [ ] Loading states shown during async operations
-- [ ] Errors logged to crash reporting (non-fatal)
-
-### Security
-- [ ] No secrets in source code or logs
-- [ ] Sensitive data uses secure storage
-- [ ] API calls use HTTPS only
-
-### Accessibility
-- [ ] All interactive elements have content descriptions
-- [ ] Contrast ratios meet WCAG guidelines
-- [ ] Touch targets are at least 48dp
-
-### Release Readiness
-- [ ] String resources used (no hardcoded text)
-- [ ] Debug logging removed or filtered
-- [ ] ProGuard rules tested with release build
-- [ ] Privacy manifest updated (iOS)
+**Sources**:
+- [ComposeUIViewController resources not released upon back navigation](https://github.com/JetBrains/compose-multiplatform/issues/3958)
+- [UIKitView items recomposing on scroll](https://github.com/JetBrains/compose-multiplatform/issues/3458)
 
 ---
 
-## Recovery Strategies
+### 11. Third-Party iOS Library Integration Limitations
 
-| Problem | Symptoms | Immediate Fix | Long-term Solution |
-|---------|----------|---------------|-------------------|
-| iOS build broken after Kotlin upgrade | "Incompatible ABI version" errors | Revert Kotlin version, clean build | Align all KMP library versions with Kotlin version |
-| Firebase not reporting iOS crashes | Crashes visible in Xcode but not Firebase | Manually upload dSYMs | Add dSYM upload to CI pipeline |
-| CI taking 30+ minutes | GitHub Actions timing out | Cancel redundant jobs, reduce matrix | Optimize architecture builds, add caching |
-| Navigation state lost | Users complaining about lost data | Add SavedStateHandle usage | Audit all navigation for state preservation |
-| App rejected for privacy manifest | App Store rejection email | Add privacy manifest immediately | Audit all SDKs for required reason APIs |
-| Memory crashes on iOS | App terminating, high memory warnings | Reduce image sizes, check for leaks | Profile memory, implement proper cleanup |
-| Tests pass locally, fail in CI | Green local, red CI | Check environment differences | Standardize CI environment to match local |
-| Ktor timeout on Android | Works initially, then times out | Increase timeout values | Investigate connection pooling, retry logic |
+**Description**: While you can instantiate UIViews from UIKit directly in Kotlin code, you cannot import third-party iOS libraries (like MapLibre iOS SDK) directly in the iosMain source set. Kotlin/Native can only interop with Objective-C, not Swift directly.
 
----
+**Warning Signs**:
+- Cannot call MapLibre Swift APIs directly from Kotlin
+- Compilation errors when trying to use iOS SDK methods
+- Need for complex bridging code
 
-## Pitfall-to-Phase Mapping
+**Impact**: MEDIUM - Requires architecture workarounds
 
-### Phase 1: Project Setup
-| Pitfall | Priority | Effort |
-|---------|----------|--------|
-| Building all iOS architectures | HIGH | LOW |
-| CocoaPods/SPM conflicts | HIGH | MEDIUM |
-| Gradle version incompatibilities | HIGH | MEDIUM |
-| Missing version catalog | MEDIUM | LOW |
-| No supply chain scanning | MEDIUM | LOW |
+**Prevention**:
+- Use CocoaPods for iOS dependencies (but see CocoaPods pitfalls)
+- Use expect/actual pattern with Swift implementations
+- Create Objective-C bridging headers for Swift code
+- Consider using MapLibre Compose which handles this internally
+- If using Koin, inject native implementations via interface
 
-### Phase 2: Infrastructure
-| Pitfall | Priority | Effort |
-|---------|----------|--------|
-| Firebase integration issues | HIGH | MEDIUM |
-| MockK not working on iOS | MEDIUM | MEDIUM |
-| Ktor client misconfiguration | MEDIUM | LOW |
-| Insecure secret storage | HIGH | MEDIUM |
-| Missing offline-first design | MEDIUM | HIGH |
-
-### Phase 3: Core Features
-| Pitfall | Priority | Effort |
-|---------|----------|--------|
-| Navigation state loss | HIGH | HIGH |
-| Compose performance on iOS | HIGH | HIGH |
-| Material Design on iOS | MEDIUM | HIGH |
-| Missing accessibility | MEDIUM | MEDIUM |
-| Recomposition storms | MEDIUM | MEDIUM |
-
-### Phase 4: Release
-| Pitfall | Priority | Effort |
-|---------|----------|--------|
-| iOS privacy manifest | CRITICAL | LOW |
-| Missing ProGuard rules | HIGH | MEDIUM |
-| Large framework size | MEDIUM | MEDIUM |
-| Debug logging in production | HIGH | LOW |
-| dSYM upload for iOS | HIGH | LOW |
+**Sources**:
+- [Adding iOS dependencies](https://kotlinlang.org/docs/multiplatform-ios-dependencies.html)
+- [Compose Multiplatform Native Code Requirements](https://proandroiddev.com/why-your-compose-multiplatform-app-still-needs-native-code-a7e56bffeaea)
 
 ---
 
-## Sources Summary
+### 12. Desktop Support Not Production Ready
 
-### High Confidence Sources (Post-mortems, Official Docs, Experienced Developers)
-- [JetBrains KMP Compatibility Guide](https://kotlinlang.org/docs/multiplatform/multiplatform-compatibility-guide.html)
-- [JetBrains Privacy Manifest Guide](https://kotlinlang.org/docs/multiplatform/multiplatform-privacy-manifest.html)
-- [Touchlab Build Time Optimization](https://touchlab.co/touchlab-build-only-what-you-need)
-- [Touchlab Framework Integration](https://touchlab.co/ios-framework-local-or-remote)
-- [ProAndroidDev: KMP Scalability Challenges](https://proandroiddev.com/kotlin-multiplatform-scalability-challenges-on-a-large-project-b3140e12da9d)
-- [GitLive Firebase SDK Issues](https://github.com/GitLiveApp/firebase-kotlin-sdk/issues)
-- [JetBrains Compose Multiplatform Issues](https://github.com/JetBrains/compose-multiplatform/issues)
+**Description**: MapLibre Compose for desktop platforms (macOS, Windows, Linux) requires integrating with MapLibre Native C++ core. Linux currently causes segfaults, and the development setup is brittle.
 
-### Medium Confidence Sources (Community Discussions, Blog Posts)
-- [Kotlin Slack #multiplatform Channel](https://slack-chats.kotlinlang.org/)
-- [KMP Production Ready 2025 Analysis](https://volpis.com/blog/is-kotlin-multiplatform-production-ready/)
-- [CI/CD for KMP 2025 Guide](https://www.kmpship.app/blog/ci-cd-kotlin-multiplatform-2025)
-- [Medium: CMP with Established Apps](https://medium.com/@naufalprakoso24/should-you-trust-compose-multiplatform-with-your-established-app-9f921a9a47aa)
+**Warning Signs**:
+- Segfaults on Linux
+- Complex build setup for desktop
+- Limited testing on all platforms
 
-### Low Confidence Sources (General Advice, Unverified Claims)
-- General blog posts without specific project context
-- Advice for older Kotlin versions (pre-2.0)
-- Recommendations without production validation
+**Impact**: LOW for this project (Android/iOS only), but good to know
+
+**Prevention**:
+- Don't target desktop for v3.0
+- If desktop needed later, wait for MapLibre Compose maturity
+
+**Sources**:
+- [MapLibre Compose Roadmap](https://maplibre.org/maplibre-compose/roadmap/)
 
 ---
 
-## Version Information
+### 13. Location Puck Out of Sync
 
-This research is based on:
-- Kotlin 2.0.x - 2.1.x
-- Compose Multiplatform 1.6.x - 1.8.x
-- Gradle 8.x
-- Android Gradle Plugin 8.x
-- Xcode 15.x - 16.x
+**Description**: MapLibre has documented issues where the user location puck, the map camera, and the actual user location can become out of sync, particularly during animations or navigation.
 
-Check for updates to this research when major versions change.
+**Warning Signs**:
+- User dot appears in wrong location
+- Camera doesn't follow user properly
+- Jerky movement during tracking
+
+**Impact**: MEDIUM - Confusing user experience, users think GPS is broken
+
+**Prevention**:
+- Enable frame-by-frame course view tracking for critical moments
+- Test location tracking with actual movement
+- Avoid complex camera animations while tracking
+- Consider implementing custom location tracking logic
+
+**Sources**:
+- [User's location, UserPuckCourseView, and map camera are out of sync](https://github.com/maplibre/maplibre-navigation-ios/issues/94)
 
 ---
 
-## Related Documentation
+### 14. Android 12+ Location Permission Changes
 
-- **[CONCERNS.md](../codebase/CONCERNS.md)** - Project-specific technical debt and issues
+**Description**: When targeting SDK 31+, Android requires requesting `ACCESS_COARSE_LOCATION` when requesting `ACCESS_FINE_LOCATION`. Missing coarse permission causes crashes or permission denials.
+
+**Warning Signs**:
+- Permission crashes on Android 12+ devices
+- Location not working despite granting "fine" permission
+- SecurityException at runtime
+
+**Impact**: HIGH - App crashes or location broken on newer Android
+
+**Prevention**:
+- Always request both `ACCESS_COARSE_LOCATION` and `ACCESS_FINE_LOCATION`
+- Update AndroidManifest.xml to include both permissions
+- Test on Android 12+ devices specifically
+- Handle permission denial gracefully
+
+**Sources**:
+- [Android Location permission on Android 12](https://github.com/maplibre/maplibre-native/issues/275)
+- [MapLibre LocationComponent Documentation](https://maplibre.org/maplibre-native/android/examples/location-component/)
+
+---
+
+## Tile/Data Pitfalls
+
+### 15. Offline Tile Budget Management (~50MB)
+
+**Description**: Tile storage can quickly exceed budgets. Full world coverage at detail level is 107GB+. Even regional extracts need careful zoom level selection.
+
+**Warning Signs**:
+- Download takes too long
+- Storage exceeds device capacity
+- Users can't download due to size
+
+**Impact**: HIGH - Either maps are too large or too low resolution
+
+**Sizing Guidelines**:
+- Zoom level 0-6 (country level): ~4MB
+- Single city with detail: ~50-100MB
+- Regional extract (small country): ~50MB-1GB depending on zoom
+- Each additional zoom level roughly 4x the tiles
+
+**Prevention**:
+- Calculate tile count before downloading: tiles = 4^zoom_level per region
+- Limit zoom levels (e.g., 8-14 instead of 0-20)
+- Use vector tiles (much smaller than raster)
+- Consider PMTiles format for single-file distribution
+- Pre-generate and bundle tiles in app (no download needed)
+- Test actual size on representative regions
+
+**Sources**:
+- [Protomaps Creating PMTiles](https://docs.protomaps.com/pmtiles/create)
+- [Offline Maps with Flutter MapLibre GL](https://docs.stadiamaps.com/tutorials/offline-maps-with-flutter-maplibre-gl/)
+
+---
+
+### 16. Missing Fonts and Sprites Break Offline Maps
+
+**Description**: Map style JSON references remote URLs for fonts (glyphs) and icons (sprites). Without bundling these locally, maps render without text or icons when offline.
+
+**Warning Signs**:
+- Map renders but no labels visible
+- Icons missing from POIs
+- Console errors about failed glyph/sprite requests
+
+**Impact**: CRITICAL - Maps are unusable without labels/icons
+
+**Prevention**:
+- Download fonts from [openmaptiles/fonts](https://github.com/openmaptiles/fonts)
+- Copy sprite files (sprite.json, sprite.png, sprite@2x.json, sprite@2x.png)
+- Update style JSON to use local paths:
+  - `"glyphs": "asset://fonts/{fontstack}/{range}.pbf"`
+  - `"sprite": "asset://sprites/osm-bright"`
+- Include all font variants used in style (Open Sans, Noto Sans, etc.)
+- Test with network completely disabled
+
+**Sources**:
+- [MapLibre GL JS OpenMapTiles Guide](https://openmaptiles.org/docs/website/maplibre-gl-js/)
+- [Offline Styles Discussion](https://github.com/maplibre/maplibre-gl-js/discussions/1975)
+
+---
+
+### 17. Cache Eviction Deletes Downloaded Tiles
+
+**Description**: MapLibre's cache evicts tiles based on count or size, not age. Heavy app use in other areas can cause previously downloaded offline data to be deleted.
+
+**Warning Signs**:
+- Downloaded region disappears after using map elsewhere
+- Users report offline data "went away"
+- Cache size limits exceeded
+
+**Impact**: HIGH - Users download tiles at home, arrive at event with no tiles
+
+**Prevention**:
+- Use dedicated offline regions instead of relying on ambient cache
+- Set appropriate `setMaximumAmbientCacheSize`
+- Download regions as late as practical before going offline
+- Consider disabling ambient cache (set to 0) if only using offline regions
+- Warn users not to browse other map areas after downloading
+
+**Sources**:
+- [Add OfflineManager::setMaximumAmbientCacheAge](https://github.com/maplibre/maplibre-native/issues/2300)
+- [MapLibre OfflineManager](https://maplibre.org/maplibre-native/android/api/-map-libre%20-native%20-android/org.maplibre.android.offline/-offline-manager/index.html)
+
+---
+
+### 18. PMTiles Sources Don't Cache for Offline
+
+**Description**: PMTiles sources do not appear to be cached in a way usable offline. Previously downloaded tiles from non-PMTiles sources work offline, but PMTiles behavior differs.
+
+**Warning Signs**:
+- PMTiles work online, blank offline
+- PMTiles files present but not used
+- Different behavior than MBTiles
+
+**Impact**: MEDIUM - May need to use MBTiles instead
+
+**Prevention**:
+- Test PMTiles thoroughly in offline mode before committing to format
+- Consider using MBTiles for offline if PMTiles don't work
+- Bundle PMTiles file with app rather than downloading
+- Watch for updates in MapLibre Native PMTiles support
+
+**Sources**:
+- [Allow Caching Requests for PMTiles Sources](https://github.com/maplibre/maplibre-native/issues/3690)
+
+---
+
+### 19. Offline Region Download Stuck/Incomplete
+
+**Description**: Some users report offline region downloads proceeding but getting stuck at the last few resources, never completing. This can happen with certain style configurations.
+
+**Warning Signs**:
+- Progress reaches 95%+ and stalls
+- Download callback never fires completion
+- Some tiles missing from downloaded region
+
+**Impact**: HIGH - Users think download succeeded but region is incomplete
+
+**Prevention**:
+- Implement download timeout and retry logic
+- Show detailed progress (not just percentage)
+- Allow users to verify download before going offline
+- Implement download verification (compare expected vs actual tile count)
+- Handle partial downloads gracefully (re-download missing tiles)
+
+**Sources**:
+- [OfflineRegion download can not be completed](https://github.com/maplibre/maplibre-native/issues/3215)
+
+---
+
+### 20. Database Corruption After Errors
+
+**Description**: If tile downloads fail or the app crashes during download, the offline database can become corrupted, causing tiles not to display even after re-downloading.
+
+**Warning Signs**:
+- Previously working offline regions stop working
+- Download succeeds but tiles don't show
+- Errors in OfflineRegionObserver
+
+**Impact**: HIGH - Requires database reset, losing all downloaded data
+
+**Prevention**:
+- Implement database health checks
+- Provide "Reset Database" option in settings
+- Use tile invalidation (`invalidate()`) rather than delete + re-download
+- Catch and handle download errors gracefully
+- Back up offline database if possible
+
+**Sources**:
+- [Android Offline errors in v11](https://github.com/maplibre/maplibre-native/issues/2566)
+- [MapLibre OfflineRegion](https://maplibre.org/maplibre-native/android/api/-map-libre%20-native%20-android/org.maplibre.android.offline/-offline-region/index.html)
+
+---
+
+## AfrikaBurn-Specific Recommendations
+
+### Pre-Event Checklist
+
+1. **Download tiles at home** (stable internet, power available)
+2. **Test in airplane mode** before leaving
+3. **Verify fonts and icons render** when offline
+4. **Check battery impact** during 30-minute map session
+5. **Test location tracking** works accurately
+6. **Have fallback plan** (paper map, GPS coordinates)
+
+### Recommended Configuration
+
+```kotlin
+// Tile storage budget
+const val MAX_OFFLINE_TILES = 10000  // Conservative for 50MB
+const val ZOOM_RANGE = 8..14         // Useful range, not wasteful
+
+// Battery optimization
+const val LOCATION_UPDATE_INTERVAL_MS = 5000L  // Not too frequent
+const val LOCATION_FASTEST_INTERVAL_MS = 2000L
+const val LOCATION_PRIORITY = PRIORITY_BALANCED_POWER_ACCURACY
+
+// Cache management
+const val AMBIENT_CACHE_SIZE_MB = 10  // Small, rely on offline regions
+```
+
+### Known Working Stack (as of 2026-01)
+
+- MapLibre Compose: 0.11.1+
+- Kotlin: 2.1.21+
+- Compose Multiplatform: 1.8.1+
+- MapLibre Native Android: 11.x
+- MapLibre iOS: 6.9.0+
+
+---
+
+## Quick Reference: Pitfall Severity
+
+| Category | Pitfall | Severity | Likelihood |
+|----------|---------|----------|------------|
+| Critical | Offline tiles not displaying | CRITICAL | HIGH |
+| Critical | Memory crashes | CRITICAL | MEDIUM |
+| Critical | iOS framework not found | CRITICAL | MEDIUM |
+| Critical | Missing fonts/sprites | CRITICAL | HIGH |
+| Performance | Battery drain from GPS | HIGH | HIGH |
+| Performance | Location not stopped | HIGH | HIGH |
+| Integration | UIKitView memory leaks | HIGH | MEDIUM |
+| Integration | Android 12+ permissions | HIGH | HIGH |
+| Tiles | Cache eviction | HIGH | MEDIUM |
+| Tiles | Download stuck | HIGH | LOW |
+
+---
+
+*Research completed: 2026-01-18*
+
+**Sources Referenced:**
+- [MapLibre Compose](https://maplibre.org/maplibre-compose/)
+- [MapLibre Native GitHub](https://github.com/maplibre/maplibre-native)
+- [Android Developer - Location Battery](https://developer.android.com/develop/sensors-and-location/location/battery)
+- [Apple Energy Efficiency Guide](https://developer.apple.com/library/archive/documentation/Performance/Conceptual/EnergyGuide-iOS/LocationBestPractices.html)
+- [JetBrains Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform)
+- [Protomaps Documentation](https://docs.protomaps.com/)
+- [OpenMapTiles](https://openmaptiles.org/)
