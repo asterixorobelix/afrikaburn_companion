@@ -86,6 +86,9 @@ kotlin {
 
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+
+            implementation(libs.maplibre.compose)
+            implementation(libs.maplibre.compose.material3)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
