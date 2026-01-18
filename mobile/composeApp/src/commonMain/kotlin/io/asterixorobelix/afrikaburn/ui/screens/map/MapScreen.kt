@@ -29,12 +29,12 @@ import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.di.koinMapViewModel
 import io.asterixorobelix.afrikaburn.presentation.map.MapUiState
 import io.asterixorobelix.afrikaburn.presentation.map.MapViewModel
+import io.github.dellisd.spatialk.geojson.Position
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.maplibre.compose.BaseStyle
-import org.maplibre.compose.CameraPosition
-import org.maplibre.compose.MaplibreMap
-import org.maplibre.compose.Position
-import org.maplibre.compose.rememberCameraState
+import org.maplibre.compose.camera.CameraPosition
+import org.maplibre.compose.camera.rememberCameraState
+import org.maplibre.compose.map.MaplibreMap
+import org.maplibre.compose.style.BaseStyle
 
 private const val MAP_STYLE_PATH = "files/maps/style.json"
 
