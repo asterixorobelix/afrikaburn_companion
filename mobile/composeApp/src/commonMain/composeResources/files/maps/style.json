@@ -2,15 +2,82 @@
   "version": 8,
   "name": "AfrikaBurn Dark",
   "metadata": {
-    "description": "Dark mode offline map style. Works without PMTiles (dark background + markers). See README.md for adding terrain/roads."
+    "description": "Dark mode offline map style for Tankwa Karoo region"
   },
-  "sources": {},
+  "sources": {
+    "protomaps": {
+      "type": "vector",
+      "url": "pmtiles://asset://files/maps/tankwa-karoo.pmtiles",
+      "attribution": "© OpenStreetMap contributors, Protomaps"
+    }
+  },
   "layers": [
     {
       "id": "background",
       "type": "background",
       "paint": {
         "background-color": "#1a1a2e"
+      }
+    },
+    {
+      "id": "earth",
+      "type": "fill",
+      "source": "protomaps",
+      "source-layer": "earth",
+      "paint": {
+        "fill-color": "#252540"
+      }
+    },
+    {
+      "id": "landuse-park",
+      "type": "fill",
+      "source": "protomaps",
+      "source-layer": "landuse",
+      "filter": ["any", ["==", "pmap:kind", "park"], ["==", "pmap:kind", "nature_reserve"]],
+      "paint": {
+        "fill-color": "#2a2a45"
+      }
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "protomaps",
+      "source-layer": "water",
+      "paint": {
+        "fill-color": "#16213e"
+      }
+    },
+    {
+      "id": "roads-minor",
+      "type": "line",
+      "source": "protomaps",
+      "source-layer": "roads",
+      "filter": ["any", ["==", "pmap:kind", "minor_road"], ["==", "pmap:kind", "path"]],
+      "paint": {
+        "line-color": "#3a3a5c",
+        "line-width": {"stops": [[12, 0.5], [15, 2]]}
+      }
+    },
+    {
+      "id": "roads-medium",
+      "type": "line",
+      "source": "protomaps",
+      "source-layer": "roads",
+      "filter": ["any", ["==", "pmap:kind", "medium_road"]],
+      "paint": {
+        "line-color": "#4a4a6a",
+        "line-width": {"stops": [[10, 1], [15, 3]]}
+      }
+    },
+    {
+      "id": "roads-major",
+      "type": "line",
+      "source": "protomaps",
+      "source-layer": "roads",
+      "filter": ["any", ["==", "pmap:kind", "major_road"], ["==", "pmap:kind", "highway"]],
+      "paint": {
+        "line-color": "#5a5a7a",
+        "line-width": {"stops": [[8, 1], [15, 5]]}
       }
     }
   ]
