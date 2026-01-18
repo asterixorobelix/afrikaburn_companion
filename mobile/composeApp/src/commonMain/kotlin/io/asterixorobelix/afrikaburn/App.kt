@@ -27,6 +27,7 @@ import io.asterixorobelix.afrikaburn.ui.directions.DirectionsScreen
 import io.asterixorobelix.afrikaburn.ui.projects.ProjectDetailScreen
 import io.asterixorobelix.afrikaburn.ui.projects.ProjectsScreen
 import io.asterixorobelix.afrikaburn.ui.about.AboutScreen
+import io.asterixorobelix.afrikaburn.ui.screens.map.MapScreen
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
@@ -91,6 +92,9 @@ fun App() {
                                 navController.navigate(PROJECT_DETAIL_ROUTE)
                             }
                         )
+                    }
+                    composable(NavigationDestination.Map.route) {
+                        MapScreen()
                     }
                     composable(NavigationDestination.Directions.route) {
                         DirectionsScreen()
