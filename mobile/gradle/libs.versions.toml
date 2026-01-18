@@ -29,6 +29,7 @@ material = "1.12.0"
 materialIconsExtended = "1.7.3"
 mockk = "1.14.6"
 maplibre-compose = "0.11.1"
+playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
@@ -59,6 +60,7 @@ material-icons-extended = { module = "org.jetbrains.compose.material:material-ic
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 maplibre-compose = { module = "org.maplibre.compose:maplibre-compose", version.ref = "maplibre-compose" }
 maplibre-compose-material3 = { module = "org.maplibre.compose:maplibre-compose-material3", version.ref = "maplibre-compose" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -61,7 +61,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.material)
-            
+            implementation(libs.play.services.location)
+
             // Firebase for Android - moved to conditional dependencies section
         }
         commonMain.dependencies {
