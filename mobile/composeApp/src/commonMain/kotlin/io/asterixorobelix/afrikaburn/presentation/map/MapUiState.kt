@@ -35,13 +35,13 @@ sealed interface MapUiState {
     data class Error(val message: String) : MapUiState
 
     companion object {
-        /** Tankwa Karoo center latitude (approximately) */
-        const val DEFAULT_CENTER_LATITUDE = -32.35
+        /** AfrikaBurn event location latitude (from Directions tab) */
+        const val DEFAULT_CENTER_LATITUDE = -32.482474
 
-        /** Tankwa Karoo center longitude (approximately) */
-        const val DEFAULT_CENTER_LONGITUDE = 19.45
+        /** AfrikaBurn event location longitude (from Directions tab) */
+        const val DEFAULT_CENTER_LONGITUDE = 19.897824
 
         /** Default zoom level for initial map display */
-        const val DEFAULT_ZOOM_LEVEL = 12.0
+        const val DEFAULT_ZOOM_LEVEL = 14.0
     }
 }
