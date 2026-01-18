@@ -29,7 +29,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.di.koinMapViewModel
+import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.presentation.map.MapUiState
+import io.asterixorobelix.afrikaburn.presentation.map.MapViewModel
 import io.github.dellisd.spatialk.geojson.Position
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.maplibre.compose.camera.CameraPosition
@@ -40,6 +42,7 @@ import org.maplibre.compose.expressions.dsl.const
 import org.maplibre.compose.expressions.dsl.eq
 import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.map.MaplibreMap
+import org.maplibre.compose.util.ClickResult
 import org.maplibre.compose.sources.GeoJsonData
 import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
@@ -62,9 +65,13 @@ private val MARKER_STROKE_WIDTH = 2.dp
  *
  * Displays an interactive offline map of the Tankwa Karoo region
  * centered on the AfrikaBurn event location.
+ *
+ * @param onProjectClick Callback invoked when a marker is tapped with the matching ProjectItem
  */
 @Composable
-fun MapScreen() {
+fun MapScreen(
+    onProjectClick: (ProjectItem) -> Unit = {}
+) {
     val viewModel = koinMapViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
@@ -72,7 +79,9 @@ fun MapScreen() {
         is MapUiState.Loading -> LoadingContent()
         is MapUiState.Success -> MapContent(
             state = state,
-            onCameraChanged = viewModel::onCameraPositionChanged
+            viewModel = viewModel,
+            onCameraChanged = viewModel::onCameraPositionChanged,
+            onProjectClick = onProjectClick
         )
         is MapUiState.Error -> ErrorContent(
             message = state.message,
@@ -85,7 +94,9 @@ fun MapScreen() {
 @Composable
 private fun MapContent(
     state: MapUiState.Success,
-    onCameraChanged: (Double, Double, Double) -> Unit
+    viewModel: MapViewModel,
+    onCameraChanged: (Double, Double, Double) -> Unit,
+    onProjectClick: (ProjectItem) -> Unit
 ) {
     val cameraState = rememberCameraState(
         CameraPosition(
@@ -102,7 +113,31 @@ private fun MapContent(
         MaplibreMap(
             modifier = Modifier.fillMaxSize(),
             baseStyle = BaseStyle.Uri(Res.getUri(MAP_STYLE_PATH)),
-            cameraState = cameraState
+            cameraState = cameraState,
+            onMapClick = { _, offset ->
+                // Query rendered features at the tap location
+                val features = cameraState.projection?.queryRenderedFeatures(offset)
+
+                // Find a tapped marker feature (camp or artwork)
+                val markerFeature = features?.firstOrNull { feature ->
+                    val type = feature.properties?.get("type")?.toString()?.removeSurrounding("\"")
+                    type == "camp" || type == "artwork"
+                }
+
+                if (markerFeature != null) {
+                    // Extract the code property and look up the matching project
+                    val code = markerFeature.properties
+                        ?.get("code")
+                        ?.toString()
+                        ?.removeSurrounding("\"")
+
+                    code?.let { viewModel.findProjectByCode(it) }?.let { project ->
+                        onProjectClick(project)
+                        return@MaplibreMap ClickResult.Consume
+                    }
+                }
+                ClickResult.Pass
+            }
         ) {
             // Load mock locations GeoJSON - must be inside MaplibreMap scope
             val locationsSource = rememberGeoJsonSource(
