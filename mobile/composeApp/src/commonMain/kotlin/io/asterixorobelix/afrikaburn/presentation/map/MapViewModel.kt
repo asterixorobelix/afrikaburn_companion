@@ -60,7 +60,7 @@ class MapViewModel(
                 loadedProjects = camps + artworks
 
                 _uiState.value = MapUiState.Success(projects = loadedProjects)
-            } catch (@Suppress("SwallowedException") e: Exception) {
+            } catch (@Suppress("SwallowedException", "TooGenericExceptionCaught") e: Exception) {
                 // Even if loading fails, show map with default position but no projects
                 _uiState.value = MapUiState.Success(projects = emptyList())
             }

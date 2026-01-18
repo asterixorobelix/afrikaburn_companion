@@ -55,12 +55,13 @@ import org.maplibre.compose.util.ClickResult
 private const val MAP_STYLE_PATH = "files/maps/style.json"
 private const val MOCK_LOCATIONS_PATH = "files/maps/mock-locations.geojson"
 
-// Material Design 3 purple for camps
-private val CAMP_MARKER_COLOR = Color(0xFFBB86FC)
-// Material Design 3 teal for artworks
-private val ARTWORK_MARKER_COLOR = Color(0xFF03DAC6)
-// Material Design 3 blue for user location
-private val USER_LOCATION_COLOR = Color(0xFF2196F3)
+// Map marker colors (Material Design 3)
+@Suppress("MagicNumber")
+private val CAMP_MARKER_COLOR = Color(0xFFBB86FC)  // Purple for camps
+@Suppress("MagicNumber")
+private val ARTWORK_MARKER_COLOR = Color(0xFF03DAC6)  // Teal for artworks
+@Suppress("MagicNumber")
+private val USER_LOCATION_COLOR = Color(0xFF2196F3)  // Blue for user location
 private val MARKER_STROKE_COLOR = Color.White
 
 private val CAMP_MARKER_RADIUS = 12.dp
@@ -113,6 +114,7 @@ fun MapScreen(
 }
 
 @OptIn(ExperimentalResourceApi::class)
+@Suppress("LongMethod") // MapLibre layers must be within MaplibreMap scope
 @Composable
 private fun MapContent(
     state: MapUiState.Success,

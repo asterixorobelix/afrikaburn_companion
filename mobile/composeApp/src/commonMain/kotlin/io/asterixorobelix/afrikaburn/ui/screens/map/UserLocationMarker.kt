@@ -16,6 +16,7 @@ import io.asterixorobelix.afrikaburn.Dimens
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 // Material Design blue for user location (standard convention)
+@Suppress("MagicNumber")
 private val USER_LOCATION_COLOR = Color(0xFF2196F3)
 private val USER_LOCATION_SIZE = 16.dp
 private val USER_LOCATION_BORDER = 3.dp
