@@ -33,6 +33,7 @@ import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.di.koinMapViewModel
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.platform.PermissionState
+import io.asterixorobelix.afrikaburn.platform.rememberLocationPermissionLauncher
 import io.asterixorobelix.afrikaburn.presentation.map.MapUiState
 import io.asterixorobelix.afrikaburn.presentation.map.MapViewModel
 import io.github.dellisd.spatialk.geojson.Feature as GeoJsonFeature
@@ -86,9 +87,24 @@ fun MapScreen(
     val viewModel = koinMapViewModel()
     val uiState by viewModel.uiState.collectAsState()
 
-    // Check permission and start tracking when screen becomes visible
+    // Platform-specific permission launcher for showing system dialog
+    val requestPermission = rememberLocationPermissionLauncher { granted ->
+        viewModel.onPermissionResult(granted)
+    }
+
+    // Check permission state and request if not determined
     LaunchedEffect(Unit) {
-        viewModel.checkAndRequestLocation()
+        viewModel.checkLocationPermission()
+    }
+
+    // Trigger permission request when state indicates NOT_DETERMINED
+    val currentState = uiState
+    LaunchedEffect(currentState) {
+        if (currentState is MapUiState.Success &&
+            currentState.locationPermissionState == PermissionState.NOT_DETERMINED
+        ) {
+            requestPermission()
+        }
     }
 
     // Stop tracking when leaving screen to conserve battery

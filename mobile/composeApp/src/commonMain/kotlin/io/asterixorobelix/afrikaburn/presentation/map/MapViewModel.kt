@@ -119,9 +119,13 @@ class MapViewModel(
     // ===== Location Tracking Methods =====
 
     /**
-     * Check location permission and start tracking if granted.
+     * Check location permission state without requesting.
+     *
+     * Updates the UI state with the current permission state.
+     * If permission is already granted, starts location tracking.
+     * If NOT_DETERMINED, the UI layer should trigger the permission request.
      */
-    fun checkAndRequestLocation() {
+    fun checkLocationPermission() {
         viewModelScope.launch {
             val permission = locationService.checkPermission()
             updatePermissionState(permission)
@@ -129,12 +133,40 @@ class MapViewModel(
             if (permission == PermissionState.GRANTED) {
                 startLocationTracking()
             }
+            // If NOT_DETERMINED, the UI layer will trigger requestPermission()
         }
     }
 
     /**
-     * Request location permission from the user.
+     * Handle the result from the UI-level permission request.
+     *
+     * Called by the Composable after the system permission dialog completes.
+     *
+     * @param granted True if location permission was granted
      */
+    fun onPermissionResult(granted: Boolean) {
+        val newState = if (granted) PermissionState.GRANTED else PermissionState.DENIED
+        updatePermissionState(newState)
+
+        if (granted) {
+            startLocationTracking()
+        }
+    }
+
+    /**
+     * Check location permission and start tracking if granted.
+     * @deprecated Use checkLocationPermission() and onPermissionResult() instead
+     */
+    @Deprecated("Use checkLocationPermission() and onPermissionResult() for proper Android permission handling")
+    fun checkAndRequestLocation() {
+        checkLocationPermission()
+    }
+
+    /**
+     * Request location permission from the user.
+     * @deprecated Use rememberLocationPermissionLauncher in UI layer instead
+     */
+    @Deprecated("Use rememberLocationPermissionLauncher in UI layer for Android permission handling")
     fun requestLocationPermission() {
         viewModelScope.launch {
             val permission = locationService.requestPermission()
