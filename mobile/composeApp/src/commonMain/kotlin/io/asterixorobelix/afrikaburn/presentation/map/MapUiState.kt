@@ -28,6 +28,7 @@ sealed interface MapUiState {
      * @param userLongitude The user's current GPS longitude (null if not tracking)
      * @param locationPermissionState The current location permission state
      * @param isTrackingLocation Whether location tracking is currently active
+     * @param centerOnUserLocationRequest Incremented when user requests centering on their location
      */
     data class Success(
         val centerLatitude: Double = DEFAULT_CENTER_LATITUDE,
@@ -37,7 +38,8 @@ sealed interface MapUiState {
         val userLatitude: Double? = null,
         val userLongitude: Double? = null,
         val locationPermissionState: PermissionState = PermissionState.NOT_DETERMINED,
-        val isTrackingLocation: Boolean = false
+        val isTrackingLocation: Boolean = false,
+        val centerOnUserLocationRequest: Int = 0
     ) : MapUiState {
         /** True if we have valid user location coordinates */
         val hasUserLocation: Boolean

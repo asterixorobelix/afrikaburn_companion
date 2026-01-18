@@ -40,6 +40,7 @@ import io.github.dellisd.spatialk.geojson.Feature as GeoJsonFeature
 import io.github.dellisd.spatialk.geojson.Point
 import io.github.dellisd.spatialk.geojson.Position
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import kotlin.time.Duration.Companion.milliseconds
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState
 import org.maplibre.compose.expressions.dsl.Feature
@@ -144,6 +145,21 @@ private fun MapContent(
             zoom = state.zoomLevel
         )
     )
+
+    // Animate camera to user location when FAB is tapped
+    LaunchedEffect(state.centerOnUserLocationRequest) {
+        if (state.centerOnUserLocationRequest > 0 && state.hasUserLocation) {
+            cameraState.animateTo(
+                finalPosition = cameraState.position.copy(
+                    target = Position(
+                        longitude = state.userLongitude!!,
+                        latitude = state.userLatitude!!
+                    )
+                ),
+                duration = Dimens.animationDurationLong.milliseconds
+            )
+        }
+    }
 
     Box(
         modifier = Modifier

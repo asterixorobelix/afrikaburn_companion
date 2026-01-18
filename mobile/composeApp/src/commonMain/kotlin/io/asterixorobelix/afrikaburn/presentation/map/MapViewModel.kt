@@ -205,13 +205,15 @@ class MapViewModel(
 
     /**
      * Center map on user's current location.
+     *
+     * Increments the centerOnUserLocationRequest counter to trigger camera animation
+     * in the UI layer via LaunchedEffect.
      */
     fun centerOnUserLocation() {
         val currentState = _uiState.value
         if (currentState is MapUiState.Success && currentState.hasUserLocation) {
             _uiState.value = currentState.copy(
-                centerLatitude = currentState.userLatitude!!,
-                centerLongitude = currentState.userLongitude!!
+                centerOnUserLocationRequest = currentState.centerOnUserLocationRequest + 1
             )
         }
     }
