@@ -1,0 +1,85 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "The Vagabonds", "type": "camp", "description": "Wellness and relaxation camp" },
+      "geometry": { "type": "Point", "coordinates": [19.4485, -32.3480] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Space Cowboys", "type": "camp", "description": "Galactic space station since 2012" },
+      "geometry": { "type": "Point", "coordinates": [19.4520, -32.3510] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Luminosity Lounge", "type": "camp", "description": "1949 Dodge truck braai by day, chill space by night" },
+      "geometry": { "type": "Point", "coordinates": [19.4465, -32.3525] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Sunset Oasis", "type": "camp", "description": "Serene atmosphere since 2008" },
+      "geometry": { "type": "Point", "coordinates": [19.4505, -32.3465] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "aTypical Bar", "type": "camp", "description": "Serving interaction day or night" },
+      "geometry": { "type": "Point", "coordinates": [19.4540, -32.3495] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Cactus Rising", "type": "camp", "description": "A prickly adventure with Cactus Magic" },
+      "geometry": { "type": "Point", "coordinates": [19.4450, -32.3540] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Zodiac", "type": "camp", "description": "Astrology workshops and tarot readings" },
+      "geometry": { "type": "Point", "coordinates": [19.4475, -32.3455] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Disko Dolce", "type": "camp", "description": "Pasta party and disco beats" },
+      "geometry": { "type": "Point", "coordinates": [19.4555, -32.3520] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Bee Cool Build", "type": "artwork", "artist": "Megan Cleary", "description": "Beehive-labyrinth hybrid" },
+      "geometry": { "type": "Point", "coordinates": [19.4500, -32.3500] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "OBSCURA", "type": "artwork", "artist": "Tiaan van Deventer", "description": "Camera obscura with projections" },
+      "geometry": { "type": "Point", "coordinates": [19.4510, -32.3485] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Twist", "type": "artwork", "artist": "Mari Schroeder", "description": "Giant springy spiral like a Slinky" },
+      "geometry": { "type": "Point", "coordinates": [19.4490, -32.3515] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Star Tree 3", "type": "artwork", "artist": "Conrad Hubbe", "description": "Peace, Love, Unity, and Respect" },
+      "geometry": { "type": "Point", "coordinates": [19.4525, -32.3475] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Song Catcher", "type": "artwork", "artist": "Charles Starling", "description": "Giant dreamcatcher with six-meter wave" },
+      "geometry": { "type": "Point", "coordinates": [19.4480, -32.3530] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Switch Off to Switch On", "type": "artwork", "artist": "Christophe Dardeau", "description": "Brain-shaped installation" },
+      "geometry": { "type": "Point", "coordinates": [19.4545, -32.3490] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Amphibitheatre", "type": "artwork", "artist": "Casio Cowboy Collective", "description": "Fossilised amphibian monument" },
+      "geometry": { "type": "Point", "coordinates": [19.4460, -32.3505] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Dissolve in the Desert", "type": "artwork", "artist": "Bur69", "description": "Art and poetry under darkness" },
+      "geometry": { "type": "Point", "coordinates": [19.4530, -32.3545] }
+    }
+  ]
+}

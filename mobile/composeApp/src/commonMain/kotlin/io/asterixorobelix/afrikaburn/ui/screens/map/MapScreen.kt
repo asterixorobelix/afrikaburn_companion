@@ -24,19 +24,38 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.di.koinMapViewModel
 import io.asterixorobelix.afrikaburn.presentation.map.MapUiState
-import io.asterixorobelix.afrikaburn.presentation.map.MapViewModel
 import io.github.dellisd.spatialk.geojson.Position
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState
+import org.maplibre.compose.expressions.dsl.Feature
+import org.maplibre.compose.expressions.dsl.asString
+import org.maplibre.compose.expressions.dsl.const
+import org.maplibre.compose.expressions.dsl.eq
+import org.maplibre.compose.layers.CircleLayer
 import org.maplibre.compose.map.MaplibreMap
+import org.maplibre.compose.sources.GeoJsonData
+import org.maplibre.compose.sources.rememberGeoJsonSource
 import org.maplibre.compose.style.BaseStyle
 
 private const val MAP_STYLE_PATH = "files/maps/style.json"
+private const val MOCK_LOCATIONS_PATH = "files/maps/mock-locations.geojson"
+
+// Material Design 3 purple for camps
+private val CAMP_MARKER_COLOR = Color(0xFFBB86FC)
+// Material Design 3 teal for artworks
+private val ARTWORK_MARKER_COLOR = Color(0xFF03DAC6)
+private val MARKER_STROKE_COLOR = Color.White
+
+private val CAMP_MARKER_RADIUS = 12.dp
+private val ARTWORK_MARKER_RADIUS = 10.dp
+private val MARKER_STROKE_WIDTH = 2.dp
 
 /**
  * Main map screen composable.
@@ -84,7 +103,34 @@ private fun MapContent(
             modifier = Modifier.fillMaxSize(),
             baseStyle = BaseStyle.Uri(Res.getUri(MAP_STYLE_PATH)),
             cameraState = cameraState
-        )
+        ) {
+            // Load mock locations GeoJSON - must be inside MaplibreMap scope
+            val locationsSource = rememberGeoJsonSource(
+                data = GeoJsonData.Uri(Res.getUri(MOCK_LOCATIONS_PATH))
+            )
+
+            // Camp markers (purple circles)
+            CircleLayer(
+                id = "camp-markers",
+                source = locationsSource,
+                filter = Feature["type"].asString() eq const("camp"),
+                color = const(CAMP_MARKER_COLOR),
+                radius = const(CAMP_MARKER_RADIUS),
+                strokeColor = const(MARKER_STROKE_COLOR),
+                strokeWidth = const(MARKER_STROKE_WIDTH)
+            )
+
+            // Artwork markers (teal circles)
+            CircleLayer(
+                id = "artwork-markers",
+                source = locationsSource,
+                filter = Feature["type"].asString() eq const("artwork"),
+                color = const(ARTWORK_MARKER_COLOR),
+                radius = const(ARTWORK_MARKER_RADIUS),
+                strokeColor = const(MARKER_STROKE_COLOR),
+                strokeWidth = const(MARKER_STROKE_WIDTH)
+            )
+        }
     }
 }
 
