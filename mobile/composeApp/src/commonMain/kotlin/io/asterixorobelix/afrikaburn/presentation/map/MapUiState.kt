@@ -4,6 +4,47 @@ import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.platform.PermissionState
 
 /**
+ * State of the user's camp pin.
+ */
+sealed interface CampPinState {
+    /** No camp pin saved */
+    data object None : CampPinState
+
+    /** Camp pin exists at location */
+    data class Placed(
+        val latitude: Double,
+        val longitude: Double,
+        val name: String
+    ) : CampPinState
+}
+
+/**
+ * Dialog state for camp pin interactions.
+ */
+sealed interface CampPinDialogState {
+    /** No dialog shown */
+    data object Hidden : CampPinDialogState
+
+    /** Confirm placing new pin at location */
+    data class ConfirmPlace(
+        val latitude: Double,
+        val longitude: Double
+    ) : CampPinDialogState
+
+    /** Options for existing pin (move/delete) */
+    data object PinOptions : CampPinDialogState
+
+    /** Confirm moving pin to new location */
+    data class ConfirmMove(
+        val newLatitude: Double,
+        val newLongitude: Double
+    ) : CampPinDialogState
+
+    /** Confirm deleting pin */
+    data object ConfirmDelete : CampPinDialogState
+}
+
+/**
  * UI state for the map screen.
  *
  * Represents the different states the map can be in:
@@ -29,6 +70,8 @@ sealed interface MapUiState {
      * @param locationPermissionState The current location permission state
      * @param isTrackingLocation Whether location tracking is currently active
      * @param centerOnUserLocationRequest Incremented when user requests centering on their location
+     * @param userCampPin The user's saved camp pin state
+     * @param campPinDialogState The current dialog state for camp pin interactions
      */
     data class Success(
         val centerLatitude: Double = DEFAULT_CENTER_LATITUDE,
@@ -39,7 +82,9 @@ sealed interface MapUiState {
         val userLongitude: Double? = null,
         val locationPermissionState: PermissionState = PermissionState.NOT_DETERMINED,
         val isTrackingLocation: Boolean = false,
-        val centerOnUserLocationRequest: Int = 0
+        val centerOnUserLocationRequest: Int = 0,
+        val userCampPin: CampPinState = CampPinState.None,
+        val campPinDialogState: CampPinDialogState = CampPinDialogState.Hidden
     ) : MapUiState {
         /** True if we have valid user location coordinates */
         val hasUserLocation: Boolean
