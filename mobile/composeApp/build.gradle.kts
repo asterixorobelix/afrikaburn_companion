@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.googleServices) apply false
     alias(libs.plugins.firebaseCrashlytics) apply false
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -62,6 +63,7 @@ kotlin {
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.material)
             implementation(libs.play.services.location)
+            implementation(libs.sqldelight.android.driver)
 
             // Firebase for Android - moved to conditional dependencies section
         }
@@ -90,6 +92,9 @@ kotlin {
 
             implementation(libs.maplibre.compose)
             implementation(libs.maplibre.compose.material3)
+
+            implementation(libs.sqldelight.runtime)
+            implementation(libs.sqldelight.coroutines)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -98,6 +103,10 @@ kotlin {
         
         androidUnitTest.dependencies {
             implementation(libs.mockk)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.sqldelight.native.driver)
         }
     }
 }
@@ -164,5 +173,14 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
         txt.required.set(false)
         sarif.required.set(false)
         md.required.set(false)
+    }
+}
+
+// SQLDelight database configuration
+sqldelight {
+    databases {
+        create("AfrikaBurnDatabase") {
+            packageName.set("io.asterixorobelix.afrikaburn.data.database")
+        }
     }
 }
