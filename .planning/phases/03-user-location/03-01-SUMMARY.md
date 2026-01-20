@@ -1,6 +1,6 @@
 # Phase 03-01 Summary: User Location Display
 
-## Status: CHECKPOINT - Awaiting Human Verification
+## Status: COMPLETE - Human Verification Passed
 
 ## What Was Built
 
@@ -59,9 +59,9 @@ Complete implementation of GPS location display on the map with:
 - [x] `./gradlew :composeApp:assembleDebug` succeeds
 - [x] `./gradlew :composeApp:testDebugUnitTest` passes all tests
 - [x] `./gradlew detekt` passes (only pre-existing issues remain)
-- [ ] User location dot appears on map when permission granted (NEEDS VERIFICATION)
-- [ ] My Location FAB centers map on user (NEEDS VERIFICATION)
-- [ ] Location tracking stops when leaving map screen (NEEDS VERIFICATION)
+- [x] User location dot appears on map when permission granted
+- [x] My Location FAB centers map on user
+- [x] Location tracking stops when leaving map screen
 
 ## Commits
 
@@ -75,20 +75,16 @@ Complete implementation of GPS location display on the map with:
 8. `feat(03-01): create MyLocationButton FAB composable`
 9. `feat(03-01): integrate location features into MapScreen`
 10. `chore(03-01): fix detekt issues and configure jvm target`
+11. `fix(03-01): trigger location permission dialog on map access`
+12. `fix(03-01): FAB centers map on user location`
 
-## How to Verify (Human Checkpoint)
+## Verification Results
 
-1. Run: `./gradlew :composeApp:installDebug` (or run from Android Studio)
-2. Open the app and tap the Map tab
-3. **Permission dialog**: Should see "Allow AfrikaBurn to access your location?" prompt
-4. Tap "Allow" (or "While using the app")
-5. **Blue dot**: After permission granted, a blue dot should appear at your current location
-6. **My Location FAB**: A floating button should appear in bottom-right corner
-7. Pan the map away from your location
-8. Tap the My Location FAB - map should center back on the blue dot
-9. Navigate away from Map tab (to Projects, Directions, or About)
-10. Return to Map tab - location should still work, blue dot visible
-11. **Denied permission test**: If possible, test with location permission denied - FAB should be hidden
+Human verification completed successfully. All features work as expected:
+- Permission dialog appears when accessing map
+- Blue dot shows user location after permission granted
+- My Location FAB centers map on user position
+- Location tracking properly managed through lifecycle
 
 ## Known Limitations
 
@@ -97,7 +93,7 @@ Complete implementation of GPS location display on the map with:
 3. No accuracy circle visualization
 4. No offline location fallback
 
-## Next Steps (After Verification)
+## Next Steps
 
 - Phase 03-02: Add accuracy circle around user location
 - Phase 03-03: Add compass/heading indicator
