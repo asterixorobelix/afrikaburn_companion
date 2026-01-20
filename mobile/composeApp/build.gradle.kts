@@ -125,8 +125,8 @@ android {
         applicationId = "io.asterixorobelix.afrikaburn"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 24
-        versionName = "2.1.21"
+        versionCode = 25
+        versionName = "2.1.22"
     }
     packaging {
         resources {
