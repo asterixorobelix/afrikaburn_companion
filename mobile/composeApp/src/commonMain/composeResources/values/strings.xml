@@ -154,6 +154,27 @@
     <string name="map_loading">Loading map...</string>
     <string name="map_error">Unable to load map</string>
 
+    <!-- Camp Pin -->
+    <string name="camp_pin_place_title">Place Your Camp Pin?</string>
+    <string name="camp_pin_place_message">Mark this location as your camp. You can move or delete it later.</string>
+    <string name="camp_pin_place_confirm">Place Pin</string>
+    <string name="camp_pin_cancel">Cancel</string>
+
+    <string name="camp_pin_options_title">Your Camp Pin</string>
+    <string name="camp_pin_move">Move Pin</string>
+    <string name="camp_pin_delete">Delete Pin</string>
+
+    <string name="camp_pin_move_title">Move Your Camp Pin?</string>
+    <string name="camp_pin_move_message">Move your camp pin to this new location?</string>
+    <string name="camp_pin_move_confirm">Move Here</string>
+
+    <string name="camp_pin_delete_title">Delete Camp Pin?</string>
+    <string name="camp_pin_delete_message">Are you sure you want to delete your camp pin? You can place a new one anytime by long-pressing the map.</string>
+    <string name="camp_pin_delete_confirm">Delete</string>
+
+    <string name="camp_pin_name_default">My Camp</string>
+    <string name="cd_camp_pin_marker">Your camp location</string>
+
     <!-- Project Detail Screen -->
     <string name="project_detail_title">Project Details</string>
     <string name="project_detail_artist_label">Artist/Creator</string>
