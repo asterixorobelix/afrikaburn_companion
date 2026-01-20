@@ -3,9 +3,14 @@ package io.asterixorobelix.afrikaburn.presentation.map
 import afrikaburn.composeapp.generated.resources.Res
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.asterixorobelix.afrikaburn.domain.repository.UserCampPinRepository
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.platform.LocationService
 import io.asterixorobelix.afrikaburn.platform.PermissionState
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,10 +24,11 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
  * ViewModel for the map screen.
  *
  * Manages camera position state, loads project data, handles map interactions,
- * and provides location tracking for user position display.
+ * provides location tracking for user position display, and handles camp pin operations.
  */
 class MapViewModel(
-    private val locationService: LocationService
+    private val locationService: LocationService,
+    private val userCampPinRepository: UserCampPinRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MapUiState>(MapUiState.Loading)
@@ -39,9 +45,34 @@ class MapViewModel(
 
     private var loadedProjects: List<ProjectItem> = emptyList()
     private var locationJob: Job? = null
+    private var campPinJob: Job? = null
 
     init {
         loadProjects()
+        observeCampPin()
+    }
+
+    /**
+     * Observe camp pin changes from database.
+     */
+    private fun observeCampPin() {
+        campPinJob?.cancel()
+        campPinJob = viewModelScope.launch {
+            userCampPinRepository.observeCampPin().collect { pin ->
+                val currentState = _uiState.value
+                if (currentState is MapUiState.Success) {
+                    _uiState.value = currentState.copy(
+                        userCampPin = pin?.let {
+                            CampPinState.Placed(
+                                latitude = it.latitude,
+                                longitude = it.longitude,
+                                name = it.name
+                            )
+                        } ?: CampPinState.None
+                    )
+                }
+            }
+        }
     }
 
     /**
@@ -245,5 +276,149 @@ class MapViewModel(
     override fun onCleared() {
         super.onCleared()
         stopLocationTracking() // Clean up when ViewModel is destroyed
+        campPinJob?.cancel()
+    }
+
+    // ===== Camp Pin Methods =====
+
+    /**
+     * Called when user long-presses on map.
+     * If no pin exists, show place confirmation.
+     * If pin exists and long-press is near pin, show options.
+     * If pin exists and long-press elsewhere, show move confirmation.
+     */
+    fun onMapLongPress(latitude: Double, longitude: Double) {
+        val currentState = _uiState.value
+        if (currentState !is MapUiState.Success) return
+
+        when (val pinState = currentState.userCampPin) {
+            is CampPinState.None -> {
+                // No pin - show place confirmation
+                _uiState.value = currentState.copy(
+                    campPinDialogState = CampPinDialogState.ConfirmPlace(latitude, longitude)
+                )
+            }
+            is CampPinState.Placed -> {
+                // Check if long-press is near existing pin (within ~50 meters)
+                val isNearPin = isNearLocation(
+                    lat1 = latitude, lon1 = longitude,
+                    lat2 = pinState.latitude, lon2 = pinState.longitude,
+                    thresholdMeters = NEAR_PIN_THRESHOLD_METERS
+                )
+                if (isNearPin) {
+                    // Show pin options (move/delete)
+                    _uiState.value = currentState.copy(
+                        campPinDialogState = CampPinDialogState.PinOptions
+                    )
+                } else {
+                    // Show move confirmation
+                    _uiState.value = currentState.copy(
+                        campPinDialogState = CampPinDialogState.ConfirmMove(latitude, longitude)
+                    )
+                }
+            }
+        }
+    }
+
+    /**
+     * Dismiss any open dialog.
+     */
+    fun dismissDialog() {
+        val currentState = _uiState.value
+        if (currentState is MapUiState.Success) {
+            _uiState.value = currentState.copy(campPinDialogState = CampPinDialogState.Hidden)
+        }
+    }
+
+    /**
+     * Confirm placing pin at the pending location.
+     */
+    fun confirmPlacePin() {
+        val currentState = _uiState.value
+        if (currentState !is MapUiState.Success) return
+
+        val dialogState = currentState.campPinDialogState
+        if (dialogState is CampPinDialogState.ConfirmPlace) {
+            viewModelScope.launch {
+                userCampPinRepository.saveCampPin(
+                    latitude = dialogState.latitude,
+                    longitude = dialogState.longitude
+                )
+            }
+            _uiState.value = currentState.copy(campPinDialogState = CampPinDialogState.Hidden)
+        }
+    }
+
+    /**
+     * Show delete confirmation dialog.
+     */
+    fun showDeleteConfirmation() {
+        val currentState = _uiState.value
+        if (currentState is MapUiState.Success) {
+            _uiState.value = currentState.copy(campPinDialogState = CampPinDialogState.ConfirmDelete)
+        }
+    }
+
+    /**
+     * Confirm deleting the pin.
+     */
+    fun confirmDeletePin() {
+        val currentState = _uiState.value
+        if (currentState is MapUiState.Success) {
+            viewModelScope.launch {
+                userCampPinRepository.deleteCampPin()
+            }
+            _uiState.value = currentState.copy(campPinDialogState = CampPinDialogState.Hidden)
+        }
+    }
+
+    /**
+     * Confirm moving pin to the pending location.
+     */
+    fun confirmMovePin() {
+        val currentState = _uiState.value
+        if (currentState !is MapUiState.Success) return
+
+        val dialogState = currentState.campPinDialogState
+        if (dialogState is CampPinDialogState.ConfirmMove) {
+            viewModelScope.launch {
+                userCampPinRepository.updateLocation(
+                    latitude = dialogState.newLatitude,
+                    longitude = dialogState.newLongitude
+                )
+            }
+            _uiState.value = currentState.copy(campPinDialogState = CampPinDialogState.Hidden)
+        }
+    }
+
+    /**
+     * Simple distance check using haversine approximation.
+     */
+    private fun isNearLocation(
+        lat1: Double,
+        lon1: Double,
+        lat2: Double,
+        lon2: Double,
+        thresholdMeters: Double
+    ): Boolean {
+        val dLat = toRadians(lat2 - lat1)
+        val dLon = toRadians(lon2 - lon1)
+        val a = sin(dLat / 2) * sin(dLat / 2) +
+                cos(toRadians(lat1)) * cos(toRadians(lat2)) *
+                sin(dLon / 2) * sin(dLon / 2)
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        val distance = EARTH_RADIUS_METERS * c
+        return distance <= thresholdMeters
+    }
+
+    /**
+     * Convert degrees to radians (Kotlin multiplatform compatible).
+     */
+    private fun toRadians(degrees: Double): Double = degrees * kotlin.math.PI / DEGREES_IN_HALF_CIRCLE
+
+    companion object {
+        private const val EARTH_RADIUS_METERS = 6371000.0
+        private const val NEAR_PIN_THRESHOLD_METERS = 50.0
+        private const val DEGREES_IN_HALF_CIRCLE = 180.0
     }
 }
