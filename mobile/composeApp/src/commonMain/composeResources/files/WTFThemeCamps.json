@@ -1,1 +1,674 @@
-[{"Name":"The Vagabonds","Description":"The Vagabonds camp is a wellness and relaxation camp where everyone feels at home. You are invited to recharge your energy through our daily massages, connect with others in our lounge, stargaze over the Binnekring from our sky lounge, and work on your mental and physical well-being with our workshops. Come check out our schedule at the Vagabonds camp!","code":"vag","status":"Fam • Day Time"},{"Name":"ALEGRA SPACE STATION","Description":"This is the Burn equivalent of the International Space Station, allowing camp members to gift and volunteer to the max. We will gift craft beer and a non-alcoholic cooler from under the Lighthouse (2 pm to 4 pm). Join us on our MV as we cruise the desert. We also have two solar \"techs\" on standby to assist with troubleshooting and repairing your small solar system.","code":"ass","status":"Fam • Other"},{"Name":"Professor Cuchulains Magic Elixers","Description":"Professor Cuchulain and his assistants are the world-famous snake oil sales team. They will offer samples of their magic elixirs from his apothecary and the travelling soapbox show. He will be accompanied by his associate Professor Clark Stanley and the leggy lass Lulu la Belle.","code":"pcm","status":"Fam • Day Time, Night Time"},{"Name":"Pétanque, pastis and the clochette factory","Description":"Our camp is a lively, welcoming space where pétanque meets pastis and playful punishment. Enjoy a friendly game, sip on a classic French aperitif, and spin our infamous spanking wheel of fortune for a surprise dose of fun—a place to laugh, connect, and embrace the unexpected.","code":"pet","status":"Fam(ish) • Other"},{"Name":"Cactus Rising","Description":"Get ready for a prickly adventure!  Visit Cactus Rising and discover a gift that may spark Cactus Fever.  As you explore, you will be gifted with unforgettable memories and a dash of Cactus Magic! Watch our notice board for our opening hours.","code":"cac","status":"Fam(ish) • Day Time"},{"Name":"aTypical Bar","Description":"Take a load off at aTypical Bar, where we're serving interaction day or night. Come out and play with our bartenders, refresh yourself with a delicious beverage, kick back to an eclectic selection of tunes and get stuck in with a packed schedule of parties, spectacles, kazoos, bareoke and marshmallows that are anything but typical. Check the board for timings.","code":"atb","status":"Fam • Day Time, Night Time, All Night"},{"Name":"Selfish Steam Camp","Description":"The Selfish Steam camp is your ticket to relaxation. It is a traditional wood-fired Finnish sauna in the desert! We offer a space to relax, disrobe (if you like, of course!), and connect with others. It's a small haven where you can sweat out the dust and return rejuvenated to the madness that is the burn.","code":"ssc","status":"Fam • Day Time"},{"Name":"Bioskop & Bangaz","Description":"We are an interactive collective focusing on showcasing local films that explore African culture and history, fused with live music performances, encompassed with profound imagery curated through visual arts.","code":"bio","status":"Fam • Day Time, Night Time"},{"Name":"Luminosity Lounge","Description":"By day, the Luminosity Loungers braai food in the engine bay of a 1949 Dodge truck, and music plays from 11 am to 6 pm. At night, the lounge transforms into a space where burners can chillax just outside of the main music envelope. It is a safe space to reflect, rest your ears, and converse with your fellow burners under the stars.","code":"lum","status":"Fam(ish) • Day Time, Night Time, All Night"},{"Name":"Babadoof","Description":"Etymology: Baba - Guardian or Higher Protector. Doof - Party (Australian). BabaDoof are out on the Binnekring to meet your food and beverage needs! Catch them hauling their bar to your favourite art cars, or join them between 3 am and sunrise for their Cereal Killers operation as they search for hungry dust dwellers in need of a breakfast cereal feed.","code":"vkq","status":"Day Time, Night Time, All Night"},{"Name":"Sunset Oasis","Description":"Sunset Oasis Camp has participated in Africa Burn since 2008. Known for its serene atmosphere on the less noisy side of Tankwa Town, our camp is a place to rest and recharge. However, this time, we want to be closer to Blinkering. Soft music and magical space, sitting area for magical reflection. 11 am to 2 pm Thursday & Sunday we provide spa and showers.","code":"sso","status":"Fam • Day Time"},{"Name":"Space Cowboys","Description":"Since 2012, Space Cowboys has been the galactic space station of AfrikaBurn, fueling Tankwa’s most legendary dancefloors. We curate vibes and hyperspace beats as a collective of cosmic dreamers, sonic engineers, and stellar musicians. Our intergalactic oasis activates post-burn each evening, pulsating until the natural timeline collapses, occasionally glitching into spontaneous afternoon wormholes. Moon-crickets welcome but need to behave.","code":"scb","status":"All Night"},{"Name":"Zodiac","Description":"Fellow star travelers, as we journey through the celestial expanse of AfrikaBurn, we invite you to be our cosmic guests in this vast desert universe! The camp will feature themed decorations and activities, including astrology workshops, numerological/tarot readings, human design, sun salutations through yoga, themed body paints, and many more!","code":"zod","status":"Fam(ish) • Day Time"},{"Name":"Purple Spanking Booth","Description":"Spanks! Spanks! Spanks! Come and get your daily Spanks! We provide playful, light-hearted spankings for adults. Come join the fun. We also offer a lounge for premium spanking viewing during the day and a safe space at night to chill and enjoy good company. CONSENT is the principle we live by.","code":"psp","status":"Day Time, Night Time, All Night"},{"Name":"Disko Dolce","Description":"Disko Dolce celebrates the essence of the good life through the joy of dancing and the sweetness of connection. Expect a lively pasta party to cool disco beats, energising morning workouts, and just a bit of dolce vita. We embrace the good life, so come by, have a great time, and let’s create unforgettable memories together.","code":"dis, ele","status":"Day Time, Night Time, Day Time, Night Time, Day Time"},{"Name":"Sexico City","Description":"Sexico City brings a great vibe and excellent music wherever we go. We are Mexicans, MexPats, and friends from around the world raising the vibration with authenticity and fun. We will host a welcome party in the Mad Hatters Village on Monday, providing Mexican food, drink, and music.","code":"sex","status":"Night Time, All Night"},{"Name":"Our Creative Space","Description":"“Isithebe” is a word known to Africans even now, when equal sharing is unified as “Ubuntu”. Our camp will include activities such as bead making, which will allow participants to imagine African cultures. We will also host poetry and spoken word; participants are invited to share their poems.","code":"ocs","status":"Fam • Day Time"},{"Name":"Hydration Station","Description":"Hydration Station: Where Water Meets Wonder! Join the coolest cats in the desert at Hydration Station, where we're on a mission to keep you hydrated and happy! Our tribe of water warriors each brings 25L of filtered, sealed drinking water to gift to those in need.","code":"hyd","status":"Fam • Day Time"},{"Name":"Burning Mail","Description":"Each year, Tankwa Town’s official post OFFICE, Burning Mail, is the place where Burners pick out specially designed postcards, write “wish you were here’s” to around the world, stick on stamps, and pop them in the mailbox. We also deliver messages within Tankwa Town and gather \"messages to the universe\" to be burned in the Temple on Sunday evening.","code":"bma","status":"Fam • Day Time"},{"Name":"ABnB","Description":"Nestled in the dust, you will find a safe haven for those of you looking to chill and connect. Equipped with a large lounge area, cocktail bar, mini mutant and some deep soft-ish tunes. You may want to stay for an hour, a night or a day; the choice is yours.","code":"abb","status":"Fam(ish) • Morning, Day Time, Night Time, All Night"},{"Name":"Camp O2","Description":"Take a deep breath with us as you emerge Out of the Blue. If you are looking for an oasis, a refuge - to find meaning amidst the maelstrom of the Burn - join us each afternoon at our Cosmic Cafe for a philosophical conversation over a warm drink, and each day at midnight for our breathwork.","code":"co2","status":"Fam(ish) • Day Time, Night Time, Other"},{"Name":"The Crack House, Home of the Psychic Cat","Description":"We are the crew from Airspace (Airport, helipads, medivacs). We host art video shows nightly, a Tuesday morning tea and Marie biscuits event, \"Jane Austin collides with Alice in Wonderland.\" Costumes encouraged, prizes for Austiney/Alicey ones. We will also host wine drinking/nighttime Croquet, FleaBurn (a miniature AfrikaBurn), and a Haka dance.","code":"cat","status":"Fam(ish) • Morning, Night Time, All Night, Other"},{"Name":"The Greasemonkeys","Description":"Deflated? Something grinding your gears? Flew off the handle(bar) following mechanical mayhem? We’re a tie-dye-troupe of mechanically-minded monkeys with a passion for spanners. Bring us your (nervous) breakdowns, and we’ll ‘each-one-teach-one’ until it’s either fixed or ‘about the friends you made along the way’. Mini-Monkeys area for toddlers to tinker. Storytime is at 11 am & 3 pm most days. Open 9 am to 3 pm(ish). CLOSED SUNDAY!","code":"tgm","status":"Fam(ish) • Other"},{"Name":"Tussen Spasies","Description":"A geometric dome that offers a sanctuary for healers and seekers. In the mornings, it offers conscious workshops. After midday, the space becomes a chill zone with down-tempo music. As the sun sets, the energy shifts with louder beats. On Wednesday, we turn our oasis into a dance floor. Find us between the spaces, exactly where you need to be.","code":"tus","status":"Morning, Day Time, Night Time"},{"Name":"Leisure & Chill","Description":"A vibrant theme camp celebrating African music, culture, and community. It is a cozy lounge space with bamboo structures, furniture, and immersive lighting that offers a safe, home-like atmosphere. Expect soulful DJ sets, live African instrumentalists, craft activities, and delicious traditional food—all of which create a rich, diverse, and unforgettable desert experience.","code":"lac","status":"Fam • Day Time, Night Time, All Night"},{"Name":"Pickles & Prickles","Description":"We invite you to dance, express yourself and unite! Join our parties at 3 pm(ish) and pick up your day with bouncy beats, bubbly beverages, and pickled pleasures. Immerse yourself in the beauty, diversity, calmness, and chaos of our collaborative mural and check out our chalkboard for daily workshops and offerings.","code":"pic","status":"Fam(ish) • Day Time, Night Time"},{"Name":"Camp DelicioZA","Description":"Camp DelicioZA is a community with big hearts who flip ‘pancrêpes’ daily from 9 am to 12(ish, or until the batter runs out!), also hosting DJ performances on some days. We keep our campfires burning from sunset to sunrise and offer a welcoming safe space for wandering souls.","code":"del","status":"Fam(ish) • Other"},{"Name":"Bee-Have","Description":"Get some honey at BeeHave, a vibrant theme camp inspired by bees' intelligence and collaboration. At its heart, the hexagonal BeeHive stage buzzes with (maybe your?) art, music, and performance. Celebrate creativity, community, and these incredible pollinators. Or just relax, reflect and connect, leaving with a renewed sense of purpose and belonging.","code":"bee","status":"Fam • Day Time, Night Time"},{"Name":"Blou-La-Goon","Description":"A soothing, shady, melodic dance spot in collaboration with the restorative haven of Ukuthula Gardens. The Flying Dutchman will drop anchor at Blue Skull. Discover us between 2 pm and 4 pm to relax your body to flowing beats, before we set sail across the Binnekring on a sunset cruise of adventure and love.","code":"djl","status":"Fam(ish) • Day Time"},{"Name":"Nonsense Nation","Description":"NonSense Nation (WEDNESDAY takeover @ Mad Hatters Village) “If I had a world of my own, everything would be Nonsense.” Wednesday from 8 am to 9:30 am - Yoga in the Lounge. 9:30 am to 11:30 am - Coffee service 4 pm to 5:30 pm - Mad Hatters Tea Party Extravaganza. 5 pm to 12 pm - DJs in the lounge with open bar.","code":"non","status":"Fam(ish) • Morning"},{"Name":"Kreme","Description":"Kreme is an interactive camp serving up sweats, beats, lights, and color in a mish-mash of sugar, spice, and wild imagination. With some reimaginings occurring this year, we'll also be serving up some techno yoga sessions in the daytime, along with breathwork, Gluwhein, s'mores, and love. Kreme for one, Kreme for all.","code":"kre","status":"Fam • Day Time, All Night"},{"Name":"Oe-aa-sieS","Description":"Let's get boogielicious. With music playing from 10am ish till morning hours, Oe-aa-sieS brings the ooooo, aaahhh, SIES to the Binnekring.","code":"oas","status":"Fam(ish) • Day Time, All Night"},{"Name":"The Palace","Description":"Built around the 11 Principles of AfrikaBurn, we intend to co-create a magical place dubbed \"The Palace\" in the quiet zone. We want to provide a holistic experience that nourishes the mind, body, and spirit. We want to create an environment where people can step into a collective dream, disconnect from technology, and reconnect with themselves.","code":"tpa","status":"Fam(ish) • Night Time"},{"Name":"Pamoja Project","Description":"Emphasising the “Africa” in “AfrikaBurn”, we bring African music (afrohouse, afrobeats, amapiano) to the desert through our (afro)house parties hosted from 1 pm to 4 pm(ish) each afternoon. During the mornings, come by our camp for fresh orange juice, workshops, and new global connections: our camp represents 30 different nationalities, from Armenia to Brazil, Curaçao to DRC, East Timor to France and Ghana.","code":"pap","status":"Fam • Morning, Day Time"},{"Name":"Elements","Description":"For the second year in a row, we’re bringing our beloved fluffy party beast, Appa, back to the Burn! This magical mutant creature embodies our camp's core values—creativity, adventure, and pure wonder. Our camp is a vibrant melting pot where creative souls unite and imagination knows no bounds. Join us in the magic!","code":"ele","status":"Day Time, Night Time, Day Time"},{"Name":"Cosmic Canvas","Description":"Step right up, dusty wanderers! Cosmic Canvas is here to add some sparkle to your adventure with UV and metallic face painting. Pick a stencil or let us freestyle your glow-up, and then check yourself out under our UV lights! Open Monday 3 pm to 5 pm, and Tuesday to Saturday 11 am to 2 pm & 7 pm to 9 pm. Get painted, get glowing, and get grooving!","code":"cos","status":"Fam • Day Time, Night Time"},{"Name":"Braai (s)Armie","Description":"The Braai (s)Armie sarmies will have your tastebuds singing N'kosi Sikelel' iAfrika (our national anthem)! They're more than just a cheese, tomato, and onion sandwich cooked over the coals; they embody the essence of SA culture, local cuisine, and community spirit. We are serving sarmies Tuesday through Saturday from 11 am to 1 pm.","code":"brs","status":"Fam • Other"},{"Name":"ZPE - Zero Point Energy","Description":"Step into the unknown—where reality dissolves, and your frequency elevates. Warning: Enter at your own risk—no turning back. Float in zero gravity, recharge in harmonic energy fields, and embrace the infinite. Nights pulse with Psytrance & HiTech (Friday/Saturday), Ghetto Tech (Thursday), Reggae (Wednesday), and DnB (Tuesday). By day, light grooves—hit us up for a spontaneous slot!","code":"zpe","status":"Fam(ish) • Day Time, All Night"},{"Name":"Burning Questions","Description":"A space created to encourage robust discussions around various topics stimulated by speeches, theatrical exhibition of concepts, thought experiments, exhibitions and available resources. Join us for thought-provoking conversations and delicious offerings.","code":"bqs","status":"Fam(ish) • Morning, Day Time"},{"Name":"Tulpa","Description":"Inspired by the mystical concept of a tulpa—thoughtforms brought to life—we invite you into our playground of creativity, music, and connection. Explore workshops, day parties, soothing massages, and groovy rhythms. Join us for a week of playful discovery and spontaneous surprises in our lush, vibrant oasis. Tulpa is your imaginary friend theme camp.","code":"tul","status":"Day Time, Night Time"},{"Name":"Front Right","Description":"The place where the music hits best, the vibes are high, and you’ll always find your crew. Inspired by our favourite dance floor spot, we bring beats, shade, and top-tier energy. Swing by, stay a while, or just use us as your landmark—if you know, you know.","code":"frr","status":"Day Time"},{"Name":"Bubbles & Bass","Description":"Come dance, enjoy some funky tunes, sip delicious bubbles, and watch the sunrise as the energy shifts from night to day. Experience the magic of Bubbles and Bass on Friday, Saturday and Sunday from 6 am to 12 pm! The best way to start your day (or end your night)!","code":"bub","status":"Morning"},{"Name":"Dust Devil Saloon Bar","Description":"Welcome to the wildest watering hole on the Binnekring! Enter through swinging saloon doors into an oasis of good vibes, where icy beer, tequila, and laughter flow freely. Lounge under our grand Bedouin, lose yourself in silky DJ beats, or tempt fate with our mischief-making tribe at the bar. Open in the midday heat - ready to quench your thirst!","code":"dds","status":"Day Time"},{"Name":"Le Petit Paris","Description":"We invite you to toast the breathtaking Tankwa sunset daily with champagne and dynamic DJ sets. As the sun rises, you can awaken to live acoustic performances and fresh bubbly. Our cosy, shaded lounge offers a serene escape, fostering connection and unforgettable memories in the heart of the desert.","code":"lpp","status":"Day Time, Other"},{"Name":"Time To Shine","Description":"We have a small stage for you to perform; give it a go … don't be torn. You won't see anyone. But we can see you. Exhibit your desired talent, even one you think you haven't.Time to shine, you at your best, jump on our stage and perform for the rest! Tequila will be provided to calm shattered nerves.","code":"tts","status":"Fam(ish) • Day Time"},{"Name":"The MemberBerries","Description":"The MemberBerries is a small collection of dispersed berries that found each other in the immediacy of the default and experimental world. If it is relaxation or reflection, radical self-expression or radical inclusion, or even just a space to chill out, come find the MemberBerries.","code":"tmb","status":"Fam • Morning, Other"},{"Name":"Lick n Dab","Description":"Lick n Dab Camp is a wild fusion of beats, treats, and playful chaos! Groove to electrifying DJ sets, indulge in soft-serve ice cream, and play interactive games that spark laughter and connection. Stay cool under our refreshing MystiFyer misting system while shaking your booty and enjoying the ultimate cool-day vibes!","code":"lnd","status":"Fam(ish) • Day Time"},{"Name":"Kaggens Village","Description":"Welcome to our camp, shared humanity, and end-vision: A global community, harmonious, with respect and love for All Beings. Together, honoring the spirits of the land, we weave a vibrant tapestry of indigenous wisdom, celebration, and tribute across all tribes. The Rainbow Warriors.","code":"kag","status":"Fam • Day Time"},{"Name":"Ain't Misbehavin'","Description":"Take the A train to the world's finest dusty ballroom. Find us in the rose room, where the jazz cats bloom. We’ll be riffin’ the scotch, ready to jive when the clock strikes five. Later, we’ll be puttin' on our shiny stockings, swaying smoothly with the rhythm rocking. Here, We Ain’t Misbehavin’... Just swinging along to the jazz we’re cravin’.","code":"amb","status":"Fam(ish) • Day Time, Night Time"},{"Name":"The ArtSluts","Description":"A desert angel, wielding a sledgehammer over one shoulder, a screwdriver or three in their back pocket, appearing like a mirage from the heat and dust, ready and willing to assist with any creative task at hand. We arrive in build-week ready to assist the artists of AfrikaBurn in realising their dreams. Join us for Builders Breakfast to start your day!","code":"tas","status":"Fam(ish) • Morning, Other"},{"Name":"The Pancake People","Description":"The Pancake People Show! For a decade, burners have crossed the Binnekring to witness the magical mayhem that has seen new lovers meet, strangers become besties & family memories made. This year, we aim to blow your mind. Entertaining & serving from 9 am to 11 am! Our space is YOURS! A hub for performances & connection. Come musos, comedians & fun lovers!","code":"pan","status":"Fam • Morning, Day Time, Night Time"},{"Name":"Garden of Weeden","Description":"The Garden of Weeden comprises three public spaces to explore: The Garden of Play, an arcade with pool, air-hockey, foosball, table tennis, a mini cinema and more. The Garden of Boogy is an old-school music inflatable dance floor. The Garden of Chill is a super chilled-out lounge area open 24 hours with the gifting magical tree at the center of the lounge. Look out for our in-camp artworks - Dreamz, our giant dreamcatcher looking over our camp and Dezirah, our water dragon gifting ice-cold drinking water.","code":"gow","status":"Fam • Day Time, Night Time"},{"Name":"Mimosa Avenue","Description":"What's better than a cold mimosa on a hot desert day? Exactly. Cruise past for a refreshment, or pull up your handbrake and enjoy a bit of finely curated music! Dops and tunes are served from 12 pm to 4 pm every day!","code":"mim","status":"Day Time"},{"Name":"The Prize Cock","Description":"We are a neighbourhood bar offering cocktails and beers to passersby. We have a large stretch tent, a proper bar counter and a back bar. Background pub tunes from 1920 to 2020 are played through a small speaker - no rave music. Open from 12 pm to 4 pm Monday to Sunday.","code":"tpc","status":"Other"},{"Name":"The House of Boho","Description":"As dawn breaks over Tankwa Town, excitement fills the air as artists gather in lively 4:20 sessions to celebrate creativity with music, food, and camaraderie. The DJ energises the crowd, and the scent of African-style vetkoeks AMs and Gin and tonic sundowners enhances the festive atmosphere. Laughter and ideas flourish amid the beats, drawing more art enthusiasts into this vibrant scene.","code":"","status":"Fam(ish) • Other"},{"Name":"Middagslapie a.k.a Siesta","Description":"Middagslapie: A Sanctuary of Serenity 🌟 Escape the heat in our 15m x 25m Bedouin tent, offering shade, comfort, and coolness from 12pm to 3pm. Enjoy refreshing cocktails and mocktails served on ice, accompanied by soothing lounge music. Relax in plush seating and let the peaceful atmosphere transport you to another universe. A safe and beautiful space for all!","code":"mds","status":"Fam(ish) • Day Time"},{"Name":"Pandora's Fox","Description":"Where Pancakes are golden; Syrup is sinful, and the crew is playful and unhinged. We will flip your stacks and fill your water bottles between 9 am and 11 am(ish) as you roll past from a long night on the Binnekring or crawl out of someone else's tent! Join us in our chill lounge to rest and recharge.","code":"pan","status":"Fam • Morning"},{"Name":"Metastofasis","Description":"We are a group of like-minded Burners who provide a chill space, morning yoga, occasional quizzes, and very soft music for ambience. We have UV-lit drapes for those who want to experience mind-bending visuals.","code":"met","status":"Fam(ish) • Morning, Day Time, Night Time"},{"Name":"Camp 404","Description":"Feeling Lost? We are also not found. 404 is a blanket fort of confused and delicious nonsense. Our 24/7 lounge is a comfy, safe space with snacks, games, downtempo tunes and lamps to talk to. Join us at 11 am(ish) for the best vegan brunch in Tankwa Town. Check our activity board for daily shenanigans.","code":"404","status":"Morning, Day Time, Night Time"},{"Name":"Wild & Juicy","Description":"Did you take your vitamins today? Don't worry; we've got you covered. Be on the lookout for a lonely smallish, ugly, blueish trailer with a moerse solar panel somewhere on the Binnekring. We will gift you freshly squeezed orange, carrot and ginger juice! Take a pic and make your mom proud. We can't wait to share dusty love!","code":"was","status":"Morning, Day Time"},{"Name":"The Steampunk Saloon","Description":"The Steampunk Saloon, a feminine desert oasis for the dusty voyeur. Monday to Saturday, join us for a boogie from 4pm till late. We play music with lyrics! Pop in for workshops during the day and on Thursday, Friday and Saturday night, join us at around 6 pm for our sizzling burlesque shows. We bring happy, playful, sexy energy!","code":"sps","status":"Day Time, Night Time"},{"Name":"Burning Moon","Description":"Step into our Moroccan-inspired wine bar oasis! Take a rest, enjoy delicious wine and gather around our cozy fireplace. Let the tales flow. Tuesday 11 am to 3 pm, Thursday 7 pm to 11 pm, Friday 11 am to 3 pm. Find us outside these times on our moving wine bar, serving you wine while dancing in the desert. Don’t forget to bring a cup!","code":"bmo","status":"Fam(ish) • Day Time, Night Time"},{"Name":"Steam Punk Garage","Description":"20 veteran burners. Most of us are in our golden years, with the oldest person 72 years old, and most of us are on our 7th AfrikaBurn! Steam Punk Garage is a collective based on our collection of MVs. Registering four mutant vehicles: 2 are registered so far, and 2 more to go.","code":"spg","status":"Night Time"},{"Name":"Birthday Suits","Description":"Birthday Suits, Power Shower offers the opportunity to experience the world of naturism, a way of life in harmony with nature, and the practice of communal nudity to encourage self-respect and respect for others. We run a naked human car wash, Power Shower, where we gift our guests a soapy warm wash and cold orange juice—no funny business.","code":"bds","status":"Fam • Day Time"},{"Name":"The Lion's Den","Description":"A home in the desert to a seasoned group of South African Burners with three mutants creating magic and joy for everyone. A place to chill during daytime to ambient vibes from a wide array of DJs while sipping on refreshing local produce. 420-friendly building-up to legendary nighttime parties with many surprises and pop-ups in between.","code":"tld","status":"Fam(ish) • Day Time, Night Time"},{"Name":"Sweet Love Cinema","Description":"We are a cinema camp that has been going to AfrikaBurn for over ten years. We play kid-friendly movies from sunset to early morning.","code":"slc","status":"Fam • Night Time"},{"Name":"Jolly Lolly Jumpers","Description":"Gear up, folks! Join the Jolly Lolly Jumpers every afternoon-ish for epic gladiator showdowns in our inflatable ring! Challenge your pals to a duel, conquer the battlefield, and claim victory - all while cooling off with our scrumptious ice lollies! It's the ultimate blend of fun, frolics, and frozen treats!","code":"jll","status":"Fam • Day Time"},{"Name":"Sizzle & Synth","Description":"Nothing kisses the soul quite like a juicy boerie roll. These sizzlers will provide a taste of South African heritage to all boerie-loving burners that sniff us out. Boerie, beats, and banter are served every afternoon so you can boogie with a boerie at Burn!","code":"sis","status":"Fam • Day Time"},{"Name":"Pedals for Peace","Description":"We are a camp that facilitates hiring bikes to burners attending AfrikaBurn. The funds raised are then used to gift bikes back to identified projects in the default world. We are, in essence, an AfrikaBurn outreach camp.","code":"pfp","status":"Fam(ish) • Day Time"},{"Name":"Smokescreen","Description":"The Tankwa’s Original and Best theatre and party Venue. Lovingly homemade, stylishly curated, and just a little bit wabi-sabi, we bring movies, art, music, costumes, and personality to the Binnekring—just like Hollywood, but with a little extra dust. Our schedule is moderately planned and subject to whimsical change, but we will update our blackboard daily with event times.","code":"sms","status":"Fam(ish) • Day Time, Night Time"},{"Name":"Camp DisFUNKtion","Description":"An International DisFUNKtional crew from 8 years at BRC is coming to Africa Burn for the first time. On Tuesday, they will bring a Pyjama extravaganza party to Mad Hatters Lounge, with gifts of the funkiest PJs on the planet. They will also make crepes for a few days during morning coffee at Mad Hatters Lounge. There will also be an Outdoor nighttime show of blazing lasers through smokey trees.","code":"cdf","status":"Fam(ish) • Morning, Day Time, Night Time"},{"Name":"Dragon's Delight","Description":"As a sister camp to Kimono Dragons, we summon the fire-breathing dragon’s flame. Fuel your fire with Fireball cocktails or cool off with refreshing elixirs in our welcoming shade. Adorn yourself in glowing costumes and embrace an afternoon where passion meets poetic heat and dreams ignite with every spark.","code":"ddl","status":"Day Time"},{"Name":"Enos' Nookie","Description":"Spacemonkey Enos crashed his flaming rocKET at the edge of Binnekring and created a wild but safe nookie for all cosmic wanderers. Follow the landing lights to play with glowing sand, have a stomp at PSY-Jol-Wednesday, shine on Friday's beauty pageant and let your inner monkey loose on our groovy-eclectic jols driven by our lekker sound system well into Sunday bliss.","code":"eno","status":"Morning, Day Time, Night Time, All Night, Other"},{"Name":"Buttery Beasts","Description":"Slithering, squawking, hopping and hissing into Tankwa Town with the most convenient of convenience stores. Greasemonkeys fix what you’ve broken; Beasts help you find what you've forgotten! On market days, we have hot food, cold drinks, buttery beats and reptilian cosmetic enhancements; at other times, ring the bell for Beastly assistance.","code":"bub","status":"Morning, Day Time"},{"Name":"Super Tramps","Description":"Welcome to Super Tramps—where gravity takes a holiday! Come bounce, flip, and soar under endless skies. Lounge like a lizard or leap into the stars—pure freedom awaits. Hop in, hang out, and get trampy! (Super Tramps isn’t liable for bouncidents—jump at your own risk!)","code":"str","status":"Fam • Morning, Day Time, Night Time, All Night"},{"Name":"The Ra Ra Hive","Description":"Welcome to the Ra Ra Hive. We dance with the sun, welcome the moon, and celebrate life’s sweetness. Inspired by Ra, the Egyptian sun god, we flow with golden energy in a perfect spot for the sunset. Come watch the sun go down—we've got a beautiful space, delicious sundowners, cozy lounges, and a dance floor filled with silky tunes. We are open from 4 pm to 8 pm daily.","code":"rrh","status":"Fam(ish) • Other"},{"Name":"The Purple Lounge","Description":"Purple Lounge Chill-out Space: This cozy tent is filled with glowing purple lights, bean bags and cushions. Mild chill music sets the vibe as we serve tequila sunrises at sunset.","code":"tpl","status":"Night Time, Other"},{"Name":"CurioCity","Description":"CurioCity will unleashed energy; chaos and connection. Wild activations. Crazy interactions. Beats dropped. Colours explode. Magic happens. Come join us for the Cup Olympics – Fast. Fierce. Ridiculous. Who will take the crown? No spectators, just pure, unfiltered experience. Jump in. Play. Ignite.","code":"cuc","status":""},{"Name":"Afrikadelic Village","Description":"The Afrikadelic Village blends African heritage with modern creativity, fostering inter-cultural exchange, education, and artistic collaboration. It features a Music and Performing Arts Center, a Cultural Heritage Museum, and Artisan Workshops, all preserving traditions while promoting contemporary African art. This vibrant space celebrates culture, empowers communities, and connects people through creativity and innovation. Join us!","code":"adv","status":""},{"Name":"Waves of Peace","Description":"A space of silence and contemplation at AfrikaBurn.  Here, music and abstract painting come together to create a deep, immersive experience. Projections of artworks shift in sync with eight unique musical compositions while color therapy and sound in noise-canceling headphones help you relax, look within, and ride the wave of peace.","code":"wop","status":"Fam • Night Time"},{"Name":"Mahala","Description":"Mahala invites the curious into our sacred journey space—an oasis for inner exploration and infinite possibility. From breathwork to tantra, sound journeys to storytelling, our daily sessions (11 am to 4 pm) and deep midnight rituals weave play, reverence, and transformation. Gather at our fire circle and tea bar, where magic and connection unfold spontaneously.","code":"mal","status":"Fam • Day Time, Other"},{"Name":"The Wet Spot","Description":"We offer the ultimate gift: a warm, refreshing shower in the heart of the Tankwa desert. We have four shower cubicles open daily from 8:30 am to 11:30 am, Monday to Sunday. Bring your own water! We provide the means—heated and pumped water through our shower heads—but participants must please bring their own water.","code":"tws","status":"Fam(ish) • Morning"},{"Name":"Glitch & Glaze","Description":"A fresh, funky theme camp with a mischievous gang flipping flapjacks and pouring juice, crafted by our pastry witch. Swing by for daily goodies and twirl into our contact staff and spinning workshops.","code":"glg","status":"Fam(ish) • Day Time"},{"Name":"La Casa Timeless","Description":"Step beyond time, where myth and reality blur. Join us at \"La Casa Timeless\" bar for сocktails, dim sum, DJ-sets and live music (4:20 pm to 12 am). Experience Sonic Sand Meditation and Menta Series Transformative Discussions (11 am to 4:20 pm). Prepare for Friday’s Masquerade at our daily mask-making workshop.","code":"lct","status":"Fam(ish) • Other"},{"Name":"The Deep End","Description":"Take a breath and dive into The Deep End. Find us far beneath the surface and get swept up in the current of our multi-sensory experience where music and the mysteries of the deep meet. Float over on Thursday from midday(ish) until late for a bioluminescent boogy.","code":"tde","status":"Fam(ish) • Day Time, Night Time"},{"Name":"Khoena Village","Description":"We invite people to engage with their inner and outer wilderness. It is a space where knowledge and wisdom, both ancient and modern, can be shared and explored. Workshops on yoga, plant medicine, storytelling, meditation, and breathwork, as well as firsthand knowledge from tribe members on Indigenous ways of ecological awareness, will enrich your soul.","code":"khv","status":"Fam • Morning, Day Time, Night Time"},{"Name":"HeartSpace","Description":"We offer a sober, heart-centered space for deep connection, conscious touch, and embodied expression. Enjoy morning yoga, breathwork, and afternoon workshops like Authentic Relating and Erotic Tiger Dance. Evenings feature sensual events like The Soft Sensual Temple and Shibari. Come as you are, drop into presence, and connect from the heart.","code":"hsp","status":"Fam(ish) • Morning, Day Time, Night Time"},{"Name":"The Burning Arms","Description":"We will serve beer from our traditional English pub and offer activities such as karaoke and pub quizzes. Please check our board in camp for daily activities. We will be open daily from 10 am until we run out of beer!","code":"tba","status":"Fam(ish) • Day Time"},{"Name":"Fractal Chill Ethiopian coffee house","Description":"Home of the famous Ethiopian coffee pot, serving freshly roasted Arabica coffee beans since 2013. We have developed from a coffee pot to a funky Bedouin style cafe housed in a Nomadic tent styled, pimped burner style. Comfort is scarce at the burn, and we offer a home away from home.","code":"fcc","status":"Fam • Day Time"},{"Name":"Lucid Lapis","Description":"We serve blue tea in a sanctuary of connection and reflection. It's a space for deep reflection, lightness, relaxation, and joy, where you can step into the night with clarity. We welcome everyone. Share stories and set intentions. Take a sip of the blue as you prepare to journey through the stars of your own life. Open on Tuesday and Thursday from 2 pm to 4 pm.","code":"luc","status":"Fam(ish) • Other"},{"Name":"What If","Description":"What If is a community of creative, like-minded friends who come together at the Burn to reconnect and share good times. We keep things simple—great company, tasty flapjacks, and thoughtful food gifts. It’s all about support, inclusivity, and making the most of the Burn experience with the people who matter.","code":"wif","status":"Day Time"},{"Name":"Soul of Alrakis","Description":"Welcome to Soul of Alrakis, a sanctuary born from a bright star where desert dreams take shape. By day, find shade in our billowing canopies and enjoy our chill spots with lounge music. By night, dance under glowing waves of light as if the ocean kissed the dust. Expect the unexpected: performances by our various artists.","code":"soa","status":"Fam(ish) • Day Time, Night Time, All Night"},{"Name":"The Tankwa Town Art Appreciation Society","Description":"The Tankwa Town Art Appreciation Society Camp - home of artists, performers and now, pastry chefs! Join us for an art tour of the Binnekring on our mutant vehicle - \"the Bakkery\" - and enjoy freshly baked baguettes, croissants, and exclusive artwork insights.","code":"aas","status":"Fam • Morning, Day Time"},{"Name":"Bahari Desert","Description":"Your chill spot in the desert. Kick back to smooth tunes, get lost in the beats, and feel the rhythm of the dunes. With that tropical vibe and desert energy, it’s the ultimate place to unwind, dance, and recharge. Ride the wave with us!","code":"bah","status":"Fam(ish) • Day Time, Night Time"},{"Name":"Sunrisers","Description":"Gifting excellent coffee from 7 am every morning to all Burners. We have a collaborative space for displaying your art or artistry, be it a Yoga class, photography or giving talks, after coffee time till 11 am every day.","code":"sun","status":"Fam • Morning"},{"Name":"Lands of Love","Description":"Devoted to all the ways we Love the Land. Our main gift is Early Erections, where we gift the use of power tools when erecting tents or structures. We also facilitate a Decompression hike at the end of the Burn, where we hike from the Tankwa to the Cederberg over two days.","code":"lol","status":"Fam • Morning, Day Time, Other"},{"Name":"KHOIKHOI","Description":"We curate an authentic Khoikhoi experience that includes Khoikhoi language sessions, film screenings, poetry, dance, storytelling, and conversations.","code":"kho","status":"Fam(ish) • Day Time"},{"Name":"Marmajam","Description":"Free-flow jams in the afternoons, Cool Story Bro in the evenings, the roving Poetry Apothecary and unscheduled live music. Variously wholesome mornings featuring touch, sound, yoga and cacao, and a peaceful, centering space to decompress under compressed mist.","code":"maj","status":"Fam(ish) • Morning, Day Time, Night Time"},{"Name":"namaSlay","Description":"Not your average yoga flow. We will not ask you if your fifi's are in retrograde or try to align your shakers - you’re bound to boogie them out of whack later anyways. We facilitate stretchies and massagies for your achy musclies (definitely pronounced musc-lees). Stay for tea (am) and chats or a boerie roll (pm).","code":"nam","status":"Fam(ish) • Morning, Day Time"},{"Name":"Sacred Garden","Description":"A vibrant international community of creatives united by a love for art, music, and celebration. Since 2019, we’ve been gifting beautifully designed fans and now, a mobile bar serving healthy, natural hot drinks. Rooted in Burning Man principles, we spread warmth, creativity, and connection across the desert nights.","code":"sag","status":"Fam(ish) • Night Time, All Night"},{"Name":"Heart of Steam","Description":"We bring the experience of steam traditions from all over the world to Africa.","code":"hos","status":"Day Time"},{"Name":"Bull's Eye: Jikoni Potjie","Description":"Need a break from stomping the dust? Relax and refuel in the afternoon-ish from Tuesday to Friday at our Dinner in the Desert. We're firing up the braai to bring you potjie (meat & veg) and toasties with a drink. Bring a bowl/mug/cup, play games, meet people and refuel for the night ahead.","code":"bey","status":"Fam(ish) • Day Time"},{"Name":"DMT","Description":"We bring acoustic tunes and soulful electronic music to the desert. Our story is one of infinite iterations of kaleidoscopic collaboration. Our community is a diverse mix of locals and internationals, all united by camaraderie and our love for transcendent tunes.","code":"dmt","status":"Day Time, Night Time"},{"Name":"Camp Why Not","Description":"Seven years of Why Not, seven days of AfrikaBurn, 77 living legends—each with a spark of something extraordinary. This year, we’re going BIG: two mutant vehicles, 60+ hours of music, and seven sunrise parties. Late-night (2 am to 4 am) Why Not Fries? Of course! Some mysteries will reveal themselves at the right time & place. Join the ride. Epic vibes only. x7.","code":"cwn","status":"Fam(ish) • Morning, Day Time, Night Time, All Night"},{"Name":"Cymatica","Description":"Friday at MadHatters brings the magic of the CYMATICA SILVER BALL! Wear your brightest metallics and shiniest wear for an evening of illusion and reflection! The wizards at CYMATICA will convert the lounge and dunes into a playground of dancing lasers and thumping beats from our DJs. As usual, our bar will serve delicious cold libations into the early hours.","code":"cym","status":"Fam(ish) • Morning, Day Time, Night Time, All Night"},{"Name":"Fly Fishing SK","Description":"Fly Fishing SK is where things seem calm ... until they’re not. Our camp flows with the unexpected—sometimes it’s a quiet retreat, sometimes it’s a full-on jol. You never know when the next big catch (or party) will land.","code":"fsk","status":"Fam(ish) • Morning, Day Time, Night Time, All Night"},{"Name":"Ukuthula Gardens","Description":"A peaceful oasis offering a variety of yoga, breathwork, sound healing, dance, meditation, cacao ceremonies, ecstatic dance and creative workshops. Stop by to enjoy a cup of tea, grab one of our burn journals, sit down, or create your own bracelet. In the evening, look out when Someone Else’s Spaceship ventures into the desert.","code":"uku","status":"Fam(ish) • Day Time"},{"Name":"Fairy Tale Window","Description":"Open a window to a fairytale! From 8 to 11 am, we’ll treat you to pancakes with fillings that whisper stories and matcha tea that awakens dreams. After that, relax under giant mushrooms and dance with reflections in our disco mirror. Here, mornings turn into magic, and every guest becomes the hero of their own story!","code":"ftw","status":"Fam(ish) • Morning"},{"Name":"Literary Scents","Description":"A cozy oasis of books, scents, and creativity. Immerse yourself in our library, contribute to the evolving Welcome Book, or craft a personalised fragrance. Leave your mark with a message in a bottle, unwind in our hammocks, and join us for poetry nights under the stars.","code":"lit","status":"Fam(ish) • Day Time"},{"Name":"Mask On","Description":"We appear in masks and puppets, come share our craft.","code":"mon","status":"Fam • Day Time"},{"Name":"Ikigai","Description":"Welcome to a lush psychedelic cave with hidden magical wonder. This space is all about movement and flow, inviting you to explore parts of your being yet unknown through holistic practices like dance and breathwork. Be open to the possibilities of psy beats and their potential for your evolution and expansion in a conscious space.","code":"iki","status":"Fam • All Night"},{"Name":"The Flour Power Cartel","Description":"A collective of mature burners who have been baking bread at AfrikaBurn since 2015. Served hot and fresh to hungry burners. Midday(ish). Real butter, a selection of jams, peanut butter and Bovril. First come, first served.","code":"fpc","status":"Fam • Day Time"}]
+[
+    {
+        "Name": "The Vagabonds",
+        "Description": "The Vagabonds camp is a wellness and relaxation camp where everyone feels at home. You are invited to recharge your energy through our daily massages, connect with others in our lounge, stargaze over the Binnekring from our sky lounge, and work on your mental and physical well-being with our workshops. Come check out our schedule at the Vagabonds camp!",
+        "code": "vag",
+        "status": "Fam • Day Time"
+    },
+    {
+        "Name": "ALEGRA SPACE STATION",
+        "Description": "This is the Burn equivalent of the International Space Station, allowing camp members to gift and volunteer to the max. We will gift craft beer and a non-alcoholic cooler from under the Lighthouse (2 pm to 4 pm). Join us on our MV as we cruise the desert. We also have two solar \"techs\" on standby to assist with troubleshooting and repairing your small solar system.",
+        "code": "ass",
+        "status": "Fam • Other"
+    },
+    {
+        "Name": "Professor Cuchulains Magic Elixers",
+        "Description": "Professor Cuchulain and his assistants are the world-famous snake oil sales team. They will offer samples of their magic elixirs from his apothecary and the travelling soapbox show. He will be accompanied by his associate Professor Clark Stanley and the leggy lass Lulu la Belle.",
+        "code": "pcm",
+        "status": "Fam • Day Time, Night Time"
+    },
+    {
+        "Name": "Pétanque, pastis and the clochette factory",
+        "Description": "Our camp is a lively, welcoming space where pétanque meets pastis and playful punishment. Enjoy a friendly game, sip on a classic French aperitif, and spin our infamous spanking wheel of fortune for a surprise dose of fun—a place to laugh, connect, and embrace the unexpected.",
+        "code": "pet",
+        "status": "Fam(ish) • Other"
+    },
+    {
+        "Name": "Cactus Rising",
+        "Description": "Get ready for a prickly adventure!  Visit Cactus Rising and discover a gift that may spark Cactus Fever.  As you explore, you will be gifted with unforgettable memories and a dash of Cactus Magic! Watch our notice board for our opening hours.",
+        "code": "cac",
+        "status": "Fam(ish) • Day Time"
+    },
+    {
+        "Name": "aTypical Bar",
+        "Description": "Take a load off at aTypical Bar, where we're serving interaction day or night. Come out and play with our bartenders, refresh yourself with a delicious beverage, kick back to an eclectic selection of tunes and get stuck in with a packed schedule of parties, spectacles, kazoos, bareoke and marshmallows that are anything but typical. Check the board for timings.",
+        "code": "atb",
+        "status": "Fam • Day Time, Night Time, All Night"
+    },
+    {
+        "Name": "Selfish Steam Camp",
+        "Description": "The Selfish Steam camp is your ticket to relaxation. It is a traditional wood-fired Finnish sauna in the desert! We offer a space to relax, disrobe (if you like, of course!), and connect with others. It's a small haven where you can sweat out the dust and return rejuvenated to the madness that is the burn.",
+        "code": "ssc",
+        "status": "Fam • Day Time"
+    },
+    {
+        "Name": "Bioskop & Bangaz",
+        "Description": "We are an interactive collective focusing on showcasing local films that explore African culture and history, fused with live music performances, encompassed with profound imagery curated through visual arts.",
+        "code": "bio",
+        "status": "Fam • Day Time, Night Time"
+    },
+    {
+        "Name": "Luminosity Lounge",
+        "Description": "By day, the Luminosity Loungers braai food in the engine bay of a 1949 Dodge truck, and music plays from 11 am to 6 pm. At night, the lounge transforms into a space where burners can chillax just outside of the main music envelope. It is a safe space to reflect, rest your ears, and converse with your fellow burners under the stars.",
+        "code": "lum",
+        "status": "Fam(ish) • Day Time, Night Time, All Night"
+    },
+    {
+        "Name": "Babadoof",
+        "Description": "Etymology: Baba - Guardian or Higher Protector. Doof - Party (Australian). BabaDoof are out on the Binnekring to meet your food and beverage needs! Catch them hauling their bar to your favourite art cars, or join them between 3 am and sunrise for their Cereal Killers operation as they search for hungry dust dwellers in need of a breakfast cereal feed.",
+        "code": "vkq",
+        "status": "Day Time, Night Time, All Night"
+    },
+    {
+        "Name": "Sunset Oasis",
+        "Description": "Sunset Oasis Camp has participated in Africa Burn since 2008. Known for its serene atmosphere on the less noisy side of Tankwa Town, our camp is a place to rest and recharge. However, this time, we want to be closer to Blinkering. Soft music and magical space, sitting area for magical reflection. 11 am to 2 pm Thursday & Sunday we provide spa and showers.",
+        "code": "sso",
+        "status": "Fam • Day Time"
+    },
+    {
+        "Name": "Space Cowboys",
+        "Description": "Since 2012, Space Cowboys has been the galactic space station of AfrikaBurn, fueling Tankwa’s most legendary dancefloors. We curate vibes and hyperspace beats as a collective of cosmic dreamers, sonic engineers, and stellar musicians. Our intergalactic oasis activates post-burn each evening, pulsating until the natural timeline collapses, occasionally glitching into spontaneous afternoon wormholes. Moon-crickets welcome but need to behave.",
+        "code": "scb",
+        "status": "All Night"
+    },
+    {
+        "Name": "Zodiac",
+        "Description": "Fellow star travelers, as we journey through the celestial expanse of AfrikaBurn, we invite you to be our cosmic guests in this vast desert universe! The camp will feature themed decorations and activities, including astrology workshops, numerological/tarot readings, human design, sun salutations through yoga, themed body paints, and many more!",
+        "code": "zod",
+        "status": "Fam(ish) • Day Time"
+    },
+    {
+        "Name": "Purple Spanking Booth",
+        "Description": "Spanks! Spanks! Spanks! Come and get your daily Spanks! We provide playful, light-hearted spankings for adults. Come join the fun. We also offer a lounge for premium spanking viewing during the day and a safe space at night to chill and enjoy good company. CONSENT is the principle we live by.",
+        "code": "psp",
+        "status": "Day Time, Night Time, All Night"
+    },
+    {
+        "Name": "Disko Dolce",
+        "Description": "Disko Dolce celebrates the essence of the good life through the joy of dancing and the sweetness of connection. Expect a lively pasta party to cool disco beats, energising morning workouts, and just a bit of dolce vita. We embrace the good life, so come by, have a great time, and let’s create unforgettable memories together.",
+        "code": "dis, ele",
+        "status": "Day Time, Night Time, Day Time, Night Time, Day Time"
+    },
+    {
+        "Name": "Sexico City",
+        "Description": "Sexico City brings a great vibe and excellent music wherever we go. We are Mexicans, MexPats, and friends from around the world raising the vibration with authenticity and fun. We will host a welcome party in the Mad Hatters Village on Monday, providing Mexican food, drink, and music.",
+        "code": "sex",
+        "status": "Night Time, All Night"
+    },
+    {
+        "Name": "Our Creative Space",
+        "Description": "“Isithebe” is a word known to Africans even now, when equal sharing is unified as “Ubuntu”. Our camp will include activities such as bead making, which will allow participants to imagine African cultures. We will also host poetry and spoken word; participants are invited to share their poems.",
+        "code": "ocs",
+        "status": "Fam • Day Time"
+    },
+    {
+        "Name": "Hydration Station",
+        "Description": "Hydration Station: Where Water Meets Wonder! Join the coolest cats in the desert at Hydration Station, where we're on a mission to keep you hydrated and happy! Our tribe of water warriors each brings 25L of filtered, sealed drinking water to gift to those in need.",
+        "code": "hyd",
+        "status": "Fam • Day Time"
+    },
+    {
+        "Name": "Burning Mail",
+        "Description": "Each year, Tankwa Town’s official post OFFICE, Burning Mail, is the place where Burners pick out specially designed postcards, write “wish you were here’s” to around the world, stick on stamps, and pop them in the mailbox. We also deliver messages within Tankwa Town and gather \"messages to the universe\" to be burned in the Temple on Sunday evening.",
+        "code": "bma",
+        "status": "Fam • Day Time"
+    },
+    {
+        "Name": "ABnB",
+        "Description": "Nestled in the dust, you will find a safe haven for those of you looking to chill and connect. Equipped with a large lounge area, cocktail bar, mini mutant and some deep soft-ish tunes. You may want to stay for an hour, a night or a day; the choice is yours.",
+        "code": "abb",
+        "status": "Fam(ish) • Morning, Day Time, Night Time, All Night"
+    },
+    {
+        "Name": "Camp O2",
+        "Description": "Take a deep breath with us as you emerge Out of the Blue. If you are looking for an oasis, a refuge - to find meaning amidst the maelstrom of the Burn - join us each afternoon at our Cosmic Cafe for a philosophical conversation over a warm drink, and each day at midnight for our breathwork.",
+        "code": "co2",
+        "status": "Fam(ish) • Day Time, Night Time, Other"
+    },
+    {
+        "Name": "The Crack House, Home of the Psychic Cat",
+        "Description": "We are the crew from Airspace (Airport, helipads, medivacs). We host art video shows nightly, a Tuesday morning tea and Marie biscuits event, \"Jane Austin collides with Alice in Wonderland.\" Costumes encouraged, prizes for Austiney/Alicey ones. We will also host wine drinking/nighttime Croquet, FleaBurn (a miniature AfrikaBurn), and a Haka dance.",
+        "code": "cat",
+        "status": "Fam(ish) • Morning, Night Time, All Night, Other"
+    },
+    {
+        "Name": "The Greasemonkeys",
+        "Description": "Deflated? Something grinding your gears? Flew off the handle(bar) following mechanical mayhem? We’re a tie-dye-troupe of mechanically-minded monkeys with a passion for spanners. Bring us your (nervous) breakdowns, and we’ll ‘each-one-teach-one’ until it’s either fixed or ‘about the friends you made along the way’. Mini-Monkeys area for toddlers to tinker. Storytime is at 11 am & 3 pm most days. Open 9 am to 3 pm(ish). CLOSED SUNDAY!",
+        "code": "tgm",
+        "status": "Fam(ish) • Other"
+    },
+    {
+        "Name": "Tussen Spasies",
+        "Description": "A geometric dome that offers a sanctuary for healers and seekers. In the mornings, it offers conscious workshops. After midday, the space becomes a chill zone with down-tempo music. As the sun sets, the energy shifts with louder beats. On Wednesday, we turn our oasis into a dance floor. Find us between the spaces, exactly where you need to be.",
+        "code": "tus",
+        "status": "Morning, Day Time, Night Time"
+    },
+    {
+        "Name": "Leisure & Chill",
+        "Description": "A vibrant theme camp celebrating African music, culture, and community. It is a cozy lounge space with bamboo structures, furniture, and immersive lighting that offers a safe, home-like atmosphere. Expect soulful DJ sets, live African instrumentalists, craft activities, and delicious traditional food—all of which create a rich, diverse, and unforgettable desert experience.",
+        "code": "lac",
+        "status": "Fam • Day Time, Night Time, All Night"
+    },
+    {
+        "Name": "Pickles & Prickles",
+        "Description": "We invite you to dance, express yourself and unite! Join our parties at 3 pm(ish) and pick up your day with bouncy beats, bubbly beverages, and pickled pleasures. Immerse yourself in the beauty, diversity, calmness, and chaos of our collaborative mural and check out our chalkboard for daily workshops and offerings.",
+        "code": "pic",
+        "status": "Fam(ish) • Day Time, Night Time"
+    },
+    {
+        "Name": "Camp DelicioZA",
+        "Description": "Camp DelicioZA is a community with big hearts who flip ‘pancrêpes’ daily from 9 am to 12(ish, or until the batter runs out!), also hosting DJ performances on some days. We keep our campfires burning from sunset to sunrise and offer a welcoming safe space for wandering souls.",
+        "code": "del",
+        "status": "Fam(ish) • Other"
+    },
+    {
+        "Name": "Bee-Have",
+        "Description": "Get some honey at BeeHave, a vibrant theme camp inspired by bees' intelligence and collaboration. At its heart, the hexagonal BeeHive stage buzzes with (maybe your?) art, music, and performance. Celebrate creativity, community, and these incredible pollinators. Or just relax, reflect and connect, leaving with a renewed sense of purpose and belonging.",
+        "code": "bee",
+        "status": "Fam • Day Time, Night Time"
+    },
+    {
+        "Name": "Blou-La-Goon",
+        "Description": "A soothing, shady, melodic dance spot in collaboration with the restorative haven of Ukuthula Gardens. The Flying Dutchman will drop anchor at Blue Skull. Discover us between 2 pm and 4 pm to relax your body to flowing beats, before we set sail across the Binnekring on a sunset cruise of adventure and love.",
+        "code": "djl",
+        "status": "Fam(ish) • Day Time"
+    },
+    {
+        "Name": "Nonsense Nation",
+        "Description": "NonSense Nation (WEDNESDAY takeover @ Mad Hatters Village) “If I had a world of my own, everything would be Nonsense.” Wednesday from 8 am to 9:30 am - Yoga in the Lounge. 9:30 am to 11:30 am - Coffee service 4 pm to 5:30 pm - Mad Hatters Tea Party Extravaganza. 5 pm to 12 pm - DJs in the lounge with open bar.",
+        "code": "non",
+        "status": "Fam(ish) • Morning"
+    },
+    {
+        "Name": "Kreme",
+        "Description": "Kreme is an interactive camp serving up sweats, beats, lights, and color in a mish-mash of sugar, spice, and wild imagination. With some reimaginings occurring this year, we'll also be serving up some techno yoga sessions in the daytime, along with breathwork, Gluwhein, s'mores, and love. Kreme for one, Kreme for all.",
+        "code": "kre",
+        "status": "Fam • Day Time, All Night"
+    },
+    {
+        "Name": "Oe-aa-sieS",
+        "Description": "Let's get boogielicious. With music playing from 10am ish till morning hours, Oe-aa-sieS brings the ooooo, aaahhh, SIES to the Binnekring.",
+        "code": "oas",
+        "status": "Fam(ish) • Day Time, All Night"
+    },
+    {
+        "Name": "The Palace",
+        "Description": "Built around the 11 Principles of AfrikaBurn, we intend to co-create a magical place dubbed \"The Palace\" in the quiet zone. We want to provide a holistic experience that nourishes the mind, body, and spirit. We want to create an environment where people can step into a collective dream, disconnect from technology, and reconnect with themselves.",
+        "code": "tpa",
+        "status": "Fam(ish) • Night Time"
+    },
+    {
+        "Name": "Pamoja Project",
+        "Description": "Emphasising the “Africa” in “AfrikaBurn”, we bring African music (afrohouse, afrobeats, amapiano) to the desert through our (afro)house parties hosted from 1 pm to 4 pm(ish) each afternoon. During the mornings, come by our camp for fresh orange juice, workshops, and new global connections: our camp represents 30 different nationalities, from Armenia to Brazil, Curaçao to DRC, East Timor to France and Ghana.",
+        "code": "pap",
+        "status": "Fam • Morning, Day Time"
+    },
+    {
+        "Name": "Elements",
+        "Description": "For the second year in a row, we’re bringing our beloved fluffy party beast, Appa, back to the Burn! This magical mutant creature embodies our camp's core values—creativity, adventure, and pure wonder. Our camp is a vibrant melting pot where creative souls unite and imagination knows no bounds. Join us in the magic!",
+        "code": "ele",
+        "status": "Day Time, Night Time, Day Time"
+    },
+    {
+        "Name": "Cosmic Canvas",
+        "Description": "Step right up, dusty wanderers! Cosmic Canvas is here to add some sparkle to your adventure with UV and metallic face painting. Pick a stencil or let us freestyle your glow-up, and then check yourself out under our UV lights! Open Monday 3 pm to 5 pm, and Tuesday to Saturday 11 am to 2 pm & 7 pm to 9 pm. Get painted, get glowing, and get grooving!",
+        "code": "cos",
+        "status": "Fam • Day Time, Night Time"
+    },
+    {
+        "Name": "Braai (s)Armie",
+        "Description": "The Braai (s)Armie sarmies will have your tastebuds singing N'kosi Sikelel' iAfrika (our national anthem)! They're more than just a cheese, tomato, and onion sandwich cooked over the coals; they embody the essence of SA culture, local cuisine, and community spirit. We are serving sarmies Tuesday through Saturday from 11 am to 1 pm.",
+        "code": "brs",
+        "status": "Fam • Other"
+    },
+    {
+        "Name": "ZPE - Zero Point Energy",
+        "Description": "Step into the unknown—where reality dissolves, and your frequency elevates. Warning: Enter at your own risk—no turning back. Float in zero gravity, recharge in harmonic energy fields, and embrace the infinite. Nights pulse with Psytrance & HiTech (Friday/Saturday), Ghetto Tech (Thursday), Reggae (Wednesday), and DnB (Tuesday). By day, light grooves—hit us up for a spontaneous slot!",
+        "code": "zpe",
+        "status": "Fam(ish) • Day Time, All Night"
+    },
+    {
+        "Name": "Burning Questions",
+        "Description": "A space created to encourage robust discussions around various topics stimulated by speeches, theatrical exhibition of concepts, thought experiments, exhibitions and available resources. Join us for thought-provoking conversations and delicious offerings.",
+        "code": "bqs",
+        "status": "Fam(ish) • Morning, Day Time"
+    },
+    {
+        "Name": "Tulpa",
+        "Description": "Inspired by the mystical concept of a tulpa—thoughtforms brought to life—we invite you into our playground of creativity, music, and connection. Explore workshops, day parties, soothing massages, and groovy rhythms. Join us for a week of playful discovery and spontaneous surprises in our lush, vibrant oasis. Tulpa is your imaginary friend theme camp.",
+        "code": "tul",
+        "status": "Day Time, Night Time"
+    },
+    {
+        "Name": "Front Right",
+        "Description": "The place where the music hits best, the vibes are high, and you’ll always find your crew. Inspired by our favourite dance floor spot, we bring beats, shade, and top-tier energy. Swing by, stay a while, or just use us as your landmark—if you know, you know.",
+        "code": "frr",
+        "status": "Day Time"
+    },
+    {
+        "Name": "Bubbles & Bass",
+        "Description": "Come dance, enjoy some funky tunes, sip delicious bubbles, and watch the sunrise as the energy shifts from night to day. Experience the magic of Bubbles and Bass on Friday, Saturday and Sunday from 6 am to 12 pm! The best way to start your day (or end your night)!",
+        "code": "bub",
+        "status": "Morning"
+    },
+    {
+        "Name": "Dust Devil Saloon Bar",
+        "Description": "Welcome to the wildest watering hole on the Binnekring! Enter through swinging saloon doors into an oasis of good vibes, where icy beer, tequila, and laughter flow freely. Lounge under our grand Bedouin, lose yourself in silky DJ beats, or tempt fate with our mischief-making tribe at the bar. Open in the midday heat - ready to quench your thirst!",
+        "code": "dds",
+        "status": "Day Time"
+    },
+    {
+        "Name": "Le Petit Paris",
+        "Description": "We invite you to toast the breathtaking Tankwa sunset daily with champagne and dynamic DJ sets. As the sun rises, you can awaken to live acoustic performances and fresh bubbly. Our cosy, shaded lounge offers a serene escape, fostering connection and unforgettable memories in the heart of the desert.",
+        "code": "lpp",
+        "status": "Day Time, Other"
+    },
+    {
+        "Name": "Time To Shine",
+        "Description": "We have a small stage for you to perform; give it a go … don't be torn. You won't see anyone. But we can see you. Exhibit your desired talent, even one you think you haven't.Time to shine, you at your best, jump on our stage and perform for the rest! Tequila will be provided to calm shattered nerves.",
+        "code": "tts",
+        "status": "Fam(ish) • Day Time"
+    },
+    {
+        "Name": "The MemberBerries",
+        "Description": "The MemberBerries is a small collection of dispersed berries that found each other in the immediacy of the default and experimental world. If it is relaxation or reflection, radical self-expression or radical inclusion, or even just a space to chill out, come find the MemberBerries.",
+        "code": "tmb",
+        "status": "Fam • Morning, Other"
+    },
+    {
+        "Name": "Lick n Dab",
+        "Description": "Lick n Dab Camp is a wild fusion of beats, treats, and playful chaos! Groove to electrifying DJ sets, indulge in soft-serve ice cream, and play interactive games that spark laughter and connection. Stay cool under our refreshing MystiFyer misting system while shaking your booty and enjoying the ultimate cool-day vibes!",
+        "code": "lnd",
+        "status": "Fam(ish) • Day Time"
+    },
+    {
+        "Name": "Kaggens Village",
+        "Description": "Welcome to our camp, shared humanity, and end-vision: A global community, harmonious, with respect and love for All Beings. Together, honoring the spirits of the land, we weave a vibrant tapestry of indigenous wisdom, celebration, and tribute across all tribes. The Rainbow Warriors.",
+        "code": "kag",
+        "status": "Fam • Day Time"
+    },
+    {
+        "Name": "Ain't Misbehavin'",
+        "Description": "Take the A train to the world's finest dusty ballroom. Find us in the rose room, where the jazz cats bloom. We’ll be riffin’ the scotch, ready to jive when the clock strikes five. Later, we’ll be puttin' on our shiny stockings, swaying smoothly with the rhythm rocking. Here, We Ain’t Misbehavin’... Just swinging along to the jazz we’re cravin’.",
+        "code": "amb",
+        "status": "Fam(ish) • Day Time, Night Time"
+    },
+    {
+        "Name": "The ArtSluts",
+        "Description": "A desert angel, wielding a sledgehammer over one shoulder, a screwdriver or three in their back pocket, appearing like a mirage from the heat and dust, ready and willing to assist with any creative task at hand. We arrive in build-week ready to assist the artists of AfrikaBurn in realising their dreams. Join us for Builders Breakfast to start your day!",
+        "code": "tas",
+        "status": "Fam(ish) • Morning, Other"
+    },
+    {
+        "Name": "The Pancake People",
+        "Description": "The Pancake People Show! For a decade, burners have crossed the Binnekring to witness the magical mayhem that has seen new lovers meet, strangers become besties & family memories made. This year, we aim to blow your mind. Entertaining & serving from 9 am to 11 am! Our space is YOURS! A hub for performances & connection. Come musos, comedians & fun lovers!",
+        "code": "pan",
+        "status": "Fam • Morning, Day Time, Night Time"
+    },
+    {
+        "Name": "Garden of Weeden",
+        "Description": "The Garden of Weeden comprises three public spaces to explore: The Garden of Play, an arcade with pool, air-hockey, foosball, table tennis, a mini cinema and more. The Garden of Boogy is an old-school music inflatable dance floor. The Garden of Chill is a super chilled-out lounge area open 24 hours with the gifting magical tree at the center of the lounge. Look out for our in-camp artworks - Dreamz, our giant dreamcatcher looking over our camp and Dezirah, our water dragon gifting ice-cold drinking water.",
+        "code": "gow",
+        "status": "Fam • Day Time, Night Time"
+    },
+    {
+        "Name": "Mimosa Avenue",
+        "Description": "What's better than a cold mimosa on a hot desert day? Exactly. Cruise past for a refreshment, or pull up your handbrake and enjoy a bit of finely curated music! Dops and tunes are served from 12 pm to 4 pm every day!",
+        "code": "mim",
+        "status": "Day Time"
+    },
+    {
+        "Name": "The Prize Cock",
+        "Description": "We are a neighbourhood bar offering cocktails and beers to passersby. We have a large stretch tent, a proper bar counter and a back bar. Background pub tunes from 1920 to 2020 are played through a small speaker - no rave music. Open from 12 pm to 4 pm Monday to Sunday.",
+        "code": "tpc",
+        "status": "Other"
+    },
+    {
+        "Name": "The House of Boho",
+        "Description": "As dawn breaks over Tankwa Town, excitement fills the air as artists gather in lively 4:20 sessions to celebrate creativity with music, food, and camaraderie. The DJ energises the crowd, and the scent of African-style vetkoeks AMs and Gin and tonic sundowners enhances the festive atmosphere. Laughter and ideas flourish amid the beats, drawing more art enthusiasts into this vibrant scene.",
+        "code": "",
+        "status": "Fam(ish) • Other"
+    },
+    {
+        "Name": "Middagslapie a.k.a Siesta",
+        "Description": "Middagslapie: A Sanctuary of Serenity 🌟 Escape the heat in our 15m x 25m Bedouin tent, offering shade, comfort, and coolness from 12pm to 3pm. Enjoy refreshing cocktails and mocktails served on ice, accompanied by soothing lounge music. Relax in plush seating and let the peaceful atmosphere transport you to another universe. A safe and beautiful space for all!",
+        "code": "mds",
+        "status": "Fam(ish) • Day Time"
+    },
+    {
+        "Name": "Pandora's Fox",
+        "Description": "Where Pancakes are golden; Syrup is sinful, and the crew is playful and unhinged. We will flip your stacks and fill your water bottles between 9 am and 11 am(ish) as you roll past from a long night on the Binnekring or crawl out of someone else's tent! Join us in our chill lounge to rest and recharge.",
+        "code": "pan",
+        "status": "Fam • Morning"
+    },
+    {
+        "Name": "Metastofasis",
+        "Description": "We are a group of like-minded Burners who provide a chill space, morning yoga, occasional quizzes, and very soft music for ambience. We have UV-lit drapes for those who want to experience mind-bending visuals.",
+        "code": "met",
+        "status": "Fam(ish) • Morning, Day Time, Night Time"
+    },
+    {
+        "Name": "Camp 404",
+        "Description": "Feeling Lost? We are also not found. 404 is a blanket fort of confused and delicious nonsense. Our 24/7 lounge is a comfy, safe space with snacks, games, downtempo tunes and lamps to talk to. Join us at 11 am(ish) for the best vegan brunch in Tankwa Town. Check our activity board for daily shenanigans.",
+        "code": "404",
+        "status": "Morning, Day Time, Night Time"
+    },
+    {
+        "Name": "Wild & Juicy",
+        "Description": "Did you take your vitamins today? Don't worry; we've got you covered. Be on the lookout for a lonely smallish, ugly, blueish trailer with a moerse solar panel somewhere on the Binnekring. We will gift you freshly squeezed orange, carrot and ginger juice! Take a pic and make your mom proud. We can't wait to share dusty love!",
+        "code": "was",
+        "status": "Morning, Day Time"
+    },
+    {
+        "Name": "The Steampunk Saloon",
+        "Description": "The Steampunk Saloon, a feminine desert oasis for the dusty voyeur. Monday to Saturday, join us for a boogie from 4pm till late. We play music with lyrics! Pop in for workshops during the day and on Thursday, Friday and Saturday night, join us at around 6 pm for our sizzling burlesque shows. We bring happy, playful, sexy energy!",
+        "code": "sps",
+        "status": "Day Time, Night Time"
+    },
+    {
+        "Name": "Burning Moon",
+        "Description": "Step into our Moroccan-inspired wine bar oasis! Take a rest, enjoy delicious wine and gather around our cozy fireplace. Let the tales flow. Tuesday 11 am to 3 pm, Thursday 7 pm to 11 pm, Friday 11 am to 3 pm. Find us outside these times on our moving wine bar, serving you wine while dancing in the desert. Don’t forget to bring a cup!",
+        "code": "bmo",
+        "status": "Fam(ish) • Day Time, Night Time"
+    },
+    {
+        "Name": "Steam Punk Garage",
+        "Description": "20 veteran burners. Most of us are in our golden years, with the oldest person 72 years old, and most of us are on our 7th AfrikaBurn! Steam Punk Garage is a collective based on our collection of MVs. Registering four mutant vehicles: 2 are registered so far, and 2 more to go.",
+        "code": "spg",
+        "status": "Night Time"
+    },
+    {
+        "Name": "Birthday Suits",
+        "Description": "Birthday Suits, Power Shower offers the opportunity to experience the world of naturism, a way of life in harmony with nature, and the practice of communal nudity to encourage self-respect and respect for others. We run a naked human car wash, Power Shower, where we gift our guests a soapy warm wash and cold orange juice—no funny business.",
+        "code": "bds",
+        "status": "Fam • Day Time"
+    },
+    {
+        "Name": "The Lion's Den",
+        "Description": "A home in the desert to a seasoned group of South African Burners with three mutants creating magic and joy for everyone. A place to chill during daytime to ambient vibes from a wide array of DJs while sipping on refreshing local produce. 420-friendly building-up to legendary nighttime parties with many surprises and pop-ups in between.",
+        "code": "tld",
+        "status": "Fam(ish) • Day Time, Night Time"
+    },
+    {
+        "Name": "Sweet Love Cinema",
+        "Description": "We are a cinema camp that has been going to AfrikaBurn for over ten years. We play kid-friendly movies from sunset to early morning.",
+        "code": "slc",
+        "status": "Fam • Night Time"
+    },
+    {
+        "Name": "Jolly Lolly Jumpers",
+        "Description": "Gear up, folks! Join the Jolly Lolly Jumpers every afternoon-ish for epic gladiator showdowns in our inflatable ring! Challenge your pals to a duel, conquer the battlefield, and claim victory - all while cooling off with our scrumptious ice lollies! It's the ultimate blend of fun, frolics, and frozen treats!",
+        "code": "jll",
+        "status": "Fam • Day Time"
+    },
+    {
+        "Name": "Sizzle & Synth",
+        "Description": "Nothing kisses the soul quite like a juicy boerie roll. These sizzlers will provide a taste of South African heritage to all boerie-loving burners that sniff us out. Boerie, beats, and banter are served every afternoon so you can boogie with a boerie at Burn!",
+        "code": "sis",
+        "status": "Fam • Day Time"
+    },
+    {
+        "Name": "Pedals for Peace",
+        "Description": "We are a camp that facilitates hiring bikes to burners attending AfrikaBurn. The funds raised are then used to gift bikes back to identified projects in the default world. We are, in essence, an AfrikaBurn outreach camp.",
+        "code": "pfp",
+        "status": "Fam(ish) • Day Time"
+    },
+    {
+        "Name": "Smokescreen",
+        "Description": "The Tankwa’s Original and Best theatre and party Venue. Lovingly homemade, stylishly curated, and just a little bit wabi-sabi, we bring movies, art, music, costumes, and personality to the Binnekring—just like Hollywood, but with a little extra dust. Our schedule is moderately planned and subject to whimsical change, but we will update our blackboard daily with event times.",
+        "code": "sms",
+        "status": "Fam(ish) • Day Time, Night Time"
+    },
+    {
+        "Name": "Camp DisFUNKtion",
+        "Description": "An International DisFUNKtional crew from 8 years at BRC is coming to Africa Burn for the first time. On Tuesday, they will bring a Pyjama extravaganza party to Mad Hatters Lounge, with gifts of the funkiest PJs on the planet. They will also make crepes for a few days during morning coffee at Mad Hatters Lounge. There will also be an Outdoor nighttime show of blazing lasers through smokey trees.",
+        "code": "cdf",
+        "status": "Fam(ish) • Morning, Day Time, Night Time"
+    },
+    {
+        "Name": "Dragon's Delight",
+        "Description": "As a sister camp to Kimono Dragons, we summon the fire-breathing dragon’s flame. Fuel your fire with Fireball cocktails or cool off with refreshing elixirs in our welcoming shade. Adorn yourself in glowing costumes and embrace an afternoon where passion meets poetic heat and dreams ignite with every spark.",
+        "code": "ddl",
+        "status": "Day Time"
+    },
+    {
+        "Name": "Enos' Nookie",
+        "Description": "Spacemonkey Enos crashed his flaming rocKET at the edge of Binnekring and created a wild but safe nookie for all cosmic wanderers. Follow the landing lights to play with glowing sand, have a stomp at PSY-Jol-Wednesday, shine on Friday's beauty pageant and let your inner monkey loose on our groovy-eclectic jols driven by our lekker sound system well into Sunday bliss.",
+        "code": "eno",
+        "status": "Morning, Day Time, Night Time, All Night, Other"
+    },
+    {
+        "Name": "Buttery Beasts",
+        "Description": "Slithering, squawking, hopping and hissing into Tankwa Town with the most convenient of convenience stores. Greasemonkeys fix what you’ve broken; Beasts help you find what you've forgotten! On market days, we have hot food, cold drinks, buttery beats and reptilian cosmetic enhancements; at other times, ring the bell for Beastly assistance.",
+        "code": "bub",
+        "status": "Morning, Day Time"
+    },
+    {
+        "Name": "Super Tramps",
+        "Description": "Welcome to Super Tramps—where gravity takes a holiday! Come bounce, flip, and soar under endless skies. Lounge like a lizard or leap into the stars—pure freedom awaits. Hop in, hang out, and get trampy! (Super Tramps isn’t liable for bouncidents—jump at your own risk!)",
+        "code": "str",
+        "status": "Fam • Morning, Day Time, Night Time, All Night"
+    },
+    {
+        "Name": "The Ra Ra Hive",
+        "Description": "Welcome to the Ra Ra Hive. We dance with the sun, welcome the moon, and celebrate life’s sweetness. Inspired by Ra, the Egyptian sun god, we flow with golden energy in a perfect spot for the sunset. Come watch the sun go down—we've got a beautiful space, delicious sundowners, cozy lounges, and a dance floor filled with silky tunes. We are open from 4 pm to 8 pm daily.",
+        "code": "rrh",
+        "status": "Fam(ish) • Other"
+    },
+    {
+        "Name": "The Purple Lounge",
+        "Description": "Purple Lounge Chill-out Space: This cozy tent is filled with glowing purple lights, bean bags and cushions. Mild chill music sets the vibe as we serve tequila sunrises at sunset.",
+        "code": "tpl",
+        "status": "Night Time, Other"
+    },
+    {
+        "Name": "CurioCity",
+        "Description": "CurioCity will unleashed energy; chaos and connection. Wild activations. Crazy interactions. Beats dropped. Colours explode. Magic happens. Come join us for the Cup Olympics – Fast. Fierce. Ridiculous. Who will take the crown? No spectators, just pure, unfiltered experience. Jump in. Play. Ignite.",
+        "code": "cuc",
+        "status": ""
+    },
+    {
+        "Name": "Afrikadelic Village",
+        "Description": "The Afrikadelic Village blends African heritage with modern creativity, fostering inter-cultural exchange, education, and artistic collaboration. It features a Music and Performing Arts Center, a Cultural Heritage Museum, and Artisan Workshops, all preserving traditions while promoting contemporary African art. This vibrant space celebrates culture, empowers communities, and connects people through creativity and innovation. Join us!",
+        "code": "adv",
+        "status": ""
+    },
+    {
+        "Name": "Waves of Peace",
+        "Description": "A space of silence and contemplation at AfrikaBurn.  Here, music and abstract painting come together to create a deep, immersive experience. Projections of artworks shift in sync with eight unique musical compositions while color therapy and sound in noise-canceling headphones help you relax, look within, and ride the wave of peace.",
+        "code": "wop",
+        "status": "Fam • Night Time"
+    },
+    {
+        "Name": "Mahala",
+        "Description": "Mahala invites the curious into our sacred journey space—an oasis for inner exploration and infinite possibility. From breathwork to tantra, sound journeys to storytelling, our daily sessions (11 am to 4 pm) and deep midnight rituals weave play, reverence, and transformation. Gather at our fire circle and tea bar, where magic and connection unfold spontaneously.",
+        "code": "mal",
+        "status": "Fam • Day Time, Other"
+    },
+    {
+        "Name": "The Wet Spot",
+        "Description": "We offer the ultimate gift: a warm, refreshing shower in the heart of the Tankwa desert. We have four shower cubicles open daily from 8:30 am to 11:30 am, Monday to Sunday. Bring your own water! We provide the means—heated and pumped water through our shower heads—but participants must please bring their own water.",
+        "code": "tws",
+        "status": "Fam(ish) • Morning"
+    },
+    {
+        "Name": "Glitch & Glaze",
+        "Description": "A fresh, funky theme camp with a mischievous gang flipping flapjacks and pouring juice, crafted by our pastry witch. Swing by for daily goodies and twirl into our contact staff and spinning workshops.",
+        "code": "glg",
+        "status": "Fam(ish) • Day Time"
+    },
+    {
+        "Name": "La Casa Timeless",
+        "Description": "Step beyond time, where myth and reality blur. Join us at \"La Casa Timeless\" bar for сocktails, dim sum, DJ-sets and live music (4:20 pm to 12 am). Experience Sonic Sand Meditation and Menta Series Transformative Discussions (11 am to 4:20 pm). Prepare for Friday’s Masquerade at our daily mask-making workshop.",
+        "code": "lct",
+        "status": "Fam(ish) • Other"
+    },
+    {
+        "Name": "The Deep End",
+        "Description": "Take a breath and dive into The Deep End. Find us far beneath the surface and get swept up in the current of our multi-sensory experience where music and the mysteries of the deep meet. Float over on Thursday from midday(ish) until late for a bioluminescent boogy.",
+        "code": "tde",
+        "status": "Fam(ish) • Day Time, Night Time"
+    },
+    {
+        "Name": "Khoena Village",
+        "Description": "We invite people to engage with their inner and outer wilderness. It is a space where knowledge and wisdom, both ancient and modern, can be shared and explored. Workshops on yoga, plant medicine, storytelling, meditation, and breathwork, as well as firsthand knowledge from tribe members on Indigenous ways of ecological awareness, will enrich your soul.",
+        "code": "khv",
+        "status": "Fam • Morning, Day Time, Night Time"
+    },
+    {
+        "Name": "HeartSpace",
+        "Description": "We offer a sober, heart-centered space for deep connection, conscious touch, and embodied expression. Enjoy morning yoga, breathwork, and afternoon workshops like Authentic Relating and Erotic Tiger Dance. Evenings feature sensual events like The Soft Sensual Temple and Shibari. Come as you are, drop into presence, and connect from the heart.",
+        "code": "hsp",
+        "status": "Fam(ish) • Morning, Day Time, Night Time"
+    },
+    {
+        "Name": "The Burning Arms",
+        "Description": "We will serve beer from our traditional English pub and offer activities such as karaoke and pub quizzes. Please check our board in camp for daily activities. We will be open daily from 10 am until we run out of beer!",
+        "code": "tba",
+        "status": "Fam(ish) • Day Time"
+    },
+    {
+        "Name": "Fractal Chill Ethiopian coffee house",
+        "Description": "Home of the famous Ethiopian coffee pot, serving freshly roasted Arabica coffee beans since 2013. We have developed from a coffee pot to a funky Bedouin style cafe housed in a Nomadic tent styled, pimped burner style. Comfort is scarce at the burn, and we offer a home away from home.",
+        "code": "fcc",
+        "status": "Fam • Day Time"
+    },
+    {
+        "Name": "Lucid Lapis",
+        "Description": "We serve blue tea in a sanctuary of connection and reflection. It's a space for deep reflection, lightness, relaxation, and joy, where you can step into the night with clarity. We welcome everyone. Share stories and set intentions. Take a sip of the blue as you prepare to journey through the stars of your own life. Open on Tuesday and Thursday from 2 pm to 4 pm.",
+        "code": "luc",
+        "status": "Fam(ish) • Other"
+    },
+    {
+        "Name": "What If",
+        "Description": "What If is a community of creative, like-minded friends who come together at the Burn to reconnect and share good times. We keep things simple—great company, tasty flapjacks, and thoughtful food gifts. It’s all about support, inclusivity, and making the most of the Burn experience with the people who matter.",
+        "code": "wif",
+        "status": "Day Time"
+    },
+    {
+        "Name": "Soul of Alrakis",
+        "Description": "Welcome to Soul of Alrakis, a sanctuary born from a bright star where desert dreams take shape. By day, find shade in our billowing canopies and enjoy our chill spots with lounge music. By night, dance under glowing waves of light as if the ocean kissed the dust. Expect the unexpected: performances by our various artists.",
+        "code": "soa",
+        "status": "Fam(ish) • Day Time, Night Time, All Night"
+    },
+    {
+        "Name": "The Tankwa Town Art Appreciation Society",
+        "Description": "The Tankwa Town Art Appreciation Society Camp - home of artists, performers and now, pastry chefs! Join us for an art tour of the Binnekring on our mutant vehicle - \"the Bakkery\" - and enjoy freshly baked baguettes, croissants, and exclusive artwork insights.",
+        "code": "aas",
+        "status": "Fam • Morning, Day Time"
+    },
+    {
+        "Name": "Bahari Desert",
+        "Description": "Your chill spot in the desert. Kick back to smooth tunes, get lost in the beats, and feel the rhythm of the dunes. With that tropical vibe and desert energy, it’s the ultimate place to unwind, dance, and recharge. Ride the wave with us!",
+        "code": "bah",
+        "status": "Fam(ish) • Day Time, Night Time"
+    },
+    {
+        "Name": "Sunrisers",
+        "Description": "Gifting excellent coffee from 7 am every morning to all Burners. We have a collaborative space for displaying your art or artistry, be it a Yoga class, photography or giving talks, after coffee time till 11 am every day.",
+        "code": "sun",
+        "status": "Fam • Morning"
+    },
+    {
+        "Name": "Lands of Love",
+        "Description": "Devoted to all the ways we Love the Land. Our main gift is Early Erections, where we gift the use of power tools when erecting tents or structures. We also facilitate a Decompression hike at the end of the Burn, where we hike from the Tankwa to the Cederberg over two days.",
+        "code": "lol",
+        "status": "Fam • Morning, Day Time, Other"
+    },
+    {
+        "Name": "KHOIKHOI",
+        "Description": "We curate an authentic Khoikhoi experience that includes Khoikhoi language sessions, film screenings, poetry, dance, storytelling, and conversations.",
+        "code": "kho",
+        "status": "Fam(ish) • Day Time"
+    },
+    {
+        "Name": "Marmajam",
+        "Description": "Free-flow jams in the afternoons, Cool Story Bro in the evenings, the roving Poetry Apothecary and unscheduled live music. Variously wholesome mornings featuring touch, sound, yoga and cacao, and a peaceful, centering space to decompress under compressed mist.",
+        "code": "maj",
+        "status": "Fam(ish) • Morning, Day Time, Night Time"
+    },
+    {
+        "Name": "namaSlay",
+        "Description": "Not your average yoga flow. We will not ask you if your fifi's are in retrograde or try to align your shakers - you’re bound to boogie them out of whack later anyways. We facilitate stretchies and massagies for your achy musclies (definitely pronounced musc-lees). Stay for tea (am) and chats or a boerie roll (pm).",
+        "code": "nam",
+        "status": "Fam(ish) • Morning, Day Time"
+    },
+    {
+        "Name": "Sacred Garden",
+        "Description": "A vibrant international community of creatives united by a love for art, music, and celebration. Since 2019, we’ve been gifting beautifully designed fans and now, a mobile bar serving healthy, natural hot drinks. Rooted in Burning Man principles, we spread warmth, creativity, and connection across the desert nights.",
+        "code": "sag",
+        "status": "Fam(ish) • Night Time, All Night"
+    },
+    {
+        "Name": "Heart of Steam",
+        "Description": "We bring the experience of steam traditions from all over the world to Africa.",
+        "code": "hos",
+        "status": "Day Time"
+    },
+    {
+        "Name": "Bull's Eye: Jikoni Potjie",
+        "Description": "Need a break from stomping the dust? Relax and refuel in the afternoon-ish from Tuesday to Friday at our Dinner in the Desert. We're firing up the braai to bring you potjie (meat & veg) and toasties with a drink. Bring a bowl/mug/cup, play games, meet people and refuel for the night ahead.",
+        "code": "bey",
+        "status": "Fam(ish) • Day Time"
+    },
+    {
+        "Name": "DMT",
+        "Description": "We bring acoustic tunes and soulful electronic music to the desert. Our story is one of infinite iterations of kaleidoscopic collaboration. Our community is a diverse mix of locals and internationals, all united by camaraderie and our love for transcendent tunes.",
+        "code": "dmt",
+        "status": "Day Time, Night Time"
+    },
+    {
+        "Name": "Camp Why Not",
+        "Description": "Seven years of Why Not, seven days of AfrikaBurn, 77 living legends—each with a spark of something extraordinary. This year, we’re going BIG: two mutant vehicles, 60+ hours of music, and seven sunrise parties. Late-night (2 am to 4 am) Why Not Fries? Of course! Some mysteries will reveal themselves at the right time & place. Join the ride. Epic vibes only. x7.",
+        "code": "cwn",
+        "status": "Fam(ish) • Morning, Day Time, Night Time, All Night"
+    },
+    {
+        "Name": "Cymatica",
+        "Description": "Friday at MadHatters brings the magic of the CYMATICA SILVER BALL! Wear your brightest metallics and shiniest wear for an evening of illusion and reflection! The wizards at CYMATICA will convert the lounge and dunes into a playground of dancing lasers and thumping beats from our DJs. As usual, our bar will serve delicious cold libations into the early hours.",
+        "code": "cym",
+        "status": "Fam(ish) • Morning, Day Time, Night Time, All Night"
+    },
+    {
+        "Name": "Fly Fishing SK",
+        "Description": "Fly Fishing SK is where things seem calm ... until they’re not. Our camp flows with the unexpected—sometimes it’s a quiet retreat, sometimes it’s a full-on jol. You never know when the next big catch (or party) will land.",
+        "code": "fsk",
+        "status": "Fam(ish) • Morning, Day Time, Night Time, All Night"
+    },
+    {
+        "Name": "Ukuthula Gardens",
+        "Description": "A peaceful oasis offering a variety of yoga, breathwork, sound healing, dance, meditation, cacao ceremonies, ecstatic dance and creative workshops. Stop by to enjoy a cup of tea, grab one of our burn journals, sit down, or create your own bracelet. In the evening, look out when Someone Else’s Spaceship ventures into the desert.",
+        "code": "uku",
+        "status": "Fam(ish) • Day Time"
+    },
+    {
+        "Name": "Fairy Tale Window",
+        "Description": "Open a window to a fairytale! From 8 to 11 am, we’ll treat you to pancakes with fillings that whisper stories and matcha tea that awakens dreams. After that, relax under giant mushrooms and dance with reflections in our disco mirror. Here, mornings turn into magic, and every guest becomes the hero of their own story!",
+        "code": "ftw",
+        "status": "Fam(ish) • Morning"
+    },
+    {
+        "Name": "Literary Scents",
+        "Description": "A cozy oasis of books, scents, and creativity. Immerse yourself in our library, contribute to the evolving Welcome Book, or craft a personalised fragrance. Leave your mark with a message in a bottle, unwind in our hammocks, and join us for poetry nights under the stars.",
+        "code": "lit",
+        "status": "Fam(ish) • Day Time"
+    },
+    {
+        "Name": "Mask On",
+        "Description": "We appear in masks and puppets, come share our craft.",
+        "code": "mon",
+        "status": "Fam • Day Time"
+    },
+    {
+        "Name": "Ikigai",
+        "Description": "Welcome to a lush psychedelic cave with hidden magical wonder. This space is all about movement and flow, inviting you to explore parts of your being yet unknown through holistic practices like dance and breathwork. Be open to the possibilities of psy beats and their potential for your evolution and expansion in a conscious space.",
+        "code": "iki",
+        "status": "Fam • All Night"
+    },
+    {
+        "Name": "The Flour Power Cartel",
+        "Description": "A collective of mature burners who have been baking bread at AfrikaBurn since 2015. Served hot and fresh to hungry burners. Midday(ish). Real butter, a selection of jams, peanut butter and Bovril. First come, first served.",
+        "code": "fpc",
+        "status": "Fam • Day Time"
+    }
+]

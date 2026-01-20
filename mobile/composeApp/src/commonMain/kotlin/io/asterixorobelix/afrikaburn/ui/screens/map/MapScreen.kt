@@ -5,7 +5,11 @@ import afrikaburn.composeapp.generated.resources.map_legend_artworks
 import afrikaburn.composeapp.generated.resources.map_legend_camps
 import afrikaburn.composeapp.generated.resources.map_legend_hint
 import afrikaburn.composeapp.generated.resources.map_legend_my_camp
+import afrikaburn.composeapp.generated.resources.map_legend_services
+import afrikaburn.composeapp.generated.resources.map_legend_toilets
 import afrikaburn.composeapp.generated.resources.map_legend_you
+import afrikaburn.composeapp.generated.resources.service_dialog_description
+import afrikaburn.composeapp.generated.resources.service_dialog_ok
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -32,8 +36,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.Layers
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -41,6 +47,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -90,12 +97,17 @@ import org.maplibre.compose.util.ClickResult
 
 private const val MAP_STYLE_PATH = "files/maps/style.json"
 private const val MOCK_LOCATIONS_PATH = "files/maps/mock-locations.geojson"
+private const val AMENITIES_PATH = "files/maps/afrikaburn-amenities.geojson"
 
 // Map marker colors - warm festival palette
 @Suppress("MagicNumber")
 private val CAMP_MARKER_COLOR = Color(0xFFBB86FC)  // Purple for camps
 @Suppress("MagicNumber")
 private val ARTWORK_MARKER_COLOR = Color(0xFF03DAC6)  // Teal for artworks
+@Suppress("MagicNumber")
+private val TOILET_MARKER_COLOR = Color(0xFF795548)  // Brown for toilets
+@Suppress("MagicNumber")
+private val SERVICE_MARKER_COLOR = Color(0xFFF44336)  // Red for services
 @Suppress("MagicNumber")
 private val USER_LOCATION_COLOR = Color(0xFF64B5F6)  // Lighter blue for user
 @Suppress("MagicNumber")
@@ -104,6 +116,8 @@ private val MARKER_STROKE_COLOR = Color.White
 
 private val CAMP_MARKER_RADIUS = 12.dp
 private val ARTWORK_MARKER_RADIUS = 10.dp
+private val TOILET_MARKER_RADIUS = 8.dp
+private val SERVICE_MARKER_RADIUS = 10.dp
 private val USER_LOCATION_RADIUS = 8.dp
 private val CAMP_PIN_RADIUS = 14.dp
 private val MARKER_STROKE_WIDTH = 2.dp
@@ -191,6 +205,9 @@ private fun MapContent(
     // Legend expansion state - persists across recompositions
     var isLegendExpanded by rememberSaveable { mutableStateOf(true) }
 
+    // Service info dialog state
+    var selectedServiceName by remember { mutableStateOf<String?>(null) }
+
     // Animate camera to user location when FAB is tapped
     LaunchedEffect(state.centerOnUserLocationRequest) {
         if (state.centerOnUserLocationRequest > 0 && state.hasUserLocation) {
@@ -218,6 +235,7 @@ private fun MapContent(
             onMapClick = { _, offset ->
                 val features = cameraState.projection?.queryRenderedFeatures(offset)
 
+                // Check for camp/artwork markers first
                 val markerFeature = features?.firstOrNull { feature ->
                     val type = feature.properties?.get("type")?.toString()?.removeSurrounding("\"")
                     type == "camp" || type == "artwork"
@@ -234,6 +252,25 @@ private fun MapContent(
                         return@MaplibreMap ClickResult.Consume
                     }
                 }
+
+                // Check for service markers
+                val serviceFeature = features?.firstOrNull { feature ->
+                    val fclass = feature.properties?.get("fclass")?.toString()?.removeSurrounding("\"")
+                    fclass == "service"
+                }
+
+                if (serviceFeature != null) {
+                    val name = serviceFeature.properties
+                        ?.get("name")
+                        ?.toString()
+                        ?.removeSurrounding("\"")
+
+                    if (name != null) {
+                        selectedServiceName = name
+                        return@MaplibreMap ClickResult.Consume
+                    }
+                }
+
                 ClickResult.Pass
             },
             onMapLongClick = { position, _ ->
@@ -266,6 +303,33 @@ private fun MapContent(
                 filter = Feature["type"].asString() eq const("artwork"),
                 color = const(ARTWORK_MARKER_COLOR),
                 radius = const(ARTWORK_MARKER_RADIUS),
+                strokeColor = const(MARKER_STROKE_COLOR),
+                strokeWidth = const(MARKER_STROKE_WIDTH)
+            )
+
+            // Amenities source (toilets and services)
+            val amenitiesSource = rememberGeoJsonSource(
+                data = GeoJsonData.Uri(Res.getUri(AMENITIES_PATH))
+            )
+
+            // Toilet markers (brown)
+            CircleLayer(
+                id = "toilet-markers",
+                source = amenitiesSource,
+                filter = Feature["fclass"].asString() eq const("toilet"),
+                color = const(TOILET_MARKER_COLOR),
+                radius = const(TOILET_MARKER_RADIUS),
+                strokeColor = const(MARKER_STROKE_COLOR),
+                strokeWidth = const(MARKER_STROKE_WIDTH)
+            )
+
+            // Service markers (red)
+            CircleLayer(
+                id = "service-markers",
+                source = amenitiesSource,
+                filter = Feature["fclass"].asString() eq const("service"),
+                color = const(SERVICE_MARKER_COLOR),
+                radius = const(SERVICE_MARKER_RADIUS),
                 strokeColor = const(MARKER_STROKE_COLOR),
                 strokeWidth = const(MARKER_STROKE_WIDTH)
             )
@@ -356,6 +420,14 @@ private fun MapContent(
         dialogState = state.campPinDialogState,
         viewModel = viewModel
     )
+
+    // Service info dialog
+    selectedServiceName?.let { serviceName ->
+        ServiceInfoDialog(
+            serviceName = serviceName,
+            onDismiss = { selectedServiceName = null }
+        )
+    }
 }
 
 /**
@@ -480,6 +552,18 @@ private fun MapLegend(
                         label = stringResource(Res.string.map_legend_artworks)
                     )
 
+                    // Toilets - Brown
+                    LegendItem(
+                        color = TOILET_MARKER_COLOR,
+                        label = stringResource(Res.string.map_legend_toilets)
+                    )
+
+                    // Services - Red
+                    LegendItem(
+                        color = SERVICE_MARKER_COLOR,
+                        label = stringResource(Res.string.map_legend_services)
+                    )
+
                     // My Camp - Orange
                     LegendItem(
                         color = CAMP_PIN_COLOR,
@@ -579,6 +663,55 @@ private fun CampPinDialogs(
             )
         }
     }
+}
+
+/**
+ * Simple dialog showing service location name.
+ * Used when tapping on service markers like Rangers, Medics, Ice, etc.
+ */
+@Composable
+private fun ServiceInfoDialog(
+    serviceName: String,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = {
+            Box(
+                modifier = Modifier
+                    .size(Dimens.iconSizeLarge)
+                    .background(SERVICE_MARKER_COLOR, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Place,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(Dimens.iconSizeMedium)
+                )
+            }
+        },
+        title = {
+            Text(
+                text = serviceName,
+                style = MaterialTheme.typography.headlineSmall,
+                textAlign = TextAlign.Center
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(Res.string.service_dialog_description),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(Res.string.service_dialog_ok))
+            }
+        }
+    )
 }
 
 @Composable

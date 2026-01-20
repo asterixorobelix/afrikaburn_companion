@@ -157,9 +157,15 @@
     <!-- Map Legend -->
     <string name="map_legend_camps">Theme Camps</string>
     <string name="map_legend_artworks">Artworks</string>
+    <string name="map_legend_toilets">Toilets</string>
+    <string name="map_legend_services">Services</string>
     <string name="map_legend_my_camp">My Camp</string>
     <string name="map_legend_you">You</string>
     <string name="map_legend_hint">Long-press to mark your camp</string>
+
+    <!-- Service Info Dialog -->
+    <string name="service_dialog_description">AfrikaBurn service location</string>
+    <string name="service_dialog_ok">OK</string>
 
     <!-- Camp Pin -->
     <string name="camp_pin_place_title">Place Your Camp Pin?</string>
