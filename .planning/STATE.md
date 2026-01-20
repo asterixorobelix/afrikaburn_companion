@@ -1,23 +1,23 @@
 # Project State
 
-**Last Updated:** 2026-01-18
-**Current Phase:** Phase 3 - User Location (In Progress - Checkpoint)
+**Last Updated:** 2026-01-20
+**Current Phase:** Phase 3 - User Location (Complete)
 
 ## Current Position
 
 Phase: 3 of 4 (User Location)
-Plan: 1 of 1 in progress (awaiting verification)
-Status: Code complete, awaiting human verification
-Last activity: 2026-01-18 - Phase 3 plan 01 executed to checkpoint
+Plan: 1 of 1 complete
+Status: Phase complete, human verification passed
+Last activity: 2026-01-20 - Phase 3 complete
 
-Progress: █████████░ 70%
+Progress: █████████░ 75%
 
 ## Project Reference
 
 See: `.planning/PROJECT.md` (updated 2026-01-18)
 
 **Core value:** Participants can discover and navigate to AfrikaBurn theme camps and artworks without internet connectivity.
-**Current focus:** v3.0 Offline Map milestone - Phase 3 at checkpoint (human verification required)
+**Current focus:** v3.0 Offline Map milestone - Phase 3 complete, ready for Phase 4
 
 ## Milestone Progress
 
@@ -25,19 +25,19 @@ See: `.planning/PROJECT.md` (updated 2026-01-18)
 
 | Phase | Name | Status | Progress |
 |-------|------|--------|----------|
-| 1 | Foundation & Basic Map | Complete | 100% |
-| 2 | Markers & Detail Navigation | Complete | 100% |
-| 3 | User Location | At Checkpoint | 90% |
-| 4 | User Camp Pin | Pending | 0% |
+| 1 | Foundation & Basic Map | ✓ Complete | 100% |
+| 2 | Markers & Detail Navigation | ✓ Complete | 100% |
+| 3 | User Location | ✓ Complete | 100% |
+| 4 | User Camp Pin | ○ Pending | 0% |
 
-**Overall:** 11/18 requirements complete (61%), Phase 3 pending verification
+**Overall:** 14/18 requirements complete (78%)
 
 ## Phase 1 Plans (Complete)
 
 | Plan | Name | Wave | Status | Dependencies |
 |------|------|------|--------|--------------|
-| 01-01 | Map Infrastructure & Dependencies | 1 | Complete | None |
-| 01-02 | Navigation Integration & Gestures | 2 | Complete | 01-01 |
+| 01-01 | Map Infrastructure & Dependencies | 1 | ✓ Complete | None |
+| 01-02 | Navigation Integration & Gestures | 2 | ✓ Complete | 01-01 |
 
 **Requirements completed:**
 - [x] MAP-01: Offline map tiles covering Tankwa Karoo region
@@ -51,7 +51,7 @@ See: `.planning/PROJECT.md` (updated 2026-01-18)
 
 | Plan | Name | Wave | Status | Dependencies |
 |------|------|------|--------|--------------|
-| 02-01 | Interactive Marker Tap to Detail | 1 | Complete | 01-02 |
+| 02-01 | Interactive Marker Tap to Detail | 1 | ✓ Complete | 01-02 |
 
 **Requirements completed:**
 - [x] MARK-01: User sees camp locations displayed as markers with distinct icon (purple circles)
@@ -60,23 +60,25 @@ See: `.planning/PROJECT.md` (updated 2026-01-18)
 - [x] MARK-04: User can tap an artwork marker to view artwork details
 - [x] MARK-05: User can visually distinguish camp markers from artwork markers (color-coded)
 
-## Phase 3 Plans (In Progress)
+## Phase 3 Plans (Complete)
 
 | Plan | Name | Wave | Status | Dependencies |
 |------|------|------|--------|--------------|
-| 03-01 | User Location & My Location FAB | 1 | Checkpoint | 02-01 |
+| 03-01 | User Location & My Location FAB | 1 | ✓ Complete | 02-01 |
 
-**Requirements to complete (pending verification):**
-- [ ] LOC-01: User sees their current GPS location on the map
-- [ ] LOC-02: User can tap a button to center the map on their location
-- [ ] LOC-03: User is prompted to grant location permission when accessing map
+**Requirements completed:**
+- [x] LOC-01: User sees their current GPS location on the map (blue dot)
+- [x] LOC-02: User can tap a button to center the map on their location (My Location FAB)
+- [x] LOC-03: User is prompted to grant location permission when accessing map
 
-**Code complete - awaiting human verification:**
+**Implementation highlights:**
 - LocationService expect/actual for Android (FusedLocationProviderClient) and iOS (CLLocationManager)
+- LocationPermissionHandler for proper Android runtime permission dialogs
 - MapUiState extended with user location fields
 - MapViewModel with location tracking and permission handling
 - UserLocationMarker (blue dot) and MyLocationButton FAB composables
 - MapScreen integration with lifecycle-aware tracking
+- Camera animation to user location on FAB tap
 
 ## Key Decisions Log
 
@@ -90,25 +92,27 @@ See: `.planning/PROJECT.md` (updated 2026-01-18)
 | 2026-01-18 | Code-based marker matching | ProjectItem.code used to link GeoJSON features to project data |
 | 2026-01-18 | CircleLayer for markers | Programmatic markers work better than symbol icons |
 | 2026-01-18 | Dark mode map style | Background #1a1a2e to match app theme |
-| 2026-01-18 | Custom LocationService | expect/actual pattern like CrashLogger, not moko-geo library |
-| 2026-01-18 | Balanced power accuracy | Battery conservation critical in desert environment |
+| 2026-01-20 | Custom LocationService | expect/actual pattern like CrashLogger, not moko-geo library |
+| 2026-01-20 | Balanced power accuracy | Battery conservation critical in desert environment |
+| 2026-01-20 | UI-layer permission handling | Android runtime permissions require ActivityResultLauncher |
+| 2026-01-20 | Camera animation pattern | Request counter + LaunchedEffect for map camera control |
 
 ## Blockers
 
-**Checkpoint Required:** Plan 03-01 needs human verification before completion.
+None.
 
 ## Session Continuity
 
-Last session: 2026-01-18
-Stopped at: Plan 03-01 checkpoint (human verification)
-Resume file: `.planning/phases/03-user-location/03-01-SUMMARY.md`
+Last session: 2026-01-20
+Stopped at: Phase 3 complete
+Resume file: None
 
 ## Next Steps
 
-1. Verify user location feature on device (see SUMMARY.md for steps)
-2. Type "approved" to complete Phase 3 plan 01
-3. After Phase 3: Plan and execute Phase 4 (User Camp Pin)
+1. `/gsd:plan-phase 4` to plan User Camp Pin phase
+2. Phase 4 adds long-press to place camp pin with persistence
+3. After Phase 4: Complete v3.0 Offline Map milestone
 
 ---
 
-*State updated: 2026-01-18 after Phase 3 plan 01 checkpoint reached*
+*State updated: 2026-01-20 after Phase 3 complete*

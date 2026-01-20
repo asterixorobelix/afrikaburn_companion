@@ -9,7 +9,7 @@
 |-------|------|--------------|--------|
 | 1 | Foundation & Basic Map | MAP-01, MAP-02, MAP-03, MAP-04, NAV-01, NAV-02 | ✓ Complete |
 | 2 | Markers & Detail Navigation | MARK-01, MARK-02, MARK-03, MARK-04, MARK-05 | ✓ Complete |
-| 3 | User Location | LOC-01, LOC-02, LOC-03 | Pending |
+| 3 | User Location | LOC-01, LOC-02, LOC-03 | ✓ Complete |
 | 4 | User Camp Pin | PIN-01, PIN-02, PIN-03, PIN-04 | Pending |
 
 **Total:** 4 phases | 18 requirements | 100% coverage
@@ -76,9 +76,9 @@
 **Goal:** Show the user's GPS location on the map with a "My Location" button.
 
 **Requirements:**
-- [ ] LOC-01: User sees their current GPS location on the map
-- [ ] LOC-02: User can tap a button to center the map on their location
-- [ ] LOC-03: User is prompted to grant location permission when accessing map
+- [x] LOC-01: User sees their current GPS location on the map
+- [x] LOC-02: User can tap a button to center the map on their location
+- [x] LOC-03: User is prompted to grant location permission when accessing map
 
 **Success Criteria:**
 1. Blue dot appears on map at user's GPS position
@@ -152,4 +152,4 @@ Phase 1 (Foundation)
 ---
 
 *Roadmap created: 2026-01-18*
-*Last updated: 2026-01-18 (Phase 2 complete)*
+*Last updated: 2026-01-20 (Phase 3 complete)*
