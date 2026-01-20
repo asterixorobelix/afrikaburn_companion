@@ -299,6 +299,54 @@ private fun MapContent(
             )
         }
     }
+
+    // Camp pin dialogs - rendered outside the Box to overlay the map
+    CampPinDialogs(
+        dialogState = state.campPinDialogState,
+        viewModel = viewModel
+    )
+}
+
+/**
+ * Renders the appropriate camp pin dialog based on current state.
+ */
+@Composable
+private fun CampPinDialogs(
+    dialogState: CampPinDialogState,
+    viewModel: MapViewModel
+) {
+    when (dialogState) {
+        is CampPinDialogState.Hidden -> { /* No dialog */ }
+
+        is CampPinDialogState.ConfirmPlace -> {
+            CampPinPlaceDialog(
+                onConfirm = viewModel::confirmPlacePin,
+                onDismiss = viewModel::dismissDialog
+            )
+        }
+
+        is CampPinDialogState.PinOptions -> {
+            CampPinOptionsDialog(
+                onMoveRequest = viewModel::dismissDialog,
+                onDeleteRequest = viewModel::showDeleteConfirmation,
+                onDismiss = viewModel::dismissDialog
+            )
+        }
+
+        is CampPinDialogState.ConfirmMove -> {
+            CampPinMoveDialog(
+                onConfirm = viewModel::confirmMovePin,
+                onDismiss = viewModel::dismissDialog
+            )
+        }
+
+        is CampPinDialogState.ConfirmDelete -> {
+            CampPinDeleteDialog(
+                onConfirm = viewModel::confirmDeletePin,
+                onDismiss = viewModel::dismissDialog
+            )
+        }
+    }
 }
 
 @Composable
