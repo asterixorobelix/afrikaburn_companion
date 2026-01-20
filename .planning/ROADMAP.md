@@ -10,7 +10,7 @@
 | 1 | Foundation & Basic Map | MAP-01, MAP-02, MAP-03, MAP-04, NAV-01, NAV-02 | ✓ Complete |
 | 2 | Markers & Detail Navigation | MARK-01, MARK-02, MARK-03, MARK-04, MARK-05 | ✓ Complete |
 | 3 | User Location | LOC-01, LOC-02, LOC-03 | ✓ Complete |
-| 4 | User Camp Pin | PIN-01, PIN-02, PIN-03, PIN-04 | Pending |
+| 4 | User Camp Pin | PIN-01, PIN-02, PIN-03, PIN-04 | ✓ Complete |
 
 **Total:** 4 phases | 18 requirements | 100% coverage
 
@@ -101,10 +101,10 @@
 **Goal:** Allow users to mark and persist their own camp location on the map.
 
 **Requirements:**
-- [ ] PIN-01: User can place a camp pin by long-pressing on the map
-- [ ] PIN-02: User's camp pin persists after closing and reopening the app
-- [ ] PIN-03: User can move their camp pin to a new location
-- [ ] PIN-04: User can delete their camp pin
+- [x] PIN-01: User can place a camp pin by long-pressing on the map
+- [x] PIN-02: User's camp pin persists after closing and reopening the app
+- [x] PIN-03: User can move their camp pin to a new location
+- [x] PIN-04: User can delete their camp pin
 
 **Success Criteria:**
 1. Long-pressing map shows confirmation and places pin at that location
@@ -152,4 +152,4 @@ Phase 1 (Foundation)
 ---
 
 *Roadmap created: 2026-01-18*
-*Last updated: 2026-01-20 (Phase 3 complete)*
+*Last updated: 2026-01-20 (Phase 4 complete - v3.0 Offline Map milestone complete)*
