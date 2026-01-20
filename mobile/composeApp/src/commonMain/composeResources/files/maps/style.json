@@ -1,0 +1,80 @@
+{
+  "version": 8,
+  "name": "AfrikaBurn Dark",
+  "metadata": {
+    "description": "Dark mode offline map style for Tankwa Karoo region"
+  },
+  "sources": {
+    "protomaps": {
+      "type": "vector",
+      "url": "pmtiles://asset://files/maps/tankwa-karoo.pmtiles",
+      "attribution": "© OpenStreetMap contributors, Protomaps"
+    }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": {
+        "background-color": "#1a1a2e"
+      }
+    },
+    {
+      "id": "earth",
+      "type": "fill",
+      "source": "protomaps",
+      "source-layer": "earth",
+      "paint": {
+        "fill-color": "#252540"
+      }
+    },
+    {
+      "id": "landcover",
+      "type": "fill",
+      "source": "protomaps",
+      "source-layer": "landcover",
+      "paint": {
+        "fill-color": "#2a2a45"
+      }
+    },
+    {
+      "id": "landuse",
+      "type": "fill",
+      "source": "protomaps",
+      "source-layer": "landuse",
+      "paint": {
+        "fill-color": "#2d2d4a"
+      }
+    },
+    {
+      "id": "water",
+      "type": "fill",
+      "source": "protomaps",
+      "source-layer": "water",
+      "paint": {
+        "fill-color": "#16213e"
+      }
+    },
+    {
+      "id": "roads-all",
+      "type": "line",
+      "source": "protomaps",
+      "source-layer": "roads",
+      "paint": {
+        "line-color": "#5a5a7a",
+        "line-width": {"stops": [[10, 1], [15, 3]]}
+      }
+    },
+    {
+      "id": "boundaries",
+      "type": "line",
+      "source": "protomaps",
+      "source-layer": "boundaries",
+      "paint": {
+        "line-color": "#4a4a6a",
+        "line-width": 1,
+        "line-dasharray": [2, 2]
+      }
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "name": "The Vagabonds", "type": "camp", "code": "vag", "description": "Wellness and relaxation camp" },
+      "geometry": { "type": "Point", "coordinates": [19.8960, -32.4805] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Space Cowboys", "type": "camp", "code": "scb", "description": "Galactic space station since 2012" },
+      "geometry": { "type": "Point", "coordinates": [19.8995, -32.4835] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Luminosity Lounge", "type": "camp", "code": "lum", "description": "1949 Dodge truck braai by day, chill space by night" },
+      "geometry": { "type": "Point", "coordinates": [19.8940, -32.4850] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Sunset Oasis", "type": "camp", "code": "sso", "description": "Serene atmosphere since 2008" },
+      "geometry": { "type": "Point", "coordinates": [19.8980, -32.4790] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "aTypical Bar", "type": "camp", "code": "atb", "description": "Serving interaction day or night" },
+      "geometry": { "type": "Point", "coordinates": [19.9015, -32.4820] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Cactus Rising", "type": "camp", "code": "cac", "description": "A prickly adventure with Cactus Magic" },
+      "geometry": { "type": "Point", "coordinates": [19.8925, -32.4865] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Zodiac", "type": "camp", "code": "zod", "description": "Astrology workshops and tarot readings" },
+      "geometry": { "type": "Point", "coordinates": [19.8950, -32.4780] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Disko Dolce", "type": "camp", "code": "dis, ele", "description": "Pasta party and disco beats" },
+      "geometry": { "type": "Point", "coordinates": [19.9030, -32.4845] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Bee Cool Build", "type": "artwork", "code": "bc", "artist": "Megan Cleary", "description": "Beehive-labyrinth hybrid" },
+      "geometry": { "type": "Point", "coordinates": [19.8978, -32.4825] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "OBSCURA", "type": "artwork", "code": "ob", "artist": "Tiaan van Deventer", "description": "Camera obscura with projections" },
+      "geometry": { "type": "Point", "coordinates": [19.8988, -32.4810] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Twist", "type": "artwork", "code": "tw", "artist": "Mari Schroeder", "description": "Giant springy spiral like a Slinky" },
+      "geometry": { "type": "Point", "coordinates": [19.8968, -32.4840] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Star Tree 3", "type": "artwork", "code": "s3", "artist": "Conrad Hubbe", "description": "Peace, Love, Unity, and Respect" },
+      "geometry": { "type": "Point", "coordinates": [19.9003, -32.4800] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Song Catcher", "type": "artwork", "code": "sc", "artist": "Charles Starling", "description": "Giant dreamcatcher with six-meter wave" },
+      "geometry": { "type": "Point", "coordinates": [19.8958, -32.4855] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Switch Off to Switch On", "type": "artwork", "code": "sw", "artist": "Christophe Dardeau", "description": "Brain-shaped installation" },
+      "geometry": { "type": "Point", "coordinates": [19.9020, -32.4815] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Amphibitheatre", "type": "artwork", "code": "am", "artist": "Casio Cowboy Collective", "description": "Fossilised amphibian monument" },
+      "geometry": { "type": "Point", "coordinates": [19.8935, -32.4830] }
+    },
+    {
+      "type": "Feature",
+      "properties": { "name": "Dissolve in the Desert", "type": "artwork", "code": "dd", "artist": "Bur69", "description": "Art and poetry under darkness" },
+      "geometry": { "type": "Point", "coordinates": [19.9008, -32.4870] }
+    }
+  ]
+}

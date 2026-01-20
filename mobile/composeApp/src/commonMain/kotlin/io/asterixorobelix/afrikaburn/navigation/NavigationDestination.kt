@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class NavigationDestination(
@@ -18,7 +19,14 @@ sealed class NavigationDestination(
         contentDescription = "Projects icon",
         icon = Icons.Default.Build
     )
-    
+
+    object Map : NavigationDestination(
+        route = "map",
+        title = "Map",
+        contentDescription = "View map of event area",
+        icon = Icons.Default.Place
+    )
+
     object Directions : NavigationDestination(
         route = "directions", 
         title = "Directions",
@@ -35,7 +43,7 @@ sealed class NavigationDestination(
     
     companion object {
         val allDestinations: List<NavigationDestination> by lazy {
-            listOf(Projects, Directions, About)
+            listOf(Projects, Map, Directions, About)
         }
     }
 }

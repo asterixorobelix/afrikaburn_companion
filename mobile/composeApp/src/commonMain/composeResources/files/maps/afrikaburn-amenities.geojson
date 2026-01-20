@@ -1,0 +1,523 @@
+{
+    "type": "FeatureCollection",
+    "generator": "JOSM",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95661675394, -32.51739760366]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.94710027635, -32.51826157442]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95064615667, -32.51304143610]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95172440469, -32.51460660471]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.94744896352, -32.51646124901]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95088219106, -32.51822086395]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95045840204, -32.51474231169]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95152592123, -32.51211860715]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95059787691, -32.51644767858]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.96182560384, -32.51123648238]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95326399267, -32.51309571986]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95111822546, -32.51333547274]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95249151647, -32.51827514458]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95036184251, -32.51144909786]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95767013240, -32.51094426549]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.94922458589, -32.51633911507]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95702444971, -32.51218193885]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95059251249, -32.51747450192]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95223938882, -32.51026387325]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95446025789, -32.51061672801]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.94918167055, -32.51328118913]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95464533299, -32.51239229251]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.94856476247, -32.51506800760]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95303064317, -32.51117541415]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95814561307, -32.51231312580]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.96135353506, -32.51172504486]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95692252576, -32.51171599743]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.94945525587, -32.51714881473]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95150982797, -32.51908935014]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.94905292451, -32.51848322004]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95287239015, -32.51263430685]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95916485250, -32.51144457413]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.96060251653, -32.51011006433]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "toilet",
+                "amenity": "toilets"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95976030290, -32.51288310827]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "service",
+                "name": "Shuttle Stop"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95143472880, -32.51449577946]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "service",
+                "name": "Rangers"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95284020633, -32.51445959085]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "service",
+                "name": "Sanctuary"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95262026519, -32.51443471118]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "service",
+                "name": "Medics"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95240032405, -32.51449351767]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "service",
+                "name": "Radio Free Tankwa"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95228633017, -32.51506800987]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "service",
+                "name": "DMV"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95244592160, -32.51535525458]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "service",
+                "name": "Die Hek"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.92082535952, -32.49723216023]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "service",
+                "name": "VOC"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95232254133, -32.51439852368]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "service",
+                "name": "Colexodus"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.96119796693, -32.50473563451]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "service",
+                "name": "Volunteer Booth"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95223670930, -32.51484409405]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "service",
+                "name": "Ice"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95208114118, -32.51478754957]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "service",
+                "name": "Lost & Found"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.95225414499, -32.51497867092]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "fclass": "service",
+                "name": "Greeters"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [19.94080580704, -32.50960509819]
+            }
+        }
+    ]
+}

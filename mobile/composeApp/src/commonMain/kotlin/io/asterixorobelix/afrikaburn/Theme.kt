@@ -213,6 +213,13 @@ object Dimens {
     val travelTimeCardMinWidth = 100.dp
     val noteCardIconSize = 40.dp
     val gpsRowHeight = 56.dp
+
+    // Map screen dimensions
+    val mapFabBottomPadding = 80.dp  // Clear MapLibre attribution
+    val mapLegendTopPadding = 48.dp  // Clear scale bar
+    val mapLegendToggleSize = 40.dp
+    val fabSize = 56.dp
+    val fabSizeSmall = 40.dp
 }
 
 @Composable

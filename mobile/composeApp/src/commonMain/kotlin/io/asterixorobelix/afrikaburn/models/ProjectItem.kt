@@ -9,8 +9,16 @@ data class ProjectItem(
     @SerialName("Description") val description: String,
     @SerialName("Artist") val artist: Artist = Artist(),
     @SerialName("code") val code: String = "",
-    @SerialName("status") val status: String = ""
+    @SerialName("status") val status: String = "",
+    @SerialName("latitude") val latitude: Double? = null,
+    @SerialName("longitude") val longitude: Double? = null
 ) {
+    /**
+     * Determines if this project has valid coordinates for map display.
+     */
+    val hasCoordinates: Boolean
+        get() = latitude != null && longitude != null
+
     /**
      * Determines if this project/camp is family-friendly based on the status field.
      * Returns true if status contains "Fam" (including "Fam(ish)")

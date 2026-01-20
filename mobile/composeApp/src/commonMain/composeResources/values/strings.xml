@@ -148,6 +148,46 @@
     <string name="cd_swipe_hint">Swipe to see more pages</string>
     <string name="about_swipe_hint">Swipe to explore</string>
 
+    <!-- Map Screen -->
+    <string name="map_tab_title">Map</string>
+    <string name="map_tab_content_description">View map of event area</string>
+    <string name="map_loading">Loading map...</string>
+    <string name="map_error">Unable to load map</string>
+
+    <!-- Map Legend -->
+    <string name="map_legend_camps">Theme Camps</string>
+    <string name="map_legend_artworks">Artworks</string>
+    <string name="map_legend_toilets">Toilets</string>
+    <string name="map_legend_services">Services</string>
+    <string name="map_legend_my_camp">My Camp</string>
+    <string name="map_legend_you">You</string>
+    <string name="map_legend_hint">Long-press to mark your camp</string>
+
+    <!-- Service Info Dialog -->
+    <string name="service_dialog_description">AfrikaBurn service location</string>
+    <string name="service_dialog_ok">OK</string>
+
+    <!-- Camp Pin -->
+    <string name="camp_pin_place_title">Place Your Camp Pin?</string>
+    <string name="camp_pin_place_message">Mark this location as your camp. You can move or delete it later.</string>
+    <string name="camp_pin_place_confirm">Place Pin</string>
+    <string name="camp_pin_cancel">Cancel</string>
+
+    <string name="camp_pin_options_title">Your Camp Pin</string>
+    <string name="camp_pin_move">Move Pin</string>
+    <string name="camp_pin_delete">Delete Pin</string>
+
+    <string name="camp_pin_move_title">Move Your Camp Pin?</string>
+    <string name="camp_pin_move_message">Move your camp pin to this new location?</string>
+    <string name="camp_pin_move_confirm">Move Here</string>
+
+    <string name="camp_pin_delete_title">Delete Camp Pin?</string>
+    <string name="camp_pin_delete_message">Are you sure you want to delete your camp pin? You can place a new one anytime by long-pressing the map.</string>
+    <string name="camp_pin_delete_confirm">Delete</string>
+
+    <string name="camp_pin_name_default">My Camp</string>
+    <string name="cd_camp_pin_marker">Your camp location</string>
+
     <!-- Project Detail Screen -->
     <string name="project_detail_title">Project Details</string>
     <string name="project_detail_artist_label">Artist/Creator</string>
