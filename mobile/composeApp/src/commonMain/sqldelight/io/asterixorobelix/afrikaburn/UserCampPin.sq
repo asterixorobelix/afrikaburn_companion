@@ -1,0 +1,37 @@
+-- User's personal camp pin location
+-- Only one pin is allowed per user (enforced by app logic, not schema)
+
+CREATE TABLE UserCampPin (
+    id INTEGER PRIMARY KEY NOT NULL,
+    latitude REAL NOT NULL,
+    longitude REAL NOT NULL,
+    name TEXT NOT NULL DEFAULT 'My Camp',
+    createdAt INTEGER NOT NULL,
+    updatedAt INTEGER NOT NULL
+);
+
+-- Get the user's camp pin (should only be one)
+getUserCampPin:
+SELECT * FROM UserCampPin LIMIT 1;
+
+-- Insert or replace the user's camp pin
+-- Uses id = 1 to ensure only one pin exists
+saveUserCampPin:
+INSERT OR REPLACE INTO UserCampPin (id, latitude, longitude, name, createdAt, updatedAt)
+VALUES (1, ?, ?, ?, ?, ?);
+
+-- Update just the location (for move operation)
+updateLocation:
+UPDATE UserCampPin SET latitude = ?, longitude = ?, updatedAt = ? WHERE id = 1;
+
+-- Update the name
+updateName:
+UPDATE UserCampPin SET name = ?, updatedAt = ? WHERE id = 1;
+
+-- Delete the user's camp pin
+deleteUserCampPin:
+DELETE FROM UserCampPin WHERE id = 1;
+
+-- Check if pin exists
+hasCampPin:
+SELECT COUNT(*) > 0 FROM UserCampPin WHERE id = 1;
