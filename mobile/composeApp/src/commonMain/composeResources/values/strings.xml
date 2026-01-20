@@ -154,6 +154,13 @@
     <string name="map_loading">Loading map...</string>
     <string name="map_error">Unable to load map</string>
 
+    <!-- Map Legend -->
+    <string name="map_legend_camps">Theme Camps</string>
+    <string name="map_legend_artworks">Artworks</string>
+    <string name="map_legend_my_camp">My Camp</string>
+    <string name="map_legend_you">You</string>
+    <string name="map_legend_hint">Long-press to mark your camp</string>
+
     <!-- Camp Pin -->
     <string name="camp_pin_place_title">Place Your Camp Pin?</string>
     <string name="camp_pin_place_message">Mark this location as your camp. You can move or delete it later.</string>

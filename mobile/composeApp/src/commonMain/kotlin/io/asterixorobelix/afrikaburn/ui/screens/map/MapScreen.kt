@@ -1,15 +1,24 @@
 package io.asterixorobelix.afrikaburn.ui.screens.map
 
 import afrikaburn.composeapp.generated.resources.Res
+import afrikaburn.composeapp.generated.resources.map_legend_artworks
+import afrikaburn.composeapp.generated.resources.map_legend_camps
+import afrikaburn.composeapp.generated.resources.map_legend_hint
+import afrikaburn.composeapp.generated.resources.map_legend_my_camp
+import afrikaburn.composeapp.generated.resources.map_legend_you
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Refresh
@@ -18,6 +27,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -42,6 +52,7 @@ import io.github.dellisd.spatialk.geojson.Feature as GeoJsonFeature
 import io.github.dellisd.spatialk.geojson.Point
 import io.github.dellisd.spatialk.geojson.Position
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
 import kotlin.time.Duration.Companion.milliseconds
 import org.maplibre.compose.camera.CameraPosition
 import org.maplibre.compose.camera.rememberCameraState
@@ -298,6 +309,15 @@ private fun MapContent(
                     .padding(Dimens.paddingMedium)
             )
         }
+
+        // Map Legend - top start corner
+        MapLegend(
+            showUserLocation = state.locationPermissionState == PermissionState.GRANTED,
+            showCampPinHint = state.userCampPin is CampPinState.None,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(Dimens.paddingSmall)
+        )
     }
 
     // Camp pin dialogs - rendered outside the Box to overlay the map
@@ -432,5 +452,92 @@ private fun ErrorContent(
                 style = MaterialTheme.typography.labelLarge
             )
         }
+    }
+}
+
+private val LEGEND_DOT_SIZE = 12.dp
+
+/**
+ * Map legend showing marker colors and long-press hint.
+ *
+ * @param showUserLocation Whether to show the "You" (blue dot) entry
+ * @param showCampPinHint Whether to show the long-press hint (hide after user has placed a pin)
+ * @param modifier Modifier for positioning
+ */
+@Composable
+private fun MapLegend(
+    showUserLocation: Boolean,
+    showCampPinHint: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(Dimens.cornerRadiusMedium),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
+        tonalElevation = Dimens.elevationSmall
+    ) {
+        Column(
+            modifier = Modifier.padding(Dimens.paddingSmall),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spacingExtraSmall)
+        ) {
+            // Theme Camps - Purple
+            LegendItem(
+                color = CAMP_MARKER_COLOR,
+                label = stringResource(Res.string.map_legend_camps)
+            )
+
+            // Artworks - Teal
+            LegendItem(
+                color = ARTWORK_MARKER_COLOR,
+                label = stringResource(Res.string.map_legend_artworks)
+            )
+
+            // My Camp - Orange
+            LegendItem(
+                color = CAMP_PIN_COLOR,
+                label = stringResource(Res.string.map_legend_my_camp)
+            )
+
+            // You - Blue (only if location permission granted)
+            if (showUserLocation) {
+                LegendItem(
+                    color = USER_LOCATION_COLOR,
+                    label = stringResource(Res.string.map_legend_you)
+                )
+            }
+
+            // Long-press hint (only if user hasn't placed a pin yet)
+            if (showCampPinHint) {
+                Spacer(modifier = Modifier.height(Dimens.spacingExtraSmall))
+                Text(
+                    text = stringResource(Res.string.map_legend_hint),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun LegendItem(
+    color: Color,
+    label: String
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
+    ) {
+        Canvas(modifier = Modifier.size(LEGEND_DOT_SIZE)) {
+            drawCircle(
+                color = color,
+                radius = size.minDimension / 2
+            )
+        }
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
