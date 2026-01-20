@@ -1,16 +1,16 @@
 # Project State
 
 **Last Updated:** 2026-01-20
-**Current Phase:** Phase 4 - User Camp Pin (In Progress)
+**Current Phase:** Phase 4 - User Camp Pin (Complete)
 
 ## Current Position
 
 Phase: 4 of 4 (User Camp Pin)
-Plan: 1 of ? in current phase
-Status: In progress
-Last activity: 2026-01-20 - Completed 04-01-PLAN.md (SQLDelight infrastructure)
+Plan: 2 of 2 in current phase
+Status: Complete
+Last activity: 2026-01-20 - Completed 04-02-PLAN.md (Camp Pin UI Implementation)
 
-Progress: █████████░ 80%
+Progress: ██████████ 100%
 
 ## Project Reference
 
@@ -28,9 +28,9 @@ See: `.planning/PROJECT.md` (updated 2026-01-18)
 | 1 | Foundation & Basic Map | ✓ Complete | 100% |
 | 2 | Markers & Detail Navigation | ✓ Complete | 100% |
 | 3 | User Location | ✓ Complete | 100% |
-| 4 | User Camp Pin | ◐ In Progress | 25% |
+| 4 | User Camp Pin | ✓ Complete | 100% |
 
-**Overall:** 15/18 requirements complete (83%)
+**Overall:** 18/18 requirements complete (100%)
 
 ## Phase 1 Plans (Complete)
 
@@ -80,18 +80,33 @@ See: `.planning/PROJECT.md` (updated 2026-01-18)
 - MapScreen integration with lifecycle-aware tracking
 - Camera animation to user location on FAB tap
 
-## Phase 4 Plans (In Progress)
+## Phase 4 Plans (Complete)
 
 | Plan | Name | Wave | Status | Dependencies |
 |------|------|------|--------|--------------|
 | 04-01 | SQLDelight Database Infrastructure | 1 | ✓ Complete | 03-01 |
+| 04-02 | Camp Pin UI Implementation | 2 | ✓ Complete | 04-01 |
 
-**Implementation highlights:**
+**Requirements completed:**
+- [x] PIN-01: User can mark their camp location by long-pressing on the map
+- [x] PIN-02: User sees a confirmation dialog before placing their camp pin
+- [x] PIN-03: User sees their camp pin displayed as a distinct marker (orange)
+- [x] PIN-04: User can move or delete their camp pin
+
+**Implementation highlights (04-01):**
 - SQLDelight 2.0.2 configured with AfrikaBurnDatabase generation
 - UserCampPin.sq schema with CRUD queries
 - DatabaseDriverFactory expect/actual for Android/iOS
 - UserCampPinRepository interface and implementation
 - Platform-specific Koin modules (DatabaseModule)
+
+**Implementation highlights (04-02):**
+- CampPinState (None, Placed) and CampPinDialogState sealed interfaces
+- MapViewModel camp pin operations with repository integration
+- CampPinDialog composables (Place, Options, Move, Delete)
+- Orange camp pin marker layer (distinct from other markers)
+- Long-press gesture handling via MapLibre Compose onMapLongClick
+- Dialog state management and screen integration
 
 ## Key Decisions Log
 
@@ -112,6 +127,10 @@ See: `.planning/PROJECT.md` (updated 2026-01-18)
 | 2026-01-20 | SQLDelight 2.0.2 | Required for Kotlin 2.x compatibility |
 | 2026-01-20 | expect/actual for Koin modules | Android needs Context for DB driver, iOS doesn't |
 | 2026-01-20 | kotlinx-datetime Clock | Multiplatform time API for timestamps |
+| 2026-01-20 | MapLibre onMapLongClick | Native parameter for long-press, not custom gesture |
+| 2026-01-20 | Haversine with toRadians() | Multiplatform distance calculation via kotlin.math.PI |
+| 2026-01-20 | 50m threshold for near-pin | Balance targeting ease vs accidental triggers |
+| 2026-01-20 | Orange (#FF9800) camp pin | Distinct from purple camps, teal artworks, blue user |
 
 ## Blockers
 
@@ -120,15 +139,15 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-20
-Stopped at: Completed 04-01-PLAN.md
+Stopped at: Completed 04-02-PLAN.md - v3.0 Offline Map milestone complete
 Resume file: None
 
 ## Next Steps
 
-1. Execute remaining Phase 4 plans for UI implementation
-2. Phase 4 adds long-press to place camp pin with persistence
-3. After Phase 4: Complete v3.0 Offline Map milestone
+1. Human verification checkpoint for v3.0 Offline Map milestone
+2. Test camp pin functionality on device (long-press, place, move, delete)
+3. Plan next milestone (v3.1 or feature enhancements)
 
 ---
 
-*State updated: 2026-01-20 after 04-01 plan complete*
+*State updated: 2026-01-20 after 04-02 plan complete - v3.0 Offline Map milestone finished*
