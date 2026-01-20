@@ -68,7 +68,7 @@ jobs:
     - name: Initialize Gradle wrapper
       run: |
         cd mobile
-        gradle wrapper --gradle-version 8.11.1
+        gradle wrapper --gradle-version 8.13
     
     - name: Get current version and calculate new version
       id: version
@@ -339,7 +339,7 @@ jobs:
     - name: Initialize Gradle wrapper
       run: |
         cd mobile
-        gradle wrapper --gradle-version 8.11.1
+        gradle wrapper --gradle-version 8.13
     
     - name: Configure Gradle for CI
       run: |
