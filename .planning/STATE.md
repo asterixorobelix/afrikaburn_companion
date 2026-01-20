@@ -1,16 +1,16 @@
 # Project State
 
 **Last Updated:** 2026-01-20
-**Current Phase:** Phase 3 - User Location (Complete)
+**Current Phase:** Phase 4 - User Camp Pin (In Progress)
 
 ## Current Position
 
-Phase: 3 of 4 (User Location)
-Plan: 1 of 1 complete
-Status: Phase complete, human verification passed
-Last activity: 2026-01-20 - Phase 3 complete
+Phase: 4 of 4 (User Camp Pin)
+Plan: 1 of ? in current phase
+Status: In progress
+Last activity: 2026-01-20 - Completed 04-01-PLAN.md (SQLDelight infrastructure)
 
-Progress: █████████░ 75%
+Progress: █████████░ 80%
 
 ## Project Reference
 
@@ -28,9 +28,9 @@ See: `.planning/PROJECT.md` (updated 2026-01-18)
 | 1 | Foundation & Basic Map | ✓ Complete | 100% |
 | 2 | Markers & Detail Navigation | ✓ Complete | 100% |
 | 3 | User Location | ✓ Complete | 100% |
-| 4 | User Camp Pin | ○ Pending | 0% |
+| 4 | User Camp Pin | ◐ In Progress | 25% |
 
-**Overall:** 14/18 requirements complete (78%)
+**Overall:** 15/18 requirements complete (83%)
 
 ## Phase 1 Plans (Complete)
 
@@ -80,6 +80,19 @@ See: `.planning/PROJECT.md` (updated 2026-01-18)
 - MapScreen integration with lifecycle-aware tracking
 - Camera animation to user location on FAB tap
 
+## Phase 4 Plans (In Progress)
+
+| Plan | Name | Wave | Status | Dependencies |
+|------|------|------|--------|--------------|
+| 04-01 | SQLDelight Database Infrastructure | 1 | ✓ Complete | 03-01 |
+
+**Implementation highlights:**
+- SQLDelight 2.0.2 configured with AfrikaBurnDatabase generation
+- UserCampPin.sq schema with CRUD queries
+- DatabaseDriverFactory expect/actual for Android/iOS
+- UserCampPinRepository interface and implementation
+- Platform-specific Koin modules (DatabaseModule)
+
 ## Key Decisions Log
 
 | Date | Decision | Context |
@@ -96,6 +109,9 @@ See: `.planning/PROJECT.md` (updated 2026-01-18)
 | 2026-01-20 | Balanced power accuracy | Battery conservation critical in desert environment |
 | 2026-01-20 | UI-layer permission handling | Android runtime permissions require ActivityResultLauncher |
 | 2026-01-20 | Camera animation pattern | Request counter + LaunchedEffect for map camera control |
+| 2026-01-20 | SQLDelight 2.0.2 | Required for Kotlin 2.x compatibility |
+| 2026-01-20 | expect/actual for Koin modules | Android needs Context for DB driver, iOS doesn't |
+| 2026-01-20 | kotlinx-datetime Clock | Multiplatform time API for timestamps |
 
 ## Blockers
 
@@ -104,15 +120,15 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-20
-Stopped at: Phase 3 complete
+Stopped at: Completed 04-01-PLAN.md
 Resume file: None
 
 ## Next Steps
 
-1. `/gsd:plan-phase 4` to plan User Camp Pin phase
+1. Execute remaining Phase 4 plans for UI implementation
 2. Phase 4 adds long-press to place camp pin with persistence
 3. After Phase 4: Complete v3.0 Offline Map milestone
 
 ---
 
-*State updated: 2026-01-20 after Phase 3 complete*
+*State updated: 2026-01-20 after 04-01 plan complete*
