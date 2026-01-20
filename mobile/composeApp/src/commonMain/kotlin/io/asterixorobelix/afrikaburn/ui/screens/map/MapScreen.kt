@@ -199,6 +199,14 @@ private fun MapContent(
                     }
                 }
                 ClickResult.Pass
+            },
+            onMapLongClick = { position, _ ->
+                // Long press - trigger camp pin interaction
+                viewModel.onMapLongPress(
+                    latitude = position.latitude,
+                    longitude = position.longitude
+                )
+                ClickResult.Consume
             }
         ) {
             // Load mock locations GeoJSON - must be inside MaplibreMap scope
