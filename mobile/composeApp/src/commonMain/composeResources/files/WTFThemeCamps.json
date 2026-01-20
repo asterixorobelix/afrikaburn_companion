@@ -326,7 +326,7 @@
     {
         "Name": "The House of Boho",
         "Description": "As dawn breaks over Tankwa Town, excitement fills the air as artists gather in lively 4:20 sessions to celebrate creativity with music, food, and camaraderie. The DJ energises the crowd, and the scent of African-style vetkoeks AMs and Gin and tonic sundowners enhances the festive atmosphere. Laughter and ideas flourish amid the beats, drawing more art enthusiasts into this vibrant scene.",
-        "code": "",
+        "code": "boho",
         "status": "Fam(ish) • Other"
     },
     {
@@ -338,7 +338,7 @@
     {
         "Name": "Pandora's Fox",
         "Description": "Where Pancakes are golden; Syrup is sinful, and the crew is playful and unhinged. We will flip your stacks and fill your water bottles between 9 am and 11 am(ish) as you roll past from a long night on the Binnekring or crawl out of someone else's tent! Join us in our chill lounge to rest and recharge.",
-        "code": "pan",
+        "code": "pnx",
         "status": "Fam • Morning"
     },
     {
@@ -439,8 +439,8 @@
     },
     {
         "Name": "Buttery Beasts",
-        "Description": "Slithering, squawking, hopping and hissing into Tankwa Town with the most convenient of convenience stores. Greasemonkeys fix what you’ve broken; Beasts help you find what you've forgotten! On market days, we have hot food, cold drinks, buttery beats and reptilian cosmetic enhancements; at other times, ring the bell for Beastly assistance.",
-        "code": "bub",
+        "Description": "Slithering, squawking, hopping and hissing into Tankwa Town with the most convenient of convenience stores. Greasemonkeys fix what you've broken; Beasts help you find what you've forgotten! On market days, we have hot food, cold drinks, buttery beats and reptilian cosmetic enhancements; at other times, ring the bell for Beastly assistance.",
+        "code": "btb",
         "status": "Morning, Day Time"
     },
     {
@@ -465,13 +465,13 @@
         "Name": "CurioCity",
         "Description": "CurioCity will unleashed energy; chaos and connection. Wild activations. Crazy interactions. Beats dropped. Colours explode. Magic happens. Come join us for the Cup Olympics – Fast. Fierce. Ridiculous. Who will take the crown? No spectators, just pure, unfiltered experience. Jump in. Play. Ignite.",
         "code": "cuc",
-        "status": ""
+        "status": "Day Time, Night Time"
     },
     {
         "Name": "Afrikadelic Village",
         "Description": "The Afrikadelic Village blends African heritage with modern creativity, fostering inter-cultural exchange, education, and artistic collaboration. It features a Music and Performing Arts Center, a Cultural Heritage Museum, and Artisan Workshops, all preserving traditions while promoting contemporary African art. This vibrant space celebrates culture, empowers communities, and connects people through creativity and innovation. Join us!",
         "code": "adv",
-        "status": ""
+        "status": "Day Time"
     },
     {
         "Name": "Waves of Peace",
@@ -499,7 +499,7 @@
     },
     {
         "Name": "La Casa Timeless",
-        "Description": "Step beyond time, where myth and reality blur. Join us at \"La Casa Timeless\" bar for сocktails, dim sum, DJ-sets and live music (4:20 pm to 12 am). Experience Sonic Sand Meditation and Menta Series Transformative Discussions (11 am to 4:20 pm). Prepare for Friday’s Masquerade at our daily mask-making workshop.",
+        "Description": "Step beyond time, where myth and reality blur. Join us at \"La Casa Timeless\" bar for cocktails, dim sum, DJ-sets and live music (4:20 pm to 12 am). Experience Sonic Sand Meditation and Menta Series Transformative Discussions (11 am to 4:20 pm). Prepare for Friday's Masquerade at our daily mask-making workshop.",
         "code": "lct",
         "status": "Fam(ish) • Other"
     },

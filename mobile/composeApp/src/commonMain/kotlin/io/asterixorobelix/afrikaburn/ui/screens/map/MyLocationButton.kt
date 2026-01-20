@@ -59,7 +59,7 @@ fun MyLocationButton(
     )
 
     FloatingActionButton(
-        onClick = onClick,
+        onClick = { if (enabled) onClick() },
         modifier = modifier.graphicsLayer {
             scaleX = scale
             scaleY = scale
