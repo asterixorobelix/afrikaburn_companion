@@ -6,8 +6,18 @@ import afrikaburn.composeapp.generated.resources.map_legend_camps
 import afrikaburn.composeapp.generated.resources.map_legend_hint
 import afrikaburn.composeapp.generated.resources.map_legend_my_camp
 import afrikaburn.composeapp.generated.resources.map_legend_you
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,10 +28,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.Layers
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,9 +46,18 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.asterixorobelix.afrikaburn.Dimens
@@ -70,24 +91,28 @@ import org.maplibre.compose.util.ClickResult
 private const val MAP_STYLE_PATH = "files/maps/style.json"
 private const val MOCK_LOCATIONS_PATH = "files/maps/mock-locations.geojson"
 
-// Map marker colors (Material Design 3)
+// Map marker colors - warm festival palette
 @Suppress("MagicNumber")
 private val CAMP_MARKER_COLOR = Color(0xFFBB86FC)  // Purple for camps
 @Suppress("MagicNumber")
 private val ARTWORK_MARKER_COLOR = Color(0xFF03DAC6)  // Teal for artworks
 @Suppress("MagicNumber")
-private val USER_LOCATION_COLOR = Color(0xFF2196F3)  // Blue for user location
+private val USER_LOCATION_COLOR = Color(0xFF64B5F6)  // Lighter blue for user
 @Suppress("MagicNumber")
-private val CAMP_PIN_COLOR = Color(0xFFFF9800)  // Orange for user's camp pin
+private val CAMP_PIN_COLOR = Color(0xFFFFAB40)  // Warm orange for user's camp
 private val MARKER_STROKE_COLOR = Color.White
 
 private val CAMP_MARKER_RADIUS = 12.dp
 private val ARTWORK_MARKER_RADIUS = 10.dp
 private val USER_LOCATION_RADIUS = 8.dp
-private val CAMP_PIN_RADIUS = 14.dp  // Larger than other markers
+private val CAMP_PIN_RADIUS = 14.dp
 private val MARKER_STROKE_WIDTH = 2.dp
 private val USER_LOCATION_STROKE_WIDTH = 3.dp
 private val CAMP_PIN_STROKE_WIDTH = 3.dp
+
+// Legend dimensions
+private val LEGEND_DOT_SIZE = 10.dp
+private val LEGEND_TOGGLE_SIZE = 36.dp
 
 /**
  * Main map screen composable.
@@ -148,7 +173,7 @@ fun MapScreen(
 }
 
 @OptIn(ExperimentalResourceApi::class)
-@Suppress("LongMethod") // MapLibre layers must be within MaplibreMap scope
+@Suppress("LongMethod")
 @Composable
 private fun MapContent(
     state: MapUiState.Success,
@@ -162,6 +187,9 @@ private fun MapContent(
             zoom = state.zoomLevel
         )
     )
+
+    // Legend expansion state - persists across recompositions
+    var isLegendExpanded by rememberSaveable { mutableStateOf(true) }
 
     // Animate camera to user location when FAB is tapped
     LaunchedEffect(state.centerOnUserLocationRequest) {
@@ -188,17 +216,14 @@ private fun MapContent(
             baseStyle = BaseStyle.Uri(Res.getUri(MAP_STYLE_PATH)),
             cameraState = cameraState,
             onMapClick = { _, offset ->
-                // Query rendered features at the tap location
                 val features = cameraState.projection?.queryRenderedFeatures(offset)
 
-                // Find a tapped marker feature (camp or artwork)
                 val markerFeature = features?.firstOrNull { feature ->
                     val type = feature.properties?.get("type")?.toString()?.removeSurrounding("\"")
                     type == "camp" || type == "artwork"
                 }
 
                 if (markerFeature != null) {
-                    // Extract the code property and look up the matching project
                     val code = markerFeature.properties
                         ?.get("code")
                         ?.toString()
@@ -212,7 +237,6 @@ private fun MapContent(
                 ClickResult.Pass
             },
             onMapLongClick = { position, _ ->
-                // Long press - trigger camp pin interaction
                 viewModel.onMapLongPress(
                     latitude = position.latitude,
                     longitude = position.longitude
@@ -220,12 +244,11 @@ private fun MapContent(
                 ClickResult.Consume
             }
         ) {
-            // Load mock locations GeoJSON - must be inside MaplibreMap scope
             val locationsSource = rememberGeoJsonSource(
                 data = GeoJsonData.Uri(Res.getUri(MOCK_LOCATIONS_PATH))
             )
 
-            // Camp markers (purple circles)
+            // Camp markers (purple)
             CircleLayer(
                 id = "camp-markers",
                 source = locationsSource,
@@ -236,7 +259,7 @@ private fun MapContent(
                 strokeWidth = const(MARKER_STROKE_WIDTH)
             )
 
-            // Artwork markers (teal circles)
+            // Artwork markers (teal)
             CircleLayer(
                 id = "artwork-markers",
                 source = locationsSource,
@@ -247,7 +270,7 @@ private fun MapContent(
                 strokeWidth = const(MARKER_STROKE_WIDTH)
             )
 
-            // User location marker (blue dot)
+            // User location (blue)
             if (state.hasUserLocation) {
                 val userLocationFeature = GeoJsonFeature(
                     geometry = Point(
@@ -272,7 +295,7 @@ private fun MapContent(
                 )
             }
 
-            // User's camp pin marker (orange, larger than other markers)
+            // User's camp pin (warm orange)
             val userCampPin = state.userCampPin
             if (userCampPin is CampPinState.Placed) {
                 val campPinFeature = GeoJsonFeature(
@@ -299,28 +322,36 @@ private fun MapContent(
             }
         }
 
-        // My Location FAB - bottom end corner
+        // Collapsible Map Legend - positioned to avoid scale bar
+        MapLegend(
+            isExpanded = isLegendExpanded,
+            onToggle = { isLegendExpanded = !isLegendExpanded },
+            showUserLocation = state.locationPermissionState == PermissionState.GRANTED,
+            showCampPinHint = state.userCampPin is CampPinState.None,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .padding(
+                    start = Dimens.paddingSmall,
+                    top = Dimens.mapLegendTopPadding
+                )
+        )
+
+        // My Location FAB - positioned to avoid MapLibre attribution
         if (state.locationPermissionState == PermissionState.GRANTED) {
             MyLocationButton(
                 onClick = viewModel::centerOnUserLocation,
                 enabled = state.hasUserLocation,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(Dimens.paddingMedium)
+                    .padding(
+                        end = Dimens.paddingMedium,
+                        bottom = Dimens.mapFabBottomPadding
+                    )
             )
         }
-
-        // Map Legend - top start corner
-        MapLegend(
-            showUserLocation = state.locationPermissionState == PermissionState.GRANTED,
-            showCampPinHint = state.userCampPin is CampPinState.None,
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(Dimens.paddingSmall)
-        )
     }
 
-    // Camp pin dialogs - rendered outside the Box to overlay the map
+    // Camp pin dialogs
     CampPinDialogs(
         dialogState = state.campPinDialogState,
         viewModel = viewModel
@@ -328,8 +359,189 @@ private fun MapContent(
 }
 
 /**
- * Renders the appropriate camp pin dialog based on current state.
+ * Collapsible map legend with smooth animations.
+ * Shows marker colors and a long-press hint for first-time users.
  */
+@Composable
+private fun MapLegend(
+    isExpanded: Boolean,
+    onToggle: () -> Unit,
+    showUserLocation: Boolean,
+    showCampPinHint: Boolean,
+    modifier: Modifier = Modifier
+) {
+    // Animate rotation for the toggle icon
+    val rotation by animateFloatAsState(
+        targetValue = if (isExpanded) 0f else 180f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "legend_rotation"
+    )
+
+    // Animate scale for press feedback
+    var isPressed by remember { mutableStateOf(false) }
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.95f else 1f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium
+        ),
+        label = "legend_scale"
+    )
+
+    Surface(
+        modifier = modifier
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .shadow(
+                elevation = Dimens.elevationSmall,
+                shape = RoundedCornerShape(Dimens.cornerRadiusMedium)
+            ),
+        shape = RoundedCornerShape(Dimens.cornerRadiusMedium),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
+        tonalElevation = Dimens.elevationSmall
+    ) {
+        Column(
+            modifier = Modifier.padding(Dimens.paddingSmall)
+        ) {
+            // Toggle header - always visible
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(Dimens.cornerRadiusSmall))
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = {
+                            isPressed = true
+                            onToggle()
+                        }
+                    )
+                    .padding(Dimens.paddingExtraSmall),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Layers,
+                    contentDescription = "Toggle legend",
+                    modifier = Modifier
+                        .size(Dimens.iconSizeMedium)
+                        .rotate(rotation),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "Legend",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            // Reset pressed state
+            LaunchedEffect(isPressed) {
+                if (isPressed) {
+                    kotlinx.coroutines.delay(100)
+                    isPressed = false
+                }
+            }
+
+            // Expandable content with smooth animation
+            AnimatedVisibility(
+                visible = isExpanded,
+                enter = expandVertically(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioMediumBouncy,
+                        stiffness = Spring.StiffnessLow
+                    )
+                ) + fadeIn(),
+                exit = shrinkVertically(
+                    animationSpec = spring(
+                        dampingRatio = Spring.DampingRatioNoBouncy,
+                        stiffness = Spring.StiffnessMedium
+                    )
+                ) + fadeOut()
+            ) {
+                Column(
+                    modifier = Modifier.padding(top = Dimens.paddingSmall),
+                    verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
+                ) {
+                    // Theme Camps - Purple
+                    LegendItem(
+                        color = CAMP_MARKER_COLOR,
+                        label = stringResource(Res.string.map_legend_camps)
+                    )
+
+                    // Artworks - Teal
+                    LegendItem(
+                        color = ARTWORK_MARKER_COLOR,
+                        label = stringResource(Res.string.map_legend_artworks)
+                    )
+
+                    // My Camp - Orange
+                    LegendItem(
+                        color = CAMP_PIN_COLOR,
+                        label = stringResource(Res.string.map_legend_my_camp)
+                    )
+
+                    // You - Blue
+                    if (showUserLocation) {
+                        LegendItem(
+                            color = USER_LOCATION_COLOR,
+                            label = stringResource(Res.string.map_legend_you)
+                        )
+                    }
+
+                    // Long-press hint with warm styling
+                    if (showCampPinHint) {
+                        Spacer(modifier = Modifier.height(Dimens.spacingExtraSmall))
+                        Surface(
+                            shape = RoundedCornerShape(Dimens.cornerRadiusSmall),
+                            color = CAMP_PIN_COLOR.copy(alpha = 0.15f)
+                        ) {
+                            Text(
+                                text = stringResource(Res.string.map_legend_hint),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                modifier = Modifier.padding(
+                                    horizontal = Dimens.paddingSmall,
+                                    vertical = Dimens.paddingExtraSmall
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LegendItem(
+    color: Color,
+    label: String
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
+    ) {
+        // Colored dot with white stroke for polish
+        Box(
+            modifier = Modifier
+                .size(LEGEND_DOT_SIZE)
+                .shadow(1.dp, CircleShape)
+                .background(color, CircleShape)
+        )
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
 @Composable
 private fun CampPinDialogs(
     dialogState: CampPinDialogState,
@@ -452,92 +664,5 @@ private fun ErrorContent(
                 style = MaterialTheme.typography.labelLarge
             )
         }
-    }
-}
-
-private val LEGEND_DOT_SIZE = 12.dp
-
-/**
- * Map legend showing marker colors and long-press hint.
- *
- * @param showUserLocation Whether to show the "You" (blue dot) entry
- * @param showCampPinHint Whether to show the long-press hint (hide after user has placed a pin)
- * @param modifier Modifier for positioning
- */
-@Composable
-private fun MapLegend(
-    showUserLocation: Boolean,
-    showCampPinHint: Boolean,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(Dimens.cornerRadiusMedium),
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
-        tonalElevation = Dimens.elevationSmall
-    ) {
-        Column(
-            modifier = Modifier.padding(Dimens.paddingSmall),
-            verticalArrangement = Arrangement.spacedBy(Dimens.spacingExtraSmall)
-        ) {
-            // Theme Camps - Purple
-            LegendItem(
-                color = CAMP_MARKER_COLOR,
-                label = stringResource(Res.string.map_legend_camps)
-            )
-
-            // Artworks - Teal
-            LegendItem(
-                color = ARTWORK_MARKER_COLOR,
-                label = stringResource(Res.string.map_legend_artworks)
-            )
-
-            // My Camp - Orange
-            LegendItem(
-                color = CAMP_PIN_COLOR,
-                label = stringResource(Res.string.map_legend_my_camp)
-            )
-
-            // You - Blue (only if location permission granted)
-            if (showUserLocation) {
-                LegendItem(
-                    color = USER_LOCATION_COLOR,
-                    label = stringResource(Res.string.map_legend_you)
-                )
-            }
-
-            // Long-press hint (only if user hasn't placed a pin yet)
-            if (showCampPinHint) {
-                Spacer(modifier = Modifier.height(Dimens.spacingExtraSmall))
-                Text(
-                    text = stringResource(Res.string.map_legend_hint),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun LegendItem(
-    color: Color,
-    label: String
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
-    ) {
-        Canvas(modifier = Modifier.size(LEGEND_DOT_SIZE)) {
-            drawCircle(
-                color = color,
-                radius = size.minDimension / 2
-            )
-        }
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurface
-        )
     }
 }
