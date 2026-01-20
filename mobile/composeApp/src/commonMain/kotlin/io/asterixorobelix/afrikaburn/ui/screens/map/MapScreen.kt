@@ -34,6 +34,8 @@ import io.asterixorobelix.afrikaburn.di.koinMapViewModel
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.platform.PermissionState
 import io.asterixorobelix.afrikaburn.platform.rememberLocationPermissionLauncher
+import io.asterixorobelix.afrikaburn.presentation.map.CampPinDialogState
+import io.asterixorobelix.afrikaburn.presentation.map.CampPinState
 import io.asterixorobelix.afrikaburn.presentation.map.MapUiState
 import io.asterixorobelix.afrikaburn.presentation.map.MapViewModel
 import io.github.dellisd.spatialk.geojson.Feature as GeoJsonFeature
@@ -64,13 +66,17 @@ private val CAMP_MARKER_COLOR = Color(0xFFBB86FC)  // Purple for camps
 private val ARTWORK_MARKER_COLOR = Color(0xFF03DAC6)  // Teal for artworks
 @Suppress("MagicNumber")
 private val USER_LOCATION_COLOR = Color(0xFF2196F3)  // Blue for user location
+@Suppress("MagicNumber")
+private val CAMP_PIN_COLOR = Color(0xFFFF9800)  // Orange for user's camp pin
 private val MARKER_STROKE_COLOR = Color.White
 
 private val CAMP_MARKER_RADIUS = 12.dp
 private val ARTWORK_MARKER_RADIUS = 10.dp
 private val USER_LOCATION_RADIUS = 8.dp
+private val CAMP_PIN_RADIUS = 14.dp  // Larger than other markers
 private val MARKER_STROKE_WIDTH = 2.dp
 private val USER_LOCATION_STROKE_WIDTH = 3.dp
+private val CAMP_PIN_STROKE_WIDTH = 3.dp
 
 /**
  * Main map screen composable.
@@ -244,6 +250,32 @@ private fun MapContent(
                     radius = const(USER_LOCATION_RADIUS),
                     strokeColor = const(MARKER_STROKE_COLOR),
                     strokeWidth = const(USER_LOCATION_STROKE_WIDTH)
+                )
+            }
+
+            // User's camp pin marker (orange, larger than other markers)
+            val userCampPin = state.userCampPin
+            if (userCampPin is CampPinState.Placed) {
+                val campPinFeature = GeoJsonFeature(
+                    geometry = Point(
+                        coordinates = Position(
+                            longitude = userCampPin.longitude,
+                            latitude = userCampPin.latitude
+                        )
+                    )
+                )
+
+                val campPinSource = rememberGeoJsonSource(
+                    data = GeoJsonData.Features(campPinFeature)
+                )
+
+                CircleLayer(
+                    id = "camp-pin-layer",
+                    source = campPinSource,
+                    color = const(CAMP_PIN_COLOR),
+                    radius = const(CAMP_PIN_RADIUS),
+                    strokeColor = const(MARKER_STROKE_COLOR),
+                    strokeWidth = const(CAMP_PIN_STROKE_WIDTH)
                 )
             }
         }
