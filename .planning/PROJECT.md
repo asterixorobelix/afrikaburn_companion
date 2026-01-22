@@ -33,6 +33,15 @@ Participants can discover and navigate to AfrikaBurn theme camps and artworks wi
 
 <!-- Current scope. Building toward these. -->
 
+**v3.1 Event Surprise Mode:**
+- [ ] SURP-01: App has bundled event configuration (start date, location, geofence radius)
+- [ ] SURP-02: App detects if current date/time is past event start date
+- [ ] SURP-03: App detects if user is within 20km radius of event location
+- [ ] SURP-04: Map and Projects tabs hidden when locked (neither condition met)
+- [ ] SURP-05: Tabs become visible when date OR geofence condition is met
+- [ ] SURP-06: Unlock state persists permanently once triggered
+
+**Deferred (v3.2+):**
 - [ ] Search camps/artworks by name on map
 - [ ] Cluster markers when zoomed out
 - [ ] Show performance/event markers on map
@@ -67,10 +76,11 @@ Participants can discover and navigate to AfrikaBurn theme camps and artworks wi
 - expect/actual patterns for platform-specific implementations (LocationService, DatabaseDriverFactory)
 - SQLDelight infrastructure for local persistence
 
-**Next Milestone Goals (v3.1):**
-- Map search functionality (SRCH-01, SRCH-02, SRCH-03)
-- Marker clustering (ENH-01)
-- Performance/event markers (ENH-05)
+**Current Milestone (v3.1 Event Surprise Mode):**
+- Hide Map and Projects tabs until event conditions met
+- Unlock by date (past event start) OR location (within 20km)
+- Permanent unlock persistence via SQLDelight
+- Preserves surprise experience for attendees
 
 ## Constraints
 
@@ -96,5 +106,10 @@ Participants can discover and navigate to AfrikaBurn theme camps and artworks wi
 | 50m threshold for near-pin | Balance targeting ease vs accidental triggers | ✓ Good |
 | Orange camp pin color | Distinct from purple/teal/blue markers | ✓ Good |
 
+| Tabs hidden when locked | Cleaner surprise, no teasing users with locked features | Decided |
+| Permanent unlock persistence | Once unlocked, stays unlocked forever - better UX | Decided |
+| 20km geofence radius | Balance between close enough and GPS accuracy margins | Decided |
+| Date OR location unlock | Either condition sufficient - flexible for early arrivals | Decided |
+
 ---
-*Last updated: 2026-01-20 after v3.0 milestone*
+*Last updated: 2026-01-22 after v3.1 milestone creation*

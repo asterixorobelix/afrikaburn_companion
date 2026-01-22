@@ -1,5 +1,21 @@
 # Project Milestones: AfrikaBurn Companion
 
+## v3.1 Event Surprise Mode (In Progress)
+
+**Goal:** Keep Map and Projects tabs hidden until user is at AfrikaBurn event (within 20km) or event has officially started. Preserves the surprise experience for attendees.
+
+**Phases:** 5-8 (4 phases, 5 plans)
+
+**Key features:**
+- Event configuration with start date and GPS coordinates
+- Geofence detection using existing LocationService
+- Conditional tab visibility (completely hidden when locked)
+- Permanent unlock persistence once conditions met
+
+**Started:** 2026-01-22
+
+---
+
 ## v3.0 Offline Map (Shipped: 2026-01-20)
 
 **Delivered:** Interactive offline map for AfrikaBurn with camp/artwork markers, GPS location display, and user camp pin persistence.
