@@ -40,6 +40,8 @@ Participants can discover and navigate to AfrikaBurn theme camps and artworks wi
 - [ ] SURP-04: Map and Projects tabs hidden when locked (neither condition met)
 - [ ] SURP-05: Tabs become visible when date OR geofence condition is met
 - [ ] SURP-06: Unlock state persists permanently once triggered
+- [ ] SURP-07: Debug feature flag to bypass surprise mode for testing (dev builds only)
+- [ ] SURP-08: Unit tests for all unlock logic (date, geofence, persistence, feature flag)
 
 **Deferred (v3.2+):**
 - [ ] Search camps/artworks by name on map

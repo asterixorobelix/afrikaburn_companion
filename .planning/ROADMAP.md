@@ -53,16 +53,17 @@ Plans:
 #### Phase 5: Event Date Configuration
 **Goal**: Store AfrikaBurn event date/location configuration and detect if current date is past event start.
 **Depends on**: Phase 4 (SQLDelight infrastructure)
-**Requirements**: [SURP-01, SURP-02]
+**Requirements**: [SURP-01, SURP-02, SURP-07]
 **Success Criteria** (what must be TRUE):
   1. App has bundled event configuration (start date, location coordinates, geofence radius)
   2. App can correctly determine if current date/time is past event start date
   3. Event configuration can be updated annually without code changes (JSON or constants)
+  4. Debug feature flag exists to bypass surprise mode (dev builds only)
 **Plans**: TBD
 **Research**: No
 
 Plans:
-- [ ] 05-01: Event Configuration Data Source
+- [ ] 05-01: Event Configuration Data Source (with unit tests)
 
 #### Phase 6: Geofence Detection
 **Goal**: Detect if user is within 20km radius of AfrikaBurn event location.
@@ -76,7 +77,7 @@ Plans:
 **Research**: Yes (verify LocationService reuse)
 
 Plans:
-- [ ] 06-01: Geofence Distance Calculator
+- [ ] 06-01: Geofence Distance Calculator (with unit tests)
 
 #### Phase 7: Tab Visibility Control
 **Goal**: Conditionally show/hide Map and Projects tabs based on unlock conditions.
@@ -91,18 +92,19 @@ Plans:
 **Research**: Yes (navigation architecture)
 
 Plans:
-- [ ] 07-01: Unlock Condition Manager
-- [ ] 07-02: Navigation Tab Filtering
+- [ ] 07-01: Unlock Condition Manager (with unit tests)
+- [ ] 07-02: Navigation Tab Filtering (with unit tests)
 
 #### Phase 8: Polish & Edge Cases
-**Goal**: Handle edge cases, add visual feedback, and ensure smooth UX.
+**Goal**: Handle edge cases, add visual feedback, ensure smooth UX, and verify test coverage.
 **Depends on**: Phase 7
-**Requirements**: [SURP-06]
+**Requirements**: [SURP-06, SURP-08]
 **Success Criteria** (what must be TRUE):
   1. Location permission denial handled gracefully (date unlock still works)
   2. Timezone handling works correctly for event start date
   3. App transitions smoothly when unlock conditions are met
-  4. No way for users to bypass the surprise mode
+  4. No way for users to bypass the surprise mode (except feature flag in dev)
+  5. Unit tests cover all unlock logic with 80% minimum coverage
 **Plans**: TBD
 **Research**: No
 
