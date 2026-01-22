@@ -2,7 +2,9 @@ package io.asterixorobelix.afrikaburn.di
 
 import io.asterixorobelix.afrikaburn.data.database.AfrikaBurnDatabase
 import io.asterixorobelix.afrikaburn.data.database.DatabaseDriverFactory
+import io.asterixorobelix.afrikaburn.data.repository.UnlockStateRepositoryImpl
 import io.asterixorobelix.afrikaburn.data.repository.UserCampPinRepositoryImpl
+import io.asterixorobelix.afrikaburn.domain.repository.UnlockStateRepository
 import io.asterixorobelix.afrikaburn.domain.repository.UserCampPinRepository
 import org.koin.dsl.module
 
@@ -13,6 +15,7 @@ import org.koin.dsl.module
  * - DatabaseDriverFactory (platform-specific via platformDatabaseModule)
  * - AfrikaBurnDatabase (SQLDelight generated)
  * - UserCampPinRepository (for camp pin persistence)
+ * - UnlockStateRepository (for surprise mode unlock persistence)
  */
 val databaseModule = module {
     includes(platformDatabaseModule)
@@ -22,8 +25,9 @@ val databaseModule = module {
         AfrikaBurnDatabase(get<DatabaseDriverFactory>().createDriver())
     }
 
-    // Repository
+    // Repositories
     single<UserCampPinRepository> { UserCampPinRepositoryImpl(get()) }
+    single<UnlockStateRepository> { UnlockStateRepositoryImpl(get()) }
 }
 
 /**
