@@ -77,7 +77,7 @@ Plans:
 **Research**: Yes (verify LocationService reuse)
 
 Plans:
-- [ ] 06-01: Geofence Distance Calculator (with unit tests)
+- [x] 06-01: Geofence Distance Calculator (with unit tests)
 
 #### Phase 7: Tab Visibility Control
 **Goal**: Conditionally show/hide Map and Projects tabs based on unlock conditions.
@@ -123,6 +123,6 @@ Phases execute in numeric order: 5 → 6 → 7 → 8
 | 3. User Location | v3.0 | 1/1 | Complete | 2026-01-19 |
 | 4. User Camp Pin | v3.0 | 2/2 | Complete | 2026-01-20 |
 | 5. Event Date Configuration | v3.1 | 1/1 | Complete | 2026-01-22 |
-| 6. Geofence Detection | v3.1 | 0/1 | Not started | - |
+| 6. Geofence Detection | v3.1 | 1/1 | Complete | 2026-01-22 |
 | 7. Tab Visibility Control | v3.1 | 0/2 | Not started | - |
 | 8. Polish & Edge Cases | v3.1 | 0/1 | Not started | - |

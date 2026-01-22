@@ -1,16 +1,16 @@
 # Project State
 
 **Last Updated:** 2026-01-22
-**Current Phase:** Phase 5 - Event Date Configuration
+**Current Phase:** Phase 6 - Geofence Detection
 
 ## Current Position
 
-Phase: 5 (Event Date Configuration)
+Phase: 6 (Geofence Detection)
 Plan: 1 of 1 in current phase (complete)
 Status: Phase complete
-Last activity: 2026-01-22 — Completed 05-01-PLAN.md
+Last activity: 2026-01-22 — Completed 06-01-PLAN.md
 
-Progress: ██░░░░░░░░ 25% (v3.1)
+Progress: ███░░░░░░░ 50% (v3.1)
 
 ## Project Reference
 
@@ -26,7 +26,7 @@ See: `.planning/PROJECT.md` (updated 2026-01-22)
 | Phase | Name | Status |
 |-------|------|--------|
 | 5 | Event Date Configuration | Complete |
-| 6 | Geofence Detection | Not started |
+| 6 | Geofence Detection | Complete |
 | 7 | Tab Visibility Control | Not started |
 | 8 | Polish & Edge Cases | Not started |
 
@@ -47,6 +47,12 @@ See `.planning/PROJECT.md` Key Decisions table for complete history.
 - Clock injection pattern for testable time-based logic
 - Bypass flag as constructor parameter for testing flexibility
 
+**Phase 6 Decisions:**
+- 1% tolerance for distance calculation tests
+- Boundary inclusive (distance <= radius returns true)
+- Null LocationData returns false (graceful handling)
+- Earth radius 6371 km for Haversine calculations
+
 ## Blockers
 
 None.
@@ -54,15 +60,15 @@ None.
 ## Session Continuity
 
 Last session: 2026-01-22
-Stopped at: Completed 05-01-PLAN.md (Phase 5 complete)
+Stopped at: Completed 06-01-PLAN.md (Phase 6 complete)
 Resume file: None
 
 ## Next Steps
 
-1. Run `/gsd:plan-phase 6` to plan Phase 6 (Geofence Detection)
-2. Phase 6 can use EventConfig coordinates and geofence radius
-3. Research needed for Phase 7 (navigation architecture)
+1. Run `/gsd:plan-phase 7` to plan Phase 7 (Tab Visibility Control)
+2. Phase 7 can use GeofenceService and EventDateService for unlock logic
+3. Research needed for navigation architecture (tab filtering)
 
 ---
 
-*State updated: 2026-01-22 after Phase 5 completion*
+*State updated: 2026-01-22 after Phase 6 completion*
