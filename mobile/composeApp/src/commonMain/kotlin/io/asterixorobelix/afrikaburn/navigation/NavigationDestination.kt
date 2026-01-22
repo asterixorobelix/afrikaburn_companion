@@ -45,5 +45,23 @@ sealed class NavigationDestination(
         val allDestinations: List<NavigationDestination> by lazy {
             listOf(Projects, Map, Directions, About)
         }
+
+        /**
+         * Returns destinations visible based on unlock state.
+         * When locked: Only Directions and About tabs are visible.
+         * When unlocked: All tabs are visible.
+         */
+        fun getVisibleDestinations(isUnlocked: Boolean): List<NavigationDestination> {
+            return if (isUnlocked) {
+                allDestinations
+            } else {
+                listOf(Directions, About)
+            }
+        }
+
+        /**
+         * Tabs that require unlock to be visible.
+         */
+        val lockedDestinations: Set<NavigationDestination> = setOf(Projects, Map)
     }
 }
