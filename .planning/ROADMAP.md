@@ -63,7 +63,7 @@ Plans:
 **Research**: No
 
 Plans:
-- [ ] 05-01: Event Configuration Data Source (with unit tests)
+- [x] 05-01: Event Configuration Data Source (with unit tests)
 
 #### Phase 6: Geofence Detection
 **Goal**: Detect if user is within 20km radius of AfrikaBurn event location.
@@ -122,7 +122,7 @@ Phases execute in numeric order: 5 → 6 → 7 → 8
 | 2. Markers & Detail Navigation | v3.0 | 1/1 | Complete | 2026-01-19 |
 | 3. User Location | v3.0 | 1/1 | Complete | 2026-01-19 |
 | 4. User Camp Pin | v3.0 | 2/2 | Complete | 2026-01-20 |
-| 5. Event Date Configuration | v3.1 | 0/1 | Not started | - |
+| 5. Event Date Configuration | v3.1 | 1/1 | Complete | 2026-01-22 |
 | 6. Geofence Detection | v3.1 | 0/1 | Not started | - |
 | 7. Tab Visibility Control | v3.1 | 0/2 | Not started | - |
 | 8. Polish & Edge Cases | v3.1 | 0/1 | Not started | - |
