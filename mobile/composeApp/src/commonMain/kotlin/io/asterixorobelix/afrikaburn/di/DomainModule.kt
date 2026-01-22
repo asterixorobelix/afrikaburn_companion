@@ -5,6 +5,8 @@ import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
 import io.asterixorobelix.afrikaburn.domain.service.DefaultClock
 import io.asterixorobelix.afrikaburn.domain.service.EventDateService
 import io.asterixorobelix.afrikaburn.domain.service.EventDateServiceImpl
+import io.asterixorobelix.afrikaburn.domain.service.GeofenceService
+import io.asterixorobelix.afrikaburn.domain.service.GeofenceServiceImpl
 import kotlinx.datetime.Clock
 import org.koin.dsl.module
 
@@ -14,4 +16,7 @@ val domainModule = module {
     // Event date detection for Surprise Mode
     single<Clock> { DefaultClock() }
     single<EventDateService> { EventDateServiceImpl(get()) }
+
+    // Geofence detection for Surprise Mode
+    single<GeofenceService> { GeofenceServiceImpl(get()) }
 }
