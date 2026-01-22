@@ -1,11 +1,15 @@
 package io.asterixorobelix.afrikaburn
 
+import afrikaburn.composeapp.generated.resources.Res
+import afrikaburn.composeapp.generated.resources.unlock_welcome_message
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
@@ -13,21 +17,28 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import io.asterixorobelix.afrikaburn.domain.service.UnlockConditionManager
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.navigation.BottomNavigationBar
 import io.asterixorobelix.afrikaburn.navigation.NavigationDestination
 import io.asterixorobelix.afrikaburn.platform.CrashLogger
 import io.asterixorobelix.afrikaburn.platform.FirebaseConfigChecker
+import io.asterixorobelix.afrikaburn.platform.LocationData
+import io.asterixorobelix.afrikaburn.platform.LocationService
+import io.asterixorobelix.afrikaburn.platform.PermissionState
 import io.asterixorobelix.afrikaburn.ui.directions.DirectionsScreen
 import io.asterixorobelix.afrikaburn.ui.projects.ProjectDetailScreen
 import io.asterixorobelix.afrikaburn.ui.projects.ProjectsScreen
 import io.asterixorobelix.afrikaburn.ui.about.AboutScreen
 import io.asterixorobelix.afrikaburn.ui.screens.map.MapScreen
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
@@ -38,84 +49,184 @@ private const val PROJECT_DETAIL_ROUTE = "project_detail"
 fun App() {
     val isDarkTheme = isSystemInDarkTheme()
 
-    // Initialize crash logging
+    // Inject services
     val crashLogger: CrashLogger = koinInject()
+    val unlockManager: UnlockConditionManager = koinInject()
+    val locationService: LocationService = koinInject()
+
+    // Location state for geofence check
+    var currentLocation by remember { mutableStateOf<LocationData?>(null) }
+
+    // Track if we showed welcome message this session
+    var hasShownWelcome by rememberSaveable { mutableStateOf(false) }
+
+    // Snackbar host state for welcome message
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // Get welcome message resource
+    val welcomeMessage = stringResource(Res.string.unlock_welcome_message)
+
+    // Initialize crash logging and check location
+    InitializeAppServices(crashLogger, locationService) { location ->
+        currentLocation = location
+    }
+
+    // Evaluate unlock state with current location
+    val isUnlocked = unlockManager.isUnlocked(currentLocation)
+    val visibleDestinations = NavigationDestination.getVisibleDestinations(isUnlocked)
+    val startDestination = determineStartDestination(isUnlocked)
+
+    // Show welcome message on first unlock (once per session)
+    // Only show if unlocked, haven't shown yet, and it was a real unlock (not bypass)
+    val shouldShowWelcome = isUnlocked && !hasShownWelcome && unlockManager.getUnlockedAt() != null
+    ShowWelcomeMessage(shouldShowWelcome, snackbarHostState, welcomeMessage) {
+        hasShownWelcome = true
+    }
+
+    AppTheme(useDarkTheme = isDarkTheme) {
+        AppScaffold(
+            snackbarHostState = snackbarHostState,
+            visibleDestinations = visibleDestinations,
+            startDestination = startDestination
+        )
+    }
+}
+
+@Composable
+private fun InitializeAppServices(
+    crashLogger: CrashLogger,
+    locationService: LocationService,
+    onLocationReceived: (LocationData?) -> Unit
+) {
     LaunchedEffect(Unit) {
         crashLogger.initialize()
         crashLogger.log("App started successfully")
 
         // Check Firebase configuration status
         FirebaseConfigChecker.logConfigurationStatus(crashLogger)
+
+        // Try to get location for geofence check
+        val permission = locationService.checkPermission()
+        if (permission == PermissionState.GRANTED) {
+            onLocationReceived(locationService.getCurrentLocation())
+        }
+    }
+}
+
+private fun determineStartDestination(isUnlocked: Boolean): String {
+    return if (isUnlocked) {
+        NavigationDestination.Projects.route
+    } else {
+        NavigationDestination.Directions.route
+    }
+}
+
+@Composable
+private fun ShowWelcomeMessage(
+    shouldShowWelcome: Boolean,
+    snackbarHostState: SnackbarHostState,
+    welcomeMessage: String,
+    onWelcomeShown: () -> Unit
+) {
+    LaunchedEffect(shouldShowWelcome) {
+        if (shouldShowWelcome) {
+            snackbarHostState.showSnackbar(welcomeMessage)
+            onWelcomeShown()
+        }
+    }
+}
+
+@Composable
+private fun AppScaffold(
+    snackbarHostState: SnackbarHostState,
+    visibleDestinations: List<NavigationDestination>,
+    startDestination: String
+) {
+    val navController = rememberNavController()
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = currentBackStackEntry?.destination?.route
+
+    // State holder for selected project (used for detail navigation)
+    var selectedProject by remember { mutableStateOf<ProjectItem?>(null) }
+
+    // Determine if bottom bar should be shown (hide on detail screens)
+    val showBottomBar = remember(currentRoute) {
+        currentRoute != null && !currentRoute.startsWith(PROJECT_DETAIL_ROUTE)
     }
 
-    AppTheme(useDarkTheme = isDarkTheme) {
-            val navController = rememberNavController()
-            val currentBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = currentBackStackEntry?.destination?.route
-
-            // State holder for selected project (used for detail navigation)
-            var selectedProject by remember { mutableStateOf<ProjectItem?>(null) }
-
-            // Determine if bottom bar should be shown (hide on detail screens)
-            val showBottomBar = remember(currentRoute) {
-                currentRoute != null && !currentRoute.startsWith(PROJECT_DETAIL_ROUTE)
-            }
-
-            Scaffold(
-                modifier = Modifier
-                    .safeContentPadding()
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-                bottomBar = {
-                    if (showBottomBar) {
-                        BottomNavigationBar(
-                            currentRoute = currentRoute,
-                            onNavigate = { route ->
-                                navController.navigate(route) {
-                                    popUpTo(navController.graph.startDestinationId)
-                                    launchSingleTop = true
-                                }
-                            }
-                        )
-                    }
-                }
-            ) { paddingValues ->
-                NavHost(
-                    navController = navController,
-                    startDestination = NavigationDestination.Projects.route,
-                    modifier = Modifier.padding(paddingValues)
-                ) {
-                    composable(NavigationDestination.Projects.route) {
-                        ProjectsScreen(
-                            onProjectClick = { project ->
-                                selectedProject = project
-                                navController.navigate(PROJECT_DETAIL_ROUTE)
-                            }
-                        )
-                    }
-                    composable(NavigationDestination.Map.route) {
-                        MapScreen(
-                            onProjectClick = { project ->
-                                selectedProject = project
-                                navController.navigate(PROJECT_DETAIL_ROUTE)
-                            }
-                        )
-                    }
-                    composable(NavigationDestination.Directions.route) {
-                        DirectionsScreen()
-                    }
-                    composable(NavigationDestination.About.route) {
-                        AboutScreen()
-                    }
-                    composable(route = PROJECT_DETAIL_ROUTE) {
-                        selectedProject?.let { project ->
-                            ProjectDetailScreen(
-                                project = project,
-                                onBackClick = { navController.popBackStack() }
-                            )
+    Scaffold(
+        modifier = Modifier
+            .safeContentPadding()
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background),
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        bottomBar = {
+            if (showBottomBar) {
+                BottomNavigationBar(
+                    currentRoute = currentRoute,
+                    onNavigate = { route ->
+                        navController.navigate(route) {
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
                         }
-                    }
+                    },
+                    destinations = visibleDestinations
+                )
+            }
+        }
+    ) { paddingValues ->
+        AppNavHost(
+            navController = navController,
+            startDestination = startDestination,
+            modifier = Modifier.padding(paddingValues),
+            selectedProject = selectedProject,
+            onProjectSelected = { selectedProject = it }
+        )
+    }
+}
+
+@Composable
+private fun AppNavHost(
+    navController: NavHostController,
+    startDestination: String,
+    modifier: Modifier,
+    selectedProject: ProjectItem?,
+    onProjectSelected: (ProjectItem) -> Unit
+) {
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
+        modifier = modifier
+    ) {
+        composable(NavigationDestination.Projects.route) {
+            ProjectsScreen(
+                onProjectClick = { project ->
+                    onProjectSelected(project)
+                    navController.navigate(PROJECT_DETAIL_ROUTE)
                 }
+            )
+        }
+        composable(NavigationDestination.Map.route) {
+            MapScreen(
+                onProjectClick = { project ->
+                    onProjectSelected(project)
+                    navController.navigate(PROJECT_DETAIL_ROUTE)
+                }
+            )
+        }
+        composable(NavigationDestination.Directions.route) {
+            DirectionsScreen()
+        }
+        composable(NavigationDestination.About.route) {
+            AboutScreen()
+        }
+        composable(route = PROJECT_DETAIL_ROUTE) {
+            selectedProject?.let { project ->
+                ProjectDetailScreen(
+                    project = project,
+                    onBackClick = { navController.popBackStack() }
+                )
             }
         }
     }
+}
