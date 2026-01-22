@@ -188,6 +188,9 @@
     <string name="camp_pin_name_default">My Camp</string>
     <string name="cd_camp_pin_marker">Your camp location</string>
 
+    <!-- Surprise Mode -->
+    <string name="unlock_welcome_message">Welcome to AfrikaBurn!</string>
+
     <!-- Project Detail Screen -->
     <string name="project_detail_title">Project Details</string>
     <string name="project_detail_artist_label">Artist/Creator</string>
