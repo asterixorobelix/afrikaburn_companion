@@ -7,6 +7,8 @@ import io.asterixorobelix.afrikaburn.domain.service.EventDateService
 import io.asterixorobelix.afrikaburn.domain.service.EventDateServiceImpl
 import io.asterixorobelix.afrikaburn.domain.service.GeofenceService
 import io.asterixorobelix.afrikaburn.domain.service.GeofenceServiceImpl
+import io.asterixorobelix.afrikaburn.domain.service.UnlockConditionManager
+import io.asterixorobelix.afrikaburn.domain.service.UnlockConditionManagerImpl
 import kotlinx.datetime.Clock
 import org.koin.dsl.module
 
@@ -19,4 +21,7 @@ val domainModule = module {
 
     // Geofence detection for Surprise Mode
     single<GeofenceService> { GeofenceServiceImpl(get()) }
+
+    // Unlock condition evaluation for Surprise Mode
+    single<UnlockConditionManager> { UnlockConditionManagerImpl(get(), get(), get()) }
 }
