@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 fun BottomNavigationBar(
     currentRoute: String?,
     onNavigate: (String) -> Unit,
+    destinations: List<NavigationDestination> = NavigationDestination.allDestinations,
     modifier: Modifier = Modifier
 ) {
     NavigationBar(
@@ -20,7 +21,7 @@ fun BottomNavigationBar(
         containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
-        NavigationDestination.allDestinations.forEach { destination ->
+        destinations.forEach { destination ->
             NavigationBarItem(
                 icon = {
                     Icon(
