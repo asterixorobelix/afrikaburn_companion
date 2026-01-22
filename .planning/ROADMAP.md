@@ -73,7 +73,7 @@ Plans:
   1. App can calculate distance from user's GPS to event center
   2. App returns true/false for "within 20km geofence" check
   3. Leverages existing LocationService and Haversine formula from v3.0
-**Plans**: TBD
+**Plans**: 1 plan
 **Research**: Yes (verify LocationService reuse)
 
 Plans:
