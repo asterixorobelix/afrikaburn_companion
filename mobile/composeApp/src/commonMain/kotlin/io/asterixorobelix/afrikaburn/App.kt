@@ -76,9 +76,8 @@ fun App() {
     val visibleDestinations = NavigationDestination.getVisibleDestinations(isUnlocked)
     val startDestination = determineStartDestination(isUnlocked)
 
-    // Show welcome message on first unlock (once per session)
-    // Only show if unlocked, haven't shown yet, and it was a real unlock (not bypass)
-    val shouldShowWelcome = isUnlocked && !hasShownWelcome && unlockManager.getUnlockedAt() != null
+    // Show welcome message only on fresh unlock (happened THIS session, not from persistence)
+    val shouldShowWelcome = isUnlocked && !hasShownWelcome && unlockManager.wasJustUnlocked()
     ShowWelcomeMessage(shouldShowWelcome, snackbarHostState, welcomeMessage) {
         hasShownWelcome = true
     }

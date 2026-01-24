@@ -50,6 +50,17 @@ interface UnlockConditionManager {
      * @return The unlock timestamp, or null if not yet unlocked
      */
     fun getUnlockedAt(): Instant?
+
+    /**
+     * Check if unlock happened during this session (fresh unlock).
+     *
+     * Returns true only if the unlock was triggered during THIS app session,
+     * not if it was already unlocked from a previous session.
+     * Use this to show one-time welcome messages.
+     *
+     * @return true if unlock happened this session, false otherwise
+     */
+    fun wasJustUnlocked(): Boolean
 }
 
 /**
@@ -65,20 +76,25 @@ class UnlockConditionManagerImpl(
     private val unlockStateRepository: UnlockStateRepository
 ) : UnlockConditionManager {
 
+    // Tracks if unlock happened during THIS session (in-memory only)
+    private var justUnlockedThisSession = false
+
     override fun isUnlocked(location: LocationData?): Boolean {
         // 1. Check bypass flag first (returns true without persisting)
-        // 2. Check if already persisted as unlocked
-        val alreadyUnlocked = eventDateService.isUnlockBypassed() ||
-            unlockStateRepository.isUnlocked()
-
-        if (alreadyUnlocked) {
+        if (eventDateService.isUnlockBypassed()) {
             return true
         }
 
-        // 3. Check conditions and persist if met
+        // 2. Check if already persisted as unlocked (from previous session)
+        if (unlockStateRepository.isUnlocked()) {
+            return true
+        }
+
+        // 3. Check conditions and persist if met (fresh unlock)
         val conditionsMet = shouldUnlock(location)
         if (conditionsMet) {
             unlockStateRepository.setUnlocked()
+            justUnlockedThisSession = true
         }
 
         return conditionsMet
@@ -90,14 +106,19 @@ class UnlockConditionManagerImpl(
             return
         }
 
-        // Persist if conditions are met
+        // Persist if conditions are met (fresh unlock)
         if (shouldUnlock(location)) {
             unlockStateRepository.setUnlocked()
+            justUnlockedThisSession = true
         }
     }
 
     override fun getUnlockedAt(): Instant? {
         return unlockStateRepository.getUnlockedAt()
+    }
+
+    override fun wasJustUnlocked(): Boolean {
+        return justUnlockedThisSession
     }
 
     /**

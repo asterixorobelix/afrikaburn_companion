@@ -354,4 +354,61 @@ class UnlockConditionManagerTest {
         assertTrue(result, "Geofence alone should unlock (OR condition)")
         assertTrue(repository.wasSetUnlockedCalled(), "Should persist")
     }
+
+    // =========================================================================
+    // Test 9: wasJustUnlocked tracking
+    // =========================================================================
+
+    @Test
+    fun `wasJustUnlocked returns false when not unlocked`() {
+        // Given: Not unlocked
+        val (manager, _, _) = createManager()
+
+        // When
+        manager.isUnlocked(null) // This won't unlock since no conditions met
+
+        // Then
+        assertFalse(manager.wasJustUnlocked(), "Should return false when not unlocked")
+    }
+
+    @Test
+    fun `wasJustUnlocked returns true when fresh unlock happens this session`() {
+        // Given: Event started (will trigger fresh unlock)
+        val eventDateService = FakeEventDateService(eventStarted = true)
+        val (manager, _, _) = createManager(eventDateService = eventDateService)
+
+        // When
+        manager.isUnlocked(null)
+
+        // Then
+        assertTrue(manager.wasJustUnlocked(), "Should return true after fresh unlock")
+    }
+
+    @Test
+    fun `wasJustUnlocked returns false when already unlocked from persistence`() {
+        // Given: Already persisted as unlocked (from previous session)
+        val repository = FakeUnlockStateRepository()
+        repository.setUnlocked() // Simulate previous session unlock
+
+        val (manager, _, _) = createManager(unlockStateRepository = repository)
+
+        // When
+        manager.isUnlocked(null)
+
+        // Then: Should not be "just unlocked" since it was from persistence
+        assertFalse(manager.wasJustUnlocked(), "Should return false for persisted unlock")
+    }
+
+    @Test
+    fun `wasJustUnlocked returns false when bypass is used`() {
+        // Given: Bypass enabled
+        val eventDateService = FakeEventDateService(bypassed = true)
+        val (manager, _, _) = createManager(eventDateService = eventDateService)
+
+        // When
+        manager.isUnlocked(null)
+
+        // Then: Bypass doesn't count as "just unlocked" (no persistence)
+        assertFalse(manager.wasJustUnlocked(), "Should return false for bypass")
+    }
 }
