@@ -92,8 +92,8 @@ Plans:
 **Research**: Yes (navigation architecture)
 
 Plans:
-- [ ] 07-01: Unlock Condition Manager (SQLDelight persistence + TDD tests)
-- [ ] 07-02: Navigation Tab Filtering (UI integration + welcome message)
+- [x] 07-01: Unlock Condition Manager (SQLDelight persistence + TDD tests)
+- [x] 07-02: Navigation Tab Filtering (UI integration + welcome message)
 
 #### Phase 8: Polish & Edge Cases
 **Goal**: Handle edge cases, add visual feedback, ensure smooth UX, and verify test coverage.
@@ -124,5 +124,5 @@ Phases execute in numeric order: 5 → 6 → 7 → 8
 | 4. User Camp Pin | v3.0 | 2/2 | Complete | 2026-01-20 |
 | 5. Event Date Configuration | v3.1 | 1/1 | Complete | 2026-01-22 |
 | 6. Geofence Detection | v3.1 | 1/1 | Complete | 2026-01-22 |
-| 7. Tab Visibility Control | v3.1 | 0/2 | Planned | - |
+| 7. Tab Visibility Control | v3.1 | 2/2 | Complete | 2026-01-24 |
 | 8. Polish & Edge Cases | v3.1 | 0/1 | Not started | - |
