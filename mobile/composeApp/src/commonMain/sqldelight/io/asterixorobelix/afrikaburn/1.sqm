@@ -1,0 +1,7 @@
+-- Migration from version 1 to version 2
+-- Adds UnlockState table for surprise mode persistence
+
+CREATE TABLE IF NOT EXISTS UnlockState (
+    id INTEGER PRIMARY KEY NOT NULL,
+    unlockedAt INTEGER NOT NULL
+);

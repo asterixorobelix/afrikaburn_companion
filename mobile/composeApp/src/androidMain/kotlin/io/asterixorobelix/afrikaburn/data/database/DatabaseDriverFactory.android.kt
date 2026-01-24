@@ -7,6 +7,7 @@ import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 /**
  * Android implementation of DatabaseDriverFactory.
  * Uses AndroidSqliteDriver with application Context.
+ * Schema migrations are handled via .sqm files in sqldelight directory.
  */
 actual class DatabaseDriverFactory(private val context: Context) {
     actual fun createDriver(): SqlDriver {

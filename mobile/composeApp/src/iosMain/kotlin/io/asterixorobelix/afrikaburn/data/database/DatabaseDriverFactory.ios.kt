@@ -6,6 +6,7 @@ import app.cash.sqldelight.driver.native.NativeSqliteDriver
 /**
  * iOS implementation of DatabaseDriverFactory.
  * Uses NativeSqliteDriver which doesn't require Context.
+ * Schema migrations are handled via .sqm files in sqldelight directory.
  */
 actual class DatabaseDriverFactory {
     actual fun createDriver(): SqlDriver {
