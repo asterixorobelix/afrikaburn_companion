@@ -10,7 +10,7 @@
     <string name="about_page2_title">About Afrikaburn</string>
     <string name="about_page2_content">AfrikaBurn is the spectacular result of a community of participants who come together to create art, costume, performance, gifted and volunteered services, Theme Camps, music, Mutant Vehicles, and much, much more. It is a chance to invent the world anew. The flagship AfrikaBurn event takes place in the Tankwa Karoo, at Quaggafontein Farm, located in the Western Cape Province of South Africa, around the end of April every year. AfrikaBurn is the largest of many events across the globe that share Guiding Principles through affiliation with the Burning Man Regional Network. Originally called Afrika Burns, the first planned event in 2007 at Stonehenge Farm in the Northern Cape, was cancelled due to flooding. The inaugural event ‘Tribe’ took place in November of that year. The event was renamed through a public participation process to “AfrikaBurn” in 2008, due to concerns about negative interpretation. The emphasis was shifted from something (‘burns’) that happens to Africa, to something (a ‘burn’) that happens in Africa. In 2010 the event was moved earlier in the year to the end of April because the mild autumn weather better suited the event, and so that a South African public holiday (or two) would fall over the event period. 2019 was the last year AfrikaBurn was held at Stonehenge Farm. In 2022 AfrikaBurn was hosted on Quaggafontein for the first time.</string>
     <string name="about_page3_title">About this year's theme</string>
-    <string name="about_page3_content">Out Of The Blue: The Ocean. The Horizon. The Sky. Anything under the sun, and anything under the sea. Something old, something new, something borrowed, something once in a blue moon. Lazy days, hazy days, singing the blues. Your biggest dreams and boldest ideas. Your greatest wonders and biggest fears. The drop of a hat, and a flash in the pan. Anything you can dream up, dress up, make up, or fess up. It’s a whole new expanse. The next big thing. Anything.</string>
+    <string name="about_page3_content">Through The Prism: The 2026 theme invites you to explore identity, perception, and presence through the metaphor of light refraction. Like a prism bending light, our identities are multifaceted—not a single story but many intersecting aspects. Drawing from the African principle "Umuntu Ngumuntu Ngabantu" (a person is a person through other people), we are defined through relationship and community. Step beyond consumer identity and commodification to discover authentic presence within our collective. We are seen because we are.</string>
     <string name="about_page4_title">Contact Me</string>
     <string name="about_page4_content">I am an app developer</string>
     <string name="direction_title">Getting There</string>
@@ -68,7 +68,7 @@
     <!-- About URLs -->
     <string name="about_page1_url">https://www.afrikaburn.org</string>
     <string name="about_page2_url">https://quaggapedia.afrikaburn.com/index.php?title=Main_Page/</string>
-    <string name="about_page3_url">https://tickets.afrikaburn.org/afrikaburn-2025-theme/</string>
+    <string name="about_page3_url">https://tickets.afrikaburn.org/afrikaburn-2026-theme/</string>
     <string name="about_page4_url">https://www.linkedin.com/in/nathan-stasin</string>
     <string name="direction_url">https://www.google.com/maps/place/32%C2%B028&apos;56.9&quot;S+19%C2%B053&apos;52.2&quot;E/@-32.4824742,19.8952495,17z/data=!3m1!4b1!4m4!3m3!8m2!3d-32.4824742!4d19.8978244?entry=ttu&amp;g_ep=EgoyMDI1MDQwMi4xIKXMDSoJLDEwMjExNDUzSAFQAw%3D%3D</string>
     
@@ -142,7 +142,7 @@
     <string name="cd_page_indicator">Page %1$d of %2$d</string>
     <string name="cd_about_pager">About information carousel</string>
     <string name="cd_about_page1_image">Compose Multiplatform logo</string>
-    <string name="cd_about_page2_image">AfrikaBurn Quaggapedia Out of the Blue theme artwork</string>
+    <string name="cd_about_page2_image">AfrikaBurn Quaggapedia artwork</string>
     <string name="cd_about_page3_image">AfrikaBurn event photography by Laura Niggeschmidt</string>
     <string name="cd_about_page4_image">Developer contact image</string>
     <string name="cd_swipe_hint">Swipe to see more pages</string>
