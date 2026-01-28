@@ -129,4 +129,25 @@ cd mobile/iosApp && xcodebuild
 - Updated task dependencies for community feature implementation
 
 <!-- MANUAL ADDITIONS START -->
+
+## Codebase Quick Reference (Pre-Read Context)
+
+### Key Entry Points
+- **Mobile Root:** `mobile/composeApp/src/commonMain/kotlin/io/asterixorobelix/afrikaburn/App.kt`
+- **Backend Root:** `backend/src/main/kotlin/io/asterixorobelix/afrikaburn/Application.kt`
+
+### Critical Patterns
+- **Geofence Unlock:** `UnlockConditionManager` controls tab visibility based on location
+- **Offline Maps:** PMTiles + GeoJSON in `composeResources/files/`
+- **Theme:** Single `AppTheme` at root only, never wrap individual screens
+
+### Data Flow
+```
+JSON Files (composeResources/files/WTF*.json)
+  → JsonResourceDataSource → ProjectsRepository → ProjectsViewModel → UI
+```
+
+### Version Info
+- Kotlin 2.2.20, Compose 1.9.0, Ktor 3.1.3, Koin 4.1.1, SQLDelight 2.0.2
+
 <!-- MANUAL ADDITIONS END -->
