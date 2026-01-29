@@ -206,7 +206,7 @@ platform :ios do
     )
   end
 
-  desc "Build Kotlin Multiplatform framework"
+  desc "Build Kotlin Multiplatform framework (all targets)"
   lane :build_framework do
     gradle(
       project_dir: ".",
@@ -216,10 +216,24 @@ platform :ios do
     UI.success("XCFramework built successfully!")
   end
 
+  desc "Build Kotlin framework for device only (arm64, faster for CD)"
+  lane :build_framework_device do
+    gradle(
+      project_dir: ".",
+      task: ":composeApp:assembleReleaseFrameworkDevice"
+    )
+
+    UI.success("Device framework built successfully!")
+  end
+
   desc "Build iOS app for App Store"
   lane :build do
-    # First build the Kotlin framework
-    build_framework
+    # Build Kotlin framework (device-only on CI for speed)
+    if is_ci
+      build_framework_device
+    else
+      build_framework
+    end
 
     # Sync certificates
     certificates

@@ -57,7 +57,13 @@ kotlin {
         dependsOn("linkReleaseFrameworkIosArm64")
         dependsOn("linkReleaseFrameworkIosSimulatorArm64")
         group = "multiplatform"
-        description = "Assembles release XCFramework for ARM64 iOS targets"
+        description = "Assembles release XCFramework for all iOS targets"
+    }
+
+    tasks.register("assembleReleaseFrameworkDevice") {
+        dependsOn("linkReleaseFrameworkIosArm64")
+        group = "multiplatform"
+        description = "Assembles release framework for device (arm64 only, used by CD)"
     }
     
     sourceSets {
