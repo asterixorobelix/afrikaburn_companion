@@ -46,16 +46,14 @@ kotlin {
     }
     
     // Create XCFramework for iOS (ARM64 targets only)
-    @Suppress("UnusedVariable")
-    val assembleDebugXCFramework by tasks.registering {
+    tasks.register("assembleDebugXCFramework") {
         dependsOn("linkDebugFrameworkIosArm64")
         dependsOn("linkDebugFrameworkIosSimulatorArm64")
         group = "multiplatform"
         description = "Assembles debug XCFramework for ARM64 iOS targets"
     }
 
-    @Suppress("UnusedVariable")
-    val assembleReleaseXCFramework by tasks.registering {
+    tasks.register("assembleReleaseXCFramework") {
         dependsOn("linkReleaseFrameworkIosArm64")
         dependsOn("linkReleaseFrameworkIosSimulatorArm64")
         group = "multiplatform"
