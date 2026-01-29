@@ -359,7 +359,7 @@ jobs:
         GRADLE_EOF
 
     - name: Build and deploy iOS to TestFlight
-      timeout-minutes: 40
+      timeout-minutes: 50
       working-directory: mobile/fastlane
       run: |
         bundle exec fastlane ios beta
