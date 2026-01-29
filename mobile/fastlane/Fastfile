@@ -236,9 +236,9 @@ platform :ios do
     # Sync certificates
     certificates
 
-    # Build the iOS app
+    # Build the iOS app (uses CocoaPods workspace for native dependency linking)
     build_app(
-      workspace: "iosApp/iosApp.xcodeproj/project.xcworkspace",
+      workspace: "iosApp/iosApp.xcworkspace",
       scheme: "iosApp",
       export_method: "app-store",
       output_directory: "./build",
@@ -256,7 +256,7 @@ platform :ios do
     certificates_dev
 
     build_app(
-      workspace: "iosApp/iosApp.xcodeproj/project.xcworkspace",
+      workspace: "iosApp/iosApp.xcworkspace",
       scheme: "iosApp",
       export_method: "development",
       output_directory: "./build",

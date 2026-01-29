@@ -361,6 +361,11 @@ jobs:
         cd mobile
         ./gradlew :composeApp:assembleReleaseFrameworkDevice --no-daemon
 
+    - name: Install CocoaPods dependencies
+      run: |
+        cd mobile/iosApp
+        pod install --repo-update
+
     - name: Save Gradle and Kotlin/Native cache
       if: always()
       uses: actions/cache/save@v4
