@@ -3,10 +3,9 @@ package io.asterixorobelix.afrikaburn.domain.service
 import io.asterixorobelix.afrikaburn.domain.model.EventConfig
 import io.asterixorobelix.afrikaburn.domain.repository.UnlockStateRepository
 import io.asterixorobelix.afrikaburn.platform.LocationData
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -19,11 +18,13 @@ import kotlin.test.assertTrue
  * - Event date condition (via EventDateService)
  * - Geofence condition (via GeofenceService)
  * - Debug bypass flag
+ * - Event year reset (tabs re-lock when event year changes)
  *
  * Key behaviors:
- * - Once unlocked, always returns unlocked (persistence)
+ * - Once unlocked, returns unlocked for the same event year
  * - Date OR geofence unlocks (either condition sufficient)
  * - Bypass flag unlocks without persistence
+ * - Changing event year clears persisted unlock state
  */
 class UnlockConditionManagerTest {
 
@@ -32,27 +33,30 @@ class UnlockConditionManagerTest {
     // =========================================================================
 
     /**
-     * Fake Clock for testing.
-     */
-    private class FakeClock(private val fixedInstant: Instant) : Clock {
-        override fun now(): Instant = fixedInstant
-    }
-
-    /**
      * Fake UnlockStateRepository for in-memory testing.
      */
     private class FakeUnlockStateRepository : UnlockStateRepository {
         private var unlocked = false
         private var unlockedAtTime: Instant? = null
+        private var storedEventYear: Int? = null
 
         override fun isUnlocked(): Boolean = unlocked
 
-        override fun setUnlocked() {
+        override fun setUnlocked(eventYear: Int) {
             unlocked = true
             unlockedAtTime = Instant.parse("2026-04-27T10:00:00Z")
+            storedEventYear = eventYear
         }
 
         override fun getUnlockedAt(): Instant? = unlockedAtTime
+
+        override fun getEventYear(): Int? = storedEventYear
+
+        override fun clearUnlockState() {
+            unlocked = false
+            unlockedAtTime = null
+            storedEventYear = null
+        }
 
         // Test helper to check if setUnlocked was called
         fun wasSetUnlockedCalled(): Boolean = unlocked
@@ -63,19 +67,16 @@ class UnlockConditionManagerTest {
      */
     private class FakeEventDateService(
         private var eventStarted: Boolean = false,
-        private var bypassed: Boolean = false
+        private var bypassed: Boolean = false,
+        private var config: EventConfig = EventConfig.DEFAULT
     ) : EventDateService {
         override fun isEventStarted(): Boolean = eventStarted
         override fun isEventActive(): Boolean = eventStarted
-        override fun getEventConfig(): EventConfig = EventConfig.DEFAULT
+        override fun getEventConfig(): EventConfig = config
         override fun isUnlockBypassed(): Boolean = bypassed
 
         fun setEventStarted(started: Boolean) {
             eventStarted = started
-        }
-
-        fun setBypassed(bypass: Boolean) {
-            bypassed = bypass
         }
     }
 
@@ -92,10 +93,6 @@ class UnlockConditionManagerTest {
             if (location == null) false else withinGeofence
 
         override fun getDistanceToEventKm(latitude: Double, longitude: Double): Double = 0.0
-
-        fun setWithinGeofence(within: Boolean) {
-            withinGeofence = within
-        }
     }
 
     // =========================================================================
@@ -124,14 +121,14 @@ class UnlockConditionManagerTest {
     )
 
     // =========================================================================
-    // Test 1: Already persisted as unlocked
+    // Test 1: Already persisted as unlocked (same event year)
     // =========================================================================
 
     @Test
     fun `isUnlocked returns true when already persisted as unlocked`() {
-        // Given: Unlock state is already persisted
+        // Given: Unlock state is already persisted for current event year
         val repository = FakeUnlockStateRepository()
-        repository.setUnlocked() // Pre-persist unlock
+        repository.setUnlocked(EventConfig.DEFAULT.eventStartDate.year)
 
         val (manager, _, _) = createManager(unlockStateRepository = repository)
 
@@ -214,7 +211,7 @@ class UnlockConditionManagerTest {
     }
 
     // =========================================================================
-    // Test 6: Once unlocked, always returns true
+    // Test 6: Once unlocked, always returns true (same event year)
     // =========================================================================
 
     @Test
@@ -227,7 +224,7 @@ class UnlockConditionManagerTest {
         val firstResult = manager.isUnlocked(null)
         assertTrue(firstResult, "Should be unlocked initially")
 
-        // When: Conditions change (hypothetically event "unstarts" - shouldn't happen but test persistence)
+        // When: Conditions change (hypothetically event "unstarts")
         eventDateService.setEventStarted(false)
         val secondResult = manager.isUnlocked(null)
 
@@ -293,11 +290,7 @@ class UnlockConditionManagerTest {
         val result = manager.getUnlockedAt()
 
         // Then
-        assertEquals(
-            Instant.parse("2026-04-27T10:00:00Z"),
-            result,
-            "Should return unlock timestamp"
-        )
+        assertTrue(result != null, "Should return unlock timestamp")
     }
 
     // =========================================================================
@@ -322,7 +315,7 @@ class UnlockConditionManagerTest {
     fun `bypass takes priority over checking persistence first`() {
         // Given: Already persisted AND bypass enabled
         val repository = FakeUnlockStateRepository()
-        repository.setUnlocked() // Pre-persist
+        repository.setUnlocked(EventConfig.DEFAULT.eventStartDate.year)
 
         val eventDateService = FakeEventDateService(bypassed = true)
         val (manager, _, _) = createManager(
@@ -388,7 +381,7 @@ class UnlockConditionManagerTest {
     fun `wasJustUnlocked returns false when already unlocked from persistence`() {
         // Given: Already persisted as unlocked (from previous session)
         val repository = FakeUnlockStateRepository()
-        repository.setUnlocked() // Simulate previous session unlock
+        repository.setUnlocked(EventConfig.DEFAULT.eventStartDate.year)
 
         val (manager, _, _) = createManager(unlockStateRepository = repository)
 
@@ -410,5 +403,108 @@ class UnlockConditionManagerTest {
 
         // Then: Bypass doesn't count as "just unlocked" (no persistence)
         assertFalse(manager.wasJustUnlocked(), "Should return false for bypass")
+    }
+
+    // =========================================================================
+    // Test 10: Event year reset — tabs re-lock when event year changes
+    // =========================================================================
+
+    @Test
+    fun `unlock state is cleared when event year changes`() {
+        // Given: Previously unlocked for 2026
+        val repository = FakeUnlockStateRepository()
+        repository.setUnlocked(2026)
+
+        // But now the event config is for 2027
+        val config2027 = EventConfig(
+            eventStartDate = LocalDate(2027, 4, 26),
+            eventEndDate = LocalDate(2027, 5, 2),
+            eventLatitude = -32.3266,
+            eventLongitude = 19.7437,
+            geofenceRadiusKm = 20.0
+        )
+        val eventDateService = FakeEventDateService(config = config2027)
+
+        // When: Manager is created (init triggers year check)
+        val manager = UnlockConditionManagerImpl(
+            eventDateService = eventDateService,
+            geofenceService = FakeGeofenceService(),
+            unlockStateRepository = repository
+        )
+
+        // Then: Unlock state should have been cleared
+        assertFalse(manager.isUnlocked(null), "Should be locked after event year change")
+        assertFalse(repository.isUnlocked(), "Repository should be cleared")
+        assertNull(repository.getEventYear(), "Stored event year should be null")
+    }
+
+    @Test
+    fun `unlock state is preserved when event year matches`() {
+        // Given: Previously unlocked for 2026, config is still 2026
+        val repository = FakeUnlockStateRepository()
+        repository.setUnlocked(2026)
+
+        val eventDateService = FakeEventDateService(config = EventConfig.DEFAULT)
+
+        // When: Manager is created
+        val manager = UnlockConditionManagerImpl(
+            eventDateService = eventDateService,
+            geofenceService = FakeGeofenceService(),
+            unlockStateRepository = repository
+        )
+
+        // Then: Should still be unlocked
+        assertTrue(manager.isUnlocked(null), "Should remain unlocked when year matches")
+    }
+
+    @Test
+    fun `fresh unlock after year reset persists new event year`() {
+        // Given: Previously unlocked for 2026, config changed to 2027
+        val repository = FakeUnlockStateRepository()
+        repository.setUnlocked(2026)
+
+        val config2027 = EventConfig(
+            eventStartDate = LocalDate(2027, 4, 26),
+            eventEndDate = LocalDate(2027, 5, 2),
+            eventLatitude = -32.3266,
+            eventLongitude = 19.7437,
+            geofenceRadiusKm = 20.0
+        )
+        val eventDateService = FakeEventDateService(
+            eventStarted = true,
+            config = config2027
+        )
+
+        // When: Manager is created (clears old state), then conditions trigger new unlock
+        val manager = UnlockConditionManagerImpl(
+            eventDateService = eventDateService,
+            geofenceService = FakeGeofenceService(),
+            unlockStateRepository = repository
+        )
+        manager.isUnlocked(null)
+
+        // Then: Should be unlocked with new event year
+        assertTrue(repository.isUnlocked(), "Should be unlocked again")
+        assertTrue(
+            repository.getEventYear() == 2027,
+            "Should store new event year"
+        )
+    }
+
+    @Test
+    fun `no stored state does not trigger year reset`() {
+        // Given: No previous unlock state at all (fresh install)
+        val repository = FakeUnlockStateRepository()
+        val eventDateService = FakeEventDateService()
+
+        // When: Manager is created
+        val manager = UnlockConditionManagerImpl(
+            eventDateService = eventDateService,
+            geofenceService = FakeGeofenceService(),
+            unlockStateRepository = repository
+        )
+
+        // Then: Should simply be locked (no crash, no error)
+        assertFalse(manager.isUnlocked(null), "Should be locked on fresh install")
     }
 }

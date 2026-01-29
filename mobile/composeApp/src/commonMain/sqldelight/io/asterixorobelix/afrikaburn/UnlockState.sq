@@ -1,20 +1,30 @@
--- Permanent unlock state for surprise mode
--- Only one row ever exists (id = 1), persisting that tabs have been unlocked
--- Once unlocked, tabs remain visible forever (state never reverts)
+-- Unlock state for surprise mode, scoped to an event year.
+-- Only one row ever exists (id = 1), persisting that tabs have been unlocked.
+-- When the event year changes (new app update with new dates),
+-- the unlock state is automatically cleared and re-evaluated.
 
 CREATE TABLE UnlockState (
     id INTEGER PRIMARY KEY NOT NULL,
-    unlockedAt INTEGER NOT NULL
+    unlockedAt INTEGER NOT NULL,
+    eventYear INTEGER NOT NULL
 );
 
 -- Get the unlock state (should only be one row)
 getUnlockState:
 SELECT * FROM UnlockState LIMIT 1;
 
--- Set the unlock state (uses id = 1 to ensure only one row)
+-- Set the unlock state with event year (uses id = 1 to ensure only one row)
 setUnlocked:
-INSERT OR REPLACE INTO UnlockState (id, unlockedAt) VALUES (1, ?);
+INSERT OR REPLACE INTO UnlockState (id, unlockedAt, eventYear) VALUES (1, ?, ?);
 
 -- Check if already unlocked
 isUnlocked:
 SELECT COUNT(*) > 0 FROM UnlockState WHERE id = 1;
+
+-- Get the stored event year (returns null if no row exists)
+getEventYear:
+SELECT eventYear FROM UnlockState WHERE id = 1;
+
+-- Clear unlock state (used when event year changes)
+clearUnlockState:
+DELETE FROM UnlockState WHERE id = 1;

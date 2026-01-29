@@ -79,6 +79,15 @@ class UnlockConditionManagerImpl(
     // Tracks if unlock happened during THIS session (in-memory only)
     private var justUnlockedThisSession = false
 
+    // Current event year from configuration
+    private val currentEventYear: Int
+        get() = eventDateService.getEventConfig().eventStartDate.year
+
+    init {
+        // Clear persisted unlock if the event year has changed (e.g., 2026 -> 2027 update)
+        clearStateIfEventYearChanged()
+    }
+
     override fun isUnlocked(location: LocationData?): Boolean {
         // 1. Check bypass flag first (returns true without persisting)
         if (eventDateService.isUnlockBypassed()) {
@@ -93,7 +102,7 @@ class UnlockConditionManagerImpl(
         // 3. Check conditions and persist if met (fresh unlock)
         val conditionsMet = shouldUnlock(location)
         if (conditionsMet) {
-            unlockStateRepository.setUnlocked()
+            unlockStateRepository.setUnlocked(currentEventYear)
             justUnlockedThisSession = true
         }
 
@@ -108,8 +117,20 @@ class UnlockConditionManagerImpl(
 
         // Persist if conditions are met (fresh unlock)
         if (shouldUnlock(location)) {
-            unlockStateRepository.setUnlocked()
+            unlockStateRepository.setUnlocked(currentEventYear)
             justUnlockedThisSession = true
+        }
+    }
+
+    /**
+     * Clears persisted unlock state if the stored event year differs
+     * from the current event configuration year.
+     * This ensures tabs re-lock when an app update ships new event dates.
+     */
+    private fun clearStateIfEventYearChanged() {
+        val storedYear = unlockStateRepository.getEventYear() ?: return
+        if (storedYear != currentEventYear) {
+            unlockStateRepository.clearUnlockState()
         }
     }
 

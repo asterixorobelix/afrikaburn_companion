@@ -1,0 +1,11 @@
+-- Migration from version 2 to version 3
+-- Adds eventYear column to UnlockState for year-based reset.
+-- Clears existing unlock state so tabs re-lock for the new event year.
+
+DROP TABLE IF EXISTS UnlockState;
+
+CREATE TABLE UnlockState (
+    id INTEGER PRIMARY KEY NOT NULL,
+    unlockedAt INTEGER NOT NULL,
+    eventYear INTEGER NOT NULL
+);

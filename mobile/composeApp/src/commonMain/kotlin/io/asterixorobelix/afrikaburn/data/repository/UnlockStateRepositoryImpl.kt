@@ -8,8 +8,8 @@ import kotlinx.datetime.Instant
 /**
  * SQLDelight-based implementation of UnlockStateRepository.
  *
- * Persists unlock state permanently using a single-row table pattern.
- * Once setUnlocked() is called, isUnlocked() will always return true.
+ * Persists unlock state using a single-row table pattern, scoped to an event year.
+ * When the event year changes, the state can be cleared so tabs re-lock.
  */
 class UnlockStateRepositoryImpl(
     private val database: AfrikaBurnDatabase,
@@ -22,14 +22,22 @@ class UnlockStateRepositoryImpl(
         return queries.isUnlocked().executeAsOne()
     }
 
-    override fun setUnlocked() {
+    override fun setUnlocked(eventYear: Int) {
         val now = clock.now().toEpochMilliseconds()
-        queries.setUnlocked(now)
+        queries.setUnlocked(now, eventYear.toLong())
     }
 
     override fun getUnlockedAt(): Instant? {
         return queries.getUnlockState().executeAsOneOrNull()?.let { state ->
             Instant.fromEpochMilliseconds(state.unlockedAt)
         }
+    }
+
+    override fun getEventYear(): Int? {
+        return queries.getEventYear().executeAsOneOrNull()?.toInt()
+    }
+
+    override fun clearUnlockState() {
+        queries.clearUnlockState()
     }
 }
