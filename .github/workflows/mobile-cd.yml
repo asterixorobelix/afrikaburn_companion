@@ -299,14 +299,18 @@ jobs:
       with:
         xcode-version: 'latest-stable'
 
-    - name: Cache Gradle packages
+    - name: Cache Gradle and Kotlin/Native
       uses: actions/cache@v4
       with:
         path: |
           ~/.gradle/caches
           ~/.gradle/wrapper
           ~/.konan
-        key: ${{ runner.os }}-gradle-konan-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          mobile/.gradle
+          mobile/build
+          mobile/composeApp/build/classes
+          mobile/composeApp/build/kotlin
+        key: ${{ runner.os }}-gradle-konan-${{ hashFiles('mobile/**/*.gradle*', 'mobile/**/gradle-wrapper.properties', 'mobile/gradle/libs.versions.toml') }}
         restore-keys: |
           ${{ runner.os }}-gradle-konan-
           ${{ runner.os }}-gradle-
@@ -343,12 +347,13 @@ jobs:
         cd mobile
         cat >> gradle.properties << 'GRADLE_EOF'
         org.gradle.jvmargs=-Xmx6g -XX:MaxMetaspaceSize=1g -XX:+UseG1GC
-        org.gradle.parallel=false
+        org.gradle.parallel=true
         org.gradle.daemon=false
-        org.gradle.configureondemand=false
+        org.gradle.configureondemand=true
+        org.gradle.caching=true
         kotlin.native.ignoreDisabledTargets=true
         kotlin.native.useXcodeMessageStyle=true
-        kotlin.incremental.native=false
+        kotlin.incremental.native=true
         android.useAndroidX=true
         android.enableJetifier=false
         GRADLE_EOF
