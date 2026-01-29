@@ -13,7 +13,7 @@ platform :android do
   desc "Run Android unit tests"
   lane :test do
     gradle(
-      project_dir: "..",
+      project_dir: ".",
       task: ":composeApp:testDebugUnitTest"
     )
   end
@@ -21,7 +21,7 @@ platform :android do
   desc "Run detekt code analysis"
   lane :lint do
     gradle(
-      project_dir: "..",
+      project_dir: ".",
       task: "detekt"
     )
   end
@@ -29,7 +29,7 @@ platform :android do
   desc "Build debug APK"
   lane :build_debug do
     gradle(
-      project_dir: "..",
+      project_dir: ".",
       task: ":composeApp:assembleDebug"
     )
 
@@ -45,7 +45,7 @@ platform :android do
     )
 
     gradle(
-      project_dir: "..",
+      project_dir: ".",
       task: ":composeApp:bundleRelease",
       properties: {
         "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
@@ -55,7 +55,7 @@ platform :android do
       }
     )
 
-    AAB_LOCATION = "../composeApp/build/outputs/bundle/release/composeApp-release.aab"
+    AAB_LOCATION = "composeApp/build/outputs/bundle/release/composeApp-release.aab"
     UI.success("Release AAB built: #{AAB_LOCATION}")
   end
 
@@ -66,7 +66,7 @@ platform :android do
     )
 
     gradle(
-      project_dir: "..",
+      project_dir: ".",
       task: ":composeApp:assembleRelease",
       properties: {
         "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
@@ -80,7 +80,7 @@ platform :android do
   desc "Increment version code"
   lane :bump_version do
     # Read current version from build.gradle.kts
-    build_file = "../composeApp/build.gradle.kts"
+    build_file = "composeApp/build.gradle.kts"
     content = File.read(build_file)
 
     # Extract and increment version code
@@ -104,7 +104,7 @@ platform :android do
 
     upload_to_play_store(
       track: "internal",
-      aab: "../composeApp/build/outputs/bundle/release/composeApp-release.aab",
+      aab: "composeApp/build/outputs/bundle/release/composeApp-release.aab",
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true,
@@ -123,7 +123,7 @@ platform :android do
 
     upload_to_play_store(
       track: "beta",
-      aab: "../composeApp/build/outputs/bundle/release/composeApp-release.aab",
+      aab: "composeApp/build/outputs/bundle/release/composeApp-release.aab",
       skip_upload_metadata: false,
       skip_upload_images: true,
       skip_upload_screenshots: true
@@ -143,7 +143,7 @@ platform :android do
 
     upload_to_play_store(
       track: "production",
-      aab: "../composeApp/build/outputs/bundle/release/composeApp-release.aab",
+      aab: "composeApp/build/outputs/bundle/release/composeApp-release.aab",
       rollout: rollout_percentage.to_s
     )
 
@@ -209,7 +209,7 @@ platform :ios do
   desc "Build Kotlin Multiplatform framework"
   lane :build_framework do
     gradle(
-      project_dir: "..",
+      project_dir: ".",
       task: ":composeApp:assembleReleaseXCFramework"
     )
 
@@ -226,7 +226,7 @@ platform :ios do
 
     # Build the iOS app
     build_app(
-      workspace: "../iosApp/iosApp.xcodeproj/project.xcworkspace",
+      workspace: "iosApp/iosApp.xcodeproj/project.xcworkspace",
       scheme: "iosApp",
       export_method: "app-store",
       output_directory: "./build",
@@ -243,7 +243,7 @@ platform :ios do
     certificates_dev
 
     build_app(
-      workspace: "../iosApp/iosApp.xcodeproj/project.xcworkspace",
+      workspace: "iosApp/iosApp.xcodeproj/project.xcworkspace",
       scheme: "iosApp",
       export_method: "development",
       output_directory: "./build",
