@@ -5,7 +5,7 @@
 source "https://rubygems.org"
 
 # Fastlane - the core automation tool
-gem "fastlane", "~> 2.225"
+gem "fastlane", "~> 2.226"
 
 # Plugins are managed via Pluginfile
 plugins_path = File.join(File.dirname(__FILE__), 'Pluginfile')
