@@ -178,14 +178,15 @@ jobs:
         ./gradlew :composeApp:bundleRelease
     
     - name: Sign Android AAB
-      uses: r0adkll/sign-android-release@v1.0.4
-      id: sign_aab
-      with:
-        releaseDirectory: mobile/composeApp/build/outputs/bundle/release
-        signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
-        alias: ${{ secrets.ANDROID_KEY_ALIAS }}
-        keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-        keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+      run: |
+        echo "${{ secrets.ANDROID_SIGNING_KEY }}" | base64 --decode > /tmp/keystore.jks
+        jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 \
+          -keystore /tmp/keystore.jks \
+          -storepass "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+          -keypass "${{ secrets.ANDROID_KEY_PASSWORD }}" \
+          mobile/composeApp/build/outputs/bundle/release/*.aab \
+          "${{ secrets.ANDROID_KEY_ALIAS }}"
+        rm -f /tmp/keystore.jks
     
     - name: Upload AAB artifact
       uses: actions/upload-artifact@v4
