@@ -243,7 +243,8 @@ platform :ios do
       export_method: "app-store",
       output_directory: "./build",
       output_name: "AfrikaBurnCompanion.ipa",
-      clean: true
+      clean: true,
+      xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=#{ENV['APPLE_TEAM_ID']} PROVISIONING_PROFILE_SPECIFIER='match AppStore io.asterixorobelix.afrikaburn' CODE_SIGN_IDENTITY='Apple Distribution'"
     )
 
     UI.success("iOS app built successfully!")
