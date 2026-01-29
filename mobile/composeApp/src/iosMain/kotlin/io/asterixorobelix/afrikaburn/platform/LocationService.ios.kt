@@ -18,7 +18,6 @@ import platform.CoreLocation.kCLAuthorizationStatusDenied
 import platform.CoreLocation.kCLAuthorizationStatusNotDetermined
 import platform.CoreLocation.kCLAuthorizationStatusRestricted
 import platform.CoreLocation.kCLLocationAccuracyHundredMeters
-import platform.Foundation.NSDate
 import platform.Foundation.NSError
 import platform.Foundation.NSLog
 import platform.Foundation.timeIntervalSince1970
@@ -56,16 +55,6 @@ class IOSLocationService : LocationService {
                     val newStatus = manager.authorizationStatus
                     if (newStatus != kCLAuthorizationStatusNotDetermined) {
                         continuation.resume(mapAuthorizationStatus(newStatus))
-                    }
-                }
-
-                @Suppress("CONFLICTING_OVERLOADS")
-                override fun locationManager(
-                    manager: CLLocationManager,
-                    didChangeAuthorizationStatus: CLAuthorizationStatus
-                ) {
-                    if (didChangeAuthorizationStatus != kCLAuthorizationStatusNotDetermined) {
-                        continuation.resume(mapAuthorizationStatus(didChangeAuthorizationStatus))
                     }
                 }
             }

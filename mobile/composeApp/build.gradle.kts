@@ -15,6 +15,11 @@ plugins {
 }
 
 kotlin {
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
+
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
@@ -41,16 +46,18 @@ kotlin {
     }
     
     // Create XCFramework for iOS (ARM64 targets only)
-    task("assembleDebugXCFramework") {
+    @Suppress("UnusedVariable")
+    val assembleDebugXCFramework by tasks.registering {
         dependsOn("linkDebugFrameworkIosArm64")
         dependsOn("linkDebugFrameworkIosSimulatorArm64")
         group = "multiplatform"
         description = "Assembles debug XCFramework for ARM64 iOS targets"
     }
-    
-    task("assembleReleaseXCFramework") {
+
+    @Suppress("UnusedVariable")
+    val assembleReleaseXCFramework by tasks.registering {
         dependsOn("linkReleaseFrameworkIosArm64")
-        dependsOn("linkReleaseFrameworkIosSimulatorArm64") 
+        dependsOn("linkReleaseFrameworkIosSimulatorArm64")
         group = "multiplatform"
         description = "Assembles release XCFramework for ARM64 iOS targets"
     }
