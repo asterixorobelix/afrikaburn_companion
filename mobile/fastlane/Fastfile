@@ -228,10 +228,8 @@ platform :ios do
 
   desc "Build iOS app for App Store"
   lane :build do
-    # Build Kotlin framework (device-only on CI for speed)
-    if is_ci
-      build_framework_device
-    else
+    # On CI, framework is pre-built by the workflow's Gradle step
+    unless is_ci
       build_framework
     end
 
