@@ -237,10 +237,10 @@ platform :ios do
     certificates
 
     # Build the iOS app (uses CocoaPods workspace for native dependency linking)
-    # Note: PROVISIONING_PROFILE_SPECIFIER must be in export_options, NOT xcargs,
-    # because xcargs applies to ALL targets including Pods which don't support profiles.
-    # PRODUCT_BUNDLE_IDENTIFIER is needed in xcargs because CocoaPods replaces the
-    # xcconfig chain and the original Config.xcconfig value gets lost.
+    # Note: PROVISIONING_PROFILE_SPECIFIER in xcargs is safe because Podfile post_install
+    # disables code signing on Pods targets (CODE_SIGNING_ALLOWED=NO).
+    # PRODUCT_BUNDLE_IDENTIFIER and PRODUCT_NAME are needed in xcargs because CocoaPods
+    # replaces the xcconfig chain and the original Config.xcconfig values get lost.
     build_app(
       workspace: "iosApp/iosApp.xcworkspace",
       scheme: "iosApp",
@@ -248,7 +248,7 @@ platform :ios do
       output_directory: "./build",
       output_name: "AfrikaBurnCompanion.ipa",
       clean: true,
-      xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=#{ENV['APPLE_TEAM_ID']} CODE_SIGN_IDENTITY='Apple Distribution' PRODUCT_BUNDLE_IDENTIFIER=io.asterixorobelix.afrikaburn PROVISIONING_PROFILE_SPECIFIER='match AppStore io.asterixorobelix.afrikaburn'"
+      xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=#{ENV['APPLE_TEAM_ID']} CODE_SIGN_IDENTITY='Apple Distribution' PRODUCT_BUNDLE_IDENTIFIER=io.asterixorobelix.afrikaburn PRODUCT_NAME=Afrikaburn PROVISIONING_PROFILE_SPECIFIER='match AppStore io.asterixorobelix.afrikaburn'"
     )
 
     UI.success("iOS app built successfully!")
