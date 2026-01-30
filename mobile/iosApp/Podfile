@@ -16,25 +16,4 @@ post_install do |installer|
       config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'
     end
   end
-
-  # Fix xcconfig chain: CocoaPods replaces the base xcconfig on newer Xcode
-  # projects (objectVersion 77+, baseConfigurationReferenceAnchor format) but
-  # may not #include the original Config.xcconfig. This restores the chain so
-  # values like PRODUCT_NAME, PRODUCT_BUNDLE_IDENTIFIER, and OTHER_LDFLAGS
-  # defined in Config.xcconfig are inherited correctly.
-  installer.generated_projects.each do |project|
-    project.build_configurations.each do |config|
-      xcconfig_ref = config.base_configuration_reference
-      next unless xcconfig_ref
-
-      xcconfig_path = xcconfig_ref.real_path
-      next unless xcconfig_path.exist?
-
-      content = xcconfig_path.read
-      include_line = '#include "../../Configuration/Config.xcconfig"'
-      unless content.include?(include_line)
-        xcconfig_path.open('a') { |f| f.puts "\n#{include_line}" }
-      end
-    end
-  end
 end
