@@ -247,6 +247,9 @@ jobs:
       APPLE_ID: ${{ secrets.APPLE_ID }}
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       ITC_TEAM_ID: ${{ secrets.ITC_TEAM_ID }}
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
 
     steps:
     - name: Validate required secrets
@@ -273,6 +276,13 @@ jobs:
         if [ -z "$APPLE_TEAM_ID" ]; then
           MISSING="${MISSING}
           - APPLE_TEAM_ID: Apple Developer Team ID from https://developer.apple.com/account > Membership"
+        fi
+        if [ -z "$ASC_KEY_ID" ] || [ -z "$ASC_ISSUER_ID" ] || [ -z "$ASC_KEY_CONTENT" ]; then
+          MISSING="${MISSING}
+          - ASC_KEY_ID / ASC_ISSUER_ID / ASC_KEY_CONTENT: App Store Connect API Key for TestFlight upload.
+            Create at: https://appstoreconnect.apple.com/access/integrations/api
+            ASC_KEY_ID = Key ID, ASC_ISSUER_ID = Issuer ID
+            ASC_KEY_CONTENT = base64-encoded .p8 file: base64 -i AuthKey_XXXXX.p8"
         fi
 
         if [ -n "$MISSING" ]; then

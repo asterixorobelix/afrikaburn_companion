@@ -5,6 +5,21 @@
 
 default_platform(:android)
 
+# App Store Connect API Key for CI authentication (avoids password/2FA issues)
+# Requires secrets: ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_CONTENT (base64 .p8)
+def asc_api_key
+  if ENV['ASC_KEY_ID'] && ENV['ASC_ISSUER_ID'] && ENV['ASC_KEY_CONTENT']
+    app_store_connect_api_key(
+      key_id: ENV['ASC_KEY_ID'],
+      issuer_id: ENV['ASC_ISSUER_ID'],
+      key_content: ENV['ASC_KEY_CONTENT'],
+      is_key_content_base64: true
+    )
+  else
+    nil
+  end
+end
+
 # ============================================================================
 # ANDROID LANES
 # ============================================================================
@@ -279,7 +294,9 @@ platform :ios do
   lane :beta do
     build
 
+    api_key = asc_api_key
     upload_to_testflight(
+      api_key: api_key,
       skip_waiting_for_build_processing: true,
       distribute_external: false,
       notify_external_testers: false,
@@ -293,7 +310,9 @@ platform :ios do
   lane :beta_external do
     build
 
+    api_key = asc_api_key
     upload_to_testflight(
+      api_key: api_key,
       skip_waiting_for_build_processing: false,
       distribute_external: true,
       notify_external_testers: true,
@@ -308,7 +327,9 @@ platform :ios do
   lane :release do
     build
 
+    api_key = asc_api_key
     upload_to_app_store(
+      api_key: api_key,
       submit_for_review: false,
       automatic_release: false,
       force: true,
@@ -326,7 +347,9 @@ platform :ios do
   lane :release_submit do
     build
 
+    api_key = asc_api_key
     upload_to_app_store(
+      api_key: api_key,
       submit_for_review: true,
       automatic_release: true,
       force: true,
