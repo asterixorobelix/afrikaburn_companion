@@ -299,6 +299,26 @@ jobs:
         ref: main
         fetch-depth: 0
 
+    - name: Sync iOS version with Android
+      run: |
+        NEW_VERSION="${{ needs.version-and-build.outputs.new_version }}"
+        VERSION_CODE="${{ needs.version-and-build.outputs.version_code }}"
+        echo "Setting iOS version to $NEW_VERSION ($VERSION_CODE)"
+
+        # Update project.pbxproj (both Debug and Release build settings)
+        sed -i '' "s/CURRENT_PROJECT_VERSION = .*/CURRENT_PROJECT_VERSION = $VERSION_CODE;/" \
+          mobile/iosApp/iosApp.xcodeproj/project.pbxproj
+        sed -i '' "s/MARKETING_VERSION = .*/MARKETING_VERSION = $NEW_VERSION;/" \
+          mobile/iosApp/iosApp.xcodeproj/project.pbxproj
+
+        # Update Config.xcconfig for consistency
+        sed -i '' "s/CURRENT_PROJECT_VERSION=.*/CURRENT_PROJECT_VERSION=$VERSION_CODE/" \
+          mobile/iosApp/Configuration/Config.xcconfig
+        sed -i '' "s/MARKETING_VERSION=.*/MARKETING_VERSION=$NEW_VERSION/" \
+          mobile/iosApp/Configuration/Config.xcconfig
+
+        echo "iOS version synced: MARKETING_VERSION=$NEW_VERSION CURRENT_PROJECT_VERSION=$VERSION_CODE"
+
     - name: Set up JDK 17
       uses: actions/setup-java@v5
       with:
