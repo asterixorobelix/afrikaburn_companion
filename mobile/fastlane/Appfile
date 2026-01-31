@@ -20,7 +20,7 @@ package_name("io.asterixorobelix.afrikaburn")
 apple_id(ENV["APPLE_ID"] || "your-apple-id@email.com")
 
 # iOS app bundle identifier
-app_identifier("io.asterixorobelix.afrikaburn")
+app_identifier("io.asterixorobelix.afrikaburn.Afrikaburn")
 
 # App Store Connect Team ID (numeric)
 # Find at: https://appstoreconnect.apple.com -> Users and Access -> Team ID

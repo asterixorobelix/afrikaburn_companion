@@ -1,7 +1,7 @@
 TEAM_ID=$(APPLE_TEAM_ID)
 
 PRODUCT_NAME=Afrikaburn
-PRODUCT_BUNDLE_IDENTIFIER=io.asterixorobelix.afrikaburn
+PRODUCT_BUNDLE_IDENTIFIER=io.asterixorobelix.afrikaburn.Afrikaburn
 
 CURRENT_PROJECT_VERSION=1
 MARKETING_VERSION=1.0

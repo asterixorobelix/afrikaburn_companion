@@ -18,7 +18,7 @@
 # ============================================================================
 
 # Bundle identifier(s) for the app
-app_identifier(["io.asterixorobelix.afrikaburn"])
+app_identifier(["io.asterixorobelix.afrikaburn.Afrikaburn"])
 
 # Apple Developer account email
 username(ENV["APPLE_ID"] || "your-apple-id@email.com")

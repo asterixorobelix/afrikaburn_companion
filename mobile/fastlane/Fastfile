@@ -212,7 +212,7 @@ platform :ios do
     match(
       type: "appstore",
       readonly: is_ci,
-      app_identifier: "io.asterixorobelix.afrikaburn"
+      app_identifier: "io.asterixorobelix.afrikaburn.Afrikaburn"
     )
   end
 
@@ -223,7 +223,7 @@ platform :ios do
     match(
       type: "development",
       readonly: is_ci,
-      app_identifier: "io.asterixorobelix.afrikaburn"
+      app_identifier: "io.asterixorobelix.afrikaburn.Afrikaburn"
     )
   end
 
@@ -270,7 +270,7 @@ platform :ios do
       output_directory: "./build",
       output_name: "AfrikaBurnCompanion.ipa",
       clean: true,
-      xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=#{ENV['APPLE_TEAM_ID']} CODE_SIGN_IDENTITY='Apple Distribution' PROVISIONING_PROFILE_SPECIFIER='match AppStore io.asterixorobelix.afrikaburn'"
+      xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=#{ENV['APPLE_TEAM_ID']} CODE_SIGN_IDENTITY='Apple Distribution' PROVISIONING_PROFILE_SPECIFIER='match AppStore io.asterixorobelix.afrikaburn.Afrikaburn'"
     )
 
     UI.success("iOS app built successfully!")
