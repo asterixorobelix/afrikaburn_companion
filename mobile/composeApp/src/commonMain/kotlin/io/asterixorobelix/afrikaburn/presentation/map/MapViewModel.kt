@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.asterixorobelix.afrikaburn.domain.repository.UserCampPinRepository
 import io.asterixorobelix.afrikaburn.models.ProjectItem
+import io.asterixorobelix.afrikaburn.platform.CrashLogger
 import io.asterixorobelix.afrikaburn.platform.LocationService
 import io.asterixorobelix.afrikaburn.platform.PermissionState
 import kotlin.math.atan2
@@ -28,7 +29,8 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
  */
 class MapViewModel(
     private val locationService: LocationService,
-    private val userCampPinRepository: UserCampPinRepository
+    private val userCampPinRepository: UserCampPinRepository,
+    private val crashLogger: CrashLogger
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MapUiState>(MapUiState.Loading)
@@ -91,8 +93,8 @@ class MapViewModel(
                 loadedProjects = camps + artworks
 
                 _uiState.value = MapUiState.Success(projects = loadedProjects)
-            } catch (@Suppress("SwallowedException", "TooGenericExceptionCaught") e: Exception) {
-                // Even if loading fails, show map with default position but no projects
+            } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
+                crashLogger.logException(e, "Failed to load map projects")
                 _uiState.value = MapUiState.Success(projects = emptyList())
             }
         }
@@ -216,7 +218,9 @@ class MapViewModel(
         locationJob?.cancel()
         locationJob = viewModelScope.launch {
             locationService.startLocationUpdates()
-                .catch { /* Log error, continue without location */ }
+                .catch { throwable ->
+                    crashLogger.logException(throwable, "Location tracking failed")
+                }
                 .collect { location ->
                     updateUserLocation(location.latitude, location.longitude)
                 }

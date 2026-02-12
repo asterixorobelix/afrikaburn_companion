@@ -2,6 +2,7 @@ package io.asterixorobelix.afrikaburn.domain.service
 
 import io.asterixorobelix.afrikaburn.domain.repository.UnlockStateRepository
 import io.asterixorobelix.afrikaburn.platform.LocationData
+import kotlin.concurrent.Volatile
 import kotlinx.datetime.Instant
 
 /**
@@ -77,6 +78,7 @@ class UnlockConditionManagerImpl(
 ) : UnlockConditionManager {
 
     // Tracks if unlock happened during THIS session (in-memory only)
+    @Volatile
     private var justUnlockedThisSession = false
 
     // Current event year from configuration

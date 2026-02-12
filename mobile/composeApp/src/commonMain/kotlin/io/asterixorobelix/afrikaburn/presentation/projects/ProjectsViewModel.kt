@@ -29,10 +29,20 @@ class ProjectsViewModel(
     }
 
     fun updateCurrentTab(index: Int) {
-        _screenUiState.value = _screenUiState.value.copy(currentTabIndex = index)
+        val state = _screenUiState.value
+        if (index in state.tabs.indices) {
+            _screenUiState.value = state.copy(currentTabIndex = index)
+        }
     }
 
     fun getCurrentProjectType(): ProjectType {
-        return _screenUiState.value.tabs[_screenUiState.value.currentTabIndex]
+        val state = _screenUiState.value
+        return state.tabs[state.currentTabIndex.coerceIn(state.tabs.indices)]
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        _tabViewModels.values.forEach { it.cleanup() }
+        _tabViewModels.clear()
     }
 }

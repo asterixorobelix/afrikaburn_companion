@@ -209,13 +209,15 @@ private fun MapContent(
     var selectedServiceName by remember { mutableStateOf<String?>(null) }
 
     // Animate camera to user location when FAB is tapped
+    val userLng = state.userLongitude
+    val userLat = state.userLatitude
     LaunchedEffect(state.centerOnUserLocationRequest) {
-        if (state.centerOnUserLocationRequest > 0 && state.hasUserLocation) {
+        if (state.centerOnUserLocationRequest > 0 && userLng != null && userLat != null) {
             cameraState.animateTo(
                 finalPosition = cameraState.position.copy(
                     target = Position(
-                        longitude = state.userLongitude!!,
-                        latitude = state.userLatitude!!
+                        longitude = userLng,
+                        latitude = userLat
                     )
                 ),
                 duration = Dimens.animationDurationLong.milliseconds
@@ -335,12 +337,14 @@ private fun MapContent(
             )
 
             // User location (blue)
-            if (state.hasUserLocation) {
+            val locLng = state.userLongitude
+            val locLat = state.userLatitude
+            if (locLng != null && locLat != null) {
                 val userLocationFeature = GeoJsonFeature(
                     geometry = Point(
                         coordinates = Position(
-                            longitude = state.userLongitude!!,
-                            latitude = state.userLatitude!!
+                            longitude = locLng,
+                            latitude = locLat
                         )
                     )
                 )

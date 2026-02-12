@@ -6,6 +6,7 @@ import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
 import io.asterixorobelix.afrikaburn.models.TimeFilter
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +25,7 @@ class ProjectTabViewModel(
     }
 
     fun loadProjects() {
+        if (_uiState.value.isLoading) return
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
                 isLoading = true,
@@ -113,6 +115,10 @@ class ProjectTabViewModel(
                 timeFilter = TimeFilter.ALL
             )
         )
+    }
+
+    fun cleanup() {
+        viewModelScope.cancel()
     }
 
     private fun filterProjects(

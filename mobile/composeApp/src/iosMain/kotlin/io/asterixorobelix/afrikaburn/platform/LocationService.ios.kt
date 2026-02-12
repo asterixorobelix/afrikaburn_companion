@@ -94,6 +94,7 @@ class IOSLocationService : LocationService {
 
     override fun stopLocationUpdates() {
         locationManager.stopUpdatingLocation()
+        locationManager.delegate = null
         currentDelegate = null
     }
 
