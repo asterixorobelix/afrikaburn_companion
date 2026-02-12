@@ -127,6 +127,11 @@
     <string name="button_clear_filters">Clear filters</string>
     <string name="button_reset_all">Reset all</string>
 
+    <!-- Accessibility - filter and search announcements -->
+    <string name="a11y_filter_selected">Selected</string>
+    <string name="a11y_filter_not_selected">Not selected</string>
+    <string name="a11y_search_results_count">%1$d results</string>
+
     <!-- Content descriptions -->
     <string name="cd_empty_state_icon">Empty results</string>
     <string name="cd_projects_icon">Projects icon</string>

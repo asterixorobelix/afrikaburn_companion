@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,8 +34,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import afrikaburn.composeapp.generated.resources.Res
+import afrikaburn.composeapp.generated.resources.a11y_search_results_count
 import afrikaburn.composeapp.generated.resources.button_retry
 import afrikaburn.composeapp.generated.resources.cd_error_icon
 import afrikaburn.composeapp.generated.resources.cd_retry_button
@@ -51,7 +54,7 @@ import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.di.koinProjectTabViewModel
 import io.asterixorobelix.afrikaburn.di.koinProjectsViewModel
 import io.asterixorobelix.afrikaburn.models.ProjectType
-import io.asterixorobelix.afrikaburn.models.TimeFilter
+import io.asterixorobelix.afrikaburn.presentation.projects.ProjectsUiState
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
@@ -160,14 +163,12 @@ private fun ProjectTabContent(
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Search section with improved spacing
         ProjectSearchBar(
             searchQuery = uiState.searchQuery,
             onSearchQueryChange = tabViewModel::updateSearchQuery,
             placeholderText = "Search ${projectType.displayName.lowercase()}..."
         )
 
-        // Filter chips section (only for Camps) with visual separation
         if (projectType == ProjectType.CAMPS) {
             ProjectFilterChips(
                 isFamilyFilterEnabled = uiState.isFamilyFilterEnabled,
@@ -177,22 +178,29 @@ private fun ProjectTabContent(
             )
         }
 
-        // Spacer for visual breathing room before content
         Spacer(modifier = Modifier.height(Dimens.spacingSmall))
 
-        // Animated content state transitions
+        if (uiState.isShowingResults() && uiState.hasActiveFilters()) {
+            Text(
+                text = stringResource(
+                    Res.string.a11y_search_results_count,
+                    uiState.filteredProjects.size
+                ),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier
+                    .padding(horizontal = Dimens.paddingMedium)
+                    .semantics { liveRegion = LiveRegionMode.Polite }
+            )
+
+            Spacer(modifier = Modifier.height(Dimens.spacingSmall))
+        }
+
         AnimatedContentState(
-            isLoading = uiState.isLoading,
-            error = uiState.error,
-            isEmptySearch = uiState.isShowingEmptySearch(),
-            searchQuery = uiState.searchQuery,
+            uiState = uiState,
             projectType = projectType,
-            isFamilyFilterEnabled = uiState.isFamilyFilterEnabled,
-            timeFilter = uiState.timeFilter,
-            filteredProjects = uiState.filteredProjects,
             listState = listState,
             onRetry = tabViewModel::retryLoading,
-            onDismissError = tabViewModel::clearError,
             onClearSearch = tabViewModel::clearSearchQuery,
             onClearFilters = tabViewModel::clearFilters,
             onProjectClick = onProjectClick
@@ -200,27 +208,21 @@ private fun ProjectTabContent(
     }
 }
 
+@Suppress("LongParameterList")
 @Composable
 private fun AnimatedContentState(
-    isLoading: Boolean,
-    error: String?,
-    isEmptySearch: Boolean,
-    searchQuery: String,
+    uiState: ProjectsUiState,
     projectType: ProjectType,
-    isFamilyFilterEnabled: Boolean,
-    timeFilter: TimeFilter,
-    filteredProjects: List<io.asterixorobelix.afrikaburn.models.ProjectItem>,
     listState: LazyListState,
     onRetry: () -> Unit,
-    onDismissError: () -> Unit,
     onClearSearch: () -> Unit,
     onClearFilters: () -> Unit,
     onProjectClick: ((io.asterixorobelix.afrikaburn.models.ProjectItem) -> Unit)? = null
 ) {
     val contentState = when {
-        isLoading -> CONTENT_STATE_LOADING
-        error != null -> CONTENT_STATE_ERROR
-        isEmptySearch -> CONTENT_STATE_EMPTY
+        uiState.isLoading -> CONTENT_STATE_LOADING
+        uiState.error != null -> CONTENT_STATE_ERROR
+        uiState.isShowingEmptySearch() -> CONTENT_STATE_EMPTY
         else -> CONTENT_STATE_SUCCESS
     }
 
@@ -238,27 +240,27 @@ private fun AnimatedContentState(
         when (state) {
             CONTENT_STATE_LOADING -> LoadingContent()
             CONTENT_STATE_ERROR -> ErrorContent(
-                error = error ?: "Unknown error",
+                error = uiState.error ?: "Unknown error",
                 onRetry = onRetry
             )
             CONTENT_STATE_EMPTY -> {
                 val emptyStateType = determineEmptyStateType(
-                    searchQuery = searchQuery,
-                    isFamilyFilterEnabled = isFamilyFilterEnabled,
-                    timeFilter = timeFilter,
-                    hasProjects = filteredProjects.isNotEmpty()
+                    searchQuery = uiState.searchQuery,
+                    isFamilyFilterEnabled = uiState.isFamilyFilterEnabled,
+                    timeFilter = uiState.timeFilter,
+                    hasProjects = uiState.filteredProjects.isNotEmpty()
                 )
                 EmptyStateContent(
                     emptyStateType = emptyStateType,
                     projectType = projectType,
-                    searchQuery = searchQuery,
-                    hasActiveFilters = hasActiveFilters(isFamilyFilterEnabled, timeFilter),
+                    searchQuery = uiState.searchQuery,
+                    hasActiveFilters = uiState.hasActiveFilters(),
                     onClearSearch = onClearSearch,
                     onClearFilters = onClearFilters
                 )
             }
             CONTENT_STATE_SUCCESS -> ProjectList(
-                projects = filteredProjects,
+                projects = uiState.filteredProjects,
                 listState = listState,
                 onProjectClick = onProjectClick
             )

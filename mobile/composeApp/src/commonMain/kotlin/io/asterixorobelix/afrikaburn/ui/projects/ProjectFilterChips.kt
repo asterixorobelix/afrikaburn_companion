@@ -21,7 +21,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import afrikaburn.composeapp.generated.resources.Res
+import afrikaburn.composeapp.generated.resources.a11y_filter_not_selected
+import afrikaburn.composeapp.generated.resources.a11y_filter_selected
 import afrikaburn.composeapp.generated.resources.filter_family_friendly_short
 import afrikaburn.composeapp.generated.resources.filter_section_header
 import afrikaburn.composeapp.generated.resources.filter_time_all
@@ -64,7 +71,9 @@ fun ProjectFilterChips(
             text = stringResource(Res.string.filter_section_header),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(horizontal = Dimens.paddingMedium)
+            modifier = Modifier
+                .padding(horizontal = Dimens.paddingMedium)
+                .semantics { heading() }
         )
 
         Spacer(modifier = Modifier.height(Dimens.spacingSmall))
@@ -112,6 +121,8 @@ private fun FamilyFilterChip(
     onClick: () -> Unit
 ) {
     val scale = animateSelectionScale(isSelected = isSelected)
+    val selectedText = stringResource(Res.string.a11y_filter_selected)
+    val notSelectedText = stringResource(Res.string.a11y_filter_not_selected)
 
     val containerColor by animateColorAsState(
         targetValue = if (isSelected) {
@@ -148,6 +159,10 @@ private fun FamilyFilterChip(
                 )
             },
             selected = isSelected,
+            modifier = Modifier.semantics {
+                stateDescription = if (isSelected) selectedText else notSelectedText
+                liveRegion = LiveRegionMode.Polite
+            },
             colors = FilterChipDefaults.filterChipColors(
                 selectedContainerColor = containerColor,
                 selectedLabelColor = labelColor,
@@ -171,46 +186,40 @@ private fun TimeFilterChip(
     onClick: () -> Unit
 ) {
     val scale = animateSelectionScale(isSelected = isSelected)
+    val selectedText = stringResource(Res.string.a11y_filter_selected)
+    val notSelectedText = stringResource(Res.string.a11y_filter_not_selected)
 
+    val selectedContainer = MaterialTheme.colorScheme.secondaryContainer
+    val unselectedContainer = MaterialTheme.colorScheme.surface
     val containerColor by animateColorAsState(
-        targetValue = if (isSelected) {
-            MaterialTheme.colorScheme.secondaryContainer
-        } else {
-            MaterialTheme.colorScheme.surface
-        },
+        targetValue = if (isSelected) selectedContainer else unselectedContainer,
         animationSpec = shortDurationTween(),
         label = "timeChipContainerColor"
     )
 
+    val selectedLabel = MaterialTheme.colorScheme.onSecondaryContainer
+    val unselectedLabel = MaterialTheme.colorScheme.onSurface
     val labelColor by animateColorAsState(
-        targetValue = if (isSelected) {
-            MaterialTheme.colorScheme.onSecondaryContainer
-        } else {
-            MaterialTheme.colorScheme.onSurface
-        },
+        targetValue = if (isSelected) selectedLabel else unselectedLabel,
         animationSpec = shortDurationTween(),
         label = "timeChipLabelColor"
     )
 
-    Box(
-        modifier = Modifier.graphicsLayer {
-            scaleX = scale
-            scaleY = scale
-        }
-    ) {
+    val filterLabel = when (filter) {
+        TimeFilter.ALL -> stringResource(Res.string.filter_time_all)
+        TimeFilter.DAYTIME -> stringResource(Res.string.filter_time_daytime)
+        TimeFilter.NIGHTTIME -> stringResource(Res.string.filter_time_nighttime)
+    }
+
+    Box(modifier = Modifier.graphicsLayer { scaleX = scale; scaleY = scale }) {
         FilterChip(
             onClick = onClick,
-            label = {
-                Text(
-                    text = when (filter) {
-                        TimeFilter.ALL -> stringResource(Res.string.filter_time_all)
-                        TimeFilter.DAYTIME -> stringResource(Res.string.filter_time_daytime)
-                        TimeFilter.NIGHTTIME -> stringResource(Res.string.filter_time_nighttime)
-                    },
-                    style = MaterialTheme.typography.labelMedium
-                )
-            },
+            label = { Text(text = filterLabel, style = MaterialTheme.typography.labelMedium) },
             selected = isSelected,
+            modifier = Modifier.semantics {
+                stateDescription = if (isSelected) selectedText else notSelectedText
+                liveRegion = LiveRegionMode.Polite
+            },
             colors = FilterChipDefaults.filterChipColors(
                 selectedContainerColor = containerColor,
                 selectedLabelColor = labelColor,

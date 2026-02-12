@@ -26,14 +26,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import afrikaburn.composeapp.generated.resources.Res
-import afrikaburn.composeapp.generated.resources.cd_artist_icon
 import io.asterixorobelix.afrikaburn.AppTheme
 import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.ui.components.animatedScale
-import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
@@ -118,7 +115,7 @@ private fun ProjectCardArtistInfo(artistName: String) {
     ) {
         Icon(
             imageVector = Icons.Default.Person,
-            contentDescription = stringResource(Res.string.cd_artist_icon),
+            contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(Dimens.iconSizeSmall)
         )
