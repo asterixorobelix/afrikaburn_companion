@@ -19,6 +19,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +34,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import io.asterixorobelix.afrikaburn.AppTheme
 import io.asterixorobelix.afrikaburn.Dimens
+import io.asterixorobelix.afrikaburn.ui.components.ExternalLinkConfirmationDialog
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 /**
@@ -58,6 +63,17 @@ fun AboutPageContent(
     modifier: Modifier = Modifier
 ) {
     val uriHandler = LocalUriHandler.current
+    var pendingUrl by remember { mutableStateOf<String?>(null) }
+
+    pendingUrl?.let { url ->
+        ExternalLinkConfirmationDialog(
+            onConfirm = {
+                uriHandler.openUri(url)
+                pendingUrl = null
+            },
+            onDismiss = { pendingUrl = null }
+        )
+    }
 
     Column(
         modifier = modifier
@@ -106,7 +122,7 @@ fun AboutPageContent(
             Spacer(modifier = Modifier.height(Dimens.paddingSmall))
             AboutPageButton(
                 text = data.buttonText,
-                onClick = { uriHandler.openUri(data.url) }
+                onClick = { pendingUrl = data.url }
             )
         }
     }

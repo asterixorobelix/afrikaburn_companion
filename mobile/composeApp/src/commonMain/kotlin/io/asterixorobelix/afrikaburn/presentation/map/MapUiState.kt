@@ -83,6 +83,9 @@ sealed interface MapUiState {
         val locationPermissionState: PermissionState = PermissionState.NOT_DETERMINED,
         val isTrackingLocation: Boolean = false,
         val centerOnUserLocationRequest: Int = 0,
+        val navigateToProjectRequest: Int = 0,
+        val targetProjectLatitude: Double? = null,
+        val targetProjectLongitude: Double? = null,
         val userCampPin: CampPinState = CampPinState.None,
         val campPinDialogState: CampPinDialogState = CampPinDialogState.Hidden
     ) : MapUiState {

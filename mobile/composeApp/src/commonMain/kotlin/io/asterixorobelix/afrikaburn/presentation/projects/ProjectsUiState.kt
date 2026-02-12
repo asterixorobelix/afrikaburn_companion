@@ -12,6 +12,8 @@ data class ProjectsUiState(
     val isFamilyFilterEnabled: Boolean = false,
     val timeFilter: TimeFilter = TimeFilter.ALL
 ) {
+    val totalProjectCount: Int get() = projects.size
+
     fun isShowingResults(): Boolean = !isLoading && error == null
     
     fun isShowingEmptySearch(): Boolean = 

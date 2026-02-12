@@ -84,6 +84,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import io.asterixorobelix.afrikaburn.ui.components.ExternalLinkConfirmationDialog
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
@@ -105,6 +106,17 @@ private const val ROTATION_COLLAPSED = 0f
 fun DirectionsScreen() {
     val uriHandler = LocalUriHandler.current
     val mapsUrl = stringResource(Res.string.direction_url)
+    var pendingUrl by remember { mutableStateOf<String?>(null) }
+
+    pendingUrl?.let { url ->
+        ExternalLinkConfirmationDialog(
+            onConfirm = {
+                uriHandler.openUri(url)
+                pendingUrl = null
+            },
+            onDismiss = { pendingUrl = null }
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -128,7 +140,7 @@ fun DirectionsScreen() {
 
             Spacer(modifier = Modifier.height(Dimens.paddingSmall))
 
-            OpenMapsButton(onClick = { uriHandler.openUri(mapsUrl) })
+            OpenMapsButton(onClick = { pendingUrl = mapsUrl })
 
             Spacer(modifier = Modifier.height(Dimens.paddingLarge))
         }

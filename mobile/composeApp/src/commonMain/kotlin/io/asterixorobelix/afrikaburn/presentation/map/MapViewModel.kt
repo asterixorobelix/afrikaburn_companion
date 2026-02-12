@@ -239,6 +239,26 @@ class MapViewModel(
     }
 
     /**
+     * Navigate the map camera to a specific project location.
+     *
+     * Increments the navigateToProjectRequest counter to trigger camera animation
+     * in the UI layer via LaunchedEffect.
+     *
+     * @param latitude Target latitude
+     * @param longitude Target longitude
+     */
+    fun navigateToLocation(latitude: Double, longitude: Double) {
+        val currentState = _uiState.value
+        if (currentState is MapUiState.Success) {
+            _uiState.value = currentState.copy(
+                targetProjectLatitude = latitude,
+                targetProjectLongitude = longitude,
+                navigateToProjectRequest = currentState.navigateToProjectRequest + 1
+            )
+        }
+    }
+
+    /**
      * Center map on user's current location.
      *
      * Increments the centerOnUserLocationRequest counter to trigger camera animation

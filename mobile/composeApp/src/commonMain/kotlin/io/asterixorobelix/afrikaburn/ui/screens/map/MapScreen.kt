@@ -98,6 +98,7 @@ import org.maplibre.compose.util.ClickResult
 private const val MAP_STYLE_PATH = "files/maps/style.json"
 private const val MOCK_LOCATIONS_PATH = "files/maps/mock-locations.geojson"
 private const val AMENITIES_PATH = "files/maps/afrikaburn-amenities.geojson"
+private const val PROJECT_ZOOM_LEVEL = 16.0
 
 // Map marker colors - warm festival palette
 @Suppress("MagicNumber")
@@ -219,6 +220,24 @@ private fun MapContent(
                         longitude = userLng,
                         latitude = userLat
                     )
+                ),
+                duration = Dimens.animationDurationLong.milliseconds
+            )
+        }
+    }
+
+    // Animate camera to project location when navigating from project detail
+    val targetLat = state.targetProjectLatitude
+    val targetLng = state.targetProjectLongitude
+    LaunchedEffect(state.navigateToProjectRequest) {
+        if (state.navigateToProjectRequest > 0 && targetLat != null && targetLng != null) {
+            cameraState.animateTo(
+                finalPosition = cameraState.position.copy(
+                    target = Position(
+                        longitude = targetLng,
+                        latitude = targetLat
+                    ),
+                    zoom = PROJECT_ZOOM_LEVEL
                 ),
                 duration = Dimens.animationDurationLong.milliseconds
             )

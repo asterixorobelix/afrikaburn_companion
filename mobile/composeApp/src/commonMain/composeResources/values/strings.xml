@@ -204,4 +204,14 @@
     <string name="cd_back_button">Navigate back</string>
     <string name="cd_share_button">Share project</string>
     <string name="cd_add_to_schedule_button">Add project to schedule</string>
+
+    <!-- External Link Confirmation -->
+    <string name="external_link_dialog_title">Open External Link</string>
+    <string name="external_link_dialog_message">You are about to leave the app and open an external link in your browser.</string>
+    <string name="external_link_dialog_confirm">Open</string>
+    <string name="external_link_dialog_cancel">Cancel</string>
+
+    <!-- Show on Map -->
+    <string name="button_show_on_map">Show on Map</string>
+    <string name="cd_show_on_map_button">Show project location on map</string>
 </resources>

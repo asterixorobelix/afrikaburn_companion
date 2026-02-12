@@ -1,8 +1,10 @@
 package io.asterixorobelix.afrikaburn.ui.projects
 
 import afrikaburn.composeapp.generated.resources.Res
+import afrikaburn.composeapp.generated.resources.button_show_on_map
 import afrikaburn.composeapp.generated.resources.cd_back_button
 import afrikaburn.composeapp.generated.resources.cd_artist_icon
+import afrikaburn.composeapp.generated.resources.cd_show_on_map_button
 import afrikaburn.composeapp.generated.resources.project_detail_artist_label
 import afrikaburn.composeapp.generated.resources.project_detail_code_label
 import afrikaburn.composeapp.generated.resources.project_detail_description_label
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -21,6 +24,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Place
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,7 +56,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun ProjectDetailScreen(
     project: ProjectItem,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onShowOnMap: ((Double, Double) -> Unit)? = null
 ) {
     Scaffold(
         topBar = {
@@ -63,6 +70,7 @@ fun ProjectDetailScreen(
     ) { paddingValues ->
         ProjectDetailContent(
             project = project,
+            onShowOnMap = onShowOnMap,
             modifier = Modifier.padding(paddingValues)
         )
     }
@@ -102,6 +110,7 @@ private fun ProjectDetailTopBar(
 @Composable
 private fun ProjectDetailContent(
     project: ProjectItem,
+    onShowOnMap: ((Double, Double) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -122,6 +131,39 @@ private fun ProjectDetailContent(
         if (project.code.isNotEmpty()) {
             ProjectCodeSection(code = project.code)
         }
+
+        if (project.hasCoordinates && onShowOnMap != null) {
+            ShowOnMapButton(
+                onClick = { onShowOnMap(project.latitude!!, project.longitude!!) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun ShowOnMapButton(onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimens.paddingMedium),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ),
+        shape = MaterialTheme.shapes.medium
+    ) {
+        Icon(
+            imageVector = Icons.Default.Place,
+            contentDescription = stringResource(Res.string.cd_show_on_map_button),
+            modifier = Modifier.size(Dimens.iconSizeMedium)
+        )
+        Spacer(modifier = Modifier.width(Dimens.paddingSmall))
+        Text(
+            text = stringResource(Res.string.button_show_on_map),
+            style = MaterialTheme.typography.labelLarge,
+            modifier = Modifier.padding(vertical = Dimens.paddingSmall)
+        )
     }
 }
 

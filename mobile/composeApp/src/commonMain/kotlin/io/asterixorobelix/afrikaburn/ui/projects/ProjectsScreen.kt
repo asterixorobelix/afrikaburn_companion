@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -65,7 +67,7 @@ fun ProjectsScreen(
     val viewModel = koinProjectsViewModel()
     val screenState by viewModel.screenUiState.collectAsState()
 
-    val tabs = listOf(
+    val tabTitles = listOf(
         stringResource(Res.string.tab_art),
         stringResource(Res.string.tab_performances),
         stringResource(Res.string.tab_events),
@@ -73,6 +75,15 @@ fun ProjectsScreen(
         stringResource(Res.string.tab_vehicles),
         stringResource(Res.string.tab_camps)
     )
+
+    // Collect project counts for each tab
+    val tabLabels = screenState.tabs.mapIndexed { index, projectType ->
+        val tabVm = viewModel.getTabViewModel(projectType)
+        val tabState by tabVm.uiState.collectAsState()
+        val count = tabState.totalProjectCount
+        val title = tabTitles[index]
+        if (count > 0) "$title ($count)" else title
+    }
 
     val pagerState = rememberPagerState(
         initialPage = screenState.currentTabIndex,
@@ -86,7 +97,7 @@ fun ProjectsScreen(
             .background(MaterialTheme.colorScheme.background)
     ) {
         ProjectsTabRow(
-            tabs = tabs,
+            tabs = tabLabels,
             selectedTabIndex = pagerState.currentPage,
             onTabSelected = { index ->
                 coroutineScope.launch {
@@ -144,6 +155,7 @@ private fun ProjectTabContent(
 ) {
     val tabViewModel = koinProjectTabViewModel(projectType)
     val uiState by tabViewModel.uiState.collectAsState()
+    val listState = rememberLazyListState()
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -178,6 +190,7 @@ private fun ProjectTabContent(
             isFamilyFilterEnabled = uiState.isFamilyFilterEnabled,
             timeFilter = uiState.timeFilter,
             filteredProjects = uiState.filteredProjects,
+            listState = listState,
             onRetry = tabViewModel::retryLoading,
             onDismissError = tabViewModel::clearError,
             onClearSearch = tabViewModel::clearSearchQuery,
@@ -197,6 +210,7 @@ private fun AnimatedContentState(
     isFamilyFilterEnabled: Boolean,
     timeFilter: TimeFilter,
     filteredProjects: List<io.asterixorobelix.afrikaburn.models.ProjectItem>,
+    listState: LazyListState,
     onRetry: () -> Unit,
     onDismissError: () -> Unit,
     onClearSearch: () -> Unit,
@@ -245,6 +259,7 @@ private fun AnimatedContentState(
             }
             CONTENT_STATE_SUCCESS -> ProjectList(
                 projects = filteredProjects,
+                listState = listState,
                 onProjectClick = onProjectClick
             )
         }

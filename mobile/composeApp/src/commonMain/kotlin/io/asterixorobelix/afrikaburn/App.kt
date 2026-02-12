@@ -37,6 +37,7 @@ import io.asterixorobelix.afrikaburn.ui.directions.DirectionsScreen
 import io.asterixorobelix.afrikaburn.ui.projects.ProjectDetailScreen
 import io.asterixorobelix.afrikaburn.ui.projects.ProjectsScreen
 import io.asterixorobelix.afrikaburn.ui.about.AboutScreen
+import io.asterixorobelix.afrikaburn.presentation.map.MapViewModel
 import io.asterixorobelix.afrikaburn.ui.screens.map.MapScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -221,9 +222,17 @@ private fun AppNavHost(
         }
         composable(route = PROJECT_DETAIL_ROUTE) {
             selectedProject?.let { project ->
+                val mapViewModel: MapViewModel = koinInject()
                 ProjectDetailScreen(
                     project = project,
-                    onBackClick = { navController.popBackStack() }
+                    onBackClick = { navController.popBackStack() },
+                    onShowOnMap = { lat, lng ->
+                        mapViewModel.navigateToLocation(lat, lng)
+                        navController.navigate(NavigationDestination.Map.route) {
+                            popUpTo(navController.graph.startDestinationId)
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
         }
