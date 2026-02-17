@@ -100,19 +100,19 @@ private const val MOCK_LOCATIONS_PATH = "files/maps/mock-locations.geojson"
 private const val AMENITIES_PATH = "files/maps/afrikaburn-amenities.geojson"
 private const val PROJECT_ZOOM_LEVEL = 16.0
 
-// Map marker colors - warm festival palette
+// Map marker colors - Tankwa palette
 @Suppress("MagicNumber")
-private val CAMP_MARKER_COLOR = Color(0xFFBB86FC)  // Purple for camps
+private val CAMP_MARKER_COLOR = Color(0xFFDFC2A2)  // Warm Sand for camps
 @Suppress("MagicNumber")
-private val ARTWORK_MARKER_COLOR = Color(0xFF03DAC6)  // Teal for artworks
+private val ARTWORK_MARKER_COLOR = Color(0xFFFFBA6E)  // Fire Amber for artworks
 @Suppress("MagicNumber")
-private val TOILET_MARKER_COLOR = Color(0xFF795548)  // Brown for toilets
+private val TOILET_MARKER_COLOR = Color(0xFFA08D82)  // Dust Outline for toilets
 @Suppress("MagicNumber")
-private val SERVICE_MARKER_COLOR = Color(0xFFF44336)  // Red for services
+private val SERVICE_MARKER_COLOR = Color(0xFFEF9A9A)  // Error dark for services
 @Suppress("MagicNumber")
-private val USER_LOCATION_COLOR = Color(0xFF64B5F6)  // Lighter blue for user
+private val USER_LOCATION_COLOR = Color(0xFF64B5F6)  // Info blue for user
 @Suppress("MagicNumber")
-private val CAMP_PIN_COLOR = Color(0xFFFFAB40)  // Warm orange for user's camp
+private val CAMP_PIN_COLOR = Color(0xFFB8CEA0)  // Soft Sage for user's camp
 private val MARKER_STROKE_COLOR = Color.White
 
 private val CAMP_MARKER_RADIUS = 12.dp
@@ -188,7 +188,6 @@ fun MapScreen(
 }
 
 @OptIn(ExperimentalResourceApi::class)
-@Suppress("LongMethod")
 @Composable
 private fun MapContent(
     state: MapUiState.Success,
@@ -203,46 +202,10 @@ private fun MapContent(
         )
     )
 
-    // Legend expansion state - persists across recompositions
     var isLegendExpanded by rememberSaveable { mutableStateOf(true) }
-
-    // Service info dialog state
     var selectedServiceName by remember { mutableStateOf<String?>(null) }
 
-    // Animate camera to user location when FAB is tapped
-    val userLng = state.userLongitude
-    val userLat = state.userLatitude
-    LaunchedEffect(state.centerOnUserLocationRequest) {
-        if (state.centerOnUserLocationRequest > 0 && userLng != null && userLat != null) {
-            cameraState.animateTo(
-                finalPosition = cameraState.position.copy(
-                    target = Position(
-                        longitude = userLng,
-                        latitude = userLat
-                    )
-                ),
-                duration = Dimens.animationDurationLong.milliseconds
-            )
-        }
-    }
-
-    // Animate camera to project location when navigating from project detail
-    val targetLat = state.targetProjectLatitude
-    val targetLng = state.targetProjectLongitude
-    LaunchedEffect(state.navigateToProjectRequest) {
-        if (state.navigateToProjectRequest > 0 && targetLat != null && targetLng != null) {
-            cameraState.animateTo(
-                finalPosition = cameraState.position.copy(
-                    target = Position(
-                        longitude = targetLng,
-                        latitude = targetLat
-                    ),
-                    zoom = PROJECT_ZOOM_LEVEL
-                ),
-                duration = Dimens.animationDurationLong.milliseconds
-            )
-        }
-    }
+    CameraAnimationEffects(state = state, cameraState = cameraState)
 
     Box(
         modifier = Modifier
@@ -254,162 +217,22 @@ private fun MapContent(
             baseStyle = BaseStyle.Uri(Res.getUri(MAP_STYLE_PATH)),
             cameraState = cameraState,
             onMapClick = { _, offset ->
-                val features = cameraState.projection?.queryRenderedFeatures(offset)
-
-                // Check for camp/artwork markers first
-                val markerFeature = features?.firstOrNull { feature ->
-                    val type = feature.properties?.get("type")?.toString()?.removeSurrounding("\"")
-                    type == "camp" || type == "artwork"
-                }
-
-                if (markerFeature != null) {
-                    val code = markerFeature.properties
-                        ?.get("code")
-                        ?.toString()
-                        ?.removeSurrounding("\"")
-
-                    code?.let { viewModel.findProjectByCode(it) }?.let { project ->
-                        onProjectClick(project)
-                        return@MaplibreMap ClickResult.Consume
-                    }
-                }
-
-                // Check for service markers
-                val serviceFeature = features?.firstOrNull { feature ->
-                    val fclass = feature.properties?.get("fclass")?.toString()?.removeSurrounding("\"")
-                    fclass == "service"
-                }
-
-                if (serviceFeature != null) {
-                    val name = serviceFeature.properties
-                        ?.get("name")
-                        ?.toString()
-                        ?.removeSurrounding("\"")
-
-                    if (name != null) {
-                        selectedServiceName = name
-                        return@MaplibreMap ClickResult.Consume
-                    }
-                }
-
-                ClickResult.Pass
+                handleMapClick(
+                    offset = offset,
+                    cameraState = cameraState,
+                    viewModel = viewModel,
+                    onProjectClick = onProjectClick,
+                    onServiceClick = { selectedServiceName = it }
+                )
             },
             onMapLongClick = { position, _ ->
-                viewModel.onMapLongPress(
-                    latitude = position.latitude,
-                    longitude = position.longitude
-                )
+                viewModel.onMapLongPress(position.latitude, position.longitude)
                 ClickResult.Consume
             }
         ) {
-            val locationsSource = rememberGeoJsonSource(
-                data = GeoJsonData.Uri(Res.getUri(MOCK_LOCATIONS_PATH))
-            )
-
-            // Camp markers (purple)
-            CircleLayer(
-                id = "camp-markers",
-                source = locationsSource,
-                filter = Feature["type"].asString() eq const("camp"),
-                color = const(CAMP_MARKER_COLOR),
-                radius = const(CAMP_MARKER_RADIUS),
-                strokeColor = const(MARKER_STROKE_COLOR),
-                strokeWidth = const(MARKER_STROKE_WIDTH)
-            )
-
-            // Artwork markers (teal)
-            CircleLayer(
-                id = "artwork-markers",
-                source = locationsSource,
-                filter = Feature["type"].asString() eq const("artwork"),
-                color = const(ARTWORK_MARKER_COLOR),
-                radius = const(ARTWORK_MARKER_RADIUS),
-                strokeColor = const(MARKER_STROKE_COLOR),
-                strokeWidth = const(MARKER_STROKE_WIDTH)
-            )
-
-            // Amenities source (toilets and services)
-            val amenitiesSource = rememberGeoJsonSource(
-                data = GeoJsonData.Uri(Res.getUri(AMENITIES_PATH))
-            )
-
-            // Toilet markers (brown)
-            CircleLayer(
-                id = "toilet-markers",
-                source = amenitiesSource,
-                filter = Feature["fclass"].asString() eq const("toilet"),
-                color = const(TOILET_MARKER_COLOR),
-                radius = const(TOILET_MARKER_RADIUS),
-                strokeColor = const(MARKER_STROKE_COLOR),
-                strokeWidth = const(MARKER_STROKE_WIDTH)
-            )
-
-            // Service markers (red)
-            CircleLayer(
-                id = "service-markers",
-                source = amenitiesSource,
-                filter = Feature["fclass"].asString() eq const("service"),
-                color = const(SERVICE_MARKER_COLOR),
-                radius = const(SERVICE_MARKER_RADIUS),
-                strokeColor = const(MARKER_STROKE_COLOR),
-                strokeWidth = const(MARKER_STROKE_WIDTH)
-            )
-
-            // User location (blue)
-            val locLng = state.userLongitude
-            val locLat = state.userLatitude
-            if (locLng != null && locLat != null) {
-                val userLocationFeature = GeoJsonFeature(
-                    geometry = Point(
-                        coordinates = Position(
-                            longitude = locLng,
-                            latitude = locLat
-                        )
-                    )
-                )
-
-                val userLocationSource = rememberGeoJsonSource(
-                    data = GeoJsonData.Features(userLocationFeature)
-                )
-
-                CircleLayer(
-                    id = "user-location",
-                    source = userLocationSource,
-                    color = const(USER_LOCATION_COLOR),
-                    radius = const(USER_LOCATION_RADIUS),
-                    strokeColor = const(MARKER_STROKE_COLOR),
-                    strokeWidth = const(USER_LOCATION_STROKE_WIDTH)
-                )
-            }
-
-            // User's camp pin (warm orange)
-            val userCampPin = state.userCampPin
-            if (userCampPin is CampPinState.Placed) {
-                val campPinFeature = GeoJsonFeature(
-                    geometry = Point(
-                        coordinates = Position(
-                            longitude = userCampPin.longitude,
-                            latitude = userCampPin.latitude
-                        )
-                    )
-                )
-
-                val campPinSource = rememberGeoJsonSource(
-                    data = GeoJsonData.Features(campPinFeature)
-                )
-
-                CircleLayer(
-                    id = "camp-pin-layer",
-                    source = campPinSource,
-                    color = const(CAMP_PIN_COLOR),
-                    radius = const(CAMP_PIN_RADIUS),
-                    strokeColor = const(MARKER_STROKE_COLOR),
-                    strokeWidth = const(CAMP_PIN_STROKE_WIDTH)
-                )
-            }
+            MapMarkerLayers(state = state)
         }
 
-        // Collapsible Map Legend - positioned to avoid scale bar
         MapLegend(
             isExpanded = isLegendExpanded,
             onToggle = { isLegendExpanded = !isLegendExpanded },
@@ -417,38 +240,172 @@ private fun MapContent(
             showCampPinHint = state.userCampPin is CampPinState.None,
             modifier = Modifier
                 .align(Alignment.TopStart)
-                .padding(
-                    start = Dimens.paddingSmall,
-                    top = Dimens.mapLegendTopPadding
-                )
+                .padding(start = Dimens.paddingSmall, top = Dimens.mapLegendTopPadding)
         )
 
-        // My Location FAB - positioned to avoid MapLibre attribution
         if (state.locationPermissionState == PermissionState.GRANTED) {
             MyLocationButton(
                 onClick = viewModel::centerOnUserLocation,
                 enabled = state.hasUserLocation,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(
-                        end = Dimens.paddingMedium,
-                        bottom = Dimens.mapFabBottomPadding
-                    )
+                    .padding(end = Dimens.paddingMedium, bottom = Dimens.mapFabBottomPadding)
             )
         }
     }
 
-    // Camp pin dialogs
-    CampPinDialogs(
-        dialogState = state.campPinDialogState,
-        viewModel = viewModel
+    CampPinDialogs(dialogState = state.campPinDialogState, viewModel = viewModel)
+
+    selectedServiceName?.let { serviceName ->
+        ServiceInfoDialog(serviceName = serviceName, onDismiss = { selectedServiceName = null })
+    }
+}
+
+@Composable
+private fun CameraAnimationEffects(
+    state: MapUiState.Success,
+    cameraState: org.maplibre.compose.camera.CameraState
+) {
+    val userLng = state.userLongitude
+    val userLat = state.userLatitude
+    LaunchedEffect(state.centerOnUserLocationRequest) {
+        if (state.centerOnUserLocationRequest > 0 && userLng != null && userLat != null) {
+            cameraState.animateTo(
+                finalPosition = cameraState.position.copy(
+                    target = Position(longitude = userLng, latitude = userLat)
+                ),
+                duration = Dimens.animationDurationLong.milliseconds
+            )
+        }
+    }
+
+    val targetLat = state.targetProjectLatitude
+    val targetLng = state.targetProjectLongitude
+    LaunchedEffect(state.navigateToProjectRequest) {
+        if (state.navigateToProjectRequest > 0 && targetLat != null && targetLng != null) {
+            cameraState.animateTo(
+                finalPosition = cameraState.position.copy(
+                    target = Position(longitude = targetLng, latitude = targetLat),
+                    zoom = PROJECT_ZOOM_LEVEL
+                ),
+                duration = Dimens.animationDurationLong.milliseconds
+            )
+        }
+    }
+}
+
+private fun handleMapClick(
+    offset: androidx.compose.ui.unit.DpOffset,
+    cameraState: org.maplibre.compose.camera.CameraState,
+    viewModel: MapViewModel,
+    onProjectClick: (ProjectItem) -> Unit,
+    onServiceClick: (String) -> Unit
+): ClickResult {
+    val features = cameraState.projection?.queryRenderedFeatures(offset)
+
+    val markerFeature = features?.firstOrNull { feature ->
+        val type = feature.properties?.get("type")?.toString()?.removeSurrounding("\"")
+        type == "camp" || type == "artwork"
+    }
+    if (markerFeature != null) {
+        val code = markerFeature.properties?.get("code")?.toString()?.removeSurrounding("\"")
+        code?.let { viewModel.findProjectByCode(it) }?.let { project ->
+            onProjectClick(project)
+            return ClickResult.Consume
+        }
+    }
+
+    val serviceFeature = features?.firstOrNull { feature ->
+        val fclass = feature.properties?.get("fclass")?.toString()?.removeSurrounding("\"")
+        fclass == "service"
+    }
+    if (serviceFeature != null) {
+        val name = serviceFeature.properties?.get("name")?.toString()?.removeSurrounding("\"")
+        if (name != null) {
+            onServiceClick(name)
+            return ClickResult.Consume
+        }
+    }
+
+    return ClickResult.Pass
+}
+
+@OptIn(ExperimentalResourceApi::class)
+@Composable
+private fun MapMarkerLayers(state: MapUiState.Success) {
+    val locationsSource = rememberGeoJsonSource(
+        data = GeoJsonData.Uri(Res.getUri(MOCK_LOCATIONS_PATH))
     )
 
-    // Service info dialog
-    selectedServiceName?.let { serviceName ->
-        ServiceInfoDialog(
-            serviceName = serviceName,
-            onDismiss = { selectedServiceName = null }
+    CircleLayer(
+        id = "camp-markers", source = locationsSource,
+        filter = Feature["type"].asString() eq const("camp"),
+        color = const(CAMP_MARKER_COLOR), radius = const(CAMP_MARKER_RADIUS),
+        strokeColor = const(MARKER_STROKE_COLOR), strokeWidth = const(MARKER_STROKE_WIDTH)
+    )
+    CircleLayer(
+        id = "artwork-markers", source = locationsSource,
+        filter = Feature["type"].asString() eq const("artwork"),
+        color = const(ARTWORK_MARKER_COLOR), radius = const(ARTWORK_MARKER_RADIUS),
+        strokeColor = const(MARKER_STROKE_COLOR), strokeWidth = const(MARKER_STROKE_WIDTH)
+    )
+
+    val amenitiesSource = rememberGeoJsonSource(
+        data = GeoJsonData.Uri(Res.getUri(AMENITIES_PATH))
+    )
+
+    CircleLayer(
+        id = "toilet-markers", source = amenitiesSource,
+        filter = Feature["fclass"].asString() eq const("toilet"),
+        color = const(TOILET_MARKER_COLOR), radius = const(TOILET_MARKER_RADIUS),
+        strokeColor = const(MARKER_STROKE_COLOR), strokeWidth = const(MARKER_STROKE_WIDTH)
+    )
+    CircleLayer(
+        id = "service-markers", source = amenitiesSource,
+        filter = Feature["fclass"].asString() eq const("service"),
+        color = const(SERVICE_MARKER_COLOR), radius = const(SERVICE_MARKER_RADIUS),
+        strokeColor = const(MARKER_STROKE_COLOR), strokeWidth = const(MARKER_STROKE_WIDTH)
+    )
+
+    UserLocationLayer(state = state)
+    CampPinLayer(state = state)
+}
+
+@Composable
+private fun UserLocationLayer(state: MapUiState.Success) {
+    val locLng = state.userLongitude
+    val locLat = state.userLatitude
+    if (locLng != null && locLat != null) {
+        val userLocationFeature = GeoJsonFeature(
+            geometry = Point(coordinates = Position(longitude = locLng, latitude = locLat))
+        )
+        val userLocationSource = rememberGeoJsonSource(
+            data = GeoJsonData.Features(userLocationFeature)
+        )
+        CircleLayer(
+            id = "user-location", source = userLocationSource,
+            color = const(USER_LOCATION_COLOR), radius = const(USER_LOCATION_RADIUS),
+            strokeColor = const(MARKER_STROKE_COLOR), strokeWidth = const(USER_LOCATION_STROKE_WIDTH)
+        )
+    }
+}
+
+@Composable
+private fun CampPinLayer(state: MapUiState.Success) {
+    val userCampPin = state.userCampPin
+    if (userCampPin is CampPinState.Placed) {
+        val campPinFeature = GeoJsonFeature(
+            geometry = Point(
+                coordinates = Position(longitude = userCampPin.longitude, latitude = userCampPin.latitude)
+            )
+        )
+        val campPinSource = rememberGeoJsonSource(
+            data = GeoJsonData.Features(campPinFeature)
+        )
+        CircleLayer(
+            id = "camp-pin-layer", source = campPinSource,
+            color = const(CAMP_PIN_COLOR), radius = const(CAMP_PIN_RADIUS),
+            strokeColor = const(MARKER_STROKE_COLOR), strokeWidth = const(CAMP_PIN_STROKE_WIDTH)
         )
     }
 }
@@ -457,6 +414,10 @@ private fun MapContent(
  * Collapsible map legend with smooth animations.
  * Shows marker colors and a long-press hint for first-time users.
  */
+private const val LEGEND_PRESS_DELAY_MS = 100L
+private const val LEGEND_SURFACE_ALPHA = 0.95f
+private const val LEGEND_HINT_ALPHA = 0.15f
+
 @Composable
 private fun MapLegend(
     isExpanded: Boolean,
@@ -465,7 +426,6 @@ private fun MapLegend(
     showCampPinHint: Boolean,
     modifier: Modifier = Modifier
 ) {
-    // Animate rotation for the toggle icon
     val rotation by animateFloatAsState(
         targetValue = if (isExpanded) 0f else 180f,
         animationSpec = spring(
@@ -475,7 +435,6 @@ private fun MapLegend(
         label = "legend_rotation"
     )
 
-    // Animate scale for press feedback
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (isPressed) 0.95f else 1f,
@@ -488,140 +447,108 @@ private fun MapLegend(
 
     Surface(
         modifier = modifier
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
-            .shadow(
-                elevation = Dimens.elevationSmall,
-                shape = RoundedCornerShape(Dimens.cornerRadiusMedium)
-            ),
+            .graphicsLayer { scaleX = scale; scaleY = scale }
+            .shadow(Dimens.elevationSmall, RoundedCornerShape(Dimens.cornerRadiusMedium)),
         shape = RoundedCornerShape(Dimens.cornerRadiusMedium),
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f),
+        color = MaterialTheme.colorScheme.surface.copy(alpha = LEGEND_SURFACE_ALPHA),
         tonalElevation = Dimens.elevationSmall
     ) {
-        Column(
-            modifier = Modifier.padding(Dimens.paddingSmall)
-        ) {
-            // Toggle header - always visible
-            Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(Dimens.cornerRadiusSmall))
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        onClick = {
-                            isPressed = true
-                            onToggle()
-                        }
-                    )
-                    .padding(Dimens.paddingExtraSmall),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Layers,
-                    contentDescription = "Toggle legend",
-                    modifier = Modifier
-                        .size(Dimens.iconSizeMedium)
-                        .rotate(rotation),
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = "Legend",
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-
-            // Reset pressed state
+        Column(modifier = Modifier.padding(Dimens.paddingSmall)) {
+            LegendToggleHeader(
+                rotation = rotation,
+                onToggle = { isPressed = true; onToggle() }
+            )
             LaunchedEffect(isPressed) {
-                if (isPressed) {
-                    kotlinx.coroutines.delay(100)
-                    isPressed = false
-                }
+                if (isPressed) { kotlinx.coroutines.delay(LEGEND_PRESS_DELAY_MS); isPressed = false }
             }
+            LegendExpandableContent(
+                isExpanded = isExpanded,
+                showUserLocation = showUserLocation,
+                showCampPinHint = showCampPinHint
+            )
+        }
+    }
+}
 
-            // Expandable content with smooth animation
-            AnimatedVisibility(
-                visible = isExpanded,
-                enter = expandVertically(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessLow
-                    )
-                ) + fadeIn(),
-                exit = shrinkVertically(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioNoBouncy,
-                        stiffness = Spring.StiffnessMedium
-                    )
-                ) + fadeOut()
-            ) {
-                Column(
-                    modifier = Modifier.padding(top = Dimens.paddingSmall),
-                    verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
-                ) {
-                    // Theme Camps - Purple
-                    LegendItem(
-                        color = CAMP_MARKER_COLOR,
-                        label = stringResource(Res.string.map_legend_camps)
-                    )
+@Composable
+private fun LegendToggleHeader(rotation: Float, onToggle: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(Dimens.cornerRadiusSmall))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onToggle
+            )
+            .padding(Dimens.paddingExtraSmall),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Layers,
+            contentDescription = "Toggle legend",
+            modifier = Modifier.size(Dimens.iconSizeMedium).rotate(rotation),
+            tint = MaterialTheme.colorScheme.primary
+        )
+        Text(
+            text = "Legend",
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
 
-                    // Artworks - Teal
-                    LegendItem(
-                        color = ARTWORK_MARKER_COLOR,
-                        label = stringResource(Res.string.map_legend_artworks)
-                    )
-
-                    // Toilets - Brown
-                    LegendItem(
-                        color = TOILET_MARKER_COLOR,
-                        label = stringResource(Res.string.map_legend_toilets)
-                    )
-
-                    // Services - Red
-                    LegendItem(
-                        color = SERVICE_MARKER_COLOR,
-                        label = stringResource(Res.string.map_legend_services)
-                    )
-
-                    // My Camp - Orange
-                    LegendItem(
-                        color = CAMP_PIN_COLOR,
-                        label = stringResource(Res.string.map_legend_my_camp)
-                    )
-
-                    // You - Blue
-                    if (showUserLocation) {
-                        LegendItem(
-                            color = USER_LOCATION_COLOR,
-                            label = stringResource(Res.string.map_legend_you)
-                        )
-                    }
-
-                    // Long-press hint with warm styling
-                    if (showCampPinHint) {
-                        Spacer(modifier = Modifier.height(Dimens.spacingExtraSmall))
-                        Surface(
-                            shape = RoundedCornerShape(Dimens.cornerRadiusSmall),
-                            color = CAMP_PIN_COLOR.copy(alpha = 0.15f)
-                        ) {
-                            Text(
-                                text = stringResource(Res.string.map_legend_hint),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.padding(
-                                    horizontal = Dimens.paddingSmall,
-                                    vertical = Dimens.paddingExtraSmall
-                                )
-                            )
-                        }
-                    }
-                }
+@Composable
+private fun LegendExpandableContent(
+    isExpanded: Boolean,
+    showUserLocation: Boolean,
+    showCampPinHint: Boolean
+) {
+    AnimatedVisibility(
+        visible = isExpanded,
+        enter = expandVertically(
+            animationSpec = spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessLow)
+        ) + fadeIn(),
+        exit = shrinkVertically(
+            animationSpec = spring(Spring.DampingRatioNoBouncy, Spring.StiffnessMedium)
+        ) + fadeOut()
+    ) {
+        Column(
+            modifier = Modifier.padding(top = Dimens.paddingSmall),
+            verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
+        ) {
+            LegendItem(color = CAMP_MARKER_COLOR, label = stringResource(Res.string.map_legend_camps))
+            LegendItem(color = ARTWORK_MARKER_COLOR, label = stringResource(Res.string.map_legend_artworks))
+            LegendItem(color = TOILET_MARKER_COLOR, label = stringResource(Res.string.map_legend_toilets))
+            LegendItem(color = SERVICE_MARKER_COLOR, label = stringResource(Res.string.map_legend_services))
+            LegendItem(color = CAMP_PIN_COLOR, label = stringResource(Res.string.map_legend_my_camp))
+            if (showUserLocation) {
+                LegendItem(color = USER_LOCATION_COLOR, label = stringResource(Res.string.map_legend_you))
+            }
+            if (showCampPinHint) {
+                LegendCampPinHint()
             }
         }
+    }
+}
+
+@Composable
+private fun LegendCampPinHint() {
+    Spacer(modifier = Modifier.height(Dimens.spacingExtraSmall))
+    Surface(
+        shape = RoundedCornerShape(Dimens.cornerRadiusSmall),
+        color = CAMP_PIN_COLOR.copy(alpha = LEGEND_HINT_ALPHA)
+    ) {
+        Text(
+            text = stringResource(Res.string.map_legend_hint),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(
+                horizontal = Dimens.paddingSmall,
+                vertical = Dimens.paddingExtraSmall
+            )
+        )
     }
 }
 

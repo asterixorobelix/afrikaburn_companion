@@ -16,7 +16,7 @@
       "id": "background",
       "type": "background",
       "paint": {
-        "background-color": "#1a1a2e"
+        "background-color": "#140F0B"
       }
     },
     {
@@ -25,7 +25,7 @@
       "source": "protomaps",
       "source-layer": "earth",
       "paint": {
-        "fill-color": "#252540"
+        "fill-color": "#201A17"
       }
     },
     {
@@ -34,7 +34,7 @@
       "source": "protomaps",
       "source-layer": "landcover",
       "paint": {
-        "fill-color": "#2a2a45"
+        "fill-color": "#251F1B"
       }
     },
     {
@@ -43,7 +43,7 @@
       "source": "protomaps",
       "source-layer": "landuse",
       "paint": {
-        "fill-color": "#2d2d4a"
+        "fill-color": "#302925"
       }
     },
     {
@@ -52,7 +52,7 @@
       "source": "protomaps",
       "source-layer": "water",
       "paint": {
-        "fill-color": "#16213e"
+        "fill-color": "#1565C0"
       }
     },
     {
@@ -61,7 +61,7 @@
       "source": "protomaps",
       "source-layer": "roads",
       "paint": {
-        "line-color": "#5a5a7a",
+        "line-color": "#A08D82",
         "line-width": {"stops": [[10, 1], [15, 3]]}
       }
     },
@@ -71,7 +71,7 @@
       "source": "protomaps",
       "source-layer": "boundaries",
       "paint": {
-        "line-color": "#4a4a6a",
+        "line-color": "#52443B",
         "line-width": 1,
         "line-dasharray": [2, 2]
       }

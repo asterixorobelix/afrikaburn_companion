@@ -10,26 +10,45 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import afrikaburn.composeapp.generated.resources.Res
+import afrikaburn.composeapp.generated.resources.bitter_regular
+import org.jetbrains.compose.resources.Font
 import io.asterixorobelix.afrikaburn.Dimens.cornerRadiusLarge
 import io.asterixorobelix.afrikaburn.Dimens.cornerRadiusMedium
 import io.asterixorobelix.afrikaburn.Dimens.cornerRadiusSmall
 
 @Suppress("MagicNumber")
 val LightColors = lightColorScheme(
-    primary = Color(0xFF6750A4),
+    primary = Color(0xFF8B5E34),
     onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFFEADDFF),
-    onPrimaryContainer = Color(0xFF21005D),
-    secondary = Color(0xFF625B71),
+    primaryContainer = Color(0xFFFFDDB5),
+    onPrimaryContainer = Color(0xFF2E1500),
+    secondary = Color(0xFF6F5B40),
     onSecondary = Color(0xFFFFFFFF),
-    secondaryContainer = Color(0xFFE8DEF8),
-    onSecondaryContainer = Color(0xFF1D192B),
-    background = Color(0xFFFFFBFE),
-    onBackground = Color(0xFF1C1B1F),
-    surface = Color(0xFFFFFBFE),
-    onSurface = Color(0xFF1C1B1F),
-    error = Color(0xFFB3261E),
+    secondaryContainer = Color(0xFFFBDEBC),
+    onSecondaryContainer = Color(0xFF271904),
+    tertiary = Color(0xFF51643F),
+    onTertiary = Color(0xFFFFFFFF),
+    tertiaryContainer = Color(0xFFD4EABB),
+    onTertiaryContainer = Color(0xFF0F2004),
+    background = Color(0xFFFFF8F2),
+    onBackground = Color(0xFF201A17),
+    surface = Color(0xFFFFF8F2),
+    onSurface = Color(0xFF201A17),
+    surfaceVariant = Color(0xFFF3DFD0),
+    onSurfaceVariant = Color(0xFF52443B),
+    outline = Color(0xFF857469),
+    outlineVariant = Color(0xFFD8C3B6),
+    inverseSurface = Color(0xFF362F2B),
+    inverseOnSurface = Color(0xFFFBEEE6),
+    surfaceContainerLowest = Color(0xFFFFFFFF),
+    surfaceContainerLow = Color(0xFFFEF1E9),
+    surfaceContainer = Color(0xFFF8ECE3),
+    surfaceContainerHigh = Color(0xFFF2E6DD),
+    surfaceContainerHighest = Color(0xFFECE0D7),
+    error = Color(0xFFC62828),
     onError = Color(0xFFFFFFFF),
     errorContainer = Color(0xFFF9DEDC),
     onErrorContainer = Color(0xFF410E0B),
@@ -37,19 +56,34 @@ val LightColors = lightColorScheme(
 
 @Suppress("MagicNumber")
 val DarkColors = darkColorScheme(
-    primary = Color(0xFFD0BCFF),
-    onPrimary = Color(0xFF381E72),
-    primaryContainer = Color(0xFF4F378B),
-    onPrimaryContainer = Color(0xFFEADDFF),
-    secondary = Color(0xFFCCC2DC),
-    onSecondary = Color(0xFF332D41),
-    secondaryContainer = Color(0xFF4A4458),
-    onSecondaryContainer = Color(0xFFE8DEF8),
-    background = Color(0xFF1C1B1F),
-    onBackground = Color(0xFFE6E1E5),
-    surface = Color(0xFF1C1B1F),
-    onSurface = Color(0xFFE6E1E5),
-    error = Color(0xFFF2B8B5),
+    primary = Color(0xFFFFBA6E),
+    onPrimary = Color(0xFF4A2800),
+    primaryContainer = Color(0xFF6A4320),
+    onPrimaryContainer = Color(0xFFFFDDB5),
+    secondary = Color(0xFFDFC2A2),
+    onSecondary = Color(0xFF3F2D17),
+    secondaryContainer = Color(0xFF57432B),
+    onSecondaryContainer = Color(0xFFFBDEBC),
+    tertiary = Color(0xFFB8CEA0),
+    onTertiary = Color(0xFF243514),
+    tertiaryContainer = Color(0xFF3A4C29),
+    onTertiaryContainer = Color(0xFFD4EABB),
+    background = Color(0xFF1A1511),
+    onBackground = Color(0xFFF0DFD2),
+    surface = Color(0xFF1A1511),
+    onSurface = Color(0xFFF0DFD2),
+    surfaceVariant = Color(0xFF52443B),
+    onSurfaceVariant = Color(0xFFD8C3B6),
+    outline = Color(0xFFA08D82),
+    outlineVariant = Color(0xFF52443B),
+    inverseSurface = Color(0xFFF0DFD2),
+    inverseOnSurface = Color(0xFF362F2B),
+    surfaceContainerLowest = Color(0xFF140F0B),
+    surfaceContainerLow = Color(0xFF201A17),
+    surfaceContainer = Color(0xFF251F1B),
+    surfaceContainerHigh = Color(0xFF302925),
+    surfaceContainerHighest = Color(0xFF3B3430),
+    error = Color(0xFFEF9A9A),
     onError = Color(0xFF601410),
     errorContainer = Color(0xFF8C1D18),
     onErrorContainer = Color(0xFFF9DEDC),
@@ -61,83 +95,98 @@ val AppShapes = Shapes(
     large = androidx.compose.foundation.shape.RoundedCornerShape(cornerRadiusLarge)
 )
 
-val AppTypography = Typography(
-    displayLarge = TextStyle(
-        fontSize = 57.sp,
-        lineHeight = 64.sp,
-        fontWeight = FontWeight.Normal
-    ),
-    displayMedium = TextStyle(
-        fontSize = 45.sp,
-        lineHeight = 52.sp,
-        fontWeight = FontWeight.Normal
-    ),
-    displaySmall = TextStyle(
-        fontSize = 36.sp,
-        lineHeight = 44.sp,
-        fontWeight = FontWeight.Normal
-    ),
-    headlineLarge = TextStyle(
-        fontSize = 32.sp,
-        lineHeight = 40.sp,
-        fontWeight = FontWeight.Normal
-    ),
-    headlineMedium = TextStyle(
-        fontSize = 28.sp,
-        lineHeight = 36.sp,
-        fontWeight = FontWeight.Normal
-    ),
-    headlineSmall = TextStyle(
-        fontSize = 24.sp,
-        lineHeight = 32.sp,
-        fontWeight = FontWeight.Normal
-    ),
-    titleLarge = TextStyle(
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        fontWeight = FontWeight.Normal
-    ),
-    titleMedium = TextStyle(
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        fontWeight = FontWeight.Medium
-    ),
-    titleSmall = TextStyle(
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        fontWeight = FontWeight.Medium
-    ),
-    bodyLarge = TextStyle(
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        fontWeight = FontWeight.Normal
-    ),
-    bodyMedium = TextStyle(
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        fontWeight = FontWeight.Normal
-    ),
-    bodySmall = TextStyle(
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        fontWeight = FontWeight.Normal
-    ),
-    labelLarge = TextStyle(
-        fontSize = 14.sp,
-        lineHeight = 20.sp,
-        fontWeight = FontWeight.Medium
-    ),
-    labelMedium = TextStyle(
-        fontSize = 12.sp,
-        lineHeight = 16.sp,
-        fontWeight = FontWeight.Medium
-    ),
-    labelSmall = TextStyle(
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        fontWeight = FontWeight.Medium
+@Suppress("LongMethod")
+@Composable
+fun appTypography(): Typography {
+    val bitterFamily = FontFamily(
+        Font(Res.font.bitter_regular, weight = FontWeight.Normal),
+        Font(Res.font.bitter_regular, weight = FontWeight.Medium),
     )
-)
+    return Typography(
+        displayLarge = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 57.sp,
+            lineHeight = 64.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        displayMedium = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 45.sp,
+            lineHeight = 52.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        displaySmall = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 36.sp,
+            lineHeight = 44.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        headlineLarge = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 32.sp,
+            lineHeight = 40.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        headlineMedium = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 28.sp,
+            lineHeight = 36.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        headlineSmall = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 24.sp,
+            lineHeight = 32.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        titleLarge = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 22.sp,
+            lineHeight = 28.sp,
+            fontWeight = FontWeight.Medium
+        ),
+        titleMedium = TextStyle(
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            fontWeight = FontWeight.Medium
+        ),
+        titleSmall = TextStyle(
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            fontWeight = FontWeight.Medium
+        ),
+        bodyLarge = TextStyle(
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        bodyMedium = TextStyle(
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        bodySmall = TextStyle(
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        labelLarge = TextStyle(
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            fontWeight = FontWeight.Medium
+        ),
+        labelMedium = TextStyle(
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            fontWeight = FontWeight.Medium
+        ),
+        labelSmall = TextStyle(
+            fontSize = 11.sp,
+            lineHeight = 16.sp,
+            fontWeight = FontWeight.Medium
+        )
+    )
+}
 
 object Dimens {
     // Padding
@@ -230,7 +279,7 @@ fun AppTheme(
     MaterialTheme(
         colorScheme = if (useDarkTheme) DarkColors else LightColors,
         shapes = AppShapes,
-        typography = AppTypography,
+        typography = appTypography(),
         content = content
     )
 }
