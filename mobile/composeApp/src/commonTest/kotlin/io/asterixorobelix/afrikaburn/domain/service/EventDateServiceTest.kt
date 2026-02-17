@@ -227,6 +227,55 @@ class EventDateServiceTest {
     }
 
     // =========================================================================
+    // Timezone Boundary Tests (Africa/Johannesburg, UTC+2)
+    // =========================================================================
+
+    @Test
+    fun `isEventStarted returns false at 23 59 SAST on day before event`() {
+        // Given: 23:59 SAST on April 26, 2026 = 21:59 UTC on April 26, 2026
+        // This is one minute before midnight SAST, which is the day before the event
+        val instant = Instant.parse("2026-04-26T21:59:00Z")
+        val fakeClock = FakeClock(instant)
+        val service = EventDateServiceImpl(fakeClock)
+
+        // When
+        val result = service.isEventStarted()
+
+        // Then: Should be false — it is still April 26 SAST, not yet April 27
+        assertFalse(result, "isEventStarted should return false at 23:59 SAST on April 26 (day before event)")
+    }
+
+    @Test
+    fun `isEventStarted returns true at 00 00 SAST on event start day`() {
+        // Given: 00:00 SAST on April 27, 2026 = 22:00 UTC on April 26, 2026
+        // This is exactly midnight SAST — the first moment of the event start day
+        val instant = Instant.parse("2026-04-26T22:00:00Z")
+        val fakeClock = FakeClock(instant)
+        val service = EventDateServiceImpl(fakeClock)
+
+        // When
+        val result = service.isEventStarted()
+
+        // Then: Should be true — midnight SAST on April 27 is the event start day
+        assertTrue(result, "isEventStarted should return true at exactly 00:00 SAST on April 27 (event start)")
+    }
+
+    @Test
+    fun `isEventStarted returns true at 00 01 SAST on event start day`() {
+        // Given: 00:01 SAST on April 27, 2026 = 22:01 UTC on April 26, 2026
+        // This is one minute past midnight SAST on the event start day
+        val instant = Instant.parse("2026-04-26T22:01:00Z")
+        val fakeClock = FakeClock(instant)
+        val service = EventDateServiceImpl(fakeClock)
+
+        // When
+        val result = service.isEventStarted()
+
+        // Then: Should be true — it is April 27 SAST, one minute into the event start day
+        assertTrue(result, "isEventStarted should return true at 00:01 SAST on April 27 (one minute into event start)")
+    }
+
+    // =========================================================================
     // EventConfig Data Class Tests
     // =========================================================================
 
