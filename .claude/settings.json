@@ -1,0 +1,46 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd mobile && ktlint --relative 2>&1 | head -10; cd .. && typos --format brief 2>&1 | head -5"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "case \"$CLAUDE_FILE\" in */build/*|*/generated/*|*.g.kt|*/sqldelight/generated/*) echo 'BLOCKED: Do not edit generated files. Edit the source (*.sq, *.gradle.kts) instead.' && exit 2;; esac; exit 0"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "BRANCH=$(git branch --show-current 2>/dev/null); echo '=== PROJECT CONTEXT ==='; echo \"## Branch: $BRANCH\"; echo '## Uncommitted Changes'; git status --short 2>/dev/null; echo '## Recent Activity'; git log --oneline -5 2>/dev/null; if [ -f \".claude/branch-context/$BRANCH.md\" ]; then echo '## Branch Context'; cat \".claude/branch-context/$BRANCH.md\"; fi"
+          }
+        ]
+      }
+    ]
+  },
+  "mcpServers": {
+    "mobile": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@mobilenext/mobile-mcp@latest"],
+      "env": {
+        "ANDROID_HOME": "${HOME}/Library/Android/sdk"
+      }
+    }
+  }
+}
