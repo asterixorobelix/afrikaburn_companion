@@ -507,4 +507,71 @@ class UnlockConditionManagerTest {
         // Then: Should simply be locked (no crash, no error)
         assertFalse(manager.isUnlocked(null), "Should be locked on fresh install")
     }
+
+    // =========================================================================
+    // Permission Denial Edge Case Tests
+    // =========================================================================
+
+    @Test
+    fun `date unlock works when location is null (permission denied scenario)`() {
+        // Given: Event has started, but location is null (location permission denied by user)
+        val eventDateService = FakeEventDateService(eventStarted = true)
+        val (manager, repository, _) = createManager(eventDateService = eventDateService)
+
+        // When: isUnlocked called with null location (simulating denied permission)
+        val result = manager.isUnlocked(null)
+
+        // Then: Should still unlock via date condition, not fail due to missing location
+        assertTrue(result, "Should unlock via date even when location is null (permission denied)")
+        assertTrue(repository.wasSetUnlockedCalled(), "Unlock should be persisted even with null location")
+    }
+
+    @Test
+    fun `date unlock takes priority over null location when both conditions possible`() {
+        // Given: Event started, geofence not triggered (as would happen with null location)
+        val eventDateService = FakeEventDateService(eventStarted = true)
+        val geofenceService = FakeGeofenceService(withinGeofence = false)
+        val (manager, repository, _) = createManager(
+            eventDateService = eventDateService,
+            geofenceService = geofenceService
+        )
+
+        // When: isUnlocked called with null location (no geofence possible)
+        val result = manager.isUnlocked(null)
+
+        // Then: Date condition alone is sufficient — null location doesn't block unlock
+        assertTrue(result, "Date unlock should succeed regardless of null location")
+        assertTrue(repository.wasSetUnlockedCalled(), "Date-triggered unlock should be persisted")
+    }
+
+    @Test
+    fun `null location does not block date-based unlock persistence across sessions`() {
+        // Given: First session — event started, null location (permission denied)
+        val eventDateService = FakeEventDateService(eventStarted = true)
+        val repository = FakeUnlockStateRepository()
+
+        val firstManager = UnlockConditionManagerImpl(
+            eventDateService = eventDateService,
+            geofenceService = FakeGeofenceService(),
+            unlockStateRepository = repository
+        )
+
+        // First session triggers unlock with null location
+        val firstResult = firstManager.isUnlocked(null)
+        assertTrue(firstResult, "Should unlock in first session via date with null location")
+        assertTrue(repository.wasSetUnlockedCalled(), "Should persist after first unlock")
+
+        // When: Second session — new manager instance, same persisted repository state
+        // This simulates app restart (same repository with persisted state)
+        val secondManager = UnlockConditionManagerImpl(
+            eventDateService = FakeEventDateService(eventStarted = false), // date condition no longer true
+            geofenceService = FakeGeofenceService(),
+            unlockStateRepository = repository
+        )
+
+        // Then: Should still be unlocked from persistence, even with null location
+        val secondResult = secondManager.isUnlocked(null)
+        assertTrue(secondResult, "Should remain unlocked from persistence on app restart")
+        assertFalse(secondManager.wasJustUnlocked(), "Should not be 'just unlocked' in second session")
+    }
 }
