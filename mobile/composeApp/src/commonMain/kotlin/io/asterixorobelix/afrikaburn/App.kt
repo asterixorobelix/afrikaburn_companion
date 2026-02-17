@@ -11,7 +11,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.ui.Modifier
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,6 +25,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import io.asterixorobelix.afrikaburn.domain.service.UnlockConditionManager
 import io.asterixorobelix.afrikaburn.models.ProjectItem
+import io.asterixorobelix.afrikaburn.models.ProjectType
 import io.asterixorobelix.afrikaburn.navigation.BottomNavigationBar
 import io.asterixorobelix.afrikaburn.navigation.NavigationDestination
 import io.asterixorobelix.afrikaburn.platform.CrashLogger
@@ -34,6 +34,8 @@ import io.asterixorobelix.afrikaburn.platform.LocationData
 import io.asterixorobelix.afrikaburn.platform.LocationService
 import io.asterixorobelix.afrikaburn.platform.PermissionState
 import io.asterixorobelix.afrikaburn.ui.directions.DirectionsScreen
+import io.asterixorobelix.afrikaburn.ui.home.HomeScreen
+import io.asterixorobelix.afrikaburn.ui.more.MoreScreen
 import io.asterixorobelix.afrikaburn.ui.projects.ProjectDetailScreen
 import io.asterixorobelix.afrikaburn.ui.projects.ProjectsScreen
 import io.asterixorobelix.afrikaburn.ui.about.AboutScreen
@@ -48,7 +50,8 @@ private const val PROJECT_DETAIL_ROUTE = "project_detail"
 @Composable
 @Preview
 fun App() {
-    val isDarkTheme = isSystemInDarkTheme()
+    // Dark mode is the primary experience per brand docs
+    val isDarkTheme = true
 
     // Inject services
     val crashLogger: CrashLogger = koinInject()
@@ -115,7 +118,7 @@ private fun InitializeAppServices(
 
 private fun determineStartDestination(isUnlocked: Boolean): String {
     return if (isUnlocked) {
-        NavigationDestination.Projects.route
+        NavigationDestination.Home.route
     } else {
         NavigationDestination.Directions.route
     }
@@ -185,6 +188,7 @@ private fun AppScaffold(
     }
 }
 
+@Suppress("LongMethod")
 @Composable
 private fun AppNavHost(
     navController: NavHostController,
@@ -198,7 +202,24 @@ private fun AppNavHost(
         startDestination = startDestination,
         modifier = modifier
     ) {
-        composable(NavigationDestination.Projects.route) {
+        composable(NavigationDestination.Home.route) {
+            HomeScreen(
+                onCategoryClick = { projectType ->
+                    navController.navigate(NavigationDestination.Explore.route) {
+                        popUpTo(navController.graph.startDestinationId)
+                        launchSingleTop = true
+                    }
+                },
+                onSurvivalGuideClick = {
+                    navController.navigate(NavigationDestination.Directions.route)
+                },
+                onProjectClick = { project ->
+                    onProjectSelected(project)
+                    navController.navigate(PROJECT_DETAIL_ROUTE)
+                }
+            )
+        }
+        composable(NavigationDestination.Explore.route) {
             ProjectsScreen(
                 onProjectClick = { project ->
                     onProjectSelected(project)
@@ -211,6 +232,16 @@ private fun AppNavHost(
                 onProjectClick = { project ->
                     onProjectSelected(project)
                     navController.navigate(PROJECT_DETAIL_ROUTE)
+                }
+            )
+        }
+        composable(NavigationDestination.More.route) {
+            MoreScreen(
+                onDirectionsClick = {
+                    navController.navigate(NavigationDestination.Directions.route)
+                },
+                onAboutClick = {
+                    navController.navigate(NavigationDestination.About.route)
                 }
             )
         }

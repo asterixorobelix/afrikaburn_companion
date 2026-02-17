@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 fun BottomNavigationBar(
     currentRoute: String?,
     onNavigate: (String) -> Unit,
-    destinations: List<NavigationDestination> = NavigationDestination.allDestinations,
+    destinations: List<NavigationDestination> = NavigationDestination.unlockedDestinations,
     modifier: Modifier = Modifier
 ) {
     NavigationBar(

@@ -271,6 +271,21 @@ object Dimens {
     val mapLegendToggleSize = 40.dp
     val fabSize = 56.dp
     val fabSizeSmall = 40.dp
+
+    // Home screen dimensions
+    val categoryCardSize = 100.dp
+    val categoryCardIconSize = 32.dp
+    val categoryIconContainerSize = 56.dp
+    val categoryGridSpacing = 12.dp
+    val homeHeroVerticalPadding = 20.dp
+    val yearBadgePaddingHorizontal = 8.dp
+    val yearBadgePaddingVertical = 2.dp
+    val happeningNowCardWidth = 260.dp
+    val happeningNowCardHeight = 120.dp
+
+    // More screen dimensions
+    val moreItemIconSize = 40.dp
+    val categoryIndicatorWidth = 4.dp
 }
 
 @Composable

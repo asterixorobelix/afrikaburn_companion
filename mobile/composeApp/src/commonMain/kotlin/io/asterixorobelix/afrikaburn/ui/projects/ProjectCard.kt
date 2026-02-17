@@ -4,9 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -26,27 +29,29 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import io.asterixorobelix.afrikaburn.AppTheme
 import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.cardElevation
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
+import io.asterixorobelix.afrikaburn.models.ProjectType
 import io.asterixorobelix.afrikaburn.ui.components.animatedScale
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-/**
- * Card component displaying project information.
- * Shows project name, artist, description, and status badge.
- * Tapping the card triggers the onClick callback for navigation to detail screen.
- */
+private const val MAX_DESCRIPTION_LINES = 2
+
 @Composable
 fun ProjectCard(
     project: ProjectItem,
     modifier: Modifier = Modifier,
+    projectType: ProjectType? = null,
     onClick: (() -> Unit)? = null
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
+    val categoryColor = projectType?.let { categoryIndicatorColor(it) }
 
     Card(
         modifier = modifier
@@ -60,28 +65,78 @@ fun ProjectCard(
         onClick = { onClick?.invoke() },
         interactionSource = interactionSource
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    horizontal = Dimens.cardContentPaddingHorizontal,
-                    vertical = Dimens.cardContentPaddingVertical
-                )
+                .height(IntrinsicSize.Min)
         ) {
-            ProjectCardHeader(
-                name = project.name,
-                artistName = project.artist.name
-            )
+            if (categoryColor != null) {
+                Box(
+                    modifier = Modifier
+                        .width(Dimens.categoryIndicatorWidth)
+                        .fillMaxHeight()
+                        .background(categoryColor)
+                )
+            }
 
-            Spacer(modifier = Modifier.height(Dimens.spacingMedium))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = Dimens.cardContentPaddingHorizontal,
+                        vertical = Dimens.cardContentPaddingVertical
+                    )
+            ) {
+                if (projectType != null) {
+                    ProjectTypeBadge(projectType = projectType, color = categoryColor!!)
+                    Spacer(modifier = Modifier.height(Dimens.spacingSmall))
+                }
 
-            ProjectCardDescription(description = project.description)
+                ProjectCardHeader(
+                    name = project.name,
+                    artistName = project.artist.name
+                )
 
-            if (project.status.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(Dimens.spacingLarge))
-                ProjectCardStatusBadge(status = project.status)
+                Spacer(modifier = Modifier.height(Dimens.spacingMedium))
+
+                ProjectCardDescription(description = project.description)
+
+                if (project.status.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(Dimens.spacingLarge))
+                    ProjectCardStatusBadge(status = project.status)
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun categoryIndicatorColor(projectType: ProjectType): Color {
+    return when (projectType) {
+        ProjectType.ART -> MaterialTheme.colorScheme.primary
+        ProjectType.PERFORMANCES -> MaterialTheme.colorScheme.primary
+        ProjectType.EVENTS -> MaterialTheme.colorScheme.secondary
+        ProjectType.CAMPS -> MaterialTheme.colorScheme.tertiary
+        ProjectType.VEHICLES -> MaterialTheme.colorScheme.secondary
+        ProjectType.MOBILE_ART -> MaterialTheme.colorScheme.primary
+    }
+}
+
+@Composable
+private fun ProjectTypeBadge(projectType: ProjectType, color: Color) {
+    Surface(
+        shape = MaterialTheme.shapes.small,
+        color = color.copy(alpha = 0.15f)
+    ) {
+        Text(
+            text = projectType.displayName,
+            style = MaterialTheme.typography.labelSmall,
+            color = color,
+            modifier = Modifier.padding(
+                horizontal = Dimens.paddingSmall,
+                vertical = Dimens.paddingExtraSmall
+            )
+        )
     }
 }
 
@@ -138,7 +193,9 @@ private fun ProjectCardDescription(description: String) {
         text = description,
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurface,
-        lineHeight = MaterialTheme.typography.bodyMedium.lineHeight
+        lineHeight = MaterialTheme.typography.bodyMedium.lineHeight,
+        maxLines = MAX_DESCRIPTION_LINES,
+        overflow = TextOverflow.Ellipsis
     )
 }
 
@@ -178,7 +235,8 @@ private fun ProjectCardPreview() {
                         "relationship between humans and the desert environment.",
                     artist = Artist(name = "Sarah Johnson"),
                     status = "Day Time | Fam(ish)"
-                )
+                ),
+                projectType = ProjectType.ART
             )
             ProjectCard(
                 project = ProjectItem(
@@ -186,7 +244,8 @@ private fun ProjectCardPreview() {
                     description = "A minimal camp setup without artist or status.",
                     artist = Artist(name = ""),
                     status = ""
-                )
+                ),
+                projectType = ProjectType.CAMPS
             )
         }
     }
