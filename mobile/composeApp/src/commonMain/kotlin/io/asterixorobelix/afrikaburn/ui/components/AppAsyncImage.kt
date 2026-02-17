@@ -53,6 +53,7 @@ private const val DEFAULT_CROSSFADE_DURATION_MS = 300
  * @param crossfadeDurationMs Duration of the crossfade animation in milliseconds
  * @param colorFilter Optional color filter to apply to the image
  */
+@Suppress("LongParameterList")
 @Composable
 fun AppAsyncImage(
     model: Any?,
@@ -105,6 +106,7 @@ fun AppAsyncImage(
  * @param crossfadeDurationMs Duration of the crossfade animation in milliseconds
  * @param colorFilter Optional color filter to apply to the image
  */
+@Suppress("LongParameterList")
 @Composable
 fun AppAsyncImageSimple(
     model: Any?,
@@ -148,6 +150,7 @@ fun AppAsyncImageSimple(
  * @param colorFilter Optional color filter to apply to the image
  * @param onState Callback to observe image loading state changes
  */
+@Suppress("LongParameterList")
 @Composable
 fun AppAsyncImageWithState(
     model: Any?,

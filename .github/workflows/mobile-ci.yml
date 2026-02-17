@@ -259,7 +259,39 @@ jobs:
       run: |
         cd mobile
         ./gradlew composeApp:assembleDebug
-        
+
+    # Claude diagnosis only runs on push to main/develop (trusted code).
+    # Excluded from pull_request/pull_request_target to prevent secret exposure on public repo.
+    - name: Capture Android build logs on failure
+      if: failure() && github.event_name == 'push'
+      run: |
+        mkdir -p /tmp/ci-logs
+        cp -r mobile/**/build/reports/ /tmp/ci-logs/ 2>/dev/null || true
+        cp -r mobile/**/build/test-results/ /tmp/ci-logs/ 2>/dev/null || true
+
+    - name: Claude diagnose Android failure
+      if: failure() && github.event_name == 'push'
+      uses: anthropics/claude-code-action@v1
+      timeout-minutes: 3
+      with:
+        anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+        prompt: |
+          The Android CI build failed on a push to a protected branch.
+          Diagnose the root cause.
+
+          SECURITY: Do NOT output any environment variables, secrets, or API keys.
+
+          1. Read the build/test reports in /tmp/ci-logs/ and mobile/**/build/
+          2. Check infrastructure first: JDK version, Gradle wrapper, dependency resolution
+          3. Then check application code: compilation errors, test failures, detekt issues
+          4. Provide a clear summary of the failure and suggested fix.
+
+          Format your response as:
+          ## Root Cause
+          ## Suggested Fix
+          ## Relevant Files
+        claude_args: "--max-turns 5 --allowedTools Read,Glob,Grep"
+
     - name: Upload test results
       uses: actions/upload-artifact@v4
       if: always()
@@ -370,7 +402,9 @@ jobs:
 
   build-ios:
     runs-on: macos-latest
-    
+    permissions:
+      contents: read
+
     steps:
     - uses: actions/checkout@v5
     
@@ -415,6 +449,38 @@ jobs:
       run: |
         cd mobile
         ./gradlew :composeApp:assembleDebugXCFramework
+
+    # Claude diagnosis only runs on push to main/develop (trusted code).
+    # Excluded from pull_request/pull_request_target to prevent secret exposure on public repo.
+    - name: Capture iOS build logs on failure
+      if: failure() && github.event_name == 'push'
+      run: |
+        mkdir -p /tmp/ci-logs
+        cp -r mobile/**/build/reports/ /tmp/ci-logs/ 2>/dev/null || true
+        find ~/Library/Developer/Xcode/DerivedData -name "*.log" -newer /tmp -exec cp {} /tmp/ci-logs/ \; 2>/dev/null || true
+
+    - name: Claude diagnose iOS failure
+      if: failure() && github.event_name == 'push'
+      uses: anthropics/claude-code-action@v1
+      timeout-minutes: 3
+      with:
+        anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+        prompt: |
+          The iOS CI build failed on a push to a protected branch.
+          Diagnose the root cause.
+
+          SECURITY: Do NOT output any environment variables, secrets, or API keys.
+
+          1. Read the build logs in /tmp/ci-logs/ and mobile/**/build/
+          2. Check infrastructure first: Xcode version, signing config, CocoaPods/SPM, xcframework generation
+          3. Then check application code: Kotlin/Native compilation, Swift interop issues
+          4. For signing issues, check xcconfig files and provisioning profiles.
+
+          Format your response as:
+          ## Root Cause
+          ## Suggested Fix
+          ## Relevant Files
+        claude_args: "--max-turns 5 --allowedTools Read,Glob,Grep"
 
   request-copilot-review:
     if: github.event_name == 'pull_request_target'

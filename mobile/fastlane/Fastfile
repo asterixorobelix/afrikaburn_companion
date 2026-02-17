@@ -227,6 +227,39 @@ platform :ios do
     )
   end
 
+  desc "Run precheck to catch common App Store rejection issues"
+  lane :precheck_app do
+    precheck(
+      app_identifier: "io.asterixorobelix.afrikaburn.Afrikaburn",
+      unreachable_urls: :error,
+      other_platforms: :error
+    )
+  end
+
+  desc "Capture screenshots on iPhone and iPad simulators"
+  lane :screenshots do
+    capture_screenshots(
+      devices: [
+        "iPhone 16 Pro Max",
+        "iPad Pro 13-inch (M4)"
+      ]
+    )
+    frame_screenshots
+  end
+
+  desc "Run tests on iPhone and iPad simulators to catch launch crashes"
+  lane :test do
+    run_tests(
+      workspace: "iosApp/iosApp.xcworkspace",
+      scheme: "iosApp",
+      devices: [
+        "iPhone 16 Pro Max",
+        "iPad Pro 11-inch (M4)"
+      ],
+      result_bundle: true
+    )
+  end
+
   desc "Build Kotlin Multiplatform framework (all targets)"
   lane :build_framework do
     gradle(
@@ -345,6 +378,7 @@ platform :ios do
 
   desc "Submit to App Store and request review"
   lane :release_submit do
+    precheck_app
     build
 
     api_key = asc_api_key

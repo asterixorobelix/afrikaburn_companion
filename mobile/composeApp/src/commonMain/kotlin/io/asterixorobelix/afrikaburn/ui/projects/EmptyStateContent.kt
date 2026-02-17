@@ -70,6 +70,7 @@ enum class EmptyStateType {
  * @param onClearSearch Callback when user taps "Clear search" button
  * @param onClearFilters Callback when user taps "Clear filters" button
  */
+@Suppress("LongParameterList")
 @Composable
 fun EmptyStateContent(
     emptyStateType: EmptyStateType,
