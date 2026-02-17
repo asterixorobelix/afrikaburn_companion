@@ -152,9 +152,12 @@ private fun AppScaffold(
     // State holder for selected project (used for detail navigation)
     var selectedProject by remember { mutableStateOf<ProjectItem?>(null) }
 
-    // Determine if bottom bar should be shown (hide on detail screens)
-    val showBottomBar = remember(currentRoute) {
-        currentRoute != null && !currentRoute.startsWith(PROJECT_DETAIL_ROUTE)
+    // Hide bottom bar on detail screens and sub-routes (Directions/About from More)
+    val topLevelRoutes = remember(visibleDestinations) {
+        visibleDestinations.map { it.route }.toSet()
+    }
+    val showBottomBar = remember(currentRoute, topLevelRoutes) {
+        currentRoute != null && currentRoute in topLevelRoutes
     }
 
     Scaffold(
