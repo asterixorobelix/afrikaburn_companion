@@ -60,7 +60,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DirectionsCar
-import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.GpsFixed
 import androidx.compose.material.icons.filled.LocalGasStation
@@ -625,7 +624,7 @@ private fun ExpandableSectionHeader(
             modifier = Modifier.weight(1f)
         )
         Icon(
-            imageVector = if (isExpanded) Icons.Filled.ExpandLess else Icons.Filled.ExpandMore,
+            imageVector = Icons.Filled.ExpandMore,
             contentDescription = expandContentDescription,
             modifier = Modifier
                 .size(Dimens.iconSizeMedium)
