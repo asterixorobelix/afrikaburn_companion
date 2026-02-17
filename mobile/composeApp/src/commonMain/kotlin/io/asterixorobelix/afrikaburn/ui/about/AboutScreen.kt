@@ -74,6 +74,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.util.lerp
 import io.asterixorobelix.afrikaburn.AppTheme
 import io.asterixorobelix.afrikaburn.Dimens
+import io.asterixorobelix.afrikaburn.cardElevation
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -213,11 +214,11 @@ private fun AboutPageCard(
                 this.alpha = alpha
             },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        shape = MaterialTheme.shapes.large,
+        shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(
-            defaultElevation = Dimens.elevationMedium
+            defaultElevation = cardElevation()
         )
     ) {
         Column(

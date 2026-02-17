@@ -12,6 +12,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.ui.unit.Dp
 import afrikaburn.composeapp.generated.resources.Res
 import afrikaburn.composeapp.generated.resources.bitter_regular
 import org.jetbrains.compose.resources.Font
@@ -270,6 +272,9 @@ object Dimens {
     val fabSize = 56.dp
     val fabSizeSmall = 40.dp
 }
+
+@Composable
+fun cardElevation(): Dp = if (isSystemInDarkTheme()) 0.dp else Dimens.elevationSmall
 
 @Composable
 fun AppTheme(

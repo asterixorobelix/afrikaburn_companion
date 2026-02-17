@@ -18,7 +18,7 @@ fun BottomNavigationBar(
 ) {
     NavigationBar(
         modifier = modifier,
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer,
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
         destinations.forEach { destination ->

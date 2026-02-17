@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.asterixorobelix.afrikaburn.AppTheme
 import io.asterixorobelix.afrikaburn.Dimens
+import io.asterixorobelix.afrikaburn.cardElevation
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.ui.components.animatedScale
@@ -51,18 +52,21 @@ fun ProjectCard(
         modifier = modifier
             .fillMaxWidth()
             .animatedScale(isPressed = isPressed),
-        shape = MaterialTheme.shapes.large,
+        shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationMedium),
+        elevation = CardDefaults.cardElevation(defaultElevation = cardElevation()),
         onClick = { onClick?.invoke() },
         interactionSource = interactionSource
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.paddingMedium)
+                .padding(
+                    horizontal = Dimens.cardContentPaddingHorizontal,
+                    vertical = Dimens.cardContentPaddingVertical
+                )
         ) {
             ProjectCardHeader(
                 name = project.name,

@@ -96,6 +96,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import io.asterixorobelix.afrikaburn.AppTheme
 import io.asterixorobelix.afrikaburn.Dimens
+import io.asterixorobelix.afrikaburn.cardElevation
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -208,15 +209,18 @@ private fun LocationSection() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        shape = MaterialTheme.shapes.large,
-        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(defaultElevation = cardElevation())
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.paddingMedium)
+                .padding(
+                    horizontal = Dimens.cardContentPaddingHorizontal,
+                    vertical = Dimens.cardContentPaddingVertical
+                )
         ) {
             SectionHeader(
                 title = stringResource(Res.string.directions_section_location),
@@ -270,15 +274,18 @@ private fun TravelTimesSection() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        shape = MaterialTheme.shapes.large,
-        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(defaultElevation = cardElevation())
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.paddingMedium)
+                .padding(
+                    horizontal = Dimens.cardContentPaddingHorizontal,
+                    vertical = Dimens.cardContentPaddingVertical
+                )
         ) {
             SectionHeader(
                 title = stringResource(Res.string.directions_section_travel_times),
@@ -347,6 +354,9 @@ private fun TravelTimeCard(
     }
 }
 
+private const val ERROR_CONTAINER_ALPHA = 0.3f
+private const val DIVIDER_ALPHA = 0.1f
+
 @Composable
 private fun ImportantNotesSection() {
     var isExpanded by remember { mutableStateOf(true) }
@@ -360,10 +370,10 @@ private fun ImportantNotesSection() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
+            containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = ERROR_CONTAINER_ALPHA)
         ),
-        shape = MaterialTheme.shapes.large,
-        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(defaultElevation = cardElevation())
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             ExpandableSectionHeader(
@@ -379,53 +389,49 @@ private fun ImportantNotesSection() {
             AnimatedVisibility(
                 visible = isExpanded,
                 enter = expandVertically(
-                    animationSpec = spring(
-                        dampingRatio = Spring.DampingRatioMediumBouncy,
-                        stiffness = Spring.StiffnessMediumLow
-                    )
+                    animationSpec = spring(Spring.DampingRatioMediumBouncy, Spring.StiffnessMediumLow)
                 ) + fadeIn(),
                 exit = shrinkVertically() + fadeOut()
             ) {
-                Column(
-                    modifier = Modifier.padding(
-                        start = Dimens.paddingMedium,
-                        end = Dimens.paddingMedium,
-                        bottom = Dimens.paddingMedium
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
-                ) {
-                    ImportantNoteItem(
-                        icon = Icons.Filled.Map,
-                        title = stringResource(Res.string.directions_note_not_national_park),
-                        description = stringResource(
-                            Res.string.directions_note_not_national_park_detail
-                        )
-                    )
-
-                    HorizontalDivider(
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                        thickness = Dimens.dividerThickness
-                    )
-
-                    ImportantNoteItem(
-                        icon = Icons.Filled.SignalCellularOff,
-                        title = stringResource(Res.string.directions_note_no_signal),
-                        description = stringResource(Res.string.directions_note_no_signal_detail)
-                    )
-
-                    HorizontalDivider(
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                        thickness = Dimens.dividerThickness
-                    )
-
-                    ImportantNoteItem(
-                        icon = Icons.Filled.LocalGasStation,
-                        title = stringResource(Res.string.directions_note_fuel),
-                        description = stringResource(Res.string.directions_note_fuel_detail)
-                    )
-                }
+                ImportantNotesList()
             }
         }
+    }
+}
+
+@Composable
+private fun ImportantNotesList() {
+    Column(
+        modifier = Modifier.padding(
+            start = Dimens.paddingMedium,
+            end = Dimens.paddingMedium,
+            bottom = Dimens.paddingMedium
+        ),
+        verticalArrangement = Arrangement.spacedBy(Dimens.paddingSmall)
+    ) {
+        ImportantNoteItem(
+            icon = Icons.Filled.Map,
+            title = stringResource(Res.string.directions_note_not_national_park),
+            description = stringResource(Res.string.directions_note_not_national_park_detail)
+        )
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = DIVIDER_ALPHA),
+            thickness = Dimens.dividerThickness
+        )
+        ImportantNoteItem(
+            icon = Icons.Filled.SignalCellularOff,
+            title = stringResource(Res.string.directions_note_no_signal),
+            description = stringResource(Res.string.directions_note_no_signal_detail)
+        )
+        HorizontalDivider(
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = DIVIDER_ALPHA),
+            thickness = Dimens.dividerThickness
+        )
+        ImportantNoteItem(
+            icon = Icons.Filled.LocalGasStation,
+            title = stringResource(Res.string.directions_note_fuel),
+            description = stringResource(Res.string.directions_note_fuel_detail)
+        )
     }
 }
 
@@ -482,15 +488,18 @@ private fun GPSCoordinatesSection() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        shape = MaterialTheme.shapes.large,
-        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
+        shape = MaterialTheme.shapes.medium,
+        elevation = CardDefaults.cardElevation(defaultElevation = cardElevation())
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.paddingMedium)
+                .padding(
+                    horizontal = Dimens.cardContentPaddingHorizontal,
+                    vertical = Dimens.cardContentPaddingVertical
+                )
         ) {
             SectionHeader(
                 title = stringResource(Res.string.directions_section_gps),
@@ -573,6 +582,7 @@ private fun SectionHeader(
     }
 }
 
+@Suppress("LongParameterList")
 @Composable
 private fun ExpandableSectionHeader(
     title: String,

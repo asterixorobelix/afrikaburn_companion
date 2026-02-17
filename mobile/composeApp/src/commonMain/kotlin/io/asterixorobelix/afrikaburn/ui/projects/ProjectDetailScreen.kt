@@ -43,6 +43,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.asterixorobelix.afrikaburn.AppTheme
 import io.asterixorobelix.afrikaburn.Dimens
+import io.asterixorobelix.afrikaburn.cardElevation
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import org.jetbrains.compose.resources.stringResource
@@ -209,14 +210,17 @@ private fun ProjectArtistSection(artistName: String) {
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
+        elevation = CardDefaults.cardElevation(defaultElevation = cardElevation())
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.paddingMedium),
+                .padding(
+                    horizontal = Dimens.cardContentPaddingHorizontal,
+                    vertical = Dimens.cardContentPaddingVertical
+                ),
             verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
         ) {
             Text(
@@ -251,14 +255,17 @@ private fun ProjectDescriptionSection(description: String) {
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
+        elevation = CardDefaults.cardElevation(defaultElevation = cardElevation())
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.paddingMedium),
+                .padding(
+                    horizontal = Dimens.cardContentPaddingHorizontal,
+                    vertical = Dimens.cardContentPaddingVertical
+                ),
             verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
         ) {
             Text(
@@ -283,14 +290,17 @@ private fun ProjectCodeSection(code: String) {
         modifier = Modifier.fillMaxWidth(),
         shape = MaterialTheme.shapes.medium,
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surfaceContainerLow
         ),
-        elevation = CardDefaults.cardElevation(defaultElevation = Dimens.elevationSmall)
+        elevation = CardDefaults.cardElevation(defaultElevation = cardElevation())
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Dimens.paddingMedium),
+                .padding(
+                    horizontal = Dimens.cardContentPaddingHorizontal,
+                    vertical = Dimens.cardContentPaddingVertical
+                ),
             verticalArrangement = Arrangement.spacedBy(Dimens.spacingSmall)
         ) {
             Text(
