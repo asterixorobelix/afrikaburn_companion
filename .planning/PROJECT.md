@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A mobile app (Android/iOS) that helps AfrikaBurn participants discover theme camps, artworks, performances, and events. Provides offline access to event listings, location directions, event information, and an interactive offline map for navigating the Tankwa Karoo without connectivity.
+A mobile app (Android/iOS) that helps AfrikaBurn participants discover theme camps, artworks, performances, and events. Provides offline access to event listings, location directions, event information, and an interactive offline map for navigating the Tankwa Karoo without connectivity. Features an Event Surprise Mode that hides content discovery tabs until the user arrives at the event or the event has started.
 
 ## Core Value
 
@@ -28,22 +28,20 @@ Participants can discover and navigate to AfrikaBurn theme camps and artworks wi
 - ✓ Show user's GPS location on map — v3.0
 - ✓ User can pin their own camp location on map — v3.0
 - ✓ User's camp pin persists across app restarts — v3.0
+- ✓ App has bundled event configuration (start date, location, geofence radius) — v3.1
+- ✓ App detects if current date/time is past event start date — v3.1
+- ✓ App detects if user is within 20km radius of event location — v3.1
+- ✓ Map and Projects tabs hidden when locked (neither condition met) — v3.1
+- ✓ Tabs become visible when date OR geofence condition is met — v3.1
+- ✓ Unlock state persists permanently once triggered — v3.1
+- ✓ Debug feature flag to bypass surprise mode for testing (dev builds only) — v3.1
+- ✓ Unit tests for all unlock logic (date, geofence, persistence, feature flag) — v3.1
 
 ### Active
 
 <!-- Current scope. Building toward these. -->
 
-**v3.1 Event Surprise Mode:**
-- [ ] SURP-01: App has bundled event configuration (start date, location, geofence radius)
-- [ ] SURP-02: App detects if current date/time is past event start date
-- [ ] SURP-03: App detects if user is within 20km radius of event location
-- [ ] SURP-04: Map and Projects tabs hidden when locked (neither condition met)
-- [ ] SURP-05: Tabs become visible when date OR geofence condition is met
-- [ ] SURP-06: Unlock state persists permanently once triggered
-- [ ] SURP-07: Debug feature flag to bypass surprise mode for testing (dev builds only)
-- [ ] SURP-08: Unit tests for all unlock logic (date, geofence, persistence, feature flag)
-
-**Deferred (v3.2+):**
+**Deferred (next milestone):**
 - [ ] Search camps/artworks by name on map
 - [ ] Cluster markers when zoomed out
 - [ ] Show performance/event markers on map
@@ -56,7 +54,6 @@ Participants can discover and navigate to AfrikaBurn theme camps and artworks wi
 - Route navigation/directions — Map is for discovery, external maps for routing
 - Sharing camp location with others — Local only; defer social features
 - Real-time location updates from other users — No backend integration needed
-- MapLibre fallback switching at runtime — Start with MapLibre only
 - Continuous background GPS — Severe battery drain in remote environment
 - Live friend tracking — Requires network connectivity
 - Turn-by-turn navigation — Overkill for event, use external maps
@@ -66,23 +63,20 @@ Participants can discover and navigate to AfrikaBurn theme camps and artworks wi
 
 ## Context
 
-**Current State (v3.0):**
-- Shipped v3.0 with 10,692 LOC Kotlin
+**Current State (v3.1):**
+- Shipped v3.1 with 15,805 LOC Kotlin
 - Tech stack: Kotlin Multiplatform, Compose Multiplatform 1.8.1+, MapLibre Compose 0.11.1, SQLDelight 2.0.2, Koin DI
 - Platform support: Android 24+, iOS 14+
+- 187 unit tests passing, detekt clean
 - Offline map with bundled PMTiles (~574KB Tankwa Karoo terrain)
-- 4 marker types: camps (purple), artworks (teal), user location (blue), camp pin (orange)
+- Event Surprise Mode with date/geofence unlock and permanent persistence
 
 **Technical Environment:**
 - MVVM + Clean Architecture pattern established
 - expect/actual patterns for platform-specific implementations (LocationService, DatabaseDriverFactory)
-- SQLDelight infrastructure for local persistence
-
-**Current Milestone (v3.1 Event Surprise Mode):**
-- Hide Map and Projects tabs until event conditions met
-- Unlock by date (past event start) OR location (within 20km)
-- Permanent unlock persistence via SQLDelight
-- Preserves surprise experience for attendees
+- SQLDelight infrastructure for local persistence (UserCampPin, UnlockState)
+- Clock injection pattern for testable time-based logic
+- TDD with comprehensive test coverage (55 unlock logic tests)
 
 ## Constraints
 
@@ -107,11 +101,14 @@ Participants can discover and navigate to AfrikaBurn theme camps and artworks wi
 | Balanced power GPS accuracy | Battery conservation critical in desert | ✓ Good |
 | 50m threshold for near-pin | Balance targeting ease vs accidental triggers | ✓ Good |
 | Orange camp pin color | Distinct from purple/teal/blue markers | ✓ Good |
-
-| Tabs hidden when locked | Cleaner surprise, no teasing users with locked features | Decided |
-| Permanent unlock persistence | Once unlocked, stays unlocked forever - better UX | Decided |
-| 20km geofence radius | Balance between close enough and GPS accuracy margins | Decided |
-| Date OR location unlock | Either condition sufficient - flexible for early arrivals | Decided |
+| Tabs hidden when locked | Cleaner surprise, no teasing users with locked features | ✓ Good |
+| Permanent unlock persistence | Once unlocked, stays unlocked forever - better UX | ✓ Good |
+| 20km geofence radius | Balance between close enough and GPS accuracy margins | ✓ Good |
+| Date OR location unlock | Either condition sufficient - flexible for early arrivals | ✓ Good |
+| Africa/Johannesburg timezone | Match event physical location for date calculations | ✓ Good |
+| Clock injection pattern | Testable time-based logic without flaky time-dependent tests | ✓ Good |
+| Epoch milliseconds storage | Consistent with existing UserCampPin pattern | ✓ Good |
+| Welcome message on fresh unlock only | Prevents annoying repeat messages on every launch | ✓ Good |
 
 ---
-*Last updated: 2026-01-22 after v3.1 milestone creation*
+*Last updated: 2026-02-17 after v3.1 milestone*
