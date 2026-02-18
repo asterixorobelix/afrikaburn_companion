@@ -41,11 +41,18 @@ Participants can discover and navigate to AfrikaBurn theme camps and artworks wi
 
 <!-- Current scope. Building toward these. -->
 
-**Deferred (next milestone):**
+**Map enhancements:**
 - [ ] Search camps/artworks by name on map
 - [ ] Cluster markers when zoomed out
 - [ ] Show performance/event markers on map
 - [ ] Compass mode (heading-up orientation)
+
+**New features:**
+- [ ] Firebase Crashlytics integration
+- [ ] Packing list (checklist for event preparation)
+- [ ] Emergency info page (contacts, safety, medical)
+- [ ] Personal schedule (save/bookmark events)
+- [ ] How to volunteer page
 
 ### Out of Scope
 
