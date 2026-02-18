@@ -70,7 +70,8 @@ Participants can discover and navigate to AfrikaBurn theme camps and artworks wi
 - [ ] Theme camp reviews/notes (personal notes on visited camps)
 
 **Practical:**
-- [ ] Share app via QR/NFC (help campmates install without data)
+- [ ] Share app (native share sheet with link to landing page with iOS/Android store links, like commute_check ShareService pattern)
+- [ ] Share app via QR/NFC (offline sharing for campmates without data)
 - [ ] Home screen widget (next bookmarked event or countdown)
 
 **Map-specific:**
