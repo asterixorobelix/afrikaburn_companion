@@ -54,6 +54,30 @@ Participants can discover and navigate to AfrikaBurn theme camps and artworks wi
 - [ ] Personal schedule (save/bookmark events)
 - [ ] How to volunteer page
 
+**Offline utilities:**
+- [ ] Sunrise/sunset times for event dates
+- [ ] Water/ice station locations on map
+- [ ] Burn schedule countdown (main burn, clan burn, temple burn)
+- [ ] Dark mode toggle
+- [ ] Offline first-aid guide (heat stroke, dehydration, dust exposure)
+- [ ] Offline weather summary (bundled historical averages for the week)
+- [ ] Battery saver mode (reduce GPS polling, dim map)
+
+**Community/engagement:**
+- [ ] Gift tracker (log gifts given/received)
+- [ ] Photo journal/diary (offline daily log with photos, export after event)
+- [ ] Leave No Trace checklist (cleanup for strike day)
+- [ ] Theme camp reviews/notes (personal notes on visited camps)
+
+**Practical:**
+- [ ] Share app via QR/NFC (help campmates install without data)
+- [ ] Home screen widget (next bookmarked event or countdown)
+
+**Map-specific:**
+- [ ] Toilet/porto locations on map
+- [ ] Walking time estimates between points
+- [ ] Breadcrumb trail (trace path to find way back at night)
+
 ### Out of Scope
 
 <!-- Explicit boundaries. Includes reasoning to prevent re-adding. -->
