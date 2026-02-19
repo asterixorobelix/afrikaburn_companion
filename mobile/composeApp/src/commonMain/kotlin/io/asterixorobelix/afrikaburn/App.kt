@@ -47,6 +47,16 @@ import org.koin.compose.koinInject
 
 private const val PROJECT_DETAIL_ROUTE = "project_detail"
 
+private data class AppNavState(
+    val selectedProject: ProjectItem?,
+    val pendingExploreProjectType: ProjectType?
+)
+
+private data class AppNavActions(
+    val onProjectSelected: (ProjectItem) -> Unit,
+    val onPendingExploreProjectTypeChanged: (ProjectType?) -> Unit
+)
+
 @Composable
 @Preview
 fun App() {
@@ -198,10 +208,14 @@ private fun AppScaffold(
             navController = navController,
             startDestination = startDestination,
             modifier = Modifier.padding(paddingValues),
-            selectedProject = selectedProject,
-            onProjectSelected = { selectedProject = it },
-            pendingExploreProjectType = pendingExploreProjectType,
-            onPendingExploreProjectTypeChanged = { pendingExploreProjectType = it }
+            state = AppNavState(
+                selectedProject = selectedProject,
+                pendingExploreProjectType = pendingExploreProjectType
+            ),
+            actions = AppNavActions(
+                onProjectSelected = { selectedProject = it },
+                onPendingExploreProjectTypeChanged = { pendingExploreProjectType = it }
+            )
         )
     }
 }
@@ -212,10 +226,8 @@ private fun AppNavHost(
     navController: NavHostController,
     startDestination: String,
     modifier: Modifier,
-    selectedProject: ProjectItem?,
-    onProjectSelected: (ProjectItem) -> Unit,
-    pendingExploreProjectType: ProjectType?,
-    onPendingExploreProjectTypeChanged: (ProjectType?) -> Unit
+    state: AppNavState,
+    actions: AppNavActions
 ) {
     NavHost(
         navController = navController,
@@ -225,7 +237,7 @@ private fun AppNavHost(
         composable(NavigationDestination.Home.route) {
             HomeScreen(
                 onCategoryClick = { projectType ->
-                    onPendingExploreProjectTypeChanged(projectType)
+                    actions.onPendingExploreProjectTypeChanged(projectType)
                     navController.navigate(NavigationDestination.Explore.route) {
                         popUpTo(navController.graph.startDestinationId)
                         launchSingleTop = true
@@ -235,19 +247,19 @@ private fun AppNavHost(
                     navController.navigate(NavigationDestination.Directions.route)
                 },
                 onProjectClick = { project ->
-                    onProjectSelected(project)
+                    actions.onProjectSelected(project)
                     navController.navigate(PROJECT_DETAIL_ROUTE)
                 }
             )
         }
         composable(NavigationDestination.Explore.route) {
             ProjectsScreen(
-                initialProjectType = pendingExploreProjectType,
+                initialProjectType = state.pendingExploreProjectType,
                 onInitialProjectTypeConsumed = {
-                    onPendingExploreProjectTypeChanged(null)
+                    actions.onPendingExploreProjectTypeChanged(null)
                 },
                 onProjectClick = { project ->
-                    onProjectSelected(project)
+                    actions.onProjectSelected(project)
                     navController.navigate(PROJECT_DETAIL_ROUTE)
                 }
             )
@@ -255,7 +267,7 @@ private fun AppNavHost(
         composable(NavigationDestination.Map.route) {
             MapScreen(
                 onProjectClick = { project ->
-                    onProjectSelected(project)
+                    actions.onProjectSelected(project)
                     navController.navigate(PROJECT_DETAIL_ROUTE)
                 }
             )
@@ -277,7 +289,7 @@ private fun AppNavHost(
             AboutScreen()
         }
         composable(route = PROJECT_DETAIL_ROUTE) {
-            selectedProject?.let { project ->
+            state.selectedProject?.let { project ->
                 val mapViewModel = koinMapViewModel()
                 ProjectDetailScreen(
                     project = project,
