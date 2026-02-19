@@ -35,7 +35,7 @@ fun BottomNavigationBar(
                         style = MaterialTheme.typography.labelSmall
                     )
                 },
-                selected = currentRoute == destination.route,
+                selected = currentRoute?.substringBefore("?") == destination.route,
                 onClick = { onNavigate(destination.route) },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,

@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import io.asterixorobelix.afrikaburn.domain.service.UnlockConditionManager
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
@@ -46,6 +47,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 private const val PROJECT_DETAIL_ROUTE = "project_detail"
+private const val PROJECT_TYPE_ARG = "projectType"
 
 @Composable
 @Preview
@@ -148,6 +150,7 @@ private fun AppScaffold(
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStackEntry?.destination?.route
+    val currentBaseRoute = remember(currentRoute) { currentRoute?.substringBefore("?") }
 
     // State holder for selected project (used for detail navigation)
     var selectedProject by remember { mutableStateOf<ProjectItem?>(null) }
@@ -156,8 +159,8 @@ private fun AppScaffold(
     val topLevelRoutes = remember(visibleDestinations) {
         visibleDestinations.map { it.route }.toSet()
     }
-    val showBottomBar = remember(currentRoute, topLevelRoutes) {
-        currentRoute != null && currentRoute in topLevelRoutes
+    val showBottomBar = remember(currentBaseRoute, topLevelRoutes) {
+        currentBaseRoute != null && currentBaseRoute in topLevelRoutes
     }
 
     Scaffold(
@@ -208,7 +211,9 @@ private fun AppNavHost(
         composable(NavigationDestination.Home.route) {
             HomeScreen(
                 onCategoryClick = { projectType ->
-                    navController.navigate(NavigationDestination.Explore.route) {
+                    navController.navigate(
+                        "${NavigationDestination.Explore.route}?$PROJECT_TYPE_ARG=${projectType.name}"
+                    ) {
                         popUpTo(navController.graph.startDestinationId)
                         launchSingleTop = true
                     }
@@ -222,8 +227,21 @@ private fun AppNavHost(
                 }
             )
         }
-        composable(NavigationDestination.Explore.route) {
+        composable(
+            route = "${NavigationDestination.Explore.route}?$PROJECT_TYPE_ARG={$PROJECT_TYPE_ARG}",
+            arguments = listOf(
+                navArgument(PROJECT_TYPE_ARG) {
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) { backStackEntry ->
+            val projectTypeArg = backStackEntry.arguments?.getString(PROJECT_TYPE_ARG)
+            val initialProjectType = projectTypeArg?.let { arg ->
+                ProjectType.entries.firstOrNull { it.name == arg }
+            }
             ProjectsScreen(
+                initialProjectType = initialProjectType,
                 onProjectClick = { project ->
                     onProjectSelected(project)
                     navController.navigate(PROJECT_DETAIL_ROUTE)

@@ -15,7 +15,14 @@ fun koinProjectsViewModel(): ProjectsViewModel {
 
 @Composable
 fun koinProjectTabViewModel(projectType: ProjectType): ProjectTabViewModel {
-    return koinViewModel(parameters = { parametersOf(projectType) })
+    return koinViewModel(
+        key = projectTabViewModelKey(projectType),
+        parameters = { parametersOf(projectType) }
+    )
+}
+
+internal fun projectTabViewModelKey(projectType: ProjectType): String {
+    return "ProjectTabViewModel_${projectType.name}"
 }
 
 @Composable

@@ -29,6 +29,7 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -67,6 +68,7 @@ private const val CONTENT_STATE_SUCCESS = "success"
 
 @Composable
 fun ProjectsScreen(
+    initialProjectType: ProjectType? = null,
     onProjectClick: ((io.asterixorobelix.afrikaburn.models.ProjectItem) -> Unit)? = null
 ) {
     val viewModel = koinProjectsViewModel()
@@ -105,6 +107,14 @@ fun ProjectsScreen(
         pageCount = { screenContent.tabs.size }
     )
     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(initialProjectType, screenContent.tabs) {
+        val index = initialProjectType?.let { screenContent.tabs.indexOf(it) } ?: -1
+        if (index >= 0 && index != pagerState.currentPage) {
+            pagerState.scrollToPage(index)
+            viewModel.updateCurrentTab(index)
+        }
+    }
 
     Column(
         modifier = Modifier
