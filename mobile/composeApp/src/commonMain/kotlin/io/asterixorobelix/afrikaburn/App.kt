@@ -92,7 +92,8 @@ fun App() {
         AppScaffold(
             snackbarHostState = snackbarHostState,
             visibleDestinations = visibleDestinations,
-            startDestination = startDestination
+            startDestination = startDestination,
+            isUnlocked = isUnlocked
         )
     }
 }
@@ -145,7 +146,8 @@ private fun ShowWelcomeMessage(
 private fun AppScaffold(
     snackbarHostState: SnackbarHostState,
     visibleDestinations: List<NavigationDestination>,
-    startDestination: String
+    startDestination: String,
+    isUnlocked: Boolean
 ) {
     val navController = rememberNavController()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
@@ -159,8 +161,17 @@ private fun AppScaffold(
     val topLevelRoutes = remember(visibleDestinations) {
         visibleDestinations.map { it.route }.toSet()
     }
-    val showBottomBar = remember(currentBaseRoute, topLevelRoutes) {
-        currentBaseRoute != null && currentBaseRoute in topLevelRoutes
+    val unlockedSubRoutes = remember {
+        setOf(
+            NavigationDestination.Directions.route,
+            NavigationDestination.About.route
+        )
+    }
+    val showBottomBar = remember(currentBaseRoute, topLevelRoutes, isUnlocked) {
+        currentBaseRoute != null && (
+            currentBaseRoute in topLevelRoutes ||
+                (isUnlocked && currentBaseRoute in unlockedSubRoutes)
+            )
     }
 
     Scaffold(
