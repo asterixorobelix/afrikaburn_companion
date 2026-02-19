@@ -69,6 +69,11 @@ jobs:
       run: |
         cd mobile
         gradle wrapper --gradle-version 8.13
+
+    - name: Enforce Gradle wrapper version
+      run: |
+        cd mobile
+        perl -pi -e 's/gradle-8\\.13-bin/gradle-8.13.2-bin/' gradle/wrapper/gradle-wrapper.properties
     
     - name: Get current version and calculate new version
       id: version
@@ -395,6 +400,11 @@ jobs:
       run: |
         cd mobile
         gradle wrapper --gradle-version 8.13
+
+    - name: Enforce Gradle wrapper version
+      run: |
+        cd mobile
+        perl -pi -e 's/gradle-8\\.13-bin/gradle-8.13.2-bin/' gradle/wrapper/gradle-wrapper.properties
 
     - name: Configure Gradle for CI
       run: |
