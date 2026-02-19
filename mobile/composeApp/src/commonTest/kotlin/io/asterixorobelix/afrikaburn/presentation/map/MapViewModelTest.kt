@@ -64,13 +64,17 @@ class MapViewModelTest {
         val getAllProjectsUseCase = GetAllProjectsUseCase(GetProjectsByTypeUseCase(repository))
 
         val viewModel = MapViewModel(
-            locationService = FakeLocationService(),
-            observeCampPinUseCase = ObserveCampPinUseCase(FakeUserCampPinRepository()),
-            saveCampPinUseCase = SaveCampPinUseCase(FakeUserCampPinRepository()),
-            updateCampPinLocationUseCase = UpdateCampPinLocationUseCase(FakeUserCampPinRepository()),
-            deleteCampPinUseCase = DeleteCampPinUseCase(FakeUserCampPinRepository()),
-            getAllProjectsUseCase = getAllProjectsUseCase,
-            crashLogger = FakeCrashLogger()
+            useCases = MapUseCases(
+                observeCampPin = ObserveCampPinUseCase(FakeUserCampPinRepository()),
+                saveCampPin = SaveCampPinUseCase(FakeUserCampPinRepository()),
+                updateCampPinLocation = UpdateCampPinLocationUseCase(FakeUserCampPinRepository()),
+                deleteCampPin = DeleteCampPinUseCase(FakeUserCampPinRepository()),
+                getAllProjects = getAllProjectsUseCase
+            ),
+            services = MapServices(
+                locationService = FakeLocationService(),
+                crashLogger = FakeCrashLogger()
+            )
         )
 
         testDispatcher.scheduler.advanceUntilIdle()
@@ -88,13 +92,17 @@ class MapViewModelTest {
         val getAllProjectsUseCase = GetAllProjectsUseCase(GetProjectsByTypeUseCase(repository))
 
         val viewModel = MapViewModel(
-            locationService = FakeLocationService(),
-            observeCampPinUseCase = ObserveCampPinUseCase(FakeUserCampPinRepository()),
-            saveCampPinUseCase = SaveCampPinUseCase(FakeUserCampPinRepository()),
-            updateCampPinLocationUseCase = UpdateCampPinLocationUseCase(FakeUserCampPinRepository()),
-            deleteCampPinUseCase = DeleteCampPinUseCase(FakeUserCampPinRepository()),
-            getAllProjectsUseCase = getAllProjectsUseCase,
-            crashLogger = FakeCrashLogger()
+            useCases = MapUseCases(
+                observeCampPin = ObserveCampPinUseCase(FakeUserCampPinRepository()),
+                saveCampPin = SaveCampPinUseCase(FakeUserCampPinRepository()),
+                updateCampPinLocation = UpdateCampPinLocationUseCase(FakeUserCampPinRepository()),
+                deleteCampPin = DeleteCampPinUseCase(FakeUserCampPinRepository()),
+                getAllProjects = getAllProjectsUseCase
+            ),
+            services = MapServices(
+                locationService = FakeLocationService(),
+                crashLogger = FakeCrashLogger()
+            )
         )
 
         testDispatcher.scheduler.advanceUntilIdle()
@@ -113,13 +121,17 @@ class MapViewModelTest {
         val getAllProjectsUseCase = GetAllProjectsUseCase(GetProjectsByTypeUseCase(repository))
 
         val viewModel = MapViewModel(
-            locationService = FakeLocationService(),
-            observeCampPinUseCase = ObserveCampPinUseCase(FakeUserCampPinRepository(pinFlow)),
-            saveCampPinUseCase = SaveCampPinUseCase(FakeUserCampPinRepository()),
-            updateCampPinLocationUseCase = UpdateCampPinLocationUseCase(FakeUserCampPinRepository()),
-            deleteCampPinUseCase = DeleteCampPinUseCase(FakeUserCampPinRepository()),
-            getAllProjectsUseCase = getAllProjectsUseCase,
-            crashLogger = FakeCrashLogger()
+            useCases = MapUseCases(
+                observeCampPin = ObserveCampPinUseCase(FakeUserCampPinRepository(pinFlow)),
+                saveCampPin = SaveCampPinUseCase(FakeUserCampPinRepository()),
+                updateCampPinLocation = UpdateCampPinLocationUseCase(FakeUserCampPinRepository()),
+                deleteCampPin = DeleteCampPinUseCase(FakeUserCampPinRepository()),
+                getAllProjects = getAllProjectsUseCase
+            ),
+            services = MapServices(
+                locationService = FakeLocationService(),
+                crashLogger = FakeCrashLogger()
+            )
         )
 
         testDispatcher.scheduler.advanceUntilIdle()

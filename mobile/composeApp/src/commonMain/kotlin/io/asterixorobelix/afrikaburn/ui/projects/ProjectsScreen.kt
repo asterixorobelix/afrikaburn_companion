@@ -73,34 +73,9 @@ fun ProjectsScreen(
 ) {
     val viewModel = koinProjectsViewModel()
     val screenState by viewModel.screenUiState.collectAsState()
-    val screenContent = when (screenState) {
-        is ProjectsScreenUiState.Content ->
-            screenState as ProjectsScreenUiState.Content
-        is ProjectsScreenUiState.Empty ->
-            (screenState as ProjectsScreenUiState.Empty).content
-        is ProjectsScreenUiState.Error ->
-            (screenState as ProjectsScreenUiState.Error).content
-        ProjectsScreenUiState.Loading ->
-            ProjectsScreenUiState.Content()
-    }
-
-    val tabTitles = listOf(
-        stringResource(Res.string.tab_art),
-        stringResource(Res.string.tab_performances),
-        stringResource(Res.string.tab_events),
-        stringResource(Res.string.tab_mobile_art),
-        stringResource(Res.string.tab_vehicles),
-        stringResource(Res.string.tab_camps)
-    )
-
-    // Collect project counts for each tab
-    val tabLabels = screenContent.tabs.mapIndexed { index, projectType ->
-        val tabVm = koinProjectTabViewModel(projectType)
-        val tabState by tabVm.uiState.collectAsState()
-        val count = (tabState as? ProjectsUiState.Content)?.totalProjectCount ?: 0
-        val title = tabTitles[index]
-        if (count > 0) "$title ($count)" else title
-    }
+    val screenContent = resolveScreenContent(screenState)
+    val tabTitles = projectsTabTitles()
+    val tabLabels = rememberTabLabels(screenContent, tabTitles)
 
     val pagerState = rememberPagerState(
         initialPage = screenContent.currentTabIndex,
@@ -142,6 +117,48 @@ fun ProjectsScreen(
                 onProjectClick = onProjectClick
             )
         }
+    }
+}
+
+@Composable
+private fun resolveScreenContent(
+    screenState: ProjectsScreenUiState
+): ProjectsScreenUiState.Content {
+    return when (screenState) {
+        is ProjectsScreenUiState.Content ->
+            screenState
+        is ProjectsScreenUiState.Empty ->
+            screenState.content
+        is ProjectsScreenUiState.Error ->
+            screenState.content
+        ProjectsScreenUiState.Loading ->
+            ProjectsScreenUiState.Content()
+    }
+}
+
+@Composable
+private fun projectsTabTitles(): List<String> {
+    return listOf(
+        stringResource(Res.string.tab_art),
+        stringResource(Res.string.tab_performances),
+        stringResource(Res.string.tab_events),
+        stringResource(Res.string.tab_mobile_art),
+        stringResource(Res.string.tab_vehicles),
+        stringResource(Res.string.tab_camps)
+    )
+}
+
+@Composable
+private fun rememberTabLabels(
+    screenContent: ProjectsScreenUiState.Content,
+    tabTitles: List<String>
+): List<String> {
+    return screenContent.tabs.mapIndexed { index, projectType ->
+        val tabVm = koinProjectTabViewModel(projectType)
+        val tabState by tabVm.uiState.collectAsState()
+        val count = (tabState as? ProjectsUiState.Content)?.totalProjectCount ?: 0
+        val title = tabTitles[index]
+        if (count > 0) "$title ($count)" else title
     }
 }
 

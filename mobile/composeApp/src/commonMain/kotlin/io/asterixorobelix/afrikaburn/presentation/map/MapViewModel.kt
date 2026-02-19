@@ -2,14 +2,9 @@ package io.asterixorobelix.afrikaburn.presentation.map
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.asterixorobelix.afrikaburn.domain.usecase.camppin.DeleteCampPinUseCase
-import io.asterixorobelix.afrikaburn.domain.usecase.camppin.ObserveCampPinUseCase
 import io.asterixorobelix.afrikaburn.domain.usecase.camppin.SaveCampPinUseCase
 import io.asterixorobelix.afrikaburn.domain.usecase.camppin.UpdateCampPinLocationUseCase
-import io.asterixorobelix.afrikaburn.domain.usecase.projects.GetAllProjectsUseCase
 import io.asterixorobelix.afrikaburn.models.ProjectItem
-import io.asterixorobelix.afrikaburn.platform.CrashLogger
-import io.asterixorobelix.afrikaburn.platform.LocationService
 import io.asterixorobelix.afrikaburn.platform.PermissionState
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -29,13 +24,8 @@ import kotlinx.coroutines.launch
  * provides location tracking for user position display, and handles camp pin operations.
  */
 class MapViewModel(
-    private val locationService: LocationService,
-    private val observeCampPinUseCase: ObserveCampPinUseCase,
-    private val saveCampPinUseCase: SaveCampPinUseCase,
-    private val updateCampPinLocationUseCase: UpdateCampPinLocationUseCase,
-    private val deleteCampPinUseCase: DeleteCampPinUseCase,
-    private val getAllProjectsUseCase: GetAllProjectsUseCase,
-    private val crashLogger: CrashLogger
+    private val useCases: MapUseCases,
+    private val services: MapServices
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<MapUiState>(MapUiState.Loading)
@@ -60,7 +50,7 @@ class MapViewModel(
     private fun observeCampPin() {
         campPinJob?.cancel()
         campPinJob = viewModelScope.launch {
-            observeCampPinUseCase().collect { pin ->
+            useCases.observeCampPin().collect { pin ->
                 val currentState = _uiState.value
                 if (currentState is MapUiState.Success) {
                     _uiState.value = currentState.copy(
@@ -82,13 +72,13 @@ class MapViewModel(
      */
     private fun loadProjects() {
         viewModelScope.launch {
-            getAllProjectsUseCase()
+            useCases.getAllProjects()
                 .onSuccess { projects ->
                     loadedProjects = projects
                     _uiState.value = MapUiState.Success(projects = loadedProjects)
                 }
                 .onFailure { exception ->
-                    crashLogger.logException(exception, "Failed to load map projects")
+                    services.crashLogger.logException(exception, "Failed to load map projects")
                     _uiState.value = MapUiState.Error(
                         message = exception.message ?: "Failed to load map data"
                     )
@@ -156,7 +146,7 @@ class MapViewModel(
      */
     fun checkLocationPermission() {
         viewModelScope.launch {
-            val permission = locationService.checkPermission()
+            val permission = services.locationService.checkPermission()
             updatePermissionState(permission)
 
             if (permission == PermissionState.GRANTED) {
@@ -198,7 +188,7 @@ class MapViewModel(
     @Deprecated("Use rememberLocationPermissionLauncher in UI layer for Android permission handling")
     fun requestLocationPermission() {
         viewModelScope.launch {
-            val permission = locationService.requestPermission()
+            val permission = services.locationService.requestPermission()
             updatePermissionState(permission)
 
             if (permission == PermissionState.GRANTED) {
@@ -213,9 +203,9 @@ class MapViewModel(
     private fun startLocationTracking() {
         locationJob?.cancel()
         locationJob = viewModelScope.launch {
-            locationService.startLocationUpdates()
+            services.locationService.startLocationUpdates()
                 .catch { throwable ->
-                    crashLogger.logException(throwable, "Location tracking failed")
+                    services.crashLogger.logException(throwable, "Location tracking failed")
                 }
                 .collect { location ->
                     updateUserLocation(location.latitude, location.longitude)
@@ -230,7 +220,7 @@ class MapViewModel(
     fun stopLocationTracking() {
         locationJob?.cancel()
         locationJob = null
-        locationService.stopLocationUpdates()
+        services.locationService.stopLocationUpdates()
         updateTrackingState(isTracking = false)
     }
 
@@ -360,13 +350,13 @@ class MapViewModel(
         val dialogState = currentState.campPinDialogState
         if (dialogState is CampPinDialogState.ConfirmPlace) {
             viewModelScope.launch {
-                saveCampPinUseCase(
+                useCases.saveCampPin(
                     SaveCampPinUseCase.Params(
                         latitude = dialogState.latitude,
                         longitude = dialogState.longitude
                     )
                 ).onFailure { exception ->
-                    crashLogger.logException(exception, "Failed to save camp pin")
+                    services.crashLogger.logException(exception, "Failed to save camp pin")
                 }
             }
             _uiState.value = currentState.copy(campPinDialogState = CampPinDialogState.Hidden)
@@ -390,9 +380,9 @@ class MapViewModel(
         val currentState = _uiState.value
         if (currentState is MapUiState.Success) {
             viewModelScope.launch {
-                deleteCampPinUseCase()
+                useCases.deleteCampPin()
                     .onFailure { exception ->
-                        crashLogger.logException(exception, "Failed to delete camp pin")
+                        services.crashLogger.logException(exception, "Failed to delete camp pin")
                     }
             }
             _uiState.value = currentState.copy(campPinDialogState = CampPinDialogState.Hidden)
@@ -409,13 +399,13 @@ class MapViewModel(
         val dialogState = currentState.campPinDialogState
         if (dialogState is CampPinDialogState.ConfirmMove) {
             viewModelScope.launch {
-                updateCampPinLocationUseCase(
+                useCases.updateCampPinLocation(
                     UpdateCampPinLocationUseCase.Params(
                         latitude = dialogState.newLatitude,
                         longitude = dialogState.newLongitude
                     )
                 ).onFailure { exception ->
-                    crashLogger.logException(exception, "Failed to move camp pin")
+                    services.crashLogger.logException(exception, "Failed to move camp pin")
                 }
             }
             _uiState.value = currentState.copy(campPinDialogState = CampPinDialogState.Hidden)

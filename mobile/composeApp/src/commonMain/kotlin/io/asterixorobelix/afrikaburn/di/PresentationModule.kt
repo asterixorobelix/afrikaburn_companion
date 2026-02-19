@@ -1,5 +1,7 @@
 package io.asterixorobelix.afrikaburn.di
 
+import io.asterixorobelix.afrikaburn.presentation.map.MapServices
+import io.asterixorobelix.afrikaburn.presentation.map.MapUseCases
 import io.asterixorobelix.afrikaburn.presentation.map.MapViewModel
 import io.asterixorobelix.afrikaburn.presentation.projects.ProjectTabViewModel
 import io.asterixorobelix.afrikaburn.presentation.projects.ProjectsViewModel
@@ -11,6 +13,23 @@ val presentationModule = module {
 
     // ViewModel with ProjectType parameter
     viewModelOf(::ProjectTabViewModel)
+
+    factory {
+        MapUseCases(
+            observeCampPin = get(),
+            saveCampPin = get(),
+            updateCampPinLocation = get(),
+            deleteCampPin = get(),
+            getAllProjects = get()
+        )
+    }
+
+    factory {
+        MapServices(
+            locationService = get(),
+            crashLogger = get()
+        )
+    }
 
     viewModelOf(::MapViewModel)
 }
