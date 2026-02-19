@@ -69,6 +69,7 @@ private const val CONTENT_STATE_SUCCESS = "success"
 @Composable
 fun ProjectsScreen(
     initialProjectType: ProjectType? = null,
+    onInitialProjectTypeConsumed: () -> Unit = {},
     onProjectClick: ((io.asterixorobelix.afrikaburn.models.ProjectItem) -> Unit)? = null
 ) {
     val viewModel = koinProjectsViewModel()
@@ -85,9 +86,12 @@ fun ProjectsScreen(
 
     LaunchedEffect(initialProjectType, screenContent.tabs) {
         val index = initialProjectType?.let { screenContent.tabs.indexOf(it) } ?: -1
-        if (index >= 0 && index != pagerState.currentPage) {
-            pagerState.scrollToPage(index)
-            viewModel.updateCurrentTab(index)
+        if (index >= 0) {
+            if (index != pagerState.currentPage) {
+                pagerState.scrollToPage(index)
+                viewModel.updateCurrentTab(index)
+            }
+            onInitialProjectTypeConsumed()
         }
     }
 
