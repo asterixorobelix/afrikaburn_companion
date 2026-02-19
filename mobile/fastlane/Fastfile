@@ -278,6 +278,8 @@ platform :ios do
   desc "Capture screenshots on iPhone and iPad simulators"
   lane :screenshots do
     capture_screenshots(
+      workspace: "iosApp/iosApp.xcworkspace",
+      scheme: "iosApp",
       devices: [
         "iPhone 16 Pro Max",
         "iPad Pro 13-inch (M4)"
