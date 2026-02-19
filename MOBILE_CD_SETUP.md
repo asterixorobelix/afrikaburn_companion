@@ -181,8 +181,8 @@ android {
 ### Verify Workflow Execution
 
 The workflow should:
-1. ✅ Bump version from `1.0.0` → `1.0.1`
-2. ✅ Create git tag `v1.0.1`
+1. ✅ Bump version from `1.0.0` → `1.0.1` (CI workspace only)
+2. ✅ Create git tag `v1.0.1` via GitHub Release step
 3. ✅ Generate changelog
 4. ✅ Build Android AAB
 5. ✅ Build iOS IPA

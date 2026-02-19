@@ -162,20 +162,10 @@ jobs:
           echo 'EOF'
         } >> $GITHUB_OUTPUT
     
-    - name: Commit version bump
+    - name: Note
       run: |
-        cd mobile
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add composeApp/build.gradle.kts
-        git commit -m "Bump version to v${{ steps.version.outputs.new_version }}"
-        git push
-    
-    - name: Create and push tag
-      run: |
-        cd mobile
-        git tag -a "v${{ steps.version.outputs.new_version }}" -m "Release v${{ steps.version.outputs.new_version }}"
-        git push origin "v${{ steps.version.outputs.new_version }}"
+        echo "ℹ️ Version bump is applied only in the CI workspace."
+        echo "ℹ️ Tags/releases are created via the GitHub Release step (no push to main)."
     
     - name: Build Android AAB
       run: |
