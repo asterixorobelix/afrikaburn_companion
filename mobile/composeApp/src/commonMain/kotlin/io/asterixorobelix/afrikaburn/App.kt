@@ -39,7 +39,7 @@ import io.asterixorobelix.afrikaburn.ui.more.MoreScreen
 import io.asterixorobelix.afrikaburn.ui.projects.ProjectDetailScreen
 import io.asterixorobelix.afrikaburn.ui.projects.ProjectsScreen
 import io.asterixorobelix.afrikaburn.ui.about.AboutScreen
-import io.asterixorobelix.afrikaburn.presentation.map.MapViewModel
+import io.asterixorobelix.afrikaburn.di.koinMapViewModel
 import io.asterixorobelix.afrikaburn.ui.screens.map.MapScreen
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -256,7 +256,7 @@ private fun AppNavHost(
         }
         composable(route = PROJECT_DETAIL_ROUTE) {
             selectedProject?.let { project ->
-                val mapViewModel: MapViewModel = koinInject()
+                val mapViewModel = koinMapViewModel()
                 ProjectDetailScreen(
                     project = project,
                     onBackClick = { navController.popBackStack() },

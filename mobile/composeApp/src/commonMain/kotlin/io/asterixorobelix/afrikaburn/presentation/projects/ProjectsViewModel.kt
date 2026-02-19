@@ -1,48 +1,47 @@
 package io.asterixorobelix.afrikaburn.presentation.projects
 
 import androidx.lifecycle.ViewModel
-import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
 import io.asterixorobelix.afrikaburn.models.ProjectType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-data class ProjectsScreenUiState(
-    val currentTabIndex: Int = 0,
-    val tabs: List<ProjectType> = ProjectType.entries
-)
+sealed interface ProjectsScreenUiState {
+    data object Loading : ProjectsScreenUiState
+    data class Content(
+        val currentTabIndex: Int = 0,
+        val tabs: List<ProjectType> = ProjectType.entries,
+        val isRefreshing: Boolean = false
+    ) : ProjectsScreenUiState
+    data class Empty(val content: Content) : ProjectsScreenUiState
+    data class Error(val message: String, val content: Content) : ProjectsScreenUiState
+}
 
-class ProjectsViewModel(
-    private val repository: ProjectsRepository
-) : ViewModel() {
+class ProjectsViewModel : ViewModel() {
 
-    private val _screenUiState = MutableStateFlow(ProjectsScreenUiState())
+    private val _screenUiState = MutableStateFlow<ProjectsScreenUiState>(
+        ProjectsScreenUiState.Content()
+    )
     val screenUiState: StateFlow<ProjectsScreenUiState> = _screenUiState.asStateFlow()
 
-    // Create individual ViewModels for each tab
-    private val _tabViewModels = mutableMapOf<ProjectType, ProjectTabViewModel>()
-
-    fun getTabViewModel(projectType: ProjectType): ProjectTabViewModel {
-        return _tabViewModels.getOrPut(projectType) {
-            ProjectTabViewModel(repository, projectType)
-        }
-    }
-
     fun updateCurrentTab(index: Int) {
-        val state = _screenUiState.value
-        if (index in state.tabs.indices) {
-            _screenUiState.value = state.copy(currentTabIndex = index)
+        val content = currentContent()
+        if (index in content.tabs.indices) {
+            _screenUiState.value = content.copy(currentTabIndex = index)
         }
     }
 
     fun getCurrentProjectType(): ProjectType {
-        val state = _screenUiState.value
-        return state.tabs[state.currentTabIndex.coerceIn(state.tabs.indices)]
+        val content = currentContent()
+        return content.tabs[content.currentTabIndex.coerceIn(content.tabs.indices)]
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        _tabViewModels.values.forEach { it.cleanup() }
-        _tabViewModels.clear()
+    private fun currentContent(): ProjectsScreenUiState.Content {
+        return when (val state = _screenUiState.value) {
+            is ProjectsScreenUiState.Content -> state
+            is ProjectsScreenUiState.Empty -> state.content
+            is ProjectsScreenUiState.Error -> state.content
+            ProjectsScreenUiState.Loading -> ProjectsScreenUiState.Content()
+        }
     }
 }

@@ -54,7 +54,9 @@ import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.di.koinProjectTabViewModel
 import io.asterixorobelix.afrikaburn.di.koinProjectsViewModel
 import io.asterixorobelix.afrikaburn.models.ProjectType
+import io.asterixorobelix.afrikaburn.presentation.projects.ProjectsScreenUiState
 import io.asterixorobelix.afrikaburn.presentation.projects.ProjectsUiState
+import io.asterixorobelix.afrikaburn.presentation.projects.contentOrDefault
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
@@ -69,6 +71,16 @@ fun ProjectsScreen(
 ) {
     val viewModel = koinProjectsViewModel()
     val screenState by viewModel.screenUiState.collectAsState()
+    val screenContent = when (screenState) {
+        is ProjectsScreenUiState.Content ->
+            screenState as ProjectsScreenUiState.Content
+        is ProjectsScreenUiState.Empty ->
+            (screenState as ProjectsScreenUiState.Empty).content
+        is ProjectsScreenUiState.Error ->
+            (screenState as ProjectsScreenUiState.Error).content
+        ProjectsScreenUiState.Loading ->
+            ProjectsScreenUiState.Content()
+    }
 
     val tabTitles = listOf(
         stringResource(Res.string.tab_art),
@@ -80,17 +92,17 @@ fun ProjectsScreen(
     )
 
     // Collect project counts for each tab
-    val tabLabels = screenState.tabs.mapIndexed { index, projectType ->
-        val tabVm = viewModel.getTabViewModel(projectType)
+    val tabLabels = screenContent.tabs.mapIndexed { index, projectType ->
+        val tabVm = koinProjectTabViewModel(projectType)
         val tabState by tabVm.uiState.collectAsState()
-        val count = tabState.totalProjectCount
+        val count = (tabState as? ProjectsUiState.Content)?.totalProjectCount ?: 0
         val title = tabTitles[index]
         if (count > 0) "$title ($count)" else title
     }
 
     val pagerState = rememberPagerState(
-        initialPage = screenState.currentTabIndex,
-        pageCount = { screenState.tabs.size }
+        initialPage = screenContent.currentTabIndex,
+        pageCount = { screenContent.tabs.size }
     )
     val coroutineScope = rememberCoroutineScope()
 
@@ -114,7 +126,7 @@ fun ProjectsScreen(
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-            val projectType = screenState.tabs[page]
+            val projectType = screenContent.tabs[page]
             ProjectTabContent(
                 projectType = projectType,
                 onProjectClick = onProjectClick
@@ -158,33 +170,34 @@ private fun ProjectTabContent(
 ) {
     val tabViewModel = koinProjectTabViewModel(projectType)
     val uiState by tabViewModel.uiState.collectAsState()
+    val contentState = uiState.contentOrDefault()
     val listState = rememberLazyListState()
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
         ProjectSearchBar(
-            searchQuery = uiState.searchQuery,
+            searchQuery = contentState.searchQuery,
             onSearchQueryChange = tabViewModel::updateSearchQuery,
             placeholderText = "Search ${projectType.displayName.lowercase()}..."
         )
 
         if (projectType == ProjectType.CAMPS) {
             ProjectFilterChips(
-                isFamilyFilterEnabled = uiState.isFamilyFilterEnabled,
+                isFamilyFilterEnabled = contentState.isFamilyFilterEnabled,
                 onToggleFamilyFilter = tabViewModel::toggleFamilyFilter,
-                timeFilter = uiState.timeFilter,
+                timeFilter = contentState.timeFilter,
                 onTimeFilterChange = tabViewModel::updateTimeFilter
             )
         }
 
         Spacer(modifier = Modifier.height(Dimens.spacingSmall))
 
-        if (uiState.isShowingResults() && uiState.hasActiveFilters()) {
+        if (contentState.isShowingResults() && contentState.hasActiveFilters()) {
             Text(
                 text = stringResource(
                     Res.string.a11y_search_results_count,
-                    uiState.filteredProjects.size
+                    contentState.filteredProjects.size
                 ),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -198,6 +211,7 @@ private fun ProjectTabContent(
 
         AnimatedContentState(
             uiState = uiState,
+            contentState = contentState,
             projectType = projectType,
             listState = listState,
             onRetry = tabViewModel::retryLoading,
@@ -212,6 +226,7 @@ private fun ProjectTabContent(
 @Composable
 private fun AnimatedContentState(
     uiState: ProjectsUiState,
+    contentState: ProjectsUiState.Content,
     projectType: ProjectType,
     listState: LazyListState,
     onRetry: () -> Unit,
@@ -219,15 +234,17 @@ private fun AnimatedContentState(
     onClearFilters: () -> Unit,
     onProjectClick: ((io.asterixorobelix.afrikaburn.models.ProjectItem) -> Unit)? = null
 ) {
-    val contentState = when {
-        uiState.isLoading -> CONTENT_STATE_LOADING
-        uiState.error != null -> CONTENT_STATE_ERROR
-        uiState.isShowingEmptySearch() -> CONTENT_STATE_EMPTY
-        else -> CONTENT_STATE_SUCCESS
+    val contentStateKey = when (uiState) {
+        ProjectsUiState.Loading -> CONTENT_STATE_LOADING
+        is ProjectsUiState.Error -> CONTENT_STATE_ERROR
+        is ProjectsUiState.Empty -> CONTENT_STATE_EMPTY
+        is ProjectsUiState.Content -> {
+            if (contentState.isShowingEmptySearch()) CONTENT_STATE_EMPTY else CONTENT_STATE_SUCCESS
+        }
     }
 
     AnimatedContent(
-        targetState = contentState,
+        targetState = contentStateKey,
         transitionSpec = {
             fadeIn(
                 animationSpec = tween(Dimens.animationDurationMedium)
@@ -240,27 +257,27 @@ private fun AnimatedContentState(
         when (state) {
             CONTENT_STATE_LOADING -> LoadingContent()
             CONTENT_STATE_ERROR -> ErrorContent(
-                error = uiState.error ?: "Unknown error",
+                error = (uiState as? ProjectsUiState.Error)?.message ?: "Unknown error",
                 onRetry = onRetry
             )
             CONTENT_STATE_EMPTY -> {
                 val emptyStateType = determineEmptyStateType(
-                    searchQuery = uiState.searchQuery,
-                    isFamilyFilterEnabled = uiState.isFamilyFilterEnabled,
-                    timeFilter = uiState.timeFilter,
-                    hasProjects = uiState.filteredProjects.isNotEmpty()
+                    searchQuery = contentState.searchQuery,
+                    isFamilyFilterEnabled = contentState.isFamilyFilterEnabled,
+                    timeFilter = contentState.timeFilter,
+                    hasProjects = contentState.filteredProjects.isNotEmpty()
                 )
                 EmptyStateContent(
                     emptyStateType = emptyStateType,
                     projectType = projectType,
-                    searchQuery = uiState.searchQuery,
-                    hasActiveFilters = uiState.hasActiveFilters(),
+                    searchQuery = contentState.searchQuery,
+                    hasActiveFilters = contentState.hasActiveFilters(),
                     onClearSearch = onClearSearch,
                     onClearFilters = onClearFilters
                 )
             }
             CONTENT_STATE_SUCCESS -> ProjectList(
-                projects = uiState.filteredProjects,
+                projects = contentState.filteredProjects,
                 listState = listState,
                 onProjectClick = onProjectClick
             )
@@ -331,4 +348,3 @@ private fun ErrorContent(
         }
     }
 }
-

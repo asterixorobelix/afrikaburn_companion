@@ -1,6 +1,7 @@
 package io.asterixorobelix.afrikaburn.presentation.projects
 
 import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
+import io.asterixorobelix.afrikaburn.domain.usecase.projects.GetProjectsByTypeUseCase
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
@@ -16,8 +17,6 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -25,6 +24,7 @@ class ProjectTabViewModelTest {
     
     private lateinit var repository: ConfigurableProjectsRepository
     private lateinit var viewModel: ProjectTabViewModel
+    private lateinit var getProjectsByTypeUseCase: GetProjectsByTypeUseCase
     private val testDispatcher = StandardTestDispatcher()
     
     private val sampleProjects = listOf(
@@ -57,7 +57,8 @@ class ProjectTabViewModelTest {
         repository = ConfigurableProjectsRepository()
         // Set up default behavior to prevent initialization issues
         repository.setDefaultResult(Result.success(emptyList()))
-        viewModel = ProjectTabViewModel(repository, ProjectType.ART)
+        getProjectsByTypeUseCase = GetProjectsByTypeUseCase(repository)
+        viewModel = ProjectTabViewModel(getProjectsByTypeUseCase, ProjectType.ART)
     }
     
     @AfterTest
@@ -73,11 +74,11 @@ class ProjectTabViewModelTest {
         val state = viewModel.uiState.first()
         
         // Then it should show the loaded empty state
-        assertFalse(state.isLoading)
-        assertEquals(emptyList(), state.projects)
-        assertEquals(emptyList(), state.filteredProjects)
-        assertEquals("", state.searchQuery)
-        assertNull(state.error)
+        val emptyState = state as ProjectsUiState.Empty
+        assertFalse(emptyState.content.isRefreshing)
+        assertEquals(emptyList(), emptyState.content.projects)
+        assertEquals(emptyList(), emptyState.content.filteredProjects)
+        assertEquals("", emptyState.content.searchQuery)
     }
     
     @Test
@@ -90,11 +91,10 @@ class ProjectTabViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then state should be updated with projects
-        val state = viewModel.uiState.first()
-        assertFalse(state.isLoading)
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
+        assertFalse(state.isRefreshing)
         assertEquals(sampleProjects, state.projects)
         assertEquals(sampleProjects, state.filteredProjects)
-        assertNull(state.error)
     }
     
     @Test
@@ -108,11 +108,9 @@ class ProjectTabViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then state should contain error
-        val state = viewModel.uiState.first()
-        assertFalse(state.isLoading)
-        assertEquals(emptyList(), state.projects)
-        assertEquals(emptyList(), state.filteredProjects)
-        assertEquals(errorMessage, state.error)
+        val state = viewModel.uiState.first() as ProjectsUiState.Error
+        assertEquals(errorMessage, state.message)
+        assertFalse(state.content.isRefreshing)
     }
     
     @Test
@@ -127,7 +125,7 @@ class ProjectTabViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then only matching projects should be filtered
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals("Fire", state.searchQuery)
         assertEquals(1, state.filteredProjects.size)
         assertEquals("Fire Art Installation", state.filteredProjects.first().name)
@@ -145,7 +143,7 @@ class ProjectTabViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then matching project should be filtered
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals("participatory", state.searchQuery)
         assertEquals(1, state.filteredProjects.size)
         assertEquals("Interactive Sculpture", state.filteredProjects.first().name)
@@ -163,7 +161,7 @@ class ProjectTabViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then matching project should be filtered
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals("Jane", state.searchQuery)
         assertEquals(1, state.filteredProjects.size)
         assertEquals("Interactive Sculpture", state.filteredProjects.first().name)
@@ -181,7 +179,7 @@ class ProjectTabViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should still match
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals("FIRE", state.searchQuery)
         assertEquals(1, state.filteredProjects.size)
         assertEquals("Fire Art Installation", state.filteredProjects.first().name)
@@ -201,7 +199,7 @@ class ProjectTabViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then all projects should be shown
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals("", state.searchQuery)
         assertEquals(sampleProjects.size, state.filteredProjects.size)
         assertEquals(sampleProjects, state.filteredProjects)
@@ -220,10 +218,9 @@ class ProjectTabViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should load successfully
-        val state = viewModel.uiState.first()
-        assertFalse(state.isLoading)
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
+        assertFalse(state.isRefreshing)
         assertEquals(sampleProjects, state.projects)
-        assertNull(state.error)
     }
     
     @Test
@@ -238,8 +235,8 @@ class ProjectTabViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then error should be null
-        val state = viewModel.uiState.first()
-        assertNull(state.error)
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
+        assertFalse(state.isRefreshing)
     }
     
     @Test
@@ -254,7 +251,7 @@ class ProjectTabViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show empty search state
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.isShowingEmptySearch())
         assertEquals("nonexistent", state.searchQuery)
         assertEquals(0, state.filteredProjects.size)
@@ -268,7 +265,7 @@ class ProjectTabViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should not show empty search state
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertFalse(state.isShowingEmptySearch())
     }
 }

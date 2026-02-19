@@ -2,22 +2,21 @@ package io.asterixorobelix.afrikaburn.presentation.projects
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
+import io.asterixorobelix.afrikaburn.domain.usecase.projects.GetProjectsByTypeUseCase
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
 import io.asterixorobelix.afrikaburn.models.TimeFilter
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class ProjectTabViewModel(
-    private val repository: ProjectsRepository,
+    private val getProjectsByTypeUseCase: GetProjectsByTypeUseCase,
     private val projectType: ProjectType
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(ProjectsUiState())
+    private val _uiState = MutableStateFlow<ProjectsUiState>(ProjectsUiState.Loading)
     val uiState: StateFlow<ProjectsUiState> = _uiState.asStateFlow()
 
     init {
@@ -25,75 +24,87 @@ class ProjectTabViewModel(
     }
 
     fun loadProjects() {
-        if (_uiState.value.isLoading) return
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(
-                isLoading = true,
-                error = null
-            )
+        val content = currentContent()
+        if (content.isRefreshing) return
 
-            repository.getProjectsByType(projectType)
+        viewModelScope.launch {
+            _uiState.value = if (_uiState.value is ProjectsUiState.Content) {
+                content.copy(isRefreshing = true)
+            } else {
+                ProjectsUiState.Loading
+            }
+
+            getProjectsByTypeUseCase(GetProjectsByTypeUseCase.Params(projectType))
                 .onSuccess { projects ->
-                    _uiState.value = _uiState.value.copy(
+                    val updatedContent = content.copy(
                         projects = projects,
                         filteredProjects = filterProjects(
-                            projects = projects, 
-                            searchQuery = _uiState.value.searchQuery,
-                            familyFilter = _uiState.value.isFamilyFilterEnabled,
-                            timeFilter = _uiState.value.timeFilter
+                            projects = projects,
+                            searchQuery = content.searchQuery,
+                            familyFilter = content.isFamilyFilterEnabled,
+                            timeFilter = content.timeFilter
                         ),
-                        isLoading = false,
-                        error = null
+                        isRefreshing = false
                     )
+                    _uiState.value = if (projects.isEmpty()) {
+                        ProjectsUiState.Empty(updatedContent)
+                    } else {
+                        updatedContent
+                    }
                 }
                 .onFailure { exception ->
-                    _uiState.value = _uiState.value.copy(
-                        isLoading = false,
-                        error = exception.message ?: "Unknown error occurred"
+                    val errorMessage = exception.message ?: "Unknown error occurred"
+                    _uiState.value = ProjectsUiState.Error(
+                        message = errorMessage,
+                        content = content.copy(isRefreshing = false)
                     )
                 }
         }
     }
 
     fun updateSearchQuery(query: String) {
-        _uiState.value = _uiState.value.copy(
+        val content = currentContent()
+        _uiState.value = content.copy(
             searchQuery = query,
             filteredProjects = filterProjects(
-                projects = _uiState.value.projects, 
+                projects = content.projects,
                 searchQuery = query,
-                familyFilter = _uiState.value.isFamilyFilterEnabled,
-                timeFilter = _uiState.value.timeFilter
+                familyFilter = content.isFamilyFilterEnabled,
+                timeFilter = content.timeFilter
             )
         )
     }
     
     fun toggleFamilyFilter() {
-        val newFamilyFilter = !_uiState.value.isFamilyFilterEnabled
-        _uiState.value = _uiState.value.copy(
+        val content = currentContent()
+        val newFamilyFilter = !content.isFamilyFilterEnabled
+        _uiState.value = content.copy(
             isFamilyFilterEnabled = newFamilyFilter,
             filteredProjects = filterProjects(
-                projects = _uiState.value.projects,
-                searchQuery = _uiState.value.searchQuery,
+                projects = content.projects,
+                searchQuery = content.searchQuery,
                 familyFilter = newFamilyFilter,
-                timeFilter = _uiState.value.timeFilter
+                timeFilter = content.timeFilter
             )
         )
     }
     
     fun updateTimeFilter(timeFilter: TimeFilter) {
-        _uiState.value = _uiState.value.copy(
+        val content = currentContent()
+        _uiState.value = content.copy(
             timeFilter = timeFilter,
             filteredProjects = filterProjects(
-                projects = _uiState.value.projects,
-                searchQuery = _uiState.value.searchQuery,
-                familyFilter = _uiState.value.isFamilyFilterEnabled,
+                projects = content.projects,
+                searchQuery = content.searchQuery,
+                familyFilter = content.isFamilyFilterEnabled,
                 timeFilter = timeFilter
             )
         )
     }
 
     fun clearError() {
-        _uiState.value = _uiState.value.copy(error = null)
+        val content = currentContent()
+        _uiState.value = content.copy(isRefreshing = false)
     }
 
     fun retryLoading() {
@@ -105,20 +116,17 @@ class ProjectTabViewModel(
     }
 
     fun clearFilters() {
-        _uiState.value = _uiState.value.copy(
+        val content = currentContent()
+        _uiState.value = content.copy(
             isFamilyFilterEnabled = false,
             timeFilter = TimeFilter.ALL,
             filteredProjects = filterProjects(
-                projects = _uiState.value.projects,
-                searchQuery = _uiState.value.searchQuery,
+                projects = content.projects,
+                searchQuery = content.searchQuery,
                 familyFilter = false,
                 timeFilter = TimeFilter.ALL
             )
         )
-    }
-
-    fun cleanup() {
-        viewModelScope.cancel()
     }
 
     private fun filterProjects(
@@ -149,5 +157,14 @@ class ProjectTabViewModel(
         }
         
         return filteredProjects
+    }
+
+    private fun currentContent(): ProjectsUiState.Content {
+        return when (val state = _uiState.value) {
+            is ProjectsUiState.Content -> state
+            is ProjectsUiState.Empty -> state.content
+            is ProjectsUiState.Error -> state.content
+            ProjectsUiState.Loading -> ProjectsUiState.Content()
+        }
     }
 }

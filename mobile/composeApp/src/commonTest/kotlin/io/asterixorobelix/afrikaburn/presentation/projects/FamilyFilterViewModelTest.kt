@@ -1,6 +1,7 @@
 package io.asterixorobelix.afrikaburn.presentation.projects
 
 import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
+import io.asterixorobelix.afrikaburn.domain.usecase.projects.GetProjectsByTypeUseCase
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
@@ -23,6 +24,7 @@ class FamilyFilterViewModelTest {
     
     private lateinit var repository: MockProjectsRepositoryForFamilyFilter
     private lateinit var viewModel: ProjectTabViewModel
+    private lateinit var getProjectsByTypeUseCase: GetProjectsByTypeUseCase
     private val testDispatcher = StandardTestDispatcher()
     
     private val familyProjects = listOf(
@@ -65,7 +67,8 @@ class FamilyFilterViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         repository = MockProjectsRepositoryForFamilyFilter()
-        viewModel = ProjectTabViewModel(repository, ProjectType.CAMPS)
+        getProjectsByTypeUseCase = GetProjectsByTypeUseCase(repository)
+        viewModel = ProjectTabViewModel(getProjectsByTypeUseCase, ProjectType.CAMPS)
     }
     
     @AfterTest
@@ -81,7 +84,7 @@ class FamilyFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // When getting initial state
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         
         // Then family filter should be disabled and all projects shown
         assertFalse(state.isFamilyFilterEnabled)
@@ -100,7 +103,7 @@ class FamilyFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only family-friendly projects
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.isFamilyFilterEnabled)
         assertEquals(familyProjects, state.filteredProjects)
     }
@@ -119,7 +122,7 @@ class FamilyFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show all projects again
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertFalse(state.isFamilyFilterEnabled)
         assertEquals(mixedProjects, state.filteredProjects)
     }
@@ -137,7 +140,7 @@ class FamilyFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only family-friendly projects matching search
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.isFamilyFilterEnabled)
         assertEquals("Camp 1", state.searchQuery)
         assertEquals(1, state.filteredProjects.size)
@@ -157,7 +160,7 @@ class FamilyFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only family-friendly projects matching search
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.isFamilyFilterEnabled)
         assertEquals("Camp 1", state.searchQuery)
         assertEquals(1, state.filteredProjects.size)
@@ -176,7 +179,7 @@ class FamilyFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show no results
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.isFamilyFilterEnabled)
         assertTrue(state.filteredProjects.isEmpty())
         assertTrue(state.isShowingEmptySearch())
@@ -194,7 +197,7 @@ class FamilyFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show all projects (since they're all family-friendly)
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.isFamilyFilterEnabled)
         assertEquals(familyProjects, state.filteredProjects)
         assertFalse(state.isShowingEmptySearch())
@@ -212,7 +215,7 @@ class FamilyFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should have active filters
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.hasActiveFilters())
     }
     
@@ -229,7 +232,7 @@ class FamilyFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should have active filters
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.hasActiveFilters())
     }
     
@@ -248,7 +251,7 @@ class FamilyFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show all family projects
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.isFamilyFilterEnabled)
         assertEquals("", state.searchQuery)
         assertEquals(familyProjects, state.filteredProjects)

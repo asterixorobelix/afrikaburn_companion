@@ -1,11 +1,11 @@
 # AfrikaBurn Companion Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2025-09-29
+Last updated: 2026-02-19
 
 ## Repository Structure
 
 ### Mobile Application (`/mobile/`)
-**Tech Stack**: Kotlin 2.1.21+ with Compose Multiplatform 1.8.1+, Koin DI, SQLDelight, Material Design 3
+**Tech Stack**: Kotlin 2.2.20 with Compose Multiplatform 1.9.0, Koin 4.1.1, SQLDelight 2.0.2, Material Design 3
 ```
 mobile/
 ├── composeApp/                      # Compose Multiplatform shared code
@@ -31,7 +31,7 @@ mobile/
 ```
 
 ### Backend Application (`/backend/`)
-**Tech Stack**: Kotlin with Ktor 3.1.3+, Supabase PostgreSQL
+**Tech Stack**: Kotlin with Ktor 3.1.3, Exposed 0.61.0, PostgreSQL
 ```
 backend/
 ├── src/
@@ -60,17 +60,16 @@ specs/001-a-comprehensive-mobile/
 ```
 
 ## Active Technologies
-- **Mobile**: Kotlin 2.1.21+ with Compose Multiplatform 1.8.1+, Koin DI, SQLDelight, Ktor Client, Material Design 3
-- **Backend**: Kotlin with Ktor 3.1.3+, Supabase PostgreSQL hosting
+- **Mobile**: Kotlin 2.2.20 with Compose Multiplatform 1.9.0, Koin 4.1.1, SQLDelight 2.0.2, Ktor Client, Material Design 3
+- **Backend**: Kotlin with Ktor 3.1.3, Exposed 0.61.0, PostgreSQL/H2
 - **Architecture**: MVVM + Clean Architecture, offline-first design
-- **Testing**: Kotlin Test framework, Jacoco coverage reports, 80% minimum coverage requirement for all code
+- **Testing**: Kotlin Test + MockK in `commonTest` (no backend tests yet)
 
 ## Key Development Principles
 - **Offline-First**: All core functionality must work without network connectivity
 - **Material Design 3**: Consistent UI using MD3 tokens, no hardcoded values
-- **Test-Driven Development**: Write passing tests with 80% minimum coverage, measure with Jacoco
+- **Test-Driven Development**: Prefer tests for business logic and ViewModels
 - **Cross-Platform**: Maximize code sharing between iOS and Android
-- **Portfolio Quality**: Professional-grade architecture demonstrating best practices
 
 ## Common Commands
 
@@ -111,7 +110,7 @@ cd mobile/iosApp && xcodebuild
 - **Kotlin**: Follow official Kotlin coding conventions
 - **Compose**: Use Material Design 3 tokens exclusively
 - **Architecture**: Repository pattern, Clean Architecture layers
-- **Testing**: TDD approach with comprehensive test coverage, 80% minimum Jacoco coverage required
+- **Testing**: Prefer TDD; keep `commonTest` coverage growing
 - **Documentation**: Clear inline comments for complex business logic
 
 ## File Path Conventions
@@ -121,12 +120,6 @@ cd mobile/iosApp && xcodebuild
 - **Mobile tests**: `/mobile/composeApp/src/commonTest/kotlin/io/asterixorobelix/afrikaburn/`
 - **Backend code**: `/backend/src/main/kotlin/io/asterixorobelix/afrikaburn/`
 - **Backend tests**: `/backend/src/test/kotlin/io/asterixorobelix/afrikaburn/`
-
-## Recent Changes
-- 001-a-comprehensive-mobile: Comprehensive mobile app specification with offline-first architecture
-- Added community features coverage (location-based messaging, gift sharing)
-- Enhanced performance optimization targets with measurable metrics
-- Updated task dependencies for community feature implementation
 
 <!-- MANUAL ADDITIONS START -->
 

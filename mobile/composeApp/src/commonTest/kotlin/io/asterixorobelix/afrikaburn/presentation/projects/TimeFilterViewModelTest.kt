@@ -1,6 +1,7 @@
 package io.asterixorobelix.afrikaburn.presentation.projects
 
 import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
+import io.asterixorobelix.afrikaburn.domain.usecase.projects.GetProjectsByTypeUseCase
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
@@ -24,6 +25,7 @@ class TimeFilterViewModelTest {
     
     private lateinit var repository: MockProjectsRepositoryForTimeFilter
     private lateinit var viewModel: ProjectTabViewModel
+    private lateinit var getProjectsByTypeUseCase: GetProjectsByTypeUseCase
     private val testDispatcher = StandardTestDispatcher()
     
     private val daytimeProjects = listOf(
@@ -86,7 +88,8 @@ class TimeFilterViewModelTest {
     fun setup() {
         Dispatchers.setMain(testDispatcher)
         repository = MockProjectsRepositoryForTimeFilter()
-        viewModel = ProjectTabViewModel(repository, ProjectType.CAMPS)
+        getProjectsByTypeUseCase = GetProjectsByTypeUseCase(repository)
+        viewModel = ProjectTabViewModel(getProjectsByTypeUseCase, ProjectType.CAMPS)
     }
     
     @AfterTest
@@ -102,7 +105,7 @@ class TimeFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // When getting initial state
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         
         // Then time filter should be ALL and show all projects
         assertEquals(TimeFilter.ALL, state.timeFilter)
@@ -121,7 +124,7 @@ class TimeFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only daytime and mixed projects
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals(TimeFilter.DAYTIME, state.timeFilter)
         assertEquals(3, state.filteredProjects.size) // daytime (2) + mixed (1)
         
@@ -146,7 +149,7 @@ class TimeFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only nighttime and mixed projects
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals(TimeFilter.NIGHTTIME, state.timeFilter)
         assertEquals(3, state.filteredProjects.size) // nighttime (2) + mixed (1)
         
@@ -173,7 +176,7 @@ class TimeFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show all projects again
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals(TimeFilter.ALL, state.timeFilter)
         assertEquals(allProjects, state.filteredProjects)
     }
@@ -191,7 +194,7 @@ class TimeFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only daytime projects matching search
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals(TimeFilter.DAYTIME, state.timeFilter)
         assertEquals("Coffee", state.searchQuery)
         assertEquals(1, state.filteredProjects.size)
@@ -234,7 +237,7 @@ class TimeFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only family-friendly daytime camps
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.isFamilyFilterEnabled)
         assertEquals(TimeFilter.DAYTIME, state.timeFilter)
         assertEquals(1, state.filteredProjects.size)
@@ -253,7 +256,7 @@ class TimeFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show no results
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals(TimeFilter.DAYTIME, state.timeFilter)
         assertTrue(state.filteredProjects.isEmpty())
         assertTrue(state.isShowingEmptySearch())
@@ -271,7 +274,7 @@ class TimeFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should have active filters
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.hasActiveFilters())
     }
     
@@ -283,7 +286,7 @@ class TimeFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // When checking filters in default state
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         
         // Then should not have active filters
         assertFalse(state.hasActiveFilters())
@@ -302,7 +305,7 @@ class TimeFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should apply both filters correctly
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals("Camp", state.searchQuery)
         assertEquals(TimeFilter.NIGHTTIME, state.timeFilter)
         assertEquals(1, state.filteredProjects.size) // Only 24/7 Camp matches both search and nighttime filter
@@ -328,7 +331,7 @@ class TimeFilterViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show all daytime projects
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals(TimeFilter.DAYTIME, state.timeFilter)
         assertEquals("", state.searchQuery)
         assertEquals(3, state.filteredProjects.size) // All daytime projects

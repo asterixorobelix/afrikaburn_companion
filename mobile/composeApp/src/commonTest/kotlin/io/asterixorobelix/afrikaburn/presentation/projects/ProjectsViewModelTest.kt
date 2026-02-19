@@ -1,7 +1,5 @@
 package io.asterixorobelix.afrikaburn.presentation.projects
 
-import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
-import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,15 +16,13 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class ProjectsViewModelTest {
     
-    private lateinit var repository: ProjectsRepository
     private lateinit var viewModel: ProjectsViewModel
     private val testDispatcher = StandardTestDispatcher()
     
     @BeforeTest
     fun setup() {
         Dispatchers.setMain(testDispatcher)
-        repository = StubProjectsRepository()
-        viewModel = ProjectsViewModel(repository)
+        viewModel = ProjectsViewModel()
     }
     
     @AfterTest
@@ -40,27 +36,28 @@ class ProjectsViewModelTest {
         val initialState = viewModel.screenUiState.first()
         
         // Then it should have all project types
-        assertEquals(0, initialState.currentTabIndex)
-        assertEquals(6, initialState.tabs.size)
-        assertEquals(ProjectType.ART, initialState.tabs[0])
-        assertEquals(ProjectType.PERFORMANCES, initialState.tabs[1])
-        assertEquals(ProjectType.EVENTS, initialState.tabs[2])
-        assertEquals(ProjectType.MOBILE_ART, initialState.tabs[3])
-        assertEquals(ProjectType.VEHICLES, initialState.tabs[4])
-        assertEquals(ProjectType.CAMPS, initialState.tabs[5])
+        val content = initialState as ProjectsScreenUiState.Content
+        assertEquals(0, content.currentTabIndex)
+        assertEquals(6, content.tabs.size)
+        assertEquals(ProjectType.ART, content.tabs[0])
+        assertEquals(ProjectType.PERFORMANCES, content.tabs[1])
+        assertEquals(ProjectType.EVENTS, content.tabs[2])
+        assertEquals(ProjectType.MOBILE_ART, content.tabs[3])
+        assertEquals(ProjectType.VEHICLES, content.tabs[4])
+        assertEquals(ProjectType.CAMPS, content.tabs[5])
     }
     
     @Test
     fun `updateCurrentTab should update tab index`() = runTest {
         // Given initial state
-        val initialState = viewModel.screenUiState.first()
+        val initialState = viewModel.screenUiState.first() as ProjectsScreenUiState.Content
         assertEquals(0, initialState.currentTabIndex)
         
         // When updating to tab 2
         viewModel.updateCurrentTab(2)
         
         // Then tab index should be updated
-        val updatedState = viewModel.screenUiState.first()
+        val updatedState = viewModel.screenUiState.first() as ProjectsScreenUiState.Content
         assertEquals(2, updatedState.currentTabIndex)
         assertEquals(ProjectType.EVENTS, updatedState.tabs[updatedState.currentTabIndex])
     }
@@ -73,7 +70,7 @@ class ProjectsViewModelTest {
             viewModel.updateCurrentTab(index)
             
             // Then tab index should be updated correctly
-            val state = viewModel.screenUiState.first()
+            val state = viewModel.screenUiState.first() as ProjectsScreenUiState.Content
             assertEquals(index, state.currentTabIndex)
         }
     }
@@ -81,7 +78,7 @@ class ProjectsViewModelTest {
     @Test
     fun `tabs should be in correct order`() = runTest {
         // When getting tabs
-        val state = viewModel.screenUiState.first()
+        val state = viewModel.screenUiState.first() as ProjectsScreenUiState.Content
         val tabs = state.tabs
         
         // Then they should be in the expected order
@@ -91,11 +88,5 @@ class ProjectsViewModelTest {
         assertEquals(ProjectType.MOBILE_ART, tabs[3])
         assertEquals(ProjectType.VEHICLES, tabs[4])
         assertEquals(ProjectType.CAMPS, tabs[5])
-    }
-}
-
-private class StubProjectsRepository : ProjectsRepository {
-    override suspend fun getProjectsByType(type: ProjectType): Result<List<ProjectItem>> {
-        return Result.success(emptyList())
     }
 }

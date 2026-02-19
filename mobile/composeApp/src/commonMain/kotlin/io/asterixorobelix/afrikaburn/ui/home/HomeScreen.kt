@@ -53,9 +53,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import io.asterixorobelix.afrikaburn.Dimens
 import io.asterixorobelix.afrikaburn.cardElevation
+import io.asterixorobelix.afrikaburn.di.koinProjectTabViewModel
 import io.asterixorobelix.afrikaburn.di.koinProjectsViewModel
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
+import io.asterixorobelix.afrikaburn.presentation.projects.ProjectsScreenUiState
+import io.asterixorobelix.afrikaburn.presentation.projects.ProjectsUiState
+import io.asterixorobelix.afrikaburn.presentation.projects.contentOrDefault
 import io.asterixorobelix.afrikaburn.ui.components.bounceClick
 import org.jetbrains.compose.resources.stringResource
 
@@ -71,6 +75,16 @@ fun HomeScreen(
 ) {
     val viewModel = koinProjectsViewModel()
     val screenState by viewModel.screenUiState.collectAsState()
+    val screenContent = when (screenState) {
+        is ProjectsScreenUiState.Content ->
+            screenState as ProjectsScreenUiState.Content
+        is ProjectsScreenUiState.Empty ->
+            (screenState as ProjectsScreenUiState.Empty).content
+        is ProjectsScreenUiState.Error ->
+            (screenState as ProjectsScreenUiState.Error).content
+        ProjectsScreenUiState.Loading ->
+            ProjectsScreenUiState.Content()
+    }
 
     Column(
         modifier = Modifier
@@ -94,8 +108,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(Dimens.spacingMedium))
 
             CategoryGrid(
-                viewModel = viewModel,
-                tabs = screenState.tabs,
+                tabs = screenContent.tabs,
                 onCategoryClick = onCategoryClick,
                 onSurvivalGuideClick = onSurvivalGuideClick
             )
@@ -107,7 +120,6 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(Dimens.spacingMedium))
 
             HappeningNowRow(
-                viewModel = viewModel,
                 onProjectClick = onProjectClick
             )
         }
@@ -198,7 +210,6 @@ private fun SectionHeader(text: String) {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun CategoryGrid(
-    viewModel: io.asterixorobelix.afrikaburn.presentation.projects.ProjectsViewModel,
     tabs: List<ProjectType>,
     onCategoryClick: (ProjectType) -> Unit,
     onSurvivalGuideClick: () -> Unit
@@ -222,8 +233,9 @@ private fun CategoryGrid(
     )
 
     for ((projectType, labelRes, icon) in categoryConfigs) {
-        val tabVm = viewModel.getTabViewModel(projectType)
+        val tabVm = koinProjectTabViewModel(projectType)
         val tabState by tabVm.uiState.collectAsState()
+        val contentState = tabState.contentOrDefault()
         val label = stringResource(labelRes)
         val tintColor = categoryTintColor(projectType)
         categories.add(
@@ -231,7 +243,7 @@ private fun CategoryGrid(
                 label = label,
                 icon = icon,
                 tintColor = { tintColor },
-                count = tabState.totalProjectCount,
+                count = contentState.totalProjectCount,
                 onClick = { onCategoryClick(projectType) }
             )
         )
@@ -286,15 +298,15 @@ private fun categoryTintColor(projectType: ProjectType): androidx.compose.ui.gra
 
 @Composable
 private fun HappeningNowRow(
-    viewModel: io.asterixorobelix.afrikaburn.presentation.projects.ProjectsViewModel,
     onProjectClick: (ProjectItem) -> Unit
 ) {
     val allFeatured = mutableListOf<Pair<ProjectItem, ProjectType>>()
 
     for (projectType in ProjectType.entries) {
-        val tabVm = viewModel.getTabViewModel(projectType)
+        val tabVm = koinProjectTabViewModel(projectType)
         val tabState by tabVm.uiState.collectAsState()
-        tabState.projects.take(2).forEach { project ->
+        val contentState = tabState.contentOrDefault()
+        contentState.projects.take(2).forEach { project ->
             allFeatured.add(project to projectType)
         }
     }

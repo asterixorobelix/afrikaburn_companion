@@ -9,7 +9,7 @@ class ProjectsScreenUiStateTest {
     @Test
     fun `default state should have correct initial values`() {
         // Given default state
-        val state = ProjectsScreenUiState()
+        val state = ProjectsScreenUiState.Content()
         
         // Then should have expected defaults
         assertEquals(0, state.currentTabIndex)
@@ -25,7 +25,7 @@ class ProjectsScreenUiStateTest {
     @Test
     fun `tabs should be in correct order`() {
         // Given state
-        val state = ProjectsScreenUiState()
+        val state = ProjectsScreenUiState.Content()
         
         // Then tabs should be in expected order
         val expectedOrder = listOf(
@@ -43,7 +43,7 @@ class ProjectsScreenUiStateTest {
     @Test
     fun `state with custom tab index should maintain tab order`() {
         // Given state with custom tab index
-        val state = ProjectsScreenUiState(currentTabIndex = 3)
+        val state = ProjectsScreenUiState.Content(currentTabIndex = 3)
         
         // Then should maintain correct tab index and order
         assertEquals(3, state.currentTabIndex)
@@ -54,7 +54,7 @@ class ProjectsScreenUiStateTest {
     @Test
     fun `copy function should work correctly`() {
         // Given initial state
-        val initialState = ProjectsScreenUiState()
+        val initialState = ProjectsScreenUiState.Content()
         
         // When copying with new tab index
         val updatedState = initialState.copy(currentTabIndex = 2)

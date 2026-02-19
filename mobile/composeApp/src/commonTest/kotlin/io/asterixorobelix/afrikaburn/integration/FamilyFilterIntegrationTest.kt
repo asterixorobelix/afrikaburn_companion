@@ -3,10 +3,12 @@ package io.asterixorobelix.afrikaburn.integration
 import io.asterixorobelix.afrikaburn.data.datasource.JsonResourceDataSource
 import io.asterixorobelix.afrikaburn.data.repository.ProjectsRepositoryImpl
 import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
+import io.asterixorobelix.afrikaburn.domain.usecase.projects.GetProjectsByTypeUseCase
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
 import io.asterixorobelix.afrikaburn.presentation.projects.ProjectTabViewModel
+import io.asterixorobelix.afrikaburn.presentation.projects.ProjectsUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -29,6 +31,7 @@ class FamilyFilterIntegrationTest {
     
     private lateinit var dataSource: MockJsonResourceDataSourceForFamilyFilter
     private lateinit var repository: ProjectsRepository
+    private lateinit var getProjectsByTypeUseCase: GetProjectsByTypeUseCase
     private lateinit var viewModel: ProjectTabViewModel
     private val testDispatcher = StandardTestDispatcher()
     
@@ -76,9 +79,10 @@ class FamilyFilterIntegrationTest {
         
         dataSource = MockJsonResourceDataSourceForFamilyFilter()
         repository = ProjectsRepositoryImpl(dataSource)
+        getProjectsByTypeUseCase = GetProjectsByTypeUseCase(repository)
         // Set up default mock data before creating ViewModel to prevent cache issues
         dataSource.setProjectsForType(ProjectType.CAMPS, campProjects)
-        viewModel = ProjectTabViewModel(repository, ProjectType.CAMPS)
+        viewModel = ProjectTabViewModel(getProjectsByTypeUseCase, ProjectType.CAMPS)
     }
     
     private fun clearRepositoryCache() {
@@ -97,8 +101,8 @@ class FamilyFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should load all camps
-        val state = viewModel.uiState.first()
-        assertFalse(state.isLoading)
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
+        assertFalse(state.isRefreshing)
         assertEquals(campProjects, state.projects)
         assertEquals(campProjects, state.filteredProjects)
         assertFalse(state.isFamilyFilterEnabled)
@@ -117,7 +121,7 @@ class FamilyFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only family-friendly camps
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.isFamilyFilterEnabled)
         assertEquals(3, state.filteredProjects.size) // Vagabonds, ALEGRA, Pétanque (Fam and Fam(ish))
         
@@ -143,7 +147,7 @@ class FamilyFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only family-friendly camps matching "space"
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals("space", state.searchQuery)
         assertTrue(state.isFamilyFilterEnabled)
         assertEquals(2, state.filteredProjects.size) // ALEGRA SPACE STATION and Pétanque (description contains "space")
@@ -167,7 +171,7 @@ class FamilyFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show no results
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals("Cowboys", state.searchQuery)
         assertTrue(state.isFamilyFilterEnabled)
         assertTrue(state.filteredProjects.isEmpty())
@@ -187,15 +191,15 @@ class FamilyFilterIntegrationTest {
         // When changing search multiple times
         viewModel.updateSearchQuery("space")
         testDispatcher.scheduler.advanceUntilIdle()
-        val firstState = viewModel.uiState.first()
+        val firstState = viewModel.uiState.first() as ProjectsUiState.Content
         
         viewModel.updateSearchQuery("vagabonds")
         testDispatcher.scheduler.advanceUntilIdle()
-        val secondState = viewModel.uiState.first()
+        val secondState = viewModel.uiState.first() as ProjectsUiState.Content
         
         viewModel.updateSearchQuery("")
         testDispatcher.scheduler.advanceUntilIdle()
-        val finalState = viewModel.uiState.first()
+        val finalState = viewModel.uiState.first() as ProjectsUiState.Content
         
         // Then family filter should remain enabled throughout
         assertTrue(firstState.isFamilyFilterEnabled)
@@ -222,7 +226,7 @@ class FamilyFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show all camps matching search (both family and non-family)
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertFalse(state.isFamilyFilterEnabled)
         assertEquals("space", state.searchQuery)
         assertEquals(3, state.filteredProjects.size) // ALEGRA, Pétanque (description), and Space Cowboys
@@ -255,7 +259,7 @@ class FamilyFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should correctly identify family camps regardless of format
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals(4, state.filteredProjects.size) // A, B, C, D should be family-friendly
         
         val familyCampNames = state.filteredProjects.map { it.name }

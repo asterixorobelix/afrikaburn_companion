@@ -1,9 +1,12 @@
 package io.asterixorobelix.afrikaburn.presentation.map
 
-import afrikaburn.composeapp.generated.resources.Res
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.asterixorobelix.afrikaburn.domain.repository.UserCampPinRepository
+import io.asterixorobelix.afrikaburn.domain.usecase.camppin.DeleteCampPinUseCase
+import io.asterixorobelix.afrikaburn.domain.usecase.camppin.ObserveCampPinUseCase
+import io.asterixorobelix.afrikaburn.domain.usecase.camppin.SaveCampPinUseCase
+import io.asterixorobelix.afrikaburn.domain.usecase.camppin.UpdateCampPinLocationUseCase
+import io.asterixorobelix.afrikaburn.domain.usecase.projects.GetAllProjectsUseCase
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.platform.CrashLogger
 import io.asterixorobelix.afrikaburn.platform.LocationService
@@ -18,8 +21,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 /**
  * ViewModel for the map screen.
@@ -29,7 +30,11 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
  */
 class MapViewModel(
     private val locationService: LocationService,
-    private val userCampPinRepository: UserCampPinRepository,
+    private val observeCampPinUseCase: ObserveCampPinUseCase,
+    private val saveCampPinUseCase: SaveCampPinUseCase,
+    private val updateCampPinLocationUseCase: UpdateCampPinLocationUseCase,
+    private val deleteCampPinUseCase: DeleteCampPinUseCase,
+    private val getAllProjectsUseCase: GetAllProjectsUseCase,
     private val crashLogger: CrashLogger
 ) : ViewModel() {
 
@@ -39,11 +44,6 @@ class MapViewModel(
      * The current UI state of the map screen.
      */
     val uiState: StateFlow<MapUiState> = _uiState.asStateFlow()
-
-    private val json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    }
 
     private var loadedProjects: List<ProjectItem> = emptyList()
     private var locationJob: Job? = null
@@ -60,7 +60,7 @@ class MapViewModel(
     private fun observeCampPin() {
         campPinJob?.cancel()
         campPinJob = viewModelScope.launch {
-            userCampPinRepository.observeCampPin().collect { pin ->
+            observeCampPinUseCase().collect { pin ->
                 val currentState = _uiState.value
                 if (currentState is MapUiState.Success) {
                     _uiState.value = currentState.copy(
@@ -80,23 +80,19 @@ class MapViewModel(
     /**
      * Loads camp and artwork data from JSON resources.
      */
-    @OptIn(ExperimentalResourceApi::class)
     private fun loadProjects() {
         viewModelScope.launch {
-            try {
-                val campsJson = Res.readBytes("files/WTFThemeCamps.json").decodeToString()
-                val camps = json.decodeFromString<List<ProjectItem>>(campsJson)
-
-                val artworksJson = Res.readBytes("files/WTFArtworks.json").decodeToString()
-                val artworks = json.decodeFromString<List<ProjectItem>>(artworksJson)
-
-                loadedProjects = camps + artworks
-
-                _uiState.value = MapUiState.Success(projects = loadedProjects)
-            } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
-                crashLogger.logException(e, "Failed to load map projects")
-                _uiState.value = MapUiState.Success(projects = emptyList())
-            }
+            getAllProjectsUseCase()
+                .onSuccess { projects ->
+                    loadedProjects = projects
+                    _uiState.value = MapUiState.Success(projects = loadedProjects)
+                }
+                .onFailure { exception ->
+                    crashLogger.logException(exception, "Failed to load map projects")
+                    _uiState.value = MapUiState.Error(
+                        message = exception.message ?: "Failed to load map data"
+                    )
+                }
         }
     }
 
@@ -364,10 +360,14 @@ class MapViewModel(
         val dialogState = currentState.campPinDialogState
         if (dialogState is CampPinDialogState.ConfirmPlace) {
             viewModelScope.launch {
-                userCampPinRepository.saveCampPin(
-                    latitude = dialogState.latitude,
-                    longitude = dialogState.longitude
-                )
+                saveCampPinUseCase(
+                    SaveCampPinUseCase.Params(
+                        latitude = dialogState.latitude,
+                        longitude = dialogState.longitude
+                    )
+                ).onFailure { exception ->
+                    crashLogger.logException(exception, "Failed to save camp pin")
+                }
             }
             _uiState.value = currentState.copy(campPinDialogState = CampPinDialogState.Hidden)
         }
@@ -390,7 +390,10 @@ class MapViewModel(
         val currentState = _uiState.value
         if (currentState is MapUiState.Success) {
             viewModelScope.launch {
-                userCampPinRepository.deleteCampPin()
+                deleteCampPinUseCase()
+                    .onFailure { exception ->
+                        crashLogger.logException(exception, "Failed to delete camp pin")
+                    }
             }
             _uiState.value = currentState.copy(campPinDialogState = CampPinDialogState.Hidden)
         }
@@ -406,10 +409,14 @@ class MapViewModel(
         val dialogState = currentState.campPinDialogState
         if (dialogState is CampPinDialogState.ConfirmMove) {
             viewModelScope.launch {
-                userCampPinRepository.updateLocation(
-                    latitude = dialogState.newLatitude,
-                    longitude = dialogState.newLongitude
-                )
+                updateCampPinLocationUseCase(
+                    UpdateCampPinLocationUseCase.Params(
+                        latitude = dialogState.newLatitude,
+                        longitude = dialogState.newLongitude
+                    )
+                ).onFailure { exception ->
+                    crashLogger.logException(exception, "Failed to move camp pin")
+                }
             }
             _uiState.value = currentState.copy(campPinDialogState = CampPinDialogState.Hidden)
         }

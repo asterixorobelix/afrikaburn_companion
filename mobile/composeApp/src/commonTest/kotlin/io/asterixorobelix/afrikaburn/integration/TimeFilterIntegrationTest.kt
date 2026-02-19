@@ -3,11 +3,13 @@ package io.asterixorobelix.afrikaburn.integration
 import io.asterixorobelix.afrikaburn.data.datasource.JsonResourceDataSource
 import io.asterixorobelix.afrikaburn.data.repository.ProjectsRepositoryImpl
 import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
+import io.asterixorobelix.afrikaburn.domain.usecase.projects.GetProjectsByTypeUseCase
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
 import io.asterixorobelix.afrikaburn.models.TimeFilter
 import io.asterixorobelix.afrikaburn.presentation.projects.ProjectTabViewModel
+import io.asterixorobelix.afrikaburn.presentation.projects.ProjectsUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -30,6 +32,7 @@ class TimeFilterIntegrationTest {
     
     private lateinit var dataSource: MockJsonResourceDataSourceForTimeFilter
     private lateinit var repository: ProjectsRepository
+    private lateinit var getProjectsByTypeUseCase: GetProjectsByTypeUseCase
     private lateinit var viewModel: ProjectTabViewModel
     private val testDispatcher = StandardTestDispatcher()
     
@@ -112,9 +115,10 @@ class TimeFilterIntegrationTest {
         
         dataSource = MockJsonResourceDataSourceForTimeFilter()
         repository = ProjectsRepositoryImpl(dataSource)
+        getProjectsByTypeUseCase = GetProjectsByTypeUseCase(repository)
         // Set up default mock data before creating ViewModel to prevent cache issues
         dataSource.setProjectsForType(ProjectType.CAMPS, realCampData)
-        viewModel = ProjectTabViewModel(repository, ProjectType.CAMPS)
+        viewModel = ProjectTabViewModel(getProjectsByTypeUseCase, ProjectType.CAMPS)
     }
     
     private fun clearRepositoryCache() {
@@ -133,8 +137,8 @@ class TimeFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should load all camps with ALL time filter
-        val state = viewModel.uiState.first()
-        assertFalse(state.isLoading)
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
+        assertFalse(state.isRefreshing)
         assertEquals(TimeFilter.ALL, state.timeFilter)
         assertEquals(realCampData, state.projects)
         assertEquals(realCampData, state.filteredProjects)
@@ -153,7 +157,7 @@ class TimeFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only daytime and mixed camps
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals(TimeFilter.DAYTIME, state.timeFilter)
         assertEquals(5, state.filteredProjects.size) // 3 daytime + 2 mixed
         
@@ -182,7 +186,7 @@ class TimeFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only nighttime and mixed camps
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals(TimeFilter.NIGHTTIME, state.timeFilter)
         assertEquals(4, state.filteredProjects.size) // 2 nighttime + 2 mixed
         
@@ -212,7 +216,7 @@ class TimeFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only family-friendly daytime camps
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.isFamilyFilterEnabled)
         assertEquals(TimeFilter.DAYTIME, state.timeFilter)
         assertEquals(5, state.filteredProjects.size) // All daytime camps in this dataset are family-friendly
@@ -239,7 +243,7 @@ class TimeFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only nighttime camps matching "space"
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals("space", state.searchQuery)
         assertEquals(TimeFilter.NIGHTTIME, state.timeFilter)
         assertEquals(2, state.filteredProjects.size) // Space Cowboys and Garden of Weeden (contains "spaces")
@@ -264,7 +268,7 @@ class TimeFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show only family-friendly nighttime camps matching "Cinema"
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertTrue(state.isFamilyFilterEnabled)
         assertEquals(TimeFilter.NIGHTTIME, state.timeFilter)
         assertEquals("Cinema", state.searchQuery)
@@ -286,7 +290,7 @@ class TimeFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show empty results
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals(TimeFilter.DAYTIME, state.timeFilter)
         assertTrue(state.filteredProjects.isEmpty())
         assertTrue(state.isShowingEmptySearch())
@@ -307,7 +311,7 @@ class TimeFilterIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should show all camps again
-        val state = viewModel.uiState.first()
+        val state = viewModel.uiState.first() as ProjectsUiState.Content
         assertEquals(TimeFilter.ALL, state.timeFilter)
         assertEquals(realCampData.size, state.filteredProjects.size)
         assertEquals(realCampData, state.filteredProjects)
@@ -327,13 +331,13 @@ class TimeFilterIntegrationTest {
         viewModel.updateTimeFilter(TimeFilter.DAYTIME)
         testDispatcher.scheduler.advanceUntilIdle()
         
-        val firstState = viewModel.uiState.first()
+        val firstState = viewModel.uiState.first() as ProjectsUiState.Content
         
         // Then change time filter while keeping other filters
         viewModel.updateTimeFilter(TimeFilter.NIGHTTIME)
         testDispatcher.scheduler.advanceUntilIdle()
         
-        val secondState = viewModel.uiState.first()
+        val secondState = viewModel.uiState.first() as ProjectsUiState.Content
         
         // Both should find Garden of Weeden (family-friendly, operates day and night, matches "garden")
         assertEquals(1, firstState.filteredProjects.size)

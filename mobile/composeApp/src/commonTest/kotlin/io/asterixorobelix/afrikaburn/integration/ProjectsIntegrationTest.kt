@@ -3,10 +3,13 @@ package io.asterixorobelix.afrikaburn.integration
 import io.asterixorobelix.afrikaburn.data.datasource.JsonResourceDataSource
 import io.asterixorobelix.afrikaburn.data.repository.ProjectsRepositoryImpl
 import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
+import io.asterixorobelix.afrikaburn.domain.usecase.projects.GetProjectsByTypeUseCase
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
 import io.asterixorobelix.afrikaburn.presentation.projects.ProjectTabViewModel
+import io.asterixorobelix.afrikaburn.presentation.projects.ProjectsScreenUiState
+import io.asterixorobelix.afrikaburn.presentation.projects.ProjectsUiState
 import io.asterixorobelix.afrikaburn.presentation.projects.ProjectsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,7 +24,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 /**
@@ -32,6 +34,7 @@ class ProjectsIntegrationTest {
     
     private lateinit var dataSource: MockJsonResourceDataSourceForIntegration
     private lateinit var repository: ProjectsRepository
+    private lateinit var getProjectsByTypeUseCase: GetProjectsByTypeUseCase
     private lateinit var projectsViewModel: ProjectsViewModel
     private lateinit var projectTabViewModel: ProjectTabViewModel
     private val testDispatcher = StandardTestDispatcher()
@@ -70,8 +73,9 @@ class ProjectsIntegrationTest {
         // Set up the full dependency chain
         dataSource = MockJsonResourceDataSourceForIntegration()
         repository = ProjectsRepositoryImpl(dataSource)
-        projectsViewModel = ProjectsViewModel(repository)
-        projectTabViewModel = ProjectTabViewModel(repository, ProjectType.ART)
+        getProjectsByTypeUseCase = GetProjectsByTypeUseCase(repository)
+        projectsViewModel = ProjectsViewModel()
+        projectTabViewModel = ProjectTabViewModel(getProjectsByTypeUseCase, ProjectType.ART)
     }
     
     @AfterTest
@@ -90,9 +94,8 @@ class ProjectsIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then UI state should reflect loaded data
-        val uiState = projectTabViewModel.uiState.first()
-        assertFalse(uiState.isLoading)
-        assertNull(uiState.error)
+        val uiState = projectTabViewModel.uiState.first() as ProjectsUiState.Content
+        assertFalse(uiState.isRefreshing)
         assertEquals(sampleArtProjects, uiState.projects)
         assertEquals(sampleArtProjects, uiState.filteredProjects)
     }
@@ -109,12 +112,10 @@ class ProjectsIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then UI state should reflect wrapped error message
-        val uiState = projectTabViewModel.uiState.first()
-        assertFalse(uiState.isLoading)
-        assertNotNull(uiState.error)
-        assertEquals("Unexpected error loading Art", uiState.error)
-        assertTrue(uiState.projects.isEmpty())
-        assertTrue(uiState.filteredProjects.isEmpty())
+        val uiState = projectTabViewModel.uiState.first() as ProjectsUiState.Error
+        assertEquals("Unexpected error loading Art", uiState.message)
+        assertTrue(uiState.content.projects.isEmpty())
+        assertTrue(uiState.content.filteredProjects.isEmpty())
     }
     
     @Test
@@ -130,7 +131,7 @@ class ProjectsIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should filter correctly
-        val uiState = projectTabViewModel.uiState.first()
+        val uiState = projectTabViewModel.uiState.first() as ProjectsUiState.Content
         assertEquals("Fire", uiState.searchQuery)
         assertEquals(1, uiState.filteredProjects.size)
         assertEquals("Fire Sculpture", uiState.filteredProjects.first().name)
@@ -144,16 +145,16 @@ class ProjectsIntegrationTest {
         dataSource.setProjectsForType(ProjectType.PERFORMANCES, samplePerformanceProjects)
         
         // When creating view models for different types
-        val artViewModel = ProjectTabViewModel(repository, ProjectType.ART)
-        val performanceViewModel = ProjectTabViewModel(repository, ProjectType.PERFORMANCES)
+        val artViewModel = ProjectTabViewModel(getProjectsByTypeUseCase, ProjectType.ART)
+        val performanceViewModel = ProjectTabViewModel(getProjectsByTypeUseCase, ProjectType.PERFORMANCES)
         
         artViewModel.loadProjects()
         performanceViewModel.loadProjects()
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then each should load correct data
-        val artState = artViewModel.uiState.first()
-        val performanceState = performanceViewModel.uiState.first()
+        val artState = artViewModel.uiState.first() as ProjectsUiState.Content
+        val performanceState = performanceViewModel.uiState.first() as ProjectsUiState.Content
         
         assertEquals(sampleArtProjects, artState.projects)
         assertEquals(samplePerformanceProjects, performanceState.projects)
@@ -168,7 +169,7 @@ class ProjectsIntegrationTest {
         viewModel.updateCurrentTab(3)
         
         // Then state should be updated
-        val screenState = viewModel.screenUiState.first()
+        val screenState = viewModel.screenUiState.first() as ProjectsScreenUiState.Content
         assertEquals(3, screenState.currentTabIndex)
         assertEquals(ProjectType.MOBILE_ART, screenState.tabs[3])
     }
@@ -182,8 +183,8 @@ class ProjectsIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Verify error state
-        val errorState = projectTabViewModel.uiState.first()
-        assertNotNull(errorState.error)
+        val errorState = projectTabViewModel.uiState.first() as ProjectsUiState.Error
+        assertNotNull(errorState.message)
         
         // When fixing data source and retrying
         (repository as ProjectsRepositoryImpl).clearCache()
@@ -192,8 +193,7 @@ class ProjectsIntegrationTest {
         testDispatcher.scheduler.advanceUntilIdle()
         
         // Then should recover successfully
-        val successState = projectTabViewModel.uiState.first()
-        assertNull(successState.error)
+        val successState = projectTabViewModel.uiState.first() as ProjectsUiState.Content
         assertEquals(sampleArtProjects, successState.projects)
     }
 }

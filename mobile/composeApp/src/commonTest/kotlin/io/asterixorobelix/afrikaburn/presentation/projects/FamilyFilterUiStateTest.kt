@@ -28,11 +28,9 @@ class FamilyFilterUiStateTest {
     @Test
     fun `isShowingEmptySearch should return true when family filter is enabled with no results`() {
         // Given state with family filter enabled but no filtered results
-        val state = ProjectsUiState(
+        val state = ProjectsUiState.Content(
             projects = sampleProjects,
             filteredProjects = emptyList(),
-            isLoading = false,
-            error = null,
             searchQuery = "",
             isFamilyFilterEnabled = true
         )
@@ -44,11 +42,9 @@ class FamilyFilterUiStateTest {
     @Test
     fun `isShowingEmptySearch should return true when both search and family filter are active with no results`() {
         // Given state with both filters active but no results
-        val state = ProjectsUiState(
+        val state = ProjectsUiState.Content(
             projects = sampleProjects,
             filteredProjects = emptyList(),
-            isLoading = false,
-            error = null,
             searchQuery = "nonexistent",
             isFamilyFilterEnabled = true
         )
@@ -60,11 +56,9 @@ class FamilyFilterUiStateTest {
     @Test
     fun `isShowingEmptySearch should return false when family filter is enabled with results`() {
         // Given state with family filter enabled and results
-        val state = ProjectsUiState(
+        val state = ProjectsUiState.Content(
             projects = sampleProjects,
             filteredProjects = listOf(sampleProjects.first()),
-            isLoading = false,
-            error = null,
             searchQuery = "",
             isFamilyFilterEnabled = true
         )
@@ -76,11 +70,9 @@ class FamilyFilterUiStateTest {
     @Test
     fun `hasActiveFilters should return true when family filter is enabled`() {
         // Given state with family filter enabled
-        val state = ProjectsUiState(
+        val state = ProjectsUiState.Content(
             projects = sampleProjects,
             filteredProjects = sampleProjects,
-            isLoading = false,
-            error = null,
             searchQuery = "",
             isFamilyFilterEnabled = true
         )
@@ -92,11 +84,9 @@ class FamilyFilterUiStateTest {
     @Test
     fun `hasActiveFilters should return true when search query is not empty`() {
         // Given state with search query
-        val state = ProjectsUiState(
+        val state = ProjectsUiState.Content(
             projects = sampleProjects,
             filteredProjects = sampleProjects,
-            isLoading = false,
-            error = null,
             searchQuery = "test",
             isFamilyFilterEnabled = false
         )
@@ -108,11 +98,9 @@ class FamilyFilterUiStateTest {
     @Test
     fun `hasActiveFilters should return true when both search and family filter are active`() {
         // Given state with both filters active
-        val state = ProjectsUiState(
+        val state = ProjectsUiState.Content(
             projects = sampleProjects,
             filteredProjects = sampleProjects,
-            isLoading = false,
-            error = null,
             searchQuery = "test",
             isFamilyFilterEnabled = true
         )
@@ -124,11 +112,9 @@ class FamilyFilterUiStateTest {
     @Test
     fun `hasActiveFilters should return false when no filters are active`() {
         // Given state with no filters
-        val state = ProjectsUiState(
+        val state = ProjectsUiState.Content(
             projects = sampleProjects,
             filteredProjects = sampleProjects,
-            isLoading = false,
-            error = null,
             searchQuery = "",
             isFamilyFilterEnabled = false
         )
@@ -140,7 +126,7 @@ class FamilyFilterUiStateTest {
     @Test
     fun `default state should have family filter disabled`() {
         // Given default state
-        val state = ProjectsUiState()
+        val state = ProjectsUiState.Content()
         
         // Then family filter should be disabled
         assertFalse(state.isFamilyFilterEnabled)
