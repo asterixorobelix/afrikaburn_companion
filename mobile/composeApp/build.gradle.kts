@@ -117,6 +117,16 @@ kotlin {
             implementation(libs.mockk)
         }
 
+        androidInstrumentedTest.dependencies {
+            implementation(libs.androidx.testExt.junit)
+            implementation(libs.androidx.test.runner)
+            implementation(libs.androidx.test.rules)
+            implementation(libs.androidx.espresso.core)
+            implementation(libs.androidx.uiautomator)
+            implementation(libs.androidx.compose.ui.test.junit4)
+            implementation(libs.fastlane.screengrab)
+        }
+
         iosMain.dependencies {
             implementation(libs.sqldelight.native.driver)
         }
@@ -139,6 +149,7 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 44
         versionName = "2.1.41"
+        testInstrumentationRunner = "io.asterixorobelix.afrikaburn.TestRunner"
     }
     packaging {
         resources {
@@ -158,6 +169,7 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
     
     // Add Firebase dependencies only if Google Services is available
     if (file("google-services.json").exists() || file("src/google-services.json").exists()) {

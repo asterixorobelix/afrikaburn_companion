@@ -1,0 +1,3 @@
+locales ["en-US"]
+clear_previous_screenshots true
+app_package_name "io.asterixorobelix.afrikaburn"

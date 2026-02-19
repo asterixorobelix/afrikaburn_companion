@@ -187,6 +187,32 @@ The workflow should:
 4. ✅ Build Android AAB
 5. ✅ Build iOS IPA
 6. ✅ Create GitHub release with artifacts
+7. ✅ Capture and upload store screenshots (Android + iOS)
+
+## 📸 Store Screenshots (CI)
+
+The CD workflow captures screenshots in CI and uploads them to the stores using fastlane.
+
+### Android (Google Play)
+
+- Screenshot capture is driven by `fastlane android screenshots` (Screengrab).
+- Images are stored under:
+  - `mobile/fastlane/metadata/android/en-US/images/phoneScreenshots/`
+- Ensure the instrumentation test `ScreengrabScreenshotTest` stays up to date with the screens you want on the store listing.
+
+### iOS (App Store Connect)
+
+- Screenshots are uploaded via `fastlane ios upload_screenshots`.
+- Fastlane expects screenshots at:
+  - `mobile/fastlane/screenshots/`
+- If you want to capture them in CI, use `fastlane ios screenshots` on a macOS runner.
+
+### Required Secrets (Screenshots + Uploads)
+
+The CD workflow requires these secrets to upload builds and screenshots:
+
+- `GOOGLE_PLAY_SERVICE_ACCOUNT_JSON` (base64 JSON content)
+- `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_CONTENT` (App Store Connect API key)
 
 ## 🔍 Troubleshooting
 

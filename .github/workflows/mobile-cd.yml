@@ -216,19 +216,46 @@ jobs:
         echo "📦 Downloaded artifacts:"
         ls -la ./artifacts/
 
+    - name: Set up JDK 17
+      uses: actions/setup-java@v5
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3'
+        bundler-cache: true
+        working-directory: mobile/fastlane
+
+    - name: Stage AAB for fastlane
+      run: |
+        mkdir -p mobile/composeApp/build/outputs/bundle/release
+        cp ./artifacts/*.aab mobile/composeApp/build/outputs/bundle/release/composeApp-release.aab
+
     - name: Create whatsnew directory
       run: |
         mkdir -p distribution/whatsnew
         echo "Bug fixes and improvements" > distribution/whatsnew/whatsnew-en-US
 
-    - name: Upload to Google Play Internal Testing
-      uses: r0adkll/upload-google-play@v1
+    - name: Capture Android screenshots
+      uses: reactivecircus/android-emulator-runner@v2
       with:
-        serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-        packageName: io.asterixorobelix.afrikaburn
-        releaseFiles: ./artifacts/*.aab
-        track: internal
-        status: completed
+        api-level: 34
+        target: google_apis
+        arch: x86_64
+        profile: Pixel 6
+        script: |
+          cd mobile/fastlane
+          bundle exec fastlane android screenshots
+
+    - name: Upload to Google Play Internal Testing (fastlane)
+      working-directory: mobile/fastlane
+      env:
+        GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+      run: |
+        bundle exec fastlane android upload_internal metadata_path:metadata/android
 
     - name: Deployment Success
       run: |
@@ -411,6 +438,16 @@ jobs:
       working-directory: mobile/fastlane
       run: |
         bundle exec fastlane ios beta
+
+    - name: Capture iOS screenshots
+      working-directory: mobile/fastlane
+      run: |
+        bundle exec fastlane ios screenshots
+
+    - name: Upload iOS screenshots to App Store Connect
+      working-directory: mobile/fastlane
+      run: |
+        bundle exec fastlane ios upload_screenshots
 
     - name: Upload iOS Artifacts
       if: always()

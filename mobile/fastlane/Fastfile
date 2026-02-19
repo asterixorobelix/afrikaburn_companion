@@ -129,6 +129,45 @@ platform :android do
     UI.success("Successfully deployed to Internal Testing!")
   end
 
+  desc "Capture Android screenshots for Play Store"
+  lane :screenshots do
+    screengrab(
+      clear_previous_screenshots: true,
+      locales: ["en-US"]
+    )
+  end
+
+  desc "Upload Play Store internal track build + screenshots (CI)"
+  lane :upload_internal do |options|
+    ensure_env_vars(
+      env_vars: ["GOOGLE_PLAY_SERVICE_ACCOUNT_JSON"]
+    )
+
+    aab_path = options[:aab] || "composeApp/build/outputs/bundle/release/composeApp-release.aab"
+    metadata_path = options[:metadata_path] || "metadata/android"
+
+    unless File.exist?(aab_path)
+      UI.user_error!("Missing AAB at #{aab_path}. Provide via aab: option.")
+    end
+
+    unless Dir.exist?(metadata_path)
+      UI.user_error!("Missing Android metadata directory at #{metadata_path}.")
+    end
+
+    upload_to_play_store(
+      track: "internal",
+      aab: aab_path,
+      json_key_data: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_JSON"],
+      metadata_path: metadata_path,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: false,
+      release_status: "completed"
+    )
+
+    UI.success("Successfully uploaded screenshots and deployed to Internal Testing!")
+  end
+
   desc "Deploy to Play Store Beta (Open Testing)"
   lane :beta do
     test
@@ -337,6 +376,26 @@ platform :ios do
     )
 
     UI.success("Successfully deployed to TestFlight!")
+  end
+
+  desc "Upload App Store screenshots (metadata only)"
+  lane :upload_screenshots do
+    screenshots_dir = "screenshots"
+    unless Dir.exist?(screenshots_dir)
+      UI.user_error!("Missing iOS screenshots directory at #{screenshots_dir}.")
+    end
+
+    api_key = asc_api_key
+    deliver(
+      api_key: api_key,
+      skip_binary_upload: true,
+      skip_metadata: true,
+      skip_screenshots: false,
+      overwrite_screenshots: true,
+      run_precheck_before_submit: false
+    )
+
+    UI.success("Successfully uploaded App Store screenshots!")
   end
 
   desc "Deploy to TestFlight with external testers"
