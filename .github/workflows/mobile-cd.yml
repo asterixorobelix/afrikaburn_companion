@@ -262,7 +262,7 @@ jobs:
       env:
         GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
       run: |
-        bundle exec fastlane android upload_internal aab:../../artifacts/*.aab metadata_path:metadata/android
+        bundle exec fastlane android upload_internal aab:/Users/runner/work/afrikaburn_companion/afrikaburn_companion/artifacts/*.aab metadata_path:metadata/android
 
     - name: Deployment Success
       run: |

@@ -151,6 +151,8 @@ platform :android do
       UI.user_error!("Missing AAB at #{aab_path}. Provide via aab: option.")
     end
 
+    resolved_aab = File.expand_path(resolved_aab, Dir.pwd)
+
     unless Dir.exist?(metadata_path)
       UI.user_error!("Missing Android metadata directory at #{metadata_path}.")
     end
