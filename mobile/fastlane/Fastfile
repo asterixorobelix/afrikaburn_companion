@@ -278,6 +278,15 @@ platform :ios do
 
   desc "Capture screenshots on iPhone and iPad simulators"
   lane :screenshots do
+    helper_paths = [
+      "iosApp/iosAppUITests/SnapshotHelper.swift"
+    ]
+
+    unless helper_paths.any? { |path| File.exist?(path) }
+      UI.important("Snapshot helper missing. Skipping iOS screenshots.")
+      next
+    end
+
     capture_screenshots(
       workspace: "iosApp/iosApp.xcworkspace",
       scheme: "iosApp",
@@ -386,6 +395,11 @@ platform :ios do
     screenshots_dir = "screenshots"
     unless Dir.exist?(screenshots_dir)
       UI.user_error!("Missing iOS screenshots directory at #{screenshots_dir}.")
+    end
+
+    if Dir.glob("#{screenshots_dir}/**/*.png").empty?
+      UI.important("No iOS screenshots found. Skipping upload.")
+      next
     end
 
     api_key = asc_api_key
