@@ -171,6 +171,12 @@ platform :android do
     UI.success("Successfully uploaded screenshots and deployed to Internal Testing!")
   end
 
+  desc "CI lane: capture screenshots and deploy to Internal Testing"
+  lane :ci_internal do |options|
+    screenshots
+    upload_internal(options)
+  end
+
   desc "Deploy to Play Store Beta (Open Testing)"
   lane :beta do
     test

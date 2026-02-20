@@ -244,25 +244,17 @@ jobs:
         mkdir -p distribution/whatsnew
         echo "Bug fixes and improvements" > distribution/whatsnew/whatsnew-en-US
 
-    - name: Capture Android screenshots
-      continue-on-error: true
+    - name: Deploy Android (screenshots + upload via fastlane)
       uses: reactivecircus/android-emulator-runner@v2
+      env:
+        GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
       with:
         api-level: 34
         target: google_apis
         arch: x86_64
         emulator-boot-timeout: 1200
         script: |
-          set +e
-          cd mobile/fastlane && bundle exec fastlane android screenshots
-          exit 0
-
-    - name: Upload to Google Play Internal Testing (fastlane)
-      working-directory: mobile/fastlane
-      env:
-        GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-      run: |
-        bundle exec fastlane android upload_internal aab:/Users/runner/work/afrikaburn_companion/afrikaburn_companion/artifacts/*.aab metadata_path:metadata/android
+          cd mobile/fastlane && bundle exec fastlane android ci_internal aab:/Users/runner/work/afrikaburn_companion/afrikaburn_companion/artifacts/*.aab metadata_path:metadata/android
 
     - name: Deployment Success
       run: |
