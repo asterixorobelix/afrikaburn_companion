@@ -245,12 +245,12 @@ jobs:
         echo "Bug fixes and improvements" > distribution/whatsnew/whatsnew-en-US
 
     - name: Capture Android screenshots
+      continue-on-error: true
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 34
         target: google_apis
         arch: x86_64
-        disable-animations: true
         emulator-boot-timeout: 1200
         script: |
           set +e
