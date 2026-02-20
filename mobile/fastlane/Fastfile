@@ -146,7 +146,8 @@ platform :android do
     aab_path = options[:aab] || "composeApp/build/outputs/bundle/release/composeApp-release.aab"
     metadata_path = options[:metadata_path] || "metadata/android"
 
-    unless File.exist?(aab_path)
+    resolved_aab = Dir.glob(aab_path).first || File.expand_path(aab_path, Dir.pwd)
+    unless File.exist?(resolved_aab)
       UI.user_error!("Missing AAB at #{aab_path}. Provide via aab: option.")
     end
 
@@ -156,7 +157,7 @@ platform :android do
 
     upload_to_play_store(
       track: "internal",
-      aab: aab_path,
+      aab: resolved_aab,
       json_key_data: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_JSON"],
       metadata_path: metadata_path,
       skip_upload_metadata: true,
