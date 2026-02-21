@@ -262,7 +262,7 @@ jobs:
         echo "📱 Go to Play Console to promote to other tracks when ready."
 
   build-ios:
-    runs-on: macos-latest
+    runs-on: macos-15
     timeout-minutes: 60
     needs: version-and-build
     if: success()
@@ -389,16 +389,6 @@ jobs:
 
     - name: Make gradlew executable
       run: chmod +x mobile/gradlew
-
-    - name: Initialize Gradle wrapper
-      run: |
-        cd mobile
-        gradle wrapper --gradle-version 8.13
-
-    - name: Enforce Gradle wrapper version
-      run: |
-        cd mobile
-        perl -pi -e 's/gradle-8\\.13\\.2-bin/gradle-8.13-bin/' gradle/wrapper/gradle-wrapper.properties
 
     - name: Configure Gradle for CI
       run: |
