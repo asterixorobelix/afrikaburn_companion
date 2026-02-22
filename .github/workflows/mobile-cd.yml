@@ -261,11 +261,13 @@ jobs:
       working-directory: mobile/fastlane
       run: bundle exec fastlane android upload_internal
 
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v3
+
     - name: Install emulator components
-      working-directory: .
       run: |
-        yes | sdkmanager --licenses || true
-        sdkmanager --install \
+        yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
+        "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install \
           "platform-tools" \
           "emulator" \
           "platforms;android-34" \
