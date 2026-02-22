@@ -3,6 +3,30 @@
 **Date**: 2025-09-29  
 **Phase**: 0 - Technology Research and Architecture Decisions
 
+
+## Contents
+
+- [Key Technology Decisions](#key-technology-decisions)
+  - [Compose Multiplatform Architecture](#compose-multiplatform-architecture)
+  - [Offline-First Data Architecture](#offline-first-data-architecture)
+  - [Backend Technology Stack](#backend-technology-stack)
+  - [Dependency Injection](#dependency-injection)
+  - [GPS and Mapping](#gps-and-mapping)
+  - [Testing Strategy](#testing-strategy)
+- [Architecture Patterns](#architecture-patterns)
+  - [MVVM + Clean Architecture](#mvvm-clean-architecture)
+  - [Smart Sync Engine](#smart-sync-engine)
+- [Performance Considerations](#performance-considerations)
+  - [Battery Optimization](#battery-optimization)
+  - [Storage Management](#storage-management)
+- [Security and Privacy](#security-and-privacy)
+  - [Anonymous Authentication](#anonymous-authentication)
+  - [Remote Logging](#remote-logging)
+- [Material Design 3 Implementation](#material-design-3-implementation)
+  - [Theme System](#theme-system)
+  - [Component Architecture](#component-architecture)
+- [Research Validation](#research-validation)
+
 ## Key Technology Decisions
 
 ### Compose Multiplatform Architecture

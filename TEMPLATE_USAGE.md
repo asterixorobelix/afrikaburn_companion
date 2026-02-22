@@ -1,5 +1,39 @@
 # Template Usage Guide
 
+
+## Contents
+
+- [🚀 Quick Start](#quick-start)
+  - [1. Use This Template](#1-use-this-template)
+  - [2. Run Setup Script](#2-run-setup-script)
+  - [3. Verify Setup](#3-verify-setup)
+- [📁 What Gets Created](#what-gets-created)
+  - [Backend Structure](#backend-structure)
+  - [Mobile Structure](#mobile-structure)
+  - [CI/CD Pipelines](#cicd-pipelines)
+- [🛠️ Customization Options](#customization-options)
+  - [Project Configuration](#project-configuration)
+  - [Package Structure](#package-structure)
+  - [Environment Variables](#environment-variables)
+- [🚀 Deployment](#deployment)
+  - [Backend Deployment (Railway)](#backend-deployment-railway)
+  - [Mobile Deployment](#mobile-deployment)
+- [🧪 Testing](#testing)
+  - [Running Tests](#running-tests)
+  - [Code Quality](#code-quality)
+- [📚 Development Workflow](#development-workflow)
+  - [1. Feature Development](#1-feature-development)
+  - [2. Pull Request](#2-pull-request)
+  - [3. Deployment](#3-deployment)
+- [🔧 Advanced Configuration](#advanced-configuration)
+  - [Custom CI/CD](#custom-cicd)
+  - [Database Migration](#database-migration)
+  - [API Documentation](#api-documentation)
+- [🆘 Troubleshooting](#troubleshooting)
+  - [Common Issues](#common-issues)
+  - [Getting Help](#getting-help)
+- [📄 License](#license)
+
 This document explains how to use this repository template to quickly set up a new Kotlin project with backend and mobile components.
 
 ## 🚀 Quick Start

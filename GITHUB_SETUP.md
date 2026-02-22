@@ -1,5 +1,35 @@
 # 🚀 GitHub Repository Setup Guide
 
+
+## Contents
+
+- [📋 Prerequisites](#prerequisites)
+- [🔧 Repository Configuration](#repository-configuration)
+  - [1. Basic Repository Setup](#1-basic-repository-setup)
+  - [2. Firebase Integration](#2-firebase-integration)
+  - [3. Android Release Signing (Production)](#3-android-release-signing-production)
+  - [4. iOS Release Setup (Production)](#4-ios-release-setup-production)
+- [🔄 CI/CD Pipeline Overview](#cicd-pipeline-overview)
+  - [Continuous Integration (CI)](#continuous-integration-ci)
+  - [Continuous Deployment (CD)](#continuous-deployment-cd)
+- [⚙️ Workflow Configuration](#workflow-configuration)
+  - [Mobile CI Workflow Features](#mobile-ci-workflow-features)
+  - [Mobile CD Workflow Features](#mobile-cd-workflow-features)
+- [🔐 Security Configuration](#security-configuration)
+  - [Required Secrets](#required-secrets)
+  - [Optional Secrets](#optional-secrets)
+- [🚀 Using the Workflows](#using-the-workflows)
+  - [Running CI (Automatic)](#running-ci-automatic)
+  - [Running CD (Manual)](#running-cd-manual)
+- [📊 Understanding Results](#understanding-results)
+  - [CI Results](#ci-results)
+  - [CD Results](#cd-results)
+- [🔧 Troubleshooting](#troubleshooting)
+  - [Common Issues](#common-issues)
+  - [Getting Help](#getting-help)
+- [🎯 Quick Start Checklist](#quick-start-checklist)
+- [🤖 Automation Benefits](#automation-benefits)
+
 Complete guide for setting up your GitHub repository with Firebase Crashlytics, CI/CD, and automated releases.
 
 ## 📋 Prerequisites

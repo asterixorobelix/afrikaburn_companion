@@ -1,5 +1,28 @@
 # Branch Protection Setup Guide
 
+
+## Contents
+
+- [Quick Setup](#quick-setup)
+- [Configuration File: `branch-protection.json`](#configuration-file-branch-protectionjson)
+- [Customization Options](#customization-options)
+  - [Required Status Checks](#required-status-checks)
+  - [Pull Request Reviews](#pull-request-reviews)
+  - [Admin Enforcement](#admin-enforcement)
+  - [Push Restrictions](#push-restrictions)
+  - [User/Team Restrictions](#userteam-restrictions)
+- [Example Configurations](#example-configurations)
+  - [Strict Protection (Recommended for Production)](#strict-protection-recommended-for-production)
+  - [Relaxed Protection (For Development)](#relaxed-protection-for-development)
+- [Manual Setup (Alternative)](#manual-setup-alternative)
+- [Troubleshooting](#troubleshooting)
+  - [Status Check Names](#status-check-names)
+  - [Permissions](#permissions)
+  - [GitHub CLI Issues](#github-cli-issues)
+- [Automatic Branch Cleanup](#automatic-branch-cleanup)
+- [Verification](#verification)
+- [Updating Protection Rules](#updating-protection-rules)
+
 This guide explains how to set up and customize branch protection rules for your GitHub repository.
 
 ## Quick Setup

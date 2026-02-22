@@ -1,5 +1,43 @@
 # Mobile CD Workflow Setup Guide
 
+
+## Contents
+
+- [📋 Prerequisites](#prerequisites)
+- [🎯 Workflow Overview](#workflow-overview)
+- [🔧 Repository Setup](#repository-setup)
+  - [1. Enable GitHub Actions](#1-enable-github-actions)
+  - [2. Configure Branch Protection (Recommended)](#2-configure-branch-protection-recommended)
+- [📱 Project Structure Requirements](#project-structure-requirements)
+- [🔐 Android Signing Configuration](#android-signing-configuration)
+  - [Step 1: Create or Locate Android Keystore](#step-1-create-or-locate-android-keystore)
+  - [Step 2: Convert Keystore to Base64](#step-2-convert-keystore-to-base64)
+  - [Step 3: Add Android Secrets to GitHub](#step-3-add-android-secrets-to-github)
+- [🍎 iOS Signing Configuration](#ios-signing-configuration)
+  - [Step 1: Apple Developer Account Setup](#step-1-apple-developer-account-setup)
+  - [Step 2: Configure App Registration](#step-2-configure-app-registration)
+  - [Step 3: Add iOS Secrets to GitHub](#step-3-add-ios-secrets-to-github)
+- [🔥 Firebase Configuration (Optional)](#firebase-configuration-optional)
+  - [Step 1: Set up Firebase Project](#step-1-set-up-firebase-project)
+  - [Step 2: Add Firebase Secrets to GitHub](#step-2-add-firebase-secrets-to-github)
+- [⚙️ Project Configuration](#project-configuration)
+  - [1. Update Android Configuration](#1-update-android-configuration)
+  - [2. Update iOS Configuration](#2-update-ios-configuration)
+  - [3. Verify Project Structure](#3-verify-project-structure)
+- [🧪 Testing the Workflow](#testing-the-workflow)
+  - [Step 1: Manual Workflow Trigger](#step-1-manual-workflow-trigger)
+  - [Step 2: Monitor Workflow Execution](#step-2-monitor-workflow-execution)
+  - [Step 3: Verify Success](#step-3-verify-success)
+- [🔍 Troubleshooting](#troubleshooting)
+  - [Common Issues](#common-issues)
+  - [Debug Steps](#debug-steps)
+- [📚 Advanced Configuration](#advanced-configuration)
+  - [Custom Release Notes](#custom-release-notes)
+  - [Automated Triggers](#automated-triggers)
+  - [Version Strategy](#version-strategy)
+- [🎉 Success Checklist](#success-checklist)
+- [📖 Related Documentation](#related-documentation)
+
 This guide provides step-by-step instructions to set up the GitHub Actions workflow (`mobile-cd.yml`) for automated mobile app continuous deployment (CD). This workflow automatically builds, signs, and releases your Kotlin Multiplatform mobile app for both Android and iOS platforms.
 
 ## 📋 Prerequisites

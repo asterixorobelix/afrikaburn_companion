@@ -1,5 +1,24 @@
 # Deploy Kotlin Backend to Railway - 5 Minute Guide
 
+
+## Contents
+
+- [Prerequisites](#prerequisites)
+- [Step 1: Prepare Your Project](#step-1-prepare-your-project)
+- [Step 2: Create Railway Service](#step-2-create-railway-service)
+- [Step 3: Configure Environment Variables](#step-3-configure-environment-variables)
+- [Step 4: Add Database (Optional)](#step-4-add-database-optional)
+- [Step 5: Deploy](#step-5-deploy)
+- [Step 6: Set Up Custom Domain (Optional)](#step-6-set-up-custom-domain-optional)
+- [Automatic Deployments](#automatic-deployments)
+- [Environment-Specific Configuration](#environment-specific-configuration)
+- [Monitoring](#monitoring)
+- [Scaling](#scaling)
+- [Cost](#cost)
+- [Troubleshooting](#troubleshooting)
+- [One-Click Deploy Button](#one-click-deploy-button)
+- [Next Steps](#next-steps)
+
 ## Prerequisites
 - GitHub repository with your Kotlin backend
 - Railway account (sign up with GitHub at railway.app)

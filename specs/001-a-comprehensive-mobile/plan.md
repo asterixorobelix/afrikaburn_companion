@@ -4,6 +4,23 @@
 **Branch**: `001-a-comprehensive-mobile` | **Date**: 2025-09-29 | **Spec**: [spec.md](spec.md)
 **Input**: Feature specification from `/specs/001-a-comprehensive-mobile/spec.md`
 
+
+## Contents
+
+- [Execution Flow (/plan command scope)](#execution-flow-plan-command-scope)
+- [Summary](#summary)
+- [Technical Context](#technical-context)
+- [Constitution Check](#constitution-check)
+- [Project Structure](#project-structure)
+  - [Documentation (this feature)](#documentation-this-feature)
+  - [Source Code (repository root)](#source-code-repository-root)
+- [Phase 0: Outline & Research](#phase-0-outline-research)
+- [Phase 1: Design & Contracts](#phase-1-design-contracts)
+- [Phase 2: Task Planning Approach](#phase-2-task-planning-approach)
+- [Phase 3+: Future Implementation](#phase-3-future-implementation)
+- [Complexity Tracking](#complexity-tracking)
+- [Progress Tracking](#progress-tracking)
+
 ## Execution Flow (/plan command scope)
 ```
 1. Load feature spec from Input path

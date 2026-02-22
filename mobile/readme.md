@@ -1,5 +1,29 @@
 # Mobile Kotlin Multiplatform Project
 
+
+## Contents
+
+- [🚀 Quick Start](#quick-start)
+  - [Prerequisites Setup](#prerequisites-setup)
+  - [Development Commands](#development-commands)
+- [🔄 CI/CD Integration](#cicd-integration)
+  - [What You Get in PRs](#what-you-get-in-prs)
+- [🚀 Fastlane Deployment](#fastlane-deployment)
+  - [Quick Start](#quick-start)
+  - [Common Commands](#common-commands)
+  - [What Fastlane Automates](#what-fastlane-automates)
+  - [Setup Requirements](#setup-requirements)
+- [📁 Project Structure](#project-structure)
+- [🛠️ Development](#development)
+  - [Code Quality](#code-quality)
+  - [Testing](#testing)
+  - [Architecture](#architecture)
+  - [UI Components](#ui-components)
+- [🔥 Firebase Crashlytics Features](#firebase-crashlytics-features)
+  - [Crash Reporting](#crash-reporting)
+  - [Usage Example](#usage-example)
+  - [Development vs Production](#development-vs-production)
+
 Compose Multiplatform mobile app targeting Android and iOS platforms with Firebase Crashlytics integration.
 
 ![Platform](https://img.shields.io/badge/Platform-iOS%20%7C%20Android-blue)

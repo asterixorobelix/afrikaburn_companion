@@ -5,6 +5,28 @@
 **Status**: Draft  
 **Input**: User description: "A comprehensive mobile app for AfrikaBurn, the South African regional Burning Man event. Built with Compose Multiplatform to provide essential tools for surviving and thriving in the Tankwa Karoo desert."
 
+
+## Contents
+
+- [Execution Flow (main)](#execution-flow-main)
+- [⚡ Quick Guidelines](#quick-guidelines)
+  - [Section Requirements](#section-requirements)
+  - [For AI Generation](#for-ai-generation)
+- [Clarifications](#clarifications)
+  - [Session 2025-09-29](#session-2025-09-29)
+  - [Proposed Features Update](#proposed-features-update)
+- [User Scenarios & Testing *(mandatory)*](#user-scenarios-testing-mandatory)
+  - [Primary User Story](#primary-user-story)
+  - [Acceptance Scenarios](#acceptance-scenarios)
+  - [Edge Cases](#edge-cases)
+- [Requirements *(mandatory)*](#requirements-mandatory)
+  - [Functional Requirements](#functional-requirements)
+  - [Key Entities *(include if feature involves data)*](#key-entities-include-if-feature-involves-data)
+- [Review & Acceptance Checklist](#review-acceptance-checklist)
+  - [Content Quality](#content-quality)
+  - [Requirement Completeness](#requirement-completeness)
+- [Execution Status](#execution-status)
+
 ## Execution Flow (main)
 ```
 1. Parse user description from Input

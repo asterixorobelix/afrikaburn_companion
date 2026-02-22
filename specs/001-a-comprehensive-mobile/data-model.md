@@ -3,6 +3,39 @@
 **Date**: 2025-09-29  
 **Phase**: 1 - Data Architecture Design
 
+
+## Contents
+
+- [Entity Relationships Overview](#entity-relationships-overview)
+- [Core Entities](#core-entities)
+  - [Participant](#participant)
+  - [UserPreferences](#userpreferences)
+  - [CampLocation](#camplocation)
+  - [Event](#event)
+  - [ThemeCamp](#themecamp)
+  - [ArtInstallation](#artinstallation)
+  - [MutantVehicle](#mutantvehicle)
+  - [EventPerformance](#eventperformance)
+  - [PersonalScheduleItem](#personalscheduleitem)
+- [Map and Location Entities](#map-and-location-entities)
+  - [OfflineMap](#offlinemap)
+  - [MapPin](#mappin)
+- [Smart Sync and Content Management](#smart-sync-and-content-management)
+  - [SyncManager](#syncmanager)
+  - [ContentPackage](#contentpackage)
+  - [MediaAsset](#mediaasset)
+- [Safety and Emergency](#safety-and-emergency)
+  - [EmergencyContact](#emergencycontact)
+  - [ResourceLocation](#resourcelocation)
+- [Environmental and Community](#environmental-and-community)
+  - [MOOPReport](#moopreport)
+  - [WeatherAlert](#weatheralert)
+- [State Transitions and Lifecycle](#state-transitions-and-lifecycle)
+  - [Content Unlock States](#content-unlock-states)
+  - [Sync States](#sync-states)
+  - [Storage Management](#storage-management)
+- [Data Volume Estimates](#data-volume-estimates)
+
 ## Entity Relationships Overview
 
 ```

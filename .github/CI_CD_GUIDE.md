@@ -1,5 +1,32 @@
 # CI/CD Test and Code Quality Reporting Guide
 
+
+## Contents
+
+- [🎯 Overview](#overview)
+- [🔍 Workflows](#workflows)
+  - [1. Backend CI (`backend-ci.yml`)](#1-backend-ci-backend-ciyml)
+  - [2. Mobile CI (`mobile-ci.yml`)](#2-mobile-ci-mobile-ciyml)
+  - [3. PR Validation (`pr-validation.yaml`)](#3-pr-validation-pr-validationyaml)
+- [📊 Test Result Reporting](#test-result-reporting)
+  - [In Job Summaries](#in-job-summaries)
+  - [Example Output:](#example-output)
+- [🔍 Detekt Result Reporting](#detekt-result-reporting)
+  - [Automatic PR Comments](#automatic-pr-comments)
+  - [Example Comment:](#example-comment)
+- [📎 Artifact Reports & Test Result Display](#artifact-reports-test-result-display)
+  - [📱 Where Test Results Appear:](#where-test-results-appear)
+  - [🔗 Accessing Detailed Reports:](#accessing-detailed-reports)
+- [⚙️ Configuration](#configuration)
+  - [Test Configuration](#test-configuration)
+  - [Detekt Configuration](#detekt-configuration)
+- [🛠️ Troubleshooting](#troubleshooting)
+  - [Common Issues:](#common-issues)
+  - [Local Testing:](#local-testing)
+- [🔄 Workflow Permissions](#workflow-permissions)
+- [🚀 Best Practices](#best-practices)
+- [📚 Additional Resources](#additional-resources)
+
 This guide explains how test results and detekt (code quality) results are automatically displayed in pull requests.
 
 ## 🎯 Overview

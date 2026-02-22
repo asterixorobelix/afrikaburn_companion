@@ -3,6 +3,57 @@
 
 ---
 
+
+## Contents
+
+- [🏗️ Project Overview](#project-overview)
+- [📁 Directory Structure](#directory-structure)
+- [⚙️ Core Configuration Patterns](#core-configuration-patterns)
+  - [1. Application Entry Point (Application.kt)](#1-application-entry-point-applicationkt)
+  - [2. Database Configuration (plugins/Databases.kt)](#2-database-configuration-pluginsdatabaseskt)
+  - [3. AI Service Integration (services/AIService.kt)](#3-ai-service-integration-servicesaiservicekt)
+- [🔐 Security Configuration](#security-configuration)
+  - [JWT Setup (plugins/Security.kt)](#jwt-setup-pluginssecuritykt)
+  - [Security Headers (plugins/HTTP.kt)](#security-headers-pluginshttpkt)
+  - [Rate Limiting](#rate-limiting)
+- [🌍 Environment Variables](#environment-variables)
+  - [Required for Production](#required-for-production)
+  - [Development Defaults (application.conf)](#development-defaults-applicationconf)
+- [🚀 Essential Dependencies (build.gradle.kts)](#essential-dependencies-buildgradlekts)
+- [🛠️ Common Development Tasks](#common-development-tasks)
+  - [Local Development](#local-development)
+  - [Testing Endpoints](#testing-endpoints)
+  - [Database Operations](#database-operations)
+- [🔄 CI/CD Pipeline](#cicd-pipeline)
+  - [Current Automation](#current-automation)
+  - [Quality Gates](#quality-gates)
+  - [📊 What You Get in PRs](#what-you-get-in-prs)
+- [🤖 AI Integration Details](#ai-integration-details)
+  - [Supported Providers](#supported-providers)
+  - [AI Service Pattern](#ai-service-pattern)
+  - [Cost Management](#cost-management)
+- [🔍 Domain-Driven Design Patterns](#domain-driven-design-patterns)
+  - [Entity Pattern](#entity-pattern)
+  - [Repository Pattern](#repository-pattern)
+  - [Service Layer](#service-layer)
+- [🚀 Deployment Configuration](#deployment-configuration)
+  - [Railway Deployment](#railway-deployment)
+  - [Docker Support](#docker-support)
+  - [Environment Detection](#environment-detection)
+- [🧪 Testing Patterns](#testing-patterns)
+  - [API Testing](#api-testing)
+  - [Service Testing](#service-testing)
+- [🚨 Common Issues & Solutions](#common-issues-solutions)
+  - [Database Connection Issues](#database-connection-issues)
+  - [CORS Issues](#cors-issues)
+  - [JWT Token Issues](#jwt-token-issues)
+- [📊 Monitoring & Observability](#monitoring-observability)
+  - [Health Checks](#health-checks)
+  - [Error Tracking](#error-tracking)
+- [💡 AI Assistant Guidelines](#ai-assistant-guidelines)
+  - [Code Generation Preferences](#code-generation-preferences)
+  - [Security Checklist](#security-checklist)
+
 ## 🏗️ Project Overview
 
 **Tech Stack:**

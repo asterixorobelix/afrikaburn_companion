@@ -1,5 +1,25 @@
 # AfrikaBurn Companion Development Guidelines
 
+
+## Contents
+
+- [Repository Structure](#repository-structure)
+  - [Mobile Application (`/mobile/`)](#mobile-application-mobile)
+  - [Backend Application (`/backend/`)](#backend-application-backend)
+  - [Specifications (`/specs/`)](#specifications-specs)
+- [Active Technologies](#active-technologies)
+- [Key Development Principles](#key-development-principles)
+- [Common Commands](#common-commands)
+  - [Mobile Development](#mobile-development)
+  - [Backend Development](#backend-development)
+- [Code Style](#code-style)
+- [File Path Conventions](#file-path-conventions)
+- [Codebase Quick Reference (Pre-Read Context)](#codebase-quick-reference-pre-read-context)
+  - [Key Entry Points](#key-entry-points)
+  - [Critical Patterns](#critical-patterns)
+  - [Data Flow](#data-flow)
+  - [Version Info](#version-info)
+
 Last updated: 2026-02-19
 
 ## Repository Structure

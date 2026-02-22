@@ -1,5 +1,37 @@
 # Mobile CD Pipeline Setup Instructions
 
+
+## Contents
+
+- [📋 Prerequisites](#prerequisites)
+- [🔧 Repository Configuration](#repository-configuration)
+  - [1. Enable GitHub Actions](#1-enable-github-actions)
+  - [2. Configure Branch Protection (Recommended)](#2-configure-branch-protection-recommended)
+- [🔐 Android Signing Setup](#android-signing-setup)
+  - [Step 1: Prepare Android Keystore](#step-1-prepare-android-keystore)
+  - [Step 2: Convert Keystore to Base64](#step-2-convert-keystore-to-base64)
+  - [Step 3: Add Android Secrets to GitHub](#step-3-add-android-secrets-to-github)
+- [🍎 iOS Signing Setup](#ios-signing-setup)
+  - [Step 1: Apple Developer Account Setup](#step-1-apple-developer-account-setup)
+  - [Step 2: App ID and Certificates](#step-2-app-id-and-certificates)
+  - [Step 3: Add iOS Secrets to GitHub](#step-3-add-ios-secrets-to-github)
+- [📱 Project Configuration](#project-configuration)
+  - [Update iOS Bundle Identifier](#update-ios-bundle-identifier)
+  - [Update Android Application ID](#update-android-application-id)
+  - [Set Initial Version](#set-initial-version)
+- [🧪 Testing the Workflow](#testing-the-workflow)
+  - [Test Workflow Dispatch](#test-workflow-dispatch)
+  - [Verify Workflow Execution](#verify-workflow-execution)
+- [📸 Store Screenshots (CI)](#store-screenshots-ci)
+  - [Android (Google Play)](#android-google-play)
+  - [iOS (App Store Connect)](#ios-app-store-connect)
+  - [Required Secrets (Screenshots + Uploads)](#required-secrets-screenshots-uploads)
+- [🔍 Troubleshooting](#troubleshooting)
+  - [Common Issues](#common-issues)
+  - [Debug Steps](#debug-steps)
+- [📚 Additional Resources](#additional-resources)
+- [🎉 Success Checklist](#success-checklist)
+
 This guide walks you through setting up the GitHub repository to enable the mobile-cd.yml workflow for automated mobile app releases.
 
 ## 📋 Prerequisites

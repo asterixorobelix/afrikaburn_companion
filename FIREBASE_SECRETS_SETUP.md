@@ -1,5 +1,23 @@
 # Firebase Secrets Setup for GitHub Actions
 
+
+## Contents
+
+- [Overview](#overview)
+- [Setup Instructions](#setup-instructions)
+  - [1. Prepare Your Firebase Configuration Files](#1-prepare-your-firebase-configuration-files)
+  - [2. Encode Files to Base64](#2-encode-files-to-base64)
+  - [3. Add Secrets to GitHub Repository](#3-add-secrets-to-github-repository)
+  - [4. Update GitHub Actions Workflow](#4-update-github-actions-workflow)
+- [Security Best Practices](#security-best-practices)
+  - [✅ Do:](#do)
+  - [❌ Don't:](#dont)
+- [Environment-Specific Configurations](#environment-specific-configurations)
+- [Troubleshooting](#troubleshooting)
+  - [Common Issues:](#common-issues)
+  - [Verification:](#verification)
+- [Additional Resources](#additional-resources)
+
 This document explains how to securely add Firebase configuration files (`google-services.json` and `GoogleService-Info.plist`) to GitHub Actions for CI/CD workflows.
 
 ## Overview

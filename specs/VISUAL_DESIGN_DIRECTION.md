@@ -1,5 +1,34 @@
 # Visual Design Direction — AfrikaBurn Companion
 
+
+## Contents
+
+- [Visual Research Summary](#visual-research-summary)
+  - [The Tankwa Karoo Landscape](#the-tankwa-karoo-landscape)
+  - [AfrikaBurn Visual Character](#afrikaburn-visual-character)
+  - [Patterns Across Research](#patterns-across-research)
+- [Colour Palette](#colour-palette)
+  - [Problem With Current Palette](#problem-with-current-palette)
+  - [Proposed Palette](#proposed-palette)
+  - [Semantic Colours (Both Modes)](#semantic-colours-both-modes)
+- [Typography](#typography)
+  - [Recommended Display Font: Bitter](#recommended-display-font-bitter)
+  - [Revised Type Scale](#revised-type-scale)
+- [Texture & Surface](#texture-surface)
+  - [Warm Surfaces, Not Flat](#warm-surfaces-not-flat)
+- [Component Styling](#component-styling)
+  - [Cards](#cards)
+  - [Buttons](#buttons)
+  - [Status Badges](#status-badges)
+  - [Navigation (Bottom Bar)](#navigation-bottom-bar)
+  - [Map Markers](#map-markers)
+- [Implementation Priority](#implementation-priority)
+- [Quality Checklist](#quality-checklist)
+  - ["Not AI-Generated" Comparison](#not-ai-generated-comparison)
+- [Appendix: Colour Values for Implementation](#appendix-colour-values-for-implementation)
+  - [Theme.kt Replacement Values](#themekt-replacement-values)
+  - [colors.xml Updates](#colorsxml-updates)
+
 Derived from research into the Tankwa Karoo landscape, AfrikaBurn event photography, and the emotional positioning established in `BRAND_POSITIONING.md`.
 
 ---

@@ -1,5 +1,27 @@
 # Mobile CD Workflow Optimization Guide
 
+
+## Contents
+
+- [🐛 Common Issues](#common-issues)
+  - [Issue 1: iOS Framework Build Timeout](#issue-1-ios-framework-build-timeout)
+- [🔧 Optimized Workflow Configuration](#optimized-workflow-configuration)
+  - [Solution 1: Update mobile-cd.yml with Optimizations](#solution-1-update-mobile-cdyml-with-optimizations)
+  - [Solution 2: Alternative Approach - Skip iOS IPA Creation](#solution-2-alternative-approach---skip-ios-ipa-creation)
+- [🔧 Additional Optimizations](#additional-optimizations)
+  - [1. Update Gradle Configuration](#1-update-gradle-configuration)
+  - [2. Optimize build.gradle.kts](#2-optimize-buildgradlekts)
+  - [3. GitHub Actions Workflow Optimizations](#3-github-actions-workflow-optimizations)
+- [🚨 Emergency Workarounds](#emergency-workarounds)
+  - [Option 1: Disable iOS Build Temporarily](#option-1-disable-ios-build-temporarily)
+  - [Option 2: Use Matrix Strategy](#option-2-use-matrix-strategy)
+- [📊 Monitoring and Debugging](#monitoring-and-debugging)
+  - [Add Resource Monitoring](#add-resource-monitoring)
+  - [Add Detailed Logging](#add-detailed-logging)
+- [🎯 Recommended Implementation](#recommended-implementation)
+- [📈 Expected Results](#expected-results)
+- [🔍 Troubleshooting](#troubleshooting)
+
 This guide addresses performance issues and timeouts in the mobile-cd.yml workflow, specifically the iOS framework build step that can hang indefinitely.
 
 ## 🐛 Common Issues

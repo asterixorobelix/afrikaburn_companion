@@ -1,5 +1,16 @@
 # Offline Map Assets
 
+
+## Contents
+
+- [Current Status](#current-status)
+- [How to Add PMTiles (Optional)](#how-to-add-pmtiles-optional)
+  - [Step 1: Download from Protomaps (Easiest)](#step-1-download-from-protomaps-easiest)
+  - [Step 2: Update style.json](#step-2-update-stylejson)
+  - [Alternative: pmtiles CLI](#alternative-pmtiles-cli)
+- [Files in this Directory](#files-in-this-directory)
+- [Recommended PMTiles Specs](#recommended-pmtiles-specs)
+
 This directory contains assets for offline map rendering in the AfrikaBurn Companion app.
 
 ## Current Status
