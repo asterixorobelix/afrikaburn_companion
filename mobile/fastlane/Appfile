@@ -8,12 +8,9 @@
 # Path or JSON data for your Google Play Console service account key
 # Generate at: https://play.google.com/console -> Setup -> API access
 play_store_key_path = ENV["PLAY_STORE_JSON_KEY"]
-play_store_key_data = ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_JSON"]
 
 if play_store_key_path && !play_store_key_path.empty?
   json_key_file(play_store_key_path)
-elsif play_store_key_data && !play_store_key_data.empty?
-  json_key_data(play_store_key_data)
 end
 
 # Android package name

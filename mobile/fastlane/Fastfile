@@ -160,7 +160,7 @@ platform :android do
     upload_to_play_store(
       track: "internal",
       aab: resolved_aab,
-      json_key_data: ENV["GOOGLE_PLAY_SERVICE_ACCOUNT_JSON"],
+      json_key: ENV["PLAY_STORE_JSON_KEY"],
       metadata_path: metadata_path,
       skip_upload_metadata: true,
       skip_upload_images: true,
