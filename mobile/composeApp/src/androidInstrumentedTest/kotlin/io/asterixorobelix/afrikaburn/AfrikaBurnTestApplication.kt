@@ -16,7 +16,7 @@ class AfrikaBurnTestApplication : Application() {
         super.onCreate()
 
         val testModule = module {
-            single<EventDateService>(override = true) {
+            single<EventDateService> {
                 EventDateServiceImpl(
                     clock = DefaultClock(),
                     bypassSurpriseMode = true,
@@ -33,6 +33,7 @@ class AfrikaBurnTestApplication : Application() {
 
         startKoin {
             androidContext(this@AfrikaBurnTestApplication)
+            allowOverride(true)
             modules(appModule, testModule)
         }
     }

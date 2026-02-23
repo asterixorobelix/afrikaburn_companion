@@ -156,6 +156,10 @@ jobs:
           ~/.konan
         key: ${{ runner.os }}-gradle-konan-${{ hashFiles('mobile/**/*.gradle*', 'mobile/**/gradle-wrapper.properties', 'mobile/gradle/libs.versions.toml') }}
 
+    - name: Update Snapshot Helper
+      working-directory: mobile/fastlane
+      run: bundle exec fastlane snapshot update
+
     - name: Capture iOS screenshots
       working-directory: mobile/fastlane
       run: bundle exec fastlane ios screenshots
