@@ -275,36 +275,6 @@ jobs:
       working-directory: mobile/fastlane
       run: bundle exec fastlane android upload_internal
 
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v3
-
-    - name: Install emulator components
-      run: |
-        yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
-        "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install \
-          "platform-tools" \
-          "emulator" \
-          "platforms;android-34" \
-          "system-images;android-34;google_apis;x86_64"
-
-    - name: Capture Android screenshots
-      continue-on-error: true
-      env:
-        FASTLANE_AUTO_BOOT_ANDROID_EMULATOR: "true"
-        ANDROID_EMULATOR_API_LEVEL: "34"
-        ANDROID_EMULATOR_ABI: "x86_64"
-        ANDROID_AVD_NAME: "fastlane-ci-api34"
-      working-directory: mobile/fastlane
-      run: bundle exec fastlane android screenshots
-
-    - name: Upload Android screenshots
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: android-screenshots
-        path: mobile/fastlane/screenshots/android
-        if-no-files-found: warn
-
     - name: Deployment Success
       run: |
         echo "Successfully deployed v$NEW_VERSION to Google Play Internal Testing!"
@@ -480,24 +450,6 @@ jobs:
       working-directory: mobile/fastlane
       run: bundle exec fastlane ios beta
 
-    - name: Capture iOS screenshots
-      continue-on-error: true
-      working-directory: mobile/fastlane
-      run: bundle exec fastlane ios screenshots
-
-    - name: Upload iOS screenshots to App Store Connect
-      continue-on-error: true
-      working-directory: mobile/fastlane
-      run: bundle exec fastlane ios upload_screenshots
-
-    - name: Upload iOS screenshots artifact
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: ios-screenshots
-        path: mobile/fastlane/screenshots/ios
-        if-no-files-found: warn
-
     - name: Upload iOS Artifacts
       if: always()
       uses: actions/upload-artifact@v4
@@ -505,6 +457,68 @@ jobs:
         name: ios-ipa
         path: mobile/fastlane/build/*.ipa
         if-no-files-found: warn
+
+  screenshots:
+    needs: [version-and-build]
+    uses: ./.github/workflows/screenshots.yml
+
+  upload-screenshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: [screenshots, deploy-android, build-ios]
+    if: always() && needs.screenshots.result == 'success'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.3'
+        bundler-cache: true
+        working-directory: mobile/fastlane
+
+    - name: Download Android screenshots
+      continue-on-error: true
+      uses: actions/download-artifact@v4
+      with:
+        name: android-screenshots
+        path: mobile/fastlane/screenshots/android
+
+    - name: Download iOS screenshots
+      continue-on-error: true
+      uses: actions/download-artifact@v4
+      with:
+        name: ios-screenshots
+        path: mobile/fastlane/screenshots/ios
+
+    - name: Upload Android screenshots to Play Store
+      continue-on-error: true
+      env:
+        PLAY_STORE_JSON_KEY: /tmp/play-store.json
+        GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+      working-directory: mobile/fastlane
+      run: |
+        if [ -z "$GOOGLE_PLAY_SERVICE_ACCOUNT_JSON" ]; then
+          echo "Missing GOOGLE_PLAY_SERVICE_ACCOUNT_JSON secret, skipping Android screenshot upload"
+          exit 0
+        fi
+        if printf '%s' "$GOOGLE_PLAY_SERVICE_ACCOUNT_JSON" | grep -q '^{'; then
+          printf '%s' "$GOOGLE_PLAY_SERVICE_ACCOUNT_JSON" > /tmp/play-store.json
+        else
+          printf '%s' "$GOOGLE_PLAY_SERVICE_ACCOUNT_JSON" | base64 --decode > /tmp/play-store.json
+        fi
+        bundle exec fastlane android upload_screenshots
+
+    - name: Upload iOS screenshots to App Store Connect
+      continue-on-error: true
+      env:
+        ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+        ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        ASC_KEY_CONTENT: ${{ secrets.ASC_KEY_CONTENT }}
+      working-directory: mobile/fastlane
+      run: bundle exec fastlane ios upload_screenshots
 
   create-release:
     runs-on: ubuntu-latest

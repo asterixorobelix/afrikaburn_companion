@@ -274,6 +274,34 @@ platform :android do
     UI.success("Successfully deployed to Internal Testing!")
   end
 
+  desc "Upload Play Store screenshots from artifacts directory"
+  lane :upload_screenshots do
+    ensure_env_vars(
+      env_vars: ["PLAY_STORE_JSON_KEY"]
+    )
+
+    screenshots_dir = "screenshots/android"
+    unless Dir.exist?(screenshots_dir)
+      UI.user_error!("Missing Android screenshots directory at #{screenshots_dir}.")
+    end
+
+    if Dir.glob("#{screenshots_dir}/**/*.png").empty?
+      UI.important("No Android screenshots found. Skipping upload.")
+      next
+    end
+
+    upload_to_play_store(
+      json_key: ENV["PLAY_STORE_JSON_KEY"],
+      skip_upload_aab: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: false,
+      release_status: "completed"
+    )
+
+    UI.success("Successfully uploaded Play Store screenshots!")
+  end
+
   desc "CI lane: build, capture screenshots, and deploy to Internal Testing"
   lane :ci_internal do |options|
     build_release
