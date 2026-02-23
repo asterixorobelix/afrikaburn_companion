@@ -20,7 +20,8 @@
       "Bash(./gradlew detekt:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(make test)"
+      "Bash(make test)",
+      "Bash(gh workflow:*)"
     ]
   }
 }
