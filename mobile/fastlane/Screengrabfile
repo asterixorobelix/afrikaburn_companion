@@ -7,7 +7,7 @@
 app_package_name(ENV["ANDROID_SCREENSHOT_APP_PACKAGE"] || "io.asterixorobelix.afrikaburn.debug")
 
 # Package containing screenshot tests
-use_tests_in_packages([ENV["ANDROID_SCREENSHOT_TEST_PACKAGE"] || "io.asterixorobelix.afrikaburn.screenshots"])
+use_tests_in_packages([ENV["ANDROID_SCREENSHOT_TEST_PACKAGE"] || "io.asterixorobelix.afrikaburn"])
 
 # Path to debug APK
 app_apk_path("./composeApp/build/outputs/apk/debug/composeApp-debug.apk")
@@ -29,6 +29,9 @@ skip_open_summary(ENV['CI'] == 'true')
 
 # Use ADB to grant permissions automatically
 use_adb_root(false)
+
+# Custom test runner (defined in build.gradle.kts)
+test_instrumentation_runner("io.asterixorobelix.afrikaburn.TestRunner")
 
 # Reinstall app before each locale
 reinstall_app(true)

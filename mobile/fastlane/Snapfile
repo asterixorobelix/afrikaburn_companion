@@ -1,7 +1,7 @@
 # Snapfile - iOS Screenshot Configuration
 
-# Xcode project (use workspace if CocoaPods is present)
-project("./iosApp/iosApp.xcodeproj")
+# Use workspace since CocoaPods provides MapLibre and other dependencies
+workspace("./iosApp/iosApp.xcworkspace")
 
 # Scheme with UI tests attached
 scheme("iosApp")
