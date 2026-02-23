@@ -21,6 +21,8 @@ class AndroidCrashLogger : CrashLogger {
             Log.w(tag, "Firebase Crashlytics method not found, using fallback logging", e)
         } catch (e: IllegalAccessException) {
             Log.w(tag, "Cannot access Firebase Crashlytics, using fallback logging", e)
+        } catch (e: java.lang.reflect.InvocationTargetException) {
+            Log.w(tag, "Firebase Crashlytics initialization failed, using fallback logging", e)
         }
     }
     

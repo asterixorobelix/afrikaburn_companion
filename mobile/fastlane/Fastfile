@@ -428,7 +428,7 @@ platform :ios do
     sh("xcrun simctl shutdown all || true")
     sh("killall Simulator 2>/dev/null || true")
 
-    capture_screenshots
+    capture_screenshots(check_helper_is_current: false)
     frame_screenshots
   end
 
