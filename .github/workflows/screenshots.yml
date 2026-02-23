@@ -43,30 +43,27 @@ jobs:
     - name: Make gradlew executable
       run: chmod +x ./gradlew
 
+    - name: Enable KVM
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+
     - name: Build debug APK and test APK
       run: |
         ./gradlew :composeApp:assembleDebug :composeApp:assembleDebugAndroidTest
 
-    - name: Set up Android SDK
-      uses: android-actions/setup-android@v3
-
-    - name: Install emulator components
-      run: |
-        yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
-        "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install \
-          "platform-tools" \
-          "emulator" \
-          "platforms;android-34" \
-          "system-images;android-34;google_apis;x86_64"
-
     - name: Capture Android screenshots
-      env:
-        FASTLANE_AUTO_BOOT_ANDROID_EMULATOR: "true"
-        ANDROID_EMULATOR_API_LEVEL: "34"
-        ANDROID_EMULATOR_ABI: "x86_64"
-        ANDROID_AVD_NAME: "fastlane-ci-api34"
-      working-directory: mobile/fastlane
-      run: bundle exec fastlane android screenshots
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 34
+        target: google_apis
+        arch: x86_64
+        profile: pixel_6
+        emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot
+        disable-animations: true
+        working-directory: mobile/fastlane
+        script: bundle exec fastlane android screenshots
 
     - name: Upload Android screenshots
       if: always()
@@ -157,8 +154,9 @@ jobs:
         key: ${{ runner.os }}-gradle-konan-${{ hashFiles('mobile/**/*.gradle*', 'mobile/**/gradle-wrapper.properties', 'mobile/gradle/libs.versions.toml') }}
 
     - name: Update Snapshot Helper
-      working-directory: mobile/fastlane
-      run: bundle exec fastlane snapshot update
+      run: |
+        cd iosApp
+        bundle exec --gemfile=../fastlane/Gemfile fastlane snapshot update --force
 
     - name: Capture iOS screenshots
       working-directory: mobile/fastlane
