@@ -67,11 +67,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Setup Gradle
+    - name: Make gradlew executable
       if: matrix.language == 'java-kotlin'
-      uses: gradle/actions/setup-gradle@v4
-      with:
-        gradle-version: 8.11.1
+      run: chmod +x ${{ matrix.build-dir }}/gradlew
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
@@ -84,9 +82,9 @@ jobs:
       run: |
         cd backend
         # Ensure Kotlin compilation is captured by CodeQL
-        gradle compileKotlin
-        gradle detekt
-        gradle build -x test
+        ./gradlew compileKotlin
+        ./gradlew detekt
+        ./gradlew build -x test
 
     - name: Setup Firebase Config for Mobile
       if: matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
@@ -182,27 +180,13 @@ jobs:
       if: matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
       run: |
         cd mobile
-        gradle build -x test
-
-    - name: Setup Gradle for Swift
-      if: matrix.language == 'swift'
-      uses: gradle/actions/setup-gradle@v4
-      with:
-        gradle-version: 8.11.1
+        ./gradlew build -x test
 
     - name: Setup Xcode
       if: matrix.language == 'swift'
       uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: 'latest-stable'
-    
-    - name: Create dummy gradlew for iOS build
-      if: matrix.language == 'swift'
-      run: |
-        cd mobile
-        echo '#!/bin/bash' > gradlew
-        echo 'gradle "$@"' >> gradlew
-        chmod +x gradlew
     
     - name: Build iOS App
       if: matrix.language == 'swift'

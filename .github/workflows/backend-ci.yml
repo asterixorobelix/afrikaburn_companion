@@ -29,17 +29,25 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v4
+    - name: Make gradlew executable
+      run: chmod +x backend/gradlew
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
       with:
-        gradle-version: 8.11.1
-      
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-backend-${{ hashFiles('backend/**/*.gradle*', 'backend/gradle/wrapper/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-backend-
+
     - name: Run tests
-      run: gradle test --continue
+      run: ./gradlew test --continue
       working-directory: backend
     
     - name: Run detekt
-      run: gradle detekt --continue
+      run: ./gradlew detekt --continue
       working-directory: backend
       continue-on-error: true
     
@@ -138,7 +146,7 @@ jobs:
           }
     
     - name: Build application
-      run: gradle build
+      run: ./gradlew build
       working-directory: backend
     
     - name: Upload test results

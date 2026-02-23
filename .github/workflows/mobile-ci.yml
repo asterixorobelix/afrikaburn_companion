@@ -65,11 +65,6 @@ jobs:
     - name: Make gradlew executable
       run: chmod +x mobile/gradlew
       
-    - name: Initialize Gradle wrapper
-      run: |
-        cd mobile
-        gradle wrapper --gradle-version 8.11.1
-      
     - name: Run tests
       run: |
         cd mobile
