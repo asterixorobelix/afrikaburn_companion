@@ -440,7 +440,7 @@ jobs:
     - name: Build iOS framework
       run: |
         cd mobile
-        ./gradlew :composeApp:assembleDebugFrameworkDevice
+        ./gradlew :composeApp:linkDebugFrameworkIosSimulatorArm64
 
     # Claude diagnosis only runs on push to main/develop (trusted code).
     # Excluded from pull_request/pull_request_target to prevent secret exposure on public repo.
