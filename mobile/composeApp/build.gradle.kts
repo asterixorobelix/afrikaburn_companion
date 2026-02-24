@@ -124,7 +124,7 @@ kotlin {
             implementation(libs.androidx.espresso.core)
             implementation(libs.androidx.uiautomator)
             implementation(libs.androidx.compose.ui.test.junit4)
-            implementation(libs.fastlane.screengrab)
+
         }
 
         iosMain.dependencies {
@@ -149,7 +149,7 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 44
         versionName = "2.1.41"
-        testInstrumentationRunner = "io.asterixorobelix.afrikaburn.TestRunner"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     packaging {
         resources {

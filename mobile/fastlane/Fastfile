@@ -29,100 +29,6 @@ def compose_app_root
   File.join(mobile_root, "composeApp")
 end
 
-def android_connected_devices
-  output = sh("adb devices")
-  output.lines.filter_map do |line|
-    parts = line.strip.split
-    next if parts.empty? || parts[0] == "List" || parts[1] != "device"
-    parts[0]
-  end
-end
-
-def android_emulator_tools
-  sdk_root = ENV["ANDROID_SDK_ROOT"] || ENV["ANDROID_HOME"]
-  return nil if sdk_root.nil? || sdk_root.empty?
-
-  sdkmanager = [
-    File.join(sdk_root, "cmdline-tools", "latest", "bin", "sdkmanager"),
-    File.join(sdk_root, "tools", "bin", "sdkmanager")
-  ].find { |path| File.exist?(path) }
-
-  avdmanager = [
-    File.join(sdk_root, "cmdline-tools", "latest", "bin", "avdmanager"),
-    File.join(sdk_root, "tools", "bin", "avdmanager")
-  ].find { |path| File.exist?(path) }
-
-  emulator = File.join(sdk_root, "emulator", "emulator")
-
-  return nil unless sdkmanager && avdmanager && File.exist?(emulator)
-
-  {
-    sdkmanager: sdkmanager,
-    avdmanager: avdmanager,
-    emulator: emulator
-  }
-end
-
-def wait_for_emulator_boot(serial, timeout_seconds: 360)
-  start = Time.now
-  loop do
-    boot = sh("adb -s #{serial} shell getprop sys.boot_completed 2>/dev/null || true").strip
-    anim = sh("adb -s #{serial} shell getprop init.svc.bootanim 2>/dev/null || true").strip
-    break if boot == "1" && anim == "stopped"
-
-    if Time.now - start > timeout_seconds
-      UI.user_error!("Emulator #{serial} did not finish booting within #{timeout_seconds}s")
-    end
-
-    sleep(5)
-  end
-
-  sh("adb -s #{serial} shell settings put global window_animation_scale 0")
-  sh("adb -s #{serial} shell settings put global transition_animation_scale 0")
-  sh("adb -s #{serial} shell settings put global animator_duration_scale 0")
-end
-
-def ensure_android_screenshot_device!
-  devices = android_connected_devices
-  return devices.first unless devices.empty?
-
-  auto_boot = ENV.fetch("FASTLANE_AUTO_BOOT_ANDROID_EMULATOR", ENV["CI"] == "true" ? "true" : "false")
-  unless auto_boot == "true"
-    UI.user_error!("No Android device/emulator connected. Start one manually, or set FASTLANE_AUTO_BOOT_ANDROID_EMULATOR=true.")
-  end
-
-  tools = android_emulator_tools
-  unless tools
-    UI.user_error!("Android emulator tools not found. Set ANDROID_SDK_ROOT/ANDROID_HOME with emulator, sdkmanager, and avdmanager installed.")
-  end
-
-  avd_name = ENV.fetch("ANDROID_AVD_NAME", "fastlane-ci-api34")
-  api_level = ENV.fetch("ANDROID_EMULATOR_API_LEVEL", "34")
-  abi = ENV.fetch("ANDROID_EMULATOR_ABI", "x86_64")
-  image = "system-images;android-#{api_level};google_apis;#{abi}"
-
-  available_avds = sh("#{tools[:emulator]} -list-avds || true").lines.map(&:strip)
-  unless available_avds.include?(avd_name)
-    sh("yes | #{tools[:sdkmanager]} --install '#{image}'")
-    sh("echo 'no' | #{tools[:avdmanager]} create avd -n '#{avd_name}' -k '#{image}' --device 'pixel_6' --force")
-  end
-
-  sh("nohup #{tools[:emulator]} -avd '#{avd_name}' -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot >/tmp/#{avd_name}.log 2>&1 &")
-  sh("adb wait-for-device")
-
-  serial = ""
-  30.times do
-    serial = android_connected_devices.first.to_s
-    break unless serial.empty?
-    sleep(2)
-  end
-
-  UI.user_error!("Emulator started but no adb device became available.") if serial.empty?
-
-  wait_for_emulator_boot(serial, timeout_seconds: ENV.fetch("ANDROID_EMULATOR_BOOT_TIMEOUT", "420").to_i)
-  serial
-end
-
 # ============================================================================
 # ANDROID LANES
 # ============================================================================
@@ -228,24 +134,6 @@ platform :android do
     UI.success("Successfully deployed to Internal Testing!")
   end
 
-  desc "Capture Android screenshots for Play Store"
-  lane :screenshots do
-    ensure_android_screenshot_device!
-
-    gradle(
-      project_dir: mobile_root,
-      task: ":composeApp:assembleDebug"
-    )
-
-    gradle(
-      project_dir: mobile_root,
-      task: ":composeApp:assembleDebugAndroidTest"
-    )
-
-    capture_android_screenshots
-    UI.success("Android screenshots captured to fastlane/screenshots/android")
-  end
-
   desc "Upload Play Store internal track build (CI)"
   lane :upload_internal do |options|
     ensure_env_vars(
@@ -274,39 +162,33 @@ platform :android do
     UI.success("Successfully deployed to Internal Testing!")
   end
 
-  desc "Upload Play Store screenshots from artifacts directory"
+  desc "Upload Play Store screenshots from local screenshots directory"
   lane :upload_screenshots do
     ensure_env_vars(
       env_vars: ["PLAY_STORE_JSON_KEY"]
     )
 
-    screenshots_dir = "screenshots/android"
+    screenshots_dir = File.join(mobile_root, "fastlane", "screenshots", "android")
     unless Dir.exist?(screenshots_dir)
-      UI.user_error!("Missing Android screenshots directory at #{screenshots_dir}.")
+      UI.user_error!("Missing Android screenshots at #{screenshots_dir}. See SCREENSHOTS.md for instructions.")
     end
 
-    if Dir.glob("#{screenshots_dir}/**/*.png").empty?
-      UI.important("No Android screenshots found. Skipping upload.")
+    png_files = Dir.glob(File.join(screenshots_dir, "**", "*.png"))
+    if png_files.empty?
+      UI.important("No Android screenshot PNGs found. Skipping upload.")
       next
     end
 
+    UI.message("Uploading #{png_files.length} Android screenshots...")
     upload_to_play_store(
       json_key: ENV["PLAY_STORE_JSON_KEY"],
       skip_upload_aab: true,
       skip_upload_metadata: true,
       skip_upload_images: true,
-      skip_upload_screenshots: false,
-      release_status: "completed"
+      skip_upload_screenshots: false
     )
 
     UI.success("Successfully uploaded Play Store screenshots!")
-  end
-
-  desc "CI lane: build, capture screenshots, and deploy to Internal Testing"
-  lane :ci_internal do |options|
-    build_release
-    screenshots
-    upload_internal(options)
   end
 
   desc "Deploy to Play Store Beta (Open Testing)"
@@ -416,22 +298,6 @@ platform :ios do
     )
   end
 
-  desc "Capture screenshots on iPhone and iPad simulators"
-  lane :screenshots do
-    helper_path = File.join(mobile_root, "iosApp/AfrikaburnUITests/SnapshotHelper.swift")
-
-    unless File.exist?(helper_path)
-      UI.important("Snapshot helper missing at #{helper_path}. Skipping iOS screenshots.")
-      next
-    end
-
-    sh("xcrun simctl shutdown all || true")
-    sh("killall Simulator 2>/dev/null || true")
-
-    capture_screenshots(check_helper_is_current: false)
-    frame_screenshots
-  end
-
   desc "Run tests on iPhone and iPad simulators to catch launch crashes"
   lane :test do
     ios_ws = File.join(mobile_root, "iosApp", "iosApp.xcworkspace")
@@ -530,18 +396,20 @@ platform :ios do
     UI.success("Successfully deployed to TestFlight!")
   end
 
-  desc "Upload App Store screenshots (metadata only)"
+  desc "Upload App Store screenshots from local screenshots directory"
   lane :upload_screenshots do
-    screenshots_dir = "screenshots"
+    screenshots_dir = File.join(mobile_root, "fastlane", "screenshots", "ios")
     unless Dir.exist?(screenshots_dir)
-      UI.user_error!("Missing iOS screenshots directory at #{screenshots_dir}.")
+      UI.user_error!("Missing iOS screenshots at #{screenshots_dir}. See SCREENSHOTS.md for instructions.")
     end
 
-    if Dir.glob("#{screenshots_dir}/**/*.png").empty?
-      UI.important("No iOS screenshots found. Skipping upload.")
+    png_files = Dir.glob(File.join(screenshots_dir, "**", "*.png"))
+    if png_files.empty?
+      UI.important("No iOS screenshot PNGs found. Skipping upload.")
       next
     end
 
+    UI.message("Uploading #{png_files.length} iOS screenshots...")
     api_key = asc_api_key
     deliver(
       api_key: api_key,
@@ -549,6 +417,7 @@ platform :ios do
       skip_metadata: true,
       skip_screenshots: false,
       overwrite_screenshots: true,
+      screenshots_path: screenshots_dir,
       run_precheck_before_submit: false
     )
 
