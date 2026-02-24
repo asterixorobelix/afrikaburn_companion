@@ -34,7 +34,7 @@ materialIconsExtended = "1.7.3"
 mockk = "1.14.6"
 maplibre-compose = "0.11.1"
 playServicesLocation = "21.3.0"
-sqldelight = "2.0.2"
+sqldelight = "2.2.1"
 
 [libraries]
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
