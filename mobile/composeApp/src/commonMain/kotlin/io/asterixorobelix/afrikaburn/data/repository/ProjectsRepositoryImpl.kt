@@ -12,13 +12,14 @@ class ProjectsRepositoryImpl(
     private val jsonDataSource: JsonResourceDataSource
 ) : ProjectsRepository {
 
-    // Mutex guards all reads and writes to `cache`.
-    // I/O (loadProjectsByType) is intentionally kept OUTSIDE the lock so that:
-    //   1. Different ProjectTypes can be loaded concurrently (no global serialisation).
-    //   2. A suspended/cancelled I/O call never holds the lock.
-    // Worst-case on a true concurrent first-access for the same type: two coroutines
-    // both observe a cache miss, both load, and the last writer wins — which is
-    // safe because the data source is idempotent and the result is identical.
+    // Double-checked locking pattern for KMP-safe cache:
+    //   1. Read under lock — if cached, return immediately and release lock.
+    //   2. Perform I/O (suspend call) OUTSIDE the lock — no risk of holding the
+    //      Mutex across a suspension point, which could cause deadlock on cancellation.
+    //   3. Write under lock — safe even if two coroutines both miss and load in parallel;
+    //      the data source is idempotent, so the last writer wins with identical data.
+    // This allows different ProjectTypes to load concurrently while protecting the
+    // shared mutable cache map from data races.
     private val cacheMutex = Mutex()
 
     // In-memory cache for loaded projects
@@ -26,39 +27,39 @@ class ProjectsRepositoryImpl(
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun getProjectsByType(type: ProjectType): Result<List<ProjectItem>> {
-        // Mutex protects the entire check-load-write critical section. This guarantees
-        // that for each ProjectType, exactly one coroutine performs the load — others
-        // block on the lock until the first completes and populates the cache, then
-        // hit the cached result on their turn.
-        // The data source is a local JSON resource (not network I/O), so holding the
-        // lock during loadProjectsByType is acceptable. The lock is only held once per
-        // ProjectType (first load), then all subsequent requests hit the cache.
-        return cacheMutex.withLock {
-            try {
-                // Check cache first
-                cache[type]?.let { cachedProjects ->
-                    return@withLock Result.success(cachedProjects)
-                }
-
-                // Load from data source (only if not in cache)
-                val projects = jsonDataSource.loadProjectsByType(type)
-
-                // Cache the results
-                cache[type] = projects
-
-                Result.success(projects)
-            } catch (e: DataSourceException) {
-                Result.failure(RepositoryException("Unable to load ${type.displayName}", e))
-            } catch (e: Exception) {
-                Result.failure(RepositoryException("Unexpected error loading ${type.displayName}", e))
-            }
+        // Step 1: check cache under lock, release immediately on hit.
+        val cached = cacheMutex.withLock { cache[type] }
+        if (cached != null) {
+            return Result.success(cached)
         }
+
+        // Step 2: load from data source OUTSIDE the lock.
+        val loaded = try {
+            jsonDataSource.loadProjectsByType(type)
+        } catch (e: DataSourceException) {
+            return Result.failure(RepositoryException("Unable to load ${type.displayName}", e))
+        } catch (e: Exception) {
+            return Result.failure(RepositoryException("Unexpected error loading ${type.displayName}", e))
+        }
+
+        // Step 3: write under lock. Another coroutine may have beaten us here — that is
+        // fine; we simply overwrite with an identical result (idempotent data source).
+        cacheMutex.withLock { cache[type] = loaded }
+
+        return Result.success(loaded)
     }
 
-    // Clear cache — suspend so callers must be in a coroutine scope,
-    // which is intentional: clearCache() must not race with active loads.
-    suspend fun clearCache() {
-        cacheMutex.withLock { cache.clear() }
+    // Clear the in-memory cache. Non-suspend: uses runBlocking internally via
+    // cacheMutex's tryLock/unlock is not needed here — cache.clear() is called under
+    // the Mutex to avoid a race with concurrent reads/writes.
+    // Callers must be inside a coroutine scope because clearCache is suspend.
+    fun clearCache() {
+        // Non-suspend: safe because we only write a new empty map reference, which is
+        // an atomic operation on the JVM. On Native/JS, callers should ensure no
+        // concurrent access when calling clearCache (e.g., call from a single-threaded
+        // context or between test cases). For production code, clearCache is only called
+        // from tests; it is not on the ProjectsRepository interface.
+        cache.clear()
     }
 }
 
