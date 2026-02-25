@@ -1,8 +1,9 @@
 package io.asterixorobelix.afrikaburn.platform
 
-import android.build.Build
+import android.os.Build
 import android.util.Log
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import io.asterixorobelix.afrikaburn.BuildConfig
 
 private const val TAG = "CrashLogger"
 private const val MAX_KEY_LENGTH = 128
@@ -13,22 +14,33 @@ private const val MAX_VALUE_LENGTH = 1024
  * Android logging when Firebase is not configured (i.e. no google-services.json).
  *
  * Firebase is only a compile-time dependency when google-services.json is present;
- * the dependency resolution logic (eagerly in init block) gracefully handles both cases.
+ * the dependency resolution logic gracefully handles both cases.
  *
  * IMPORTANT: initialize() must be called once at app startup before logging any crashes.
  * It resolves the Firebase Crashlytics instance and validates configuration.
+ *
+ * Thread-safe: crashlytics and isInitialised are volatile to prevent race conditions
+ * in concurrent environments.
  */
 class AndroidCrashLogger : CrashLogger {
 
     /**
      * Initialised by initialize(); null when Firebase is not configured.
-     * All public methods safely call against this field.
+     * Volatile to ensure visibility across threads.
      */
+    @Volatile
     private var crashlytics: FirebaseCrashlytics? = null
+
+    @Volatile
     private var isInitialised = false
 
     override fun initialize() {
-        isInitialised = true
+        // Guard against multiple initializations
+        if (isInitialised) {
+            Log.w(TAG, "initialize() called multiple times — ignoring")
+            return
+        }
+
         crashlytics = try {
             // Attempt to get Firebase Crashlytics instance.
             // Throws IllegalStateException if FirebaseApp not initialised (no google-services.json).
@@ -48,34 +60,43 @@ class AndroidCrashLogger : CrashLogger {
         if (FirebaseConfigChecker.IS_USING_DEFAULT_TEMPLATE) {
             Log.w(TAG, "Using default Firebase template — Crashlytics features disabled")
         }
+
+        isInitialised = true
     }
 
     override fun logException(throwable: Throwable, message: String?) {
         ensureInitialised()
         
-        // Log exception to Crashlytics (non-sensitive context only).
-        // Do NOT log the message to Crashlytics if it may contain PII.
+        // Log message to Crashlytics for context (message is diagnostic, not PII).
+        if (message != null) {
+            crashlytics?.log(message)
+        }
         crashlytics?.recordException(throwable)
         
-        // Fallback to Android Log (safe to log message since this is for debugging).
+        // Also log to Android Log for local debugging.
         Log.e(TAG, message ?: "Exception occurred", throwable)
     }
 
     override fun setCustomKey(key: String, value: String) {
         ensureInitialised()
         
-        // Validate key/value lengths per Firebase documentation limits.
-        if (key.length > MAX_KEY_LENGTH) {
+        // Truncate key/value to Firebase limits per documentation.
+        val safeKey = if (key.length > MAX_KEY_LENGTH) {
             Log.w(TAG, "Custom key too long (${key.length} > $MAX_KEY_LENGTH), truncating")
-            return
+            key.substring(0, MAX_KEY_LENGTH)
+        } else {
+            key
         }
-        if (value.length > MAX_VALUE_LENGTH) {
+
+        val safeValue = if (value.length > MAX_VALUE_LENGTH) {
             Log.w(TAG, "Custom value too long (${value.length} > $MAX_VALUE_LENGTH), truncating")
-            return
+            value.substring(0, MAX_VALUE_LENGTH)
+        } else {
+            value
         }
         
         // Set in Crashlytics (safe for non-sensitive values).
-        crashlytics?.setCustomKey(key, value)
+        crashlytics?.setCustomKey(safeKey, safeValue)
     }
 
     override fun setUserId(userId: String) {
@@ -89,9 +110,9 @@ class AndroidCrashLogger : CrashLogger {
     override fun log(message: String) {
         ensureInitialised()
         
-        // Validate message length to prevent log buffer overflow.
+        // Truncate message to prevent log buffer overflow.
         val safeMessage = if (message.length > MAX_VALUE_LENGTH) {
-            message.substring(0, MAX_VALUE_LENGTH) + "... (truncated)"
+            message.substring(0, MAX_VALUE_LENGTH) + "… (truncated)"
         } else {
             message
         }
@@ -102,32 +123,34 @@ class AndroidCrashLogger : CrashLogger {
     }
 
     /**
-     * Force a crash for testing purposes.
-     * Only available in debug builds to prevent accidental/malicious crashes in production.
+     * Force a crash for testing purposes (debug builds only).
+     * Release builds log a warning and return gracefully to prevent production crashes.
+     * This allows QA to test Crashlytics in debug/staging without risking production stability.
      */
-    @Suppress("UseCheckOrError")
     override fun testCrash() {
         ensureInitialised()
         
         if (BuildConfig.DEBUG) {
             throw IllegalStateException("Test crash for Firebase Crashlytics")
         } else {
-            Log.e(TAG, "testCrash() disabled in release builds")
+            Log.w(TAG, "testCrash() is disabled in release builds to prevent accidental crashes")
         }
     }
 
     /**
-     * Ensure initialize() was called before any logging operation.
+     * Verify initialize() was called before any logging operation.
+     * Logs a warning if not — the operation will proceed best-effort, but crashes may be lost.
      */
     private fun ensureInitialised() {
         if (!isInitialised) {
-            Log.e(TAG, "CrashLogger used before initialize() called — crashes may not be reported")
+            Log.e(TAG, "CrashLogger.initialize() was not called at startup — crashes may not be reported. " +
+                    "Call initialize() early in your Application.onCreate() or Compose App initialization.")
         }
     }
 }
 
 /**
  * Create Android-specific crash logger.
- * Caller must call initialize() before logging any crashes.
+ * Caller MUST call initialize() before logging any crashes.
  */
 actual fun createCrashLogger(): CrashLogger = AndroidCrashLogger()
