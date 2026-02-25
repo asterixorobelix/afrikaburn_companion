@@ -5,6 +5,8 @@ import io.asterixorobelix.afrikaburn.domain.repository.ProjectsRepository
 import io.asterixorobelix.afrikaburn.models.Artist
 import io.asterixorobelix.afrikaburn.models.ProjectItem
 import io.asterixorobelix.afrikaburn.models.ProjectType
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -113,6 +115,27 @@ class ProjectsRepositoryImplTest {
         // Then data source should be called with correct type
         assertEquals(ProjectType.VEHICLES, dataSource.lastRequestedType)
     }
+
+    @Test
+    fun `getProjectsByType should only call data source once for same type under concurrent load`() = runTest {
+        // Given a data source that tracks call count
+        val dataSource = MockJsonResourceDataSourceForRepository().apply {
+            setSuccessResponse(sampleProjects)
+        }
+        val repository = ProjectsRepositoryImpl(dataSource)
+
+        // When multiple coroutines request the same type simultaneously
+        val results = (1..10).map {
+            async { repository.getProjectsByType(ProjectType.ART) }
+        }.awaitAll()
+
+        // Then all results are successful and match expected data
+        assertTrue(results.all { it.isSuccess })
+        assertTrue(results.all { it.getOrNull() == sampleProjects })
+
+        // And data source was called only once (cache served the rest)
+        assertEquals(1, dataSource.loadCallCount)
+    }
 }
 
 internal class MockJsonResourceDataSourceForRepository : JsonResourceDataSource {
@@ -120,6 +143,7 @@ internal class MockJsonResourceDataSourceForRepository : JsonResourceDataSource 
     private var errorMessage = ""
     private var projects = emptyList<ProjectItem>()
     var lastRequestedType: ProjectType? = null
+    var loadCallCount = 0
     
     fun setSuccessResponse(projectList: List<ProjectItem>) {
         shouldThrowError = false
@@ -132,12 +156,11 @@ internal class MockJsonResourceDataSourceForRepository : JsonResourceDataSource 
     }
     
     override suspend fun loadProjectsByType(type: ProjectType): List<ProjectItem> {
+        loadCallCount++
         lastRequestedType = type
-        
         if (shouldThrowError) {
             throw Exception(errorMessage)
         }
-        
         return projects
     }
 }
