@@ -7,7 +7,7 @@
 
 Phase: All complete
 Status: Between milestones
-Last activity: 2026-02-17 — Completed v3.1 Event Surprise Mode milestone
+Last activity: 2026-02-25 - Completed quick task 1: Fix race condition in ProjectsRepositoryImpl cache: replace MutableMap with ConcurrentHashMap or Mutex protection
 
 Progress: ██████████ 100% (v3.1)
 
@@ -35,10 +35,16 @@ See: `.planning/PROJECT.md` (updated 2026-02-17)
 
 None.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 1 | Fix race condition in ProjectsRepositoryImpl cache: replace MutableMap with ConcurrentHashMap or Mutex protection | 2026-02-25 | 1d37ed2 | [1-fix-race-condition-in-projectsrepository](./quick/1-fix-race-condition-in-projectsrepository/) |
+
 ## Next Steps
 
 1. `/gsd:new-milestone` to start next milestone cycle
 
 ---
 
-*State updated: 2026-02-17 after completing v3.1 Event Surprise Mode milestone*
+*State updated: 2026-02-25 - Completed quick task 1: Fix race condition in ProjectsRepositoryImpl cache: replace MutableMap with ConcurrentHashMap or Mutex protection*
