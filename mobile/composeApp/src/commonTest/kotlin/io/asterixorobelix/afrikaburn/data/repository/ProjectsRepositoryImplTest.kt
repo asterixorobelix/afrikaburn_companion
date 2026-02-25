@@ -117,16 +117,13 @@ class ProjectsRepositoryImplTest {
     }
 
     @Test
-    fun `getProjectsByType should call data source at most once per type for repeated requests`() = runTest {
-        // NOTE: runTest uses a single-threaded cooperative scheduler, so the async coroutines
-        // below execute sequentially — they do not exercise real concurrent access.
-        // This test validates the cache-hit path: after the first successful load, subsequent
-        // calls return the cached result without hitting the data source again.
-        //
-        // Under the double-checked locking pattern, in a truly concurrent scenario (real
-        // dispatcher), two coroutines that both observe a cache miss may both load from the
-        // data source before either writes to the cache. Therefore we assert `<= 10` (upper
-        // bound) rather than `== 1`, to remain correct regardless of scheduling.
+    fun `getProjectsByType should call data source exactly once for concurrent requests of same type`() = runTest {
+        // The single Mutex wrapping check-load-write guarantees exactly one data source call
+        // per ProjectType. Under runTest's single-threaded cooperative scheduler the 10 async
+        // coroutines execute sequentially: the first misses, loads, and caches; the remaining
+        // 9 each hit the cache and return immediately. The assertion == 1 is therefore correct
+        // and deterministic. In a truly multi-threaded context the Mutex still serialises all
+        // callers, so the guarantee holds.
         val dataSource = MockJsonResourceDataSourceForRepository().apply {
             setSuccessResponse(sampleProjects)
         }
@@ -139,9 +136,8 @@ class ProjectsRepositoryImplTest {
         assertTrue(results.all { it.isSuccess })
         assertTrue(results.all { it.getOrNull() == sampleProjects })
 
-        // At least 1 call (first load) and at most 10 (one per coroutine in worst-case
-        // concurrent scenario). Under runTest's sequential scheduler this will be exactly 1.
-        assertTrue(dataSource.loadCallCount in 1..10)
+        // Exactly one data source call — the Mutex prevents duplicate loads
+        assertEquals(1, dataSource.loadCallCount)
     }
 }
 
