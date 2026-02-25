@@ -77,7 +77,10 @@ kotlin {
             implementation(libs.play.services.location)
             implementation(libs.sqldelight.android.driver)
 
-            // Firebase for Android - moved to conditional dependencies section
+            // Firebase — always present so CrashLogger can use direct API (no reflection)
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.crashlytics)
+            implementation(libs.firebase.analytics)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -171,13 +174,6 @@ android {
 dependencies {
     debugImplementation(compose.uiTooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    
-    // Add Firebase dependencies only if Google Services is available
-    if (file("google-services.json").exists() || file("src/google-services.json").exists()) {
-        implementation(project.dependencies.platform(libs.firebase.bom))
-        implementation(libs.firebase.crashlytics)
-        implementation(libs.firebase.analytics)
-    }
 }
 
 // Configure detekt for this subproject
