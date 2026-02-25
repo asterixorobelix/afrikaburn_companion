@@ -10,12 +10,14 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * SQLDelight-based implementation of UserCampPinRepository.
  * All database operations run on Dispatchers.IO.
  */
+@OptIn(ExperimentalTime::class)
 class UserCampPinRepositoryImpl(
     private val database: AfrikaBurnDatabase
 ) : UserCampPinRepository {

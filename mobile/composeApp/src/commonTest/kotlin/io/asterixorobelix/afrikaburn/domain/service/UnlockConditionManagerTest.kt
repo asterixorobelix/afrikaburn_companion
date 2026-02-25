@@ -3,7 +3,8 @@ package io.asterixorobelix.afrikaburn.domain.service
 import io.asterixorobelix.afrikaburn.domain.model.EventConfig
 import io.asterixorobelix.afrikaburn.domain.repository.UnlockStateRepository
 import io.asterixorobelix.afrikaburn.platform.LocationData
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
+import kotlin.time.ExperimentalTime
 import kotlinx.datetime.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -26,6 +27,7 @@ import kotlin.test.assertTrue
  * - Bypass flag unlocks without persistence
  * - Changing event year clears persisted unlock state
  */
+@OptIn(ExperimentalTime::class)
 class UnlockConditionManagerTest {
 
     // =========================================================================

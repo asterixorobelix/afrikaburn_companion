@@ -3,7 +3,8 @@ package io.asterixorobelix.afrikaburn.domain.service
 import io.asterixorobelix.afrikaburn.domain.repository.UnlockStateRepository
 import io.asterixorobelix.afrikaburn.platform.LocationData
 import kotlin.concurrent.Volatile
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Manager for evaluating unlock conditions for surprise mode.
@@ -19,6 +20,7 @@ import kotlinx.datetime.Instant
  * - Date OR geofence condition is sufficient (not both required)
  * - Bypass flag returns unlocked but does NOT persist
  */
+@OptIn(ExperimentalTime::class)
 interface UnlockConditionManager {
 
     /**
@@ -71,6 +73,7 @@ interface UnlockConditionManager {
  * @param geofenceService For checking user proximity to event
  * @param unlockStateRepository For persisting unlock state
  */
+@OptIn(ExperimentalTime::class)
 class UnlockConditionManagerImpl(
     private val eventDateService: EventDateService,
     private val geofenceService: GeofenceService,
