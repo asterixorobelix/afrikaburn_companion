@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
@@ -41,6 +42,8 @@ import io.asterixorobelix.afrikaburn.ui.projects.ProjectsScreen
 import io.asterixorobelix.afrikaburn.ui.about.AboutScreen
 import io.asterixorobelix.afrikaburn.di.koinMapViewModel
 import io.asterixorobelix.afrikaburn.ui.screens.map.MapScreen
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -150,6 +153,17 @@ private fun ShowWelcomeMessage(
     }
 }
 
+private val projectItemSaver = Saver<ProjectItem?, String>(
+    save = { project -> if (project != null) Json.encodeToString(project) else "" },
+    restore = { json -> if (json.isNotEmpty()) Json.decodeFromString<ProjectItem>(json) else null }
+)
+
+private val projectTypeSaver = Saver<ProjectType?, String>(
+    save = { type -> type?.name ?: "" },
+    restore = { name -> if (name.isNotEmpty()) ProjectType.valueOf(name) else null }
+)
+
+@Suppress("LongMethod")
 @Composable
 private fun AppScaffold(
     snackbarHostState: SnackbarHostState,
@@ -163,8 +177,13 @@ private fun AppScaffold(
     val currentBaseRoute = remember(currentRoute) { currentRoute?.substringBefore("?") }
 
     // State holder for selected project (used for detail navigation)
-    var selectedProject by rememberSaveable { mutableStateOf<ProjectItem?>(null) }
-    var pendingExploreProjectType by rememberSaveable { mutableStateOf<ProjectType?>(null) }
+    // rememberSaveable with custom Savers ensures state survives config changes and process death
+    var selectedProject by rememberSaveable(stateSaver = projectItemSaver) {
+        mutableStateOf<ProjectItem?>(null)
+    }
+    var pendingExploreProjectType by rememberSaveable(stateSaver = projectTypeSaver) {
+        mutableStateOf<ProjectType?>(null)
+    }
 
     // Hide bottom bar on detail screens and sub-routes (Directions/About from More)
     val topLevelRoutes = remember(visibleDestinations) {
