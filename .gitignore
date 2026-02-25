@@ -337,4 +337,5 @@ detekt-report.*
 
 # Test results
 test-results/
-mobile/.kotlin/metadata/kotlinTransformedMetadataLibraries/.pipeline-state.json
+mobile/.kotlin/metadata/kotlinTransformedMetadataLibraries/
+.pipeline-state.json

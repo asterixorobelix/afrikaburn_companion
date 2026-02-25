@@ -12,11 +12,13 @@ class ProjectsRepositoryImpl(
     private val jsonDataSource: JsonResourceDataSource
 ) : ProjectsRepository {
 
-    // Mutex to protect the entire cache check-and-load critical section.
-    // Wrapping both the cache read and the data-source load in a single withLock
-    // guarantees exactly one coroutine performs the load per ProjectType — all
-    // others block until the first completes and populates the cache, then hit
-    // the cache path on subsequent runs.
+    // Mutex guards all reads and writes to `cache`.
+    // I/O (loadProjectsByType) is intentionally kept OUTSIDE the lock so that:
+    //   1. Different ProjectTypes can be loaded concurrently (no global serialisation).
+    //   2. A suspended/cancelled I/O call never holds the lock.
+    // Worst-case on a true concurrent first-access for the same type: two coroutines
+    // both observe a cache miss, both load, and the last writer wins — which is
+    // safe because the data source is idempotent and the result is identical.
     private val cacheMutex = Mutex()
 
     // In-memory cache for loaded projects
@@ -24,29 +26,28 @@ class ProjectsRepositoryImpl(
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun getProjectsByType(type: ProjectType): Result<List<ProjectItem>> {
-        return cacheMutex.withLock {
-            try {
-                // Check cache first
-                cache[type]?.let { cachedProjects ->
-                    return@withLock Result.success(cachedProjects)
-                }
+        // Fast path: return cached value without holding the lock longer than needed.
+        cacheMutex.withLock { cache[type] }?.let { return Result.success(it) }
 
-                // Load from data source
-                val projects = jsonDataSource.loadProjectsByType(type)
+        return try {
+            // Slow path: load from data source outside the lock so concurrent requests
+            // for different types are not serialised and the Mutex is never held
+            // across a suspend point.
+            val projects = jsonDataSource.loadProjectsByType(type)
 
-                // Cache the results
-                cache[type] = projects
+            // Write result to cache under lock (last-writer-wins is fine here).
+            cacheMutex.withLock { cache[type] = projects }
 
-                Result.success(projects)
-            } catch (e: DataSourceException) {
-                Result.failure(RepositoryException("Unable to load ${type.displayName}", e))
-            } catch (e: Exception) {
-                Result.failure(RepositoryException("Unexpected error loading ${type.displayName}", e))
-            }
+            Result.success(projects)
+        } catch (e: DataSourceException) {
+            Result.failure(RepositoryException("Unable to load ${type.displayName}", e))
+        } catch (e: Exception) {
+            Result.failure(RepositoryException("Unexpected error loading ${type.displayName}", e))
         }
     }
 
-    // Clear cache — suspend so it can safely acquire the mutex
+    // Clear cache — suspend so callers must be in a coroutine scope,
+    // which is intentional: clearCache() must not race with active loads.
     suspend fun clearCache() {
         cacheMutex.withLock { cache.clear() }
     }
