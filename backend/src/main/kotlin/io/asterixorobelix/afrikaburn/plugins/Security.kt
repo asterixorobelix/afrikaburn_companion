@@ -8,9 +8,24 @@ import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
 
-fun Application.configureSecurity(
-    env: (String) -> String? = System::getenv,
-) {
+/**
+ * Resolved JWT configuration after environment variable validation.
+ * Constructed by [resolveJwtConfig]; all fields are guaranteed non-blank.
+ */
+data class JwtConfig(
+    val secret: String,
+    val issuer: String,
+    val audience: String,
+)
+
+/**
+ * Reads and validates JWT environment variables.
+ * Throws [IllegalStateException] immediately if any required variable is missing,
+ * blank, or (for JWT_SECRET) shorter than 64 characters.
+ *
+ * Extracted from [configureSecurity] so it can be unit-tested without a Ktor application context.
+ */
+fun resolveJwtConfig(env: (String) -> String? = System::getenv): JwtConfig {
     val jwtSecret = env("JWT_SECRET")?.trim()?.takeIf { it.isNotBlank() }
         ?: throw IllegalStateException(
             "JWT_SECRET environment variable is not set or is blank. " +
@@ -33,20 +48,31 @@ fun Application.configureSecurity(
                 "Expected format: reverse domain with suffix, e.g. 'io.asterixorobelix.afrikaburn-users'. " +
                 "See backend/.env.example for all required variables."
         )
+    return JwtConfig(secret = jwtSecret, issuer = jwtIssuer, audience = jwtAudience)
+}
+
+fun Application.configureSecurity(
+    env: (String) -> String? = System::getenv,
+) {
+    val config = resolveJwtConfig(env)
 
     install(Authentication) {
         jwt("auth-jwt") {
-            realm = "MyProject API"
+            realm = "AfrikaBurn API"
             verifier(
-                JWT.require(Algorithm.HMAC256(jwtSecret))
-                    .withAudience(jwtAudience)
-                    .withIssuer(jwtIssuer)
+                JWT.require(Algorithm.HMAC256(config.secret))
+                    .withAudience(config.audience)
+                    .withIssuer(config.issuer)
                     .build()
             )
             validate { credential ->
-                if (credential.payload.getClaim("username").asString() != "") {
+                if (!credential.payload.getClaim("username").isNull &&
+                    credential.payload.getClaim("username").asString()?.isNotBlank() == true
+                ) {
                     JWTPrincipal(credential.payload)
-                } else null
+                } else {
+                    null
+                }
             }
         }
     }
