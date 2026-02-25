@@ -18,10 +18,13 @@ data class JwtConfig(
     val audience: String,
 )
 
+/** Minimum required length for JWT_SECRET to ensure adequate entropy. */
+private const val JWT_SECRET_MIN_LENGTH = 64
+
 /**
  * Reads and validates JWT environment variables.
  * Throws [IllegalStateException] immediately if any required variable is missing,
- * blank, or (for JWT_SECRET) shorter than 64 characters.
+ * blank, or (for JWT_SECRET) shorter than [JWT_SECRET_MIN_LENGTH] characters.
  *
  * Extracted from [configureSecurity] so it can be unit-tested without a Ktor application context.
  */
@@ -29,11 +32,11 @@ fun resolveJwtConfig(env: (String) -> String? = System::getenv): JwtConfig {
     val jwtSecret = env("JWT_SECRET")?.trim()?.takeIf { it.isNotBlank() }
         ?: throw IllegalStateException(
             "JWT_SECRET environment variable is not set or is blank. " +
-                "Provide a random string of at least 64 characters (e.g. openssl rand -hex 32). " +
+                "Provide a random string of at least $JWT_SECRET_MIN_LENGTH characters (e.g. openssl rand -hex 32). " +
                 "See backend/.env.example for all required variables."
         )
-    check(jwtSecret.length >= 64) {
-        "JWT_SECRET must be at least 64 characters long (got ${jwtSecret.length} characters after trimming). " +
+    check(jwtSecret.length >= JWT_SECRET_MIN_LENGTH) {
+        "JWT_SECRET must be at least $JWT_SECRET_MIN_LENGTH characters long (got ${jwtSecret.length} characters after trimming). " +
             "Generate one with: openssl rand -hex 32"
     }
     val jwtIssuer = env("JWT_ISSUER")?.trim()?.takeIf { it.isNotBlank() }
