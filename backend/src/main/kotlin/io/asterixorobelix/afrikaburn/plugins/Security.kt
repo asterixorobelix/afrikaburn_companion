@@ -18,7 +18,7 @@ fun Application.configureSecurity(
                 "See backend/.env.example for all required variables."
         )
     check(jwtSecret.length >= 64) {
-        "JWT_SECRET must be at least 64 characters long (got ${jwtSecret.length} non-whitespace characters). " +
+        "JWT_SECRET must be at least 64 characters long (got ${jwtSecret.length} characters after trimming). " +
             "Generate one with: openssl rand -hex 32"
     }
     val jwtIssuer = env("JWT_ISSUER")?.trim()?.takeIf { it.isNotBlank() }
