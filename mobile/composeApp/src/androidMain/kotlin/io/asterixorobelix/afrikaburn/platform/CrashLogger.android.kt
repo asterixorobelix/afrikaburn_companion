@@ -10,7 +10,7 @@ private const val TAG = "CrashLogger"
  *
  * Crashlytics only reports to Firebase when a valid google-services.json is present
  * and the google-gms / firebase-crashlytics plugins are applied (see build.gradle.kts).
- * Without those plugins the SDK is a no-op stub, so no reflection is needed.
+ * Without those plugins the SDK silently discards all calls, so no reflection is needed.
  */
 class AndroidCrashLogger : CrashLogger {
 
