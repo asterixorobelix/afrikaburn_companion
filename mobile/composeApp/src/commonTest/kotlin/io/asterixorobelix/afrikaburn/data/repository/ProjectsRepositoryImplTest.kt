@@ -117,13 +117,14 @@ class ProjectsRepositoryImplTest {
     }
 
     @Test
-    fun `getProjectsByType returns correct results for sequential repeated calls`() = runTest {
-        // Note: runTest uses a single-threaded TestCoroutineScheduler, so async blocks
-        // execute cooperatively (not in parallel). This test validates correctness under
-        // sequential repeated access — all 10 calls succeed and return the same data.
-        // The cache is hit after the first load (loadCallCount stays at 1 under runTest's
-        // scheduler because the first coroutine completes fully before the second starts).
-        // True concurrent safety is guaranteed by the Mutex in the implementation.
+    fun `getProjectsByType should call data source exactly once for concurrent requests of same type`() = runTest {
+        // The Mutex ensures that all 10 concurrent requests for the same ProjectType
+        // serialize through the critical section. The first acquires the lock, checks cache
+        // (miss), loads from data source, caches the result, and releases the lock.
+        // The remaining 9 acquire the lock in turn, check the cache (hit), and return
+        // immediately. Under runTest's single-threaded scheduler this is guaranteed because
+        // the scheduler is cooperative. Under a real multi-threaded dispatcher, the same
+        // guarantee holds because the Mutex serializes all access to the cache.
         val dataSource = MockJsonResourceDataSourceForRepository().apply {
             setSuccessResponse(sampleProjects)
         }
@@ -135,10 +136,9 @@ class ProjectsRepositoryImplTest {
 
         assertTrue(results.all { it.isSuccess })
         assertTrue(results.all { it.getOrNull() == sampleProjects })
-        // Under runTest's cooperative scheduler the cache is always hit after the first call.
-        // Under a real multi-threaded dispatcher the count may be > 1 on first access (by
-        // design — the double-checked pattern allows idempotent concurrent first-loads).
-        assertTrue(dataSource.loadCallCount >= 1)
+
+        // Exactly one call to the data source, even with 10 concurrent requests for the same type
+        assertEquals(1, dataSource.loadCallCount)
     }
 }
 

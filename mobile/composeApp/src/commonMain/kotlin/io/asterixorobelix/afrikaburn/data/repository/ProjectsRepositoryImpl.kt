@@ -26,23 +26,32 @@ class ProjectsRepositoryImpl(
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun getProjectsByType(type: ProjectType): Result<List<ProjectItem>> {
-        // Fast path: return cached value without holding the lock longer than needed.
-        cacheMutex.withLock { cache[type] }?.let { return Result.success(it) }
+        // Mutex protects the entire check-load-write critical section. This guarantees
+        // that for each ProjectType, exactly one coroutine performs the load — others
+        // block on the lock until the first completes and populates the cache, then
+        // hit the cached result on their turn.
+        // The data source is a local JSON resource (not network I/O), so holding the
+        // lock during loadProjectsByType is acceptable. The lock is only held once per
+        // ProjectType (first load), then all subsequent requests hit the cache.
+        return cacheMutex.withLock {
+            try {
+                // Check cache first
+                cache[type]?.let { cachedProjects ->
+                    return@withLock Result.success(cachedProjects)
+                }
 
-        return try {
-            // Slow path: load from data source outside the lock so concurrent requests
-            // for different types are not serialised and the Mutex is never held
-            // across a suspend point.
-            val projects = jsonDataSource.loadProjectsByType(type)
+                // Load from data source (only if not in cache)
+                val projects = jsonDataSource.loadProjectsByType(type)
 
-            // Write result to cache under lock (last-writer-wins is fine here).
-            cacheMutex.withLock { cache[type] = projects }
+                // Cache the results
+                cache[type] = projects
 
-            Result.success(projects)
-        } catch (e: DataSourceException) {
-            Result.failure(RepositoryException("Unable to load ${type.displayName}", e))
-        } catch (e: Exception) {
-            Result.failure(RepositoryException("Unexpected error loading ${type.displayName}", e))
+                Result.success(projects)
+            } catch (e: DataSourceException) {
+                Result.failure(RepositoryException("Unable to load ${type.displayName}", e))
+            } catch (e: Exception) {
+                Result.failure(RepositoryException("Unexpected error loading ${type.displayName}", e))
+            }
         }
     }
 
