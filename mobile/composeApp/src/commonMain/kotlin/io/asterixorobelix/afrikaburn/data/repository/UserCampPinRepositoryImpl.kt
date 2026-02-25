@@ -57,36 +57,44 @@ class UserCampPinRepositoryImpl(
         latitude: Double,
         longitude: Double,
         name: String
-    ) = withContext(Dispatchers.IO) {
-        val now = Clock.System.now().toEpochMilliseconds()
-        queries.saveUserCampPin(
-            latitude = latitude,
-            longitude = longitude,
-            name = name,
-            createdAt = now,
-            updatedAt = now
-        )
+    ) {
+        withContext(Dispatchers.IO) {
+            val now = Clock.System.now().toEpochMilliseconds()
+            queries.saveUserCampPin(
+                latitude = latitude,
+                longitude = longitude,
+                name = name,
+                createdAt = now,
+                updatedAt = now
+            )
+        }
     }
 
     override suspend fun updateLocation(
         latitude: Double,
         longitude: Double
-    ) = withContext(Dispatchers.IO) {
-        val now = Clock.System.now().toEpochMilliseconds()
-        queries.updateLocation(
-            latitude = latitude,
-            longitude = longitude,
-            updatedAt = now
-        )
+    ) {
+        withContext(Dispatchers.IO) {
+            val now = Clock.System.now().toEpochMilliseconds()
+            queries.updateLocation(
+                latitude = latitude,
+                longitude = longitude,
+                updatedAt = now
+            )
+        }
     }
 
-    override suspend fun updateName(name: String) = withContext(Dispatchers.IO) {
-        val now = Clock.System.now().toEpochMilliseconds()
-        queries.updateName(name = name, updatedAt = now)
+    override suspend fun updateName(name: String) {
+        withContext(Dispatchers.IO) {
+            val now = Clock.System.now().toEpochMilliseconds()
+            queries.updateName(name = name, updatedAt = now)
+        }
     }
 
-    override suspend fun deleteCampPin() = withContext(Dispatchers.IO) {
-        queries.deleteUserCampPin()
+    override suspend fun deleteCampPin() {
+        withContext(Dispatchers.IO) {
+            queries.deleteUserCampPin()
+        }
     }
 
     override suspend fun hasCampPin(): Boolean = withContext(Dispatchers.IO) {
