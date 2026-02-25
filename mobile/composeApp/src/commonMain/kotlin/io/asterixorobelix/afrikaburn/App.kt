@@ -163,8 +163,8 @@ private fun AppScaffold(
     val currentBaseRoute = remember(currentRoute) { currentRoute?.substringBefore("?") }
 
     // State holder for selected project (used for detail navigation)
-    var selectedProject by remember { mutableStateOf<ProjectItem?>(null) }
-    var pendingExploreProjectType by remember { mutableStateOf<ProjectType?>(null) }
+    var selectedProject by rememberSaveable { mutableStateOf<ProjectItem?>(null) }
+    var pendingExploreProjectType by rememberSaveable { mutableStateOf<ProjectType?>(null) }
 
     // Hide bottom bar on detail screens and sub-routes (Directions/About from More)
     val topLevelRoutes = remember(visibleDestinations) {
