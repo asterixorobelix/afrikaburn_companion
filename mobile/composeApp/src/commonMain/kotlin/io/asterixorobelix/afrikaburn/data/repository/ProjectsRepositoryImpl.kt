@@ -12,7 +12,11 @@ class ProjectsRepositoryImpl(
     private val jsonDataSource: JsonResourceDataSource
 ) : ProjectsRepository {
 
-    // Mutex to protect cache from concurrent coroutine access (prevents duplicate loads)
+    // Mutex to protect the entire cache check-and-load critical section.
+    // Wrapping both the cache read and the data-source load in a single withLock
+    // guarantees exactly one coroutine performs the load per ProjectType — all
+    // others block until the first completes and populates the cache, then hit
+    // the cache path on subsequent runs.
     private val cacheMutex = Mutex()
 
     // In-memory cache for loaded projects
@@ -20,25 +24,25 @@ class ProjectsRepositoryImpl(
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun getProjectsByType(type: ProjectType): Result<List<ProjectItem>> {
-        return try {
-            // Check cache first (lock-protected read)
-            cacheMutex.withLock { cache[type] }?.let { cachedProjects ->
-                return Result.success(cachedProjects)
+        return cacheMutex.withLock {
+            try {
+                // Check cache first
+                cache[type]?.let { cachedProjects ->
+                    return@withLock Result.success(cachedProjects)
+                }
+
+                // Load from data source
+                val projects = jsonDataSource.loadProjectsByType(type)
+
+                // Cache the results
+                cache[type] = projects
+
+                Result.success(projects)
+            } catch (e: DataSourceException) {
+                Result.failure(RepositoryException("Unable to load ${type.displayName}", e))
+            } catch (e: Exception) {
+                Result.failure(RepositoryException("Unexpected error loading ${type.displayName}", e))
             }
-
-            // Load from data source — outside the lock so I/O doesn't serialise all coroutines.
-            // Worst case on first concurrent call: two coroutines both miss the cache and both
-            // load from the data source (idempotent), then the last writer wins in the map.
-            val projects = jsonDataSource.loadProjectsByType(type)
-
-            // Cache the results (lock-protected write)
-            cacheMutex.withLock { cache[type] = projects }
-
-            Result.success(projects)
-        } catch (e: DataSourceException) {
-            Result.failure(RepositoryException("Unable to load ${type.displayName}", e))
-        } catch (e: Exception) {
-            Result.failure(RepositoryException("Unexpected error loading ${type.displayName}", e))
         }
     }
 
