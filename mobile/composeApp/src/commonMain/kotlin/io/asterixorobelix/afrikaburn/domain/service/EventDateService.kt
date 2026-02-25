@@ -1,8 +1,9 @@
 package io.asterixorobelix.afrikaburn.domain.service
 
 import io.asterixorobelix.afrikaburn.domain.model.EventConfig
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -38,6 +39,7 @@ interface EventDateService {
 /**
  * Default Clock implementation using the system clock.
  */
+@OptIn(ExperimentalTime::class)
 class DefaultClock : Clock {
     override fun now(): Instant = Clock.System.now()
 }
@@ -49,6 +51,7 @@ class DefaultClock : Clock {
  * @param bypassSurpriseMode Debug flag to bypass surprise mode (defaults to false)
  * @param config Event configuration to use (defaults to EventConfig.DEFAULT)
  */
+@OptIn(ExperimentalTime::class)
 class EventDateServiceImpl(
     private val clock: Clock,
     private val bypassSurpriseMode: Boolean = false,

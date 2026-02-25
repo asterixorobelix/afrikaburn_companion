@@ -1,6 +1,7 @@
 package io.asterixorobelix.afrikaburn.domain.repository
 
-import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Repository for managing unlock state for surprise mode, scoped to an event year.
@@ -10,6 +11,7 @@ import kotlinx.datetime.Instant
  * changes (e.g., updating from 2026 to 2027), the state is cleared so tabs
  * re-lock until the new event's conditions are met.
  */
+@OptIn(ExperimentalTime::class)
 interface UnlockStateRepository {
     /**
      * Check if the tabs have been unlocked for the current event year.

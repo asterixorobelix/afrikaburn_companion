@@ -2,8 +2,9 @@ package io.asterixorobelix.afrikaburn.data.repository
 
 import io.asterixorobelix.afrikaburn.data.database.AfrikaBurnDatabase
 import io.asterixorobelix.afrikaburn.domain.repository.UnlockStateRepository
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * SQLDelight-based implementation of UnlockStateRepository.
@@ -11,6 +12,7 @@ import kotlinx.datetime.Instant
  * Persists unlock state using a single-row table pattern, scoped to an event year.
  * When the event year changes, the state can be cleared so tabs re-lock.
  */
+@OptIn(ExperimentalTime::class)
 class UnlockStateRepositoryImpl(
     private val database: AfrikaBurnDatabase,
     private val clock: Clock = Clock.System

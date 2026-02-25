@@ -2,8 +2,9 @@ package io.asterixorobelix.afrikaburn.domain.service
 
 import io.asterixorobelix.afrikaburn.domain.model.EventConfig
 import io.asterixorobelix.afrikaburn.platform.LocationData
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -16,6 +17,7 @@ import kotlin.test.assertTrue
  * AfrikaBurn event location: -32.3266, 19.7437 (Tankwa Karoo)
  * Geofence radius: 20 km
  */
+@OptIn(ExperimentalTime::class)
 class GeofenceServiceTest {
 
     /**

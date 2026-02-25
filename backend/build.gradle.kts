@@ -1,4 +1,4 @@
-val ktor_version = "3.1.3"
+val ktor_version = "3.3.0"
 val kotlin_version = "2.2.20"
 val logback_version = "1.5.18"
 val exposed_version = "0.61.0"
@@ -64,7 +64,7 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     
     // Testing
-    testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
+    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     testImplementation("io.kotest:kotest-runner-junit5:6.0.3")
     testImplementation("io.mockk:mockk:1.14.5")

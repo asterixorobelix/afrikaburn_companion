@@ -8,24 +8,28 @@ import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
 
-fun Application.configureSecurity() {
-    val jwtSecret = System.getenv("JWT_SECRET") ?: "default-secret-change-in-production"
-    val jwtIssuer = System.getenv("JWT_ISSUER") ?: "io.asterixorobelix.afrikaburn"
-    val jwtAudience = System.getenv("JWT_AUDIENCE") ?: "io.asterixorobelix.afrikaburn-users"
-    
+fun Application.configureSecurity(
+    env: (String) -> String? = System::getenv,
+) {
+    val config = resolveJwtConfig(env)
+
     install(Authentication) {
         jwt("auth-jwt") {
-            realm = "MyProject API"
+            realm = "AfrikaBurn API"
             verifier(
-                JWT.require(Algorithm.HMAC256(jwtSecret))
-                    .withAudience(jwtAudience)
-                    .withIssuer(jwtIssuer)
+                JWT.require(Algorithm.HMAC256(config.secret))
+                    .withAudience(config.audience)
+                    .withIssuer(config.issuer)
                     .build()
             )
             validate { credential ->
-                if (credential.payload.getClaim("username").asString() != "") {
+                if (!credential.payload.getClaim("username").isNull &&
+                    credential.payload.getClaim("username").asString()?.isNotBlank() == true
+                ) {
                     JWTPrincipal(credential.payload)
-                } else null
+                } else {
+                    null
+                }
             }
         }
     }
