@@ -9,14 +9,14 @@ import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
 
 fun Application.configureSecurity() {
-    val jwtSecret = System.getenv("JWT_SECRET")?.takeIf { it.isNotBlank() }
+    val jwtSecret = System.getenv("JWT_SECRET")?.trim()?.takeIf { it.isNotBlank() }
         ?: throw IllegalStateException(
             "JWT_SECRET environment variable is not set or is blank. " +
                 "Provide a random string of at least 32 characters (e.g. openssl rand -hex 32). " +
                 "See backend/.env.example for all required variables."
         )
     check(jwtSecret.length >= 32) {
-        "JWT_SECRET must be at least 32 characters long (got ${jwtSecret.length}). " +
+        "JWT_SECRET must be at least 32 characters long (got ${jwtSecret.length} non-whitespace characters). " +
             "Generate one with: openssl rand -hex 32"
     }
     val jwtIssuer = System.getenv("JWT_ISSUER")?.trim()?.takeIf { it.isNotBlank() }
