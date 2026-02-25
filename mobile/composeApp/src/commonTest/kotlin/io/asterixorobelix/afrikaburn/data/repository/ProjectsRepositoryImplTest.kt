@@ -133,7 +133,11 @@ class ProjectsRepositoryImplTest {
         assertTrue(results.all { it.isSuccess })
         assertTrue(results.all { it.getOrNull() == sampleProjects })
 
-        // And data source was called only once (cache served the rest)
+        // Note: runTest uses a single-threaded TestCoroutineScheduler, so async blocks execute
+        // cooperatively rather than truly in parallel. The Mutex ensures exactly-once loading
+        // holds even under real concurrent access (the entire check-load-write is one withLock).
+        // Under runTest the count is always 1; under a real multi-threaded dispatcher it is also
+        // 1 because the Mutex serialises all coroutines through the critical section.
         assertEquals(1, dataSource.loadCallCount)
     }
 }
