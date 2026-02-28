@@ -7,9 +7,6 @@ on:
   pull_request:
     branches: [ main ]
     paths: [ 'backend/**' ]
-  pull_request_target:
-    types: [opened]
-    paths: [ 'backend/**' ]
 
 jobs:
   test:
@@ -176,28 +173,3 @@ jobs:
         echo "Add Railway deployment commands here"
         # Example: railway up --service backend
 
-  request-copilot-review:
-    if: github.event_name == 'pull_request_target'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: read
-    
-    steps:
-    - name: Request GitHub Copilot Review
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PR_NUMBER: ${{ github.event.number }}
-      run: |
-        gh pr review $PR_NUMBER --repo ${{ github.repository }} --comment --body "🤖 **GitHub Copilot Auto-Review Request**
-        
-        This PR has been automatically flagged for Copilot review. Please review the backend-related changes:
-        
-        - ✅ Code quality and best practices
-        - ✅ Kotlin/Ktor backend conventions
-        - ✅ Security vulnerabilities
-        - ✅ Performance optimizations
-        - ✅ Database query efficiency
-        - ✅ API design and error handling
-        
-        Use GitHub Copilot's code review features to analyze this PR."

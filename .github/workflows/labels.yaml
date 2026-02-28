@@ -4,49 +4,52 @@ on:
   push:
     branches: [main]
     paths:
-      - '.github/labels.yml'
-      - '.github/workflows/labels.yml'
+      - '.github/labels.yaml'
+      - '.github/workflows/labels.yaml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+  issues:
+    types: [opened]
   workflow_dispatch:
 
 jobs:
   sync-labels:
     name: Sync Repository Labels
     runs-on: ubuntu-latest
-    
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      
+
       - name: Sync labels
         uses: EndBug/label-sync@v2
         with:
-          config-file: .github/labels.yml
+          config-file: .github/labels.yaml
           token: ${{ secrets.GITHUB_TOKEN }}
           delete-other-labels: true
           dry-run: false
 
-  # Auto-label PRs based on changed files
   auto-label-pr:
     name: Auto-label Pull Requests
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-      
+
       - name: Auto-label based on changed files
         uses: actions/labeler@v6
         with:
-          configuration-path: .github/labeler.yml
+          configuration-path: .github/labeler.yaml
           repo-token: ${{ secrets.GITHUB_TOKEN }}
 
-  # Auto-label issues based on content
   auto-label-issues:
     name: Auto-label Issues
     runs-on: ubuntu-latest
     if: github.event_name == 'issues' && github.event.action == 'opened'
-    
+
     steps:
       - name: Auto-label issues
         uses: actions/github-script@v8
@@ -54,45 +57,32 @@ jobs:
           script: |
             const issue = context.payload.issue;
             const labels = [];
-            
-            // Auto-label based on title keywords
+
             const title = issue.title.toLowerCase();
             const body = issue.body ? issue.body.toLowerCase() : '';
-            
-            // Platform detection
+
             if (title.includes('android') || body.includes('android')) {
               labels.push('android');
             }
             if (title.includes('ios') || body.includes('ios')) {
               labels.push('ios');
             }
-            
-            // Priority detection
             if (title.includes('critical') || title.includes('urgent') || body.includes('critical')) {
               labels.push('priority:high');
             }
-            
-            // Feature detection
             if (title.includes('[feature]') || title.includes('enhancement')) {
               labels.push('enhancement');
             }
-            
-            // Bug detection
             if (title.includes('[bug]') || title.includes('error') || title.includes('crash')) {
               labels.push('bug');
             }
-            
-            // Performance detection
             if (title.includes('performance') || title.includes('slow') || body.includes('performance')) {
-              labels.push('performance');
+              labels.push('area:performance');
             }
-            
-            // UI/UX detection
             if (title.includes('ui') || title.includes('ux') || title.includes('design')) {
-              labels.push('ui/ux');
+              labels.push('component:ui');
             }
-            
-            // Add labels if any were detected
+
             if (labels.length > 0) {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,

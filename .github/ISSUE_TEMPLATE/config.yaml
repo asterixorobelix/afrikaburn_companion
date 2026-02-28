@@ -1,20 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: 💬 Discussion
-    url: https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/discussions
+  - name: Discussion
+    url: https://github.com/asterixorobelix/afrikaburn_companion/discussions
     about: Ask questions, share ideas, or discuss the project with the community
-  - name: 📚 Documentation
-    url: https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/wiki
-    about: Check our documentation and guides
-  - name: 💡 Feature Ideas
-    url: https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/discussions/categories/ideas
-    about: Share and discuss feature ideas with the community
-  - name: 🆘 Support
-    url: mailto:support@yourapp.com
-    about: Contact our support team for urgent issues or private matters
-  - name: 🔒 Security Issues
-    url: mailto:security@yourapp.com
-    about: Report security vulnerabilities privately (please do not create public issues)
-  - name: 📱 App Store Reviews
-    url: https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/discussions/categories/app-store-feedback
-    about: Discuss app store reviews and feedback
+  - name: Security Issues
+    url: https://github.com/asterixorobelix/afrikaburn_companion/security/advisories/new
+    about: Report security vulnerabilities privately

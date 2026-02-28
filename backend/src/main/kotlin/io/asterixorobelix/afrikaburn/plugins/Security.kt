@@ -9,7 +9,9 @@ import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.jwt.jwt
 
 fun Application.configureSecurity() {
-    val jwtSecret = System.getenv("JWT_SECRET") ?: "default-secret-change-in-production"
+    val jwtSecret = requireNotNull(System.getenv("JWT_SECRET")) {
+        "JWT_SECRET environment variable must be set. Never run without a proper secret."
+    }
     val jwtIssuer = System.getenv("JWT_ISSUER") ?: "io.asterixorobelix.afrikaburn"
     val jwtAudience = System.getenv("JWT_AUDIENCE") ?: "io.asterixorobelix.afrikaburn-users"
     

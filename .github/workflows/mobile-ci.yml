@@ -7,9 +7,6 @@ on:
   pull_request:
     branches: [ main ]
     paths: [ 'mobile/**' ]
-  pull_request_target:
-    types: [opened]
-    paths: [ 'mobile/**' ]
 
 jobs:
   test:
@@ -408,27 +405,3 @@ jobs:
         cd mobile
         ./gradlew :composeApp:linkDebugFrameworkIosArm64
 
-  request-copilot-review:
-    if: github.event_name == 'pull_request_target'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: read
-    
-    steps:
-    - name: Request GitHub Copilot Review
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PR_NUMBER: ${{ github.event.number }}
-      run: |
-        gh pr review $PR_NUMBER --repo ${{ github.repository }} --comment --body "🤖 **GitHub Copilot Auto-Review Request**
-        
-        This PR has been automatically flagged for Copilot review. Please review the mobile-related changes:
-        
-        - ✅ Code quality and best practices
-        - ✅ Kotlin/Compose Multiplatform conventions  
-        - ✅ Potential bugs or improvements
-        - ✅ Performance considerations
-        - ✅ Security implications
-        
-        Use GitHub Copilot's code review features to analyze this PR."

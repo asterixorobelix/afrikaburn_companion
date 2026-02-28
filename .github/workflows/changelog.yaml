@@ -237,37 +237,6 @@ jobs:
               });
             }
 
-  validate-changelog:
-    name: Validate Changelog Format
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-      
-      - name: Validate changelog format
-        run: |
-          if [ -f CHANGELOG.md ]; then
-            # Check if changelog follows Keep a Changelog format
-            if ! grep -q "## \[" CHANGELOG.md; then
-              echo "⚠️ CHANGELOG.md doesn't seem to follow Keep a Changelog format"
-              echo "Expected entries like: ## [1.0.0] - 2024-01-01"
-            fi
-            
-            # Check for unreleased section
-            if ! grep -qi "unreleased" CHANGELOG.md; then
-              echo "💡 Consider adding an [Unreleased] section for ongoing changes"
-            fi
-            
-            # Check for proper sections
-            if grep -q "## \[" CHANGELOG.md; then
-              echo "✅ Changelog format looks good!"
-            fi
-          else
-            echo "📝 No CHANGELOG.md found - consider creating one"
-          fi
-
   generate-draft-changelog:
     name: Generate Draft Changelog
     runs-on: ubuntu-latest

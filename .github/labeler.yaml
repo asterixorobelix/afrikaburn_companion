@@ -174,7 +174,7 @@ quality:
 # Assets and Resources
 assets:
   - "assets/**/*"
-  - androidApp/src/main/res/**/*"
+  - "androidApp/src/main/res/**/*"
   - "iosApp/**/Assets.xcassets/**/*"
   - "**/*.png"
   - "**/*.jpg"
@@ -212,9 +212,9 @@ team:devops:
 
 team:design:
   - "assets/**/*"
-  - androidApp/src/main/res/**/*"
+  - "androidApp/src/main/res/**/*"
   - "iosApp/**/Assets.xcassets/**/*"
-  - shared/src/commonMain/kotlin/ui/theme/**/*"
+  - "shared/src/commonMain/kotlin/ui/theme/**/*"
 
 team:qa:
   - "**/test/**/*"
@@ -237,4 +237,4 @@ potential-large:
   - "**/migration/**/*"
   - "**/migrations/**/*"
   - "gradle/libs.versions.toml"
-  - shared/src/commonMain/kotlin/ui/**/*"
+  - "shared/src/commonMain/kotlin/ui/**/*"

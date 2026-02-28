@@ -23,6 +23,7 @@ jobs:
     outputs:
       new_version: ${{ steps.version.outputs.new_version }}
       version_code: ${{ steps.version.outputs.version_code }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
     
     steps:
     - name: Checkout code

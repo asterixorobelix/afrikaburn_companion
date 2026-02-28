@@ -92,7 +92,7 @@
   description: "Blocked by another issue or external dependency"
 
 - name: "status:in-progress"
-  color: "yellow"
+  color: "FBCA04"
   description: "Currently being worked on"
 
 - name: "status:ready-for-review"
