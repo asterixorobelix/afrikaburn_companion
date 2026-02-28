@@ -3,7 +3,7 @@ package io.asterixorobelix.afrikaburn.domain.service
 import io.asterixorobelix.afrikaburn.domain.model.EventConfig
 import io.asterixorobelix.afrikaburn.platform.LocationData
 import kotlin.time.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

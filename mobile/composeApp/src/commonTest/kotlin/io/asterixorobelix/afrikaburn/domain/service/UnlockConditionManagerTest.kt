@@ -3,7 +3,8 @@ package io.asterixorobelix.afrikaburn.domain.service
 import io.asterixorobelix.afrikaburn.domain.model.EventConfig
 import io.asterixorobelix.afrikaburn.domain.repository.UnlockStateRepository
 import io.asterixorobelix.afrikaburn.platform.LocationData
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlin.test.Test
 import kotlin.test.assertFalse
@@ -117,7 +118,7 @@ class UnlockConditionManagerTest {
         latitude = -32.3266,
         longitude = 19.7437,
         accuracy = 10f,
-        timestamp = System.currentTimeMillis()
+        timestamp = Clock.System.now().toEpochMilliseconds()
     )
 
     // =========================================================================

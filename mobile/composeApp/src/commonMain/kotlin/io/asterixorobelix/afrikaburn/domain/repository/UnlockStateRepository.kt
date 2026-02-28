@@ -1,6 +1,6 @@
 package io.asterixorobelix.afrikaburn.domain.repository
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * Repository for managing unlock state for surprise mode, scoped to an event year.

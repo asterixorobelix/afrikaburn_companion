@@ -3,7 +3,7 @@ package io.asterixorobelix.afrikaburn.data.repository
 import io.asterixorobelix.afrikaburn.data.database.AfrikaBurnDatabase
 import io.asterixorobelix.afrikaburn.domain.repository.UnlockStateRepository
 import kotlin.time.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * SQLDelight-based implementation of UnlockStateRepository.

@@ -3,7 +3,7 @@ package io.asterixorobelix.afrikaburn.domain.service
 import io.asterixorobelix.afrikaburn.domain.repository.UnlockStateRepository
 import io.asterixorobelix.afrikaburn.platform.LocationData
 import kotlin.concurrent.Volatile
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * Manager for evaluating unlock conditions for surprise mode.

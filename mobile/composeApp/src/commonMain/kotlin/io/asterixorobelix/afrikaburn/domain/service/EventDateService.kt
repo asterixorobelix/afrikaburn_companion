@@ -2,7 +2,7 @@ package io.asterixorobelix.afrikaburn.domain.service
 
 import io.asterixorobelix.afrikaburn.domain.model.EventConfig
 import kotlin.time.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
