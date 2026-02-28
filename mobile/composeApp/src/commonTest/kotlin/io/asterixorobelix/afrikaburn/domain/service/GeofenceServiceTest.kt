@@ -2,7 +2,7 @@ package io.asterixorobelix.afrikaburn.domain.service
 
 import io.asterixorobelix.afrikaburn.domain.model.EventConfig
 import io.asterixorobelix.afrikaburn.platform.LocationData
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -171,7 +171,7 @@ class GeofenceServiceTest {
             latitude = eventLat,
             longitude = eventLon,
             accuracy = 10f,
-            timestamp = System.currentTimeMillis()
+            timestamp = Clock.System.now().toEpochMilliseconds()
         )
 
         // When
@@ -189,7 +189,7 @@ class GeofenceServiceTest {
             latitude = -33.9249, // Cape Town
             longitude = 18.4241,
             accuracy = 10f,
-            timestamp = System.currentTimeMillis()
+            timestamp = Clock.System.now().toEpochMilliseconds()
         )
 
         // When

@@ -2,7 +2,7 @@ package io.asterixorobelix.afrikaburn.data.repository
 
 import io.asterixorobelix.afrikaburn.data.database.AfrikaBurnDatabase
 import io.asterixorobelix.afrikaburn.domain.repository.UnlockStateRepository
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.Instant
 
 /**

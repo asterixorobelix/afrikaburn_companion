@@ -13,7 +13,7 @@ import io.asterixorobelix.afrikaburn.domain.usecase.camppin.SaveCampPinUseCase
 import io.asterixorobelix.afrikaburn.domain.usecase.camppin.UpdateCampPinLocationUseCase
 import io.asterixorobelix.afrikaburn.domain.usecase.projects.GetAllProjectsUseCase
 import io.asterixorobelix.afrikaburn.domain.usecase.projects.GetProjectsByTypeUseCase
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
