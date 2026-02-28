@@ -59,6 +59,16 @@ private data class AppNavActions(
     val onPendingExploreProjectTypeChanged: (ProjectType?) -> Unit
 )
 
+private val ProjectItemSaver = Saver<ProjectItem?, String>(
+    save = { it?.let { Json.encodeToString(it) } },
+    restore = { it?.let { Json.decodeFromString<ProjectItem>(it) } }
+)
+
+private val ProjectTypeSaver = Saver<ProjectType?, String>(
+    save = { it?.name },
+    restore = { it?.let { ProjectType.valueOf(it) } }
+)
+
 @Composable
 @Preview
 fun App() {
@@ -164,37 +174,15 @@ private fun AppScaffold(
     val currentRoute = currentBackStackEntry?.destination?.route
     val currentBaseRoute = remember(currentRoute) { currentRoute?.substringBefore("?") }
 
-    // State holder for selected project (used for detail navigation)
     // rememberSaveable persists across config changes and process death
-    var selectedProject by rememberSaveable(
-        stateSaver = Saver(
-            save = { it?.let { Json.encodeToString(it) } },
-            restore = { it?.let { Json.decodeFromString<ProjectItem>(it) } }
-        )
-    ) { mutableStateOf<ProjectItem?>(null) }
-    var pendingExploreProjectType by rememberSaveable(
-        stateSaver = Saver(
-            save = { it?.name },
-            restore = { it?.let { ProjectType.valueOf(it) } }
-        )
-    ) { mutableStateOf<ProjectType?>(null) }
+    var selectedProject by rememberSaveable(stateSaver = ProjectItemSaver) {
+        mutableStateOf<ProjectItem?>(null)
+    }
+    var pendingExploreProjectType by rememberSaveable(stateSaver = ProjectTypeSaver) {
+        mutableStateOf<ProjectType?>(null)
+    }
 
-    // Hide bottom bar on detail screens and sub-routes (Directions/About from More)
-    val topLevelRoutes = remember(visibleDestinations) {
-        visibleDestinations.map { it.route }.toSet()
-    }
-    val unlockedSubRoutes = remember {
-        setOf(
-            NavigationDestination.Directions.route,
-            NavigationDestination.About.route
-        )
-    }
-    val showBottomBar = remember(currentBaseRoute, topLevelRoutes, isUnlocked) {
-        currentBaseRoute != null && (
-            currentBaseRoute in topLevelRoutes ||
-                (isUnlocked && currentBaseRoute in unlockedSubRoutes)
-            )
-    }
+    val showBottomBar = shouldShowBottomBar(currentBaseRoute, visibleDestinations, isUnlocked)
 
     Scaffold(
         modifier = Modifier
@@ -230,6 +218,26 @@ private fun AppScaffold(
                 onPendingExploreProjectTypeChanged = { pendingExploreProjectType = it }
             )
         )
+    }
+}
+
+@Composable
+private fun shouldShowBottomBar(
+    currentBaseRoute: String?,
+    visibleDestinations: List<NavigationDestination>,
+    isUnlocked: Boolean
+): Boolean {
+    val topLevelRoutes = remember(visibleDestinations) {
+        visibleDestinations.map { it.route }.toSet()
+    }
+    val unlockedSubRoutes = remember {
+        setOf(NavigationDestination.Directions.route, NavigationDestination.About.route)
+    }
+    return remember(currentBaseRoute, topLevelRoutes, isUnlocked) {
+        currentBaseRoute != null && (
+            currentBaseRoute in topLevelRoutes ||
+                (isUnlocked && currentBaseRoute in unlockedSubRoutes)
+            )
     }
 }
 
