@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
@@ -41,6 +42,7 @@ import io.asterixorobelix.afrikaburn.ui.projects.ProjectsScreen
 import io.asterixorobelix.afrikaburn.ui.about.AboutScreen
 import io.asterixorobelix.afrikaburn.di.koinMapViewModel
 import io.asterixorobelix.afrikaburn.ui.screens.map.MapScreen
+import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -163,8 +165,19 @@ private fun AppScaffold(
     val currentBaseRoute = remember(currentRoute) { currentRoute?.substringBefore("?") }
 
     // State holder for selected project (used for detail navigation)
-    var selectedProject by remember { mutableStateOf<ProjectItem?>(null) }
-    var pendingExploreProjectType by remember { mutableStateOf<ProjectType?>(null) }
+    // rememberSaveable persists across config changes and process death
+    var selectedProject by rememberSaveable(
+        stateSaver = Saver(
+            save = { it?.let { Json.encodeToString(it) } },
+            restore = { it?.let { Json.decodeFromString<ProjectItem>(it) } }
+        )
+    ) { mutableStateOf<ProjectItem?>(null) }
+    var pendingExploreProjectType by rememberSaveable(
+        stateSaver = Saver(
+            save = { it?.name },
+            restore = { it?.let { ProjectType.valueOf(it) } }
+        )
+    ) { mutableStateOf<ProjectType?>(null) }
 
     // Hide bottom bar on detail screens and sub-routes (Directions/About from More)
     val topLevelRoutes = remember(visibleDestinations) {
