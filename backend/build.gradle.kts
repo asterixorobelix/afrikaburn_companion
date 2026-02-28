@@ -4,7 +4,7 @@ val logback_version = "1.5.32"
 val exposed_version = "0.61.0"
 
 plugins {
-    kotlin("jvm") version "2.2.20"
+    kotlin("jvm") version "2.3.10"
     id("io.ktor.plugin") version "3.4.0"
     id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20"
     id("io.gitlab.arturbosch.detekt") version "1.23.8"
