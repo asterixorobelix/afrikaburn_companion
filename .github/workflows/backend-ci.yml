@@ -147,14 +147,14 @@ jobs:
       working-directory: backend
     
     - name: Upload test results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         name: backend-test-results
         path: backend/build/reports/tests/test/
         
     - name: Upload detekt results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         name: backend-detekt-results
