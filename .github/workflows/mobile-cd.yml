@@ -185,7 +185,7 @@ jobs:
         rm -f /tmp/keystore.jks
     
     - name: Upload AAB artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: android-aab
         path: mobile/composeApp/build/outputs/bundle/release/*.aab
@@ -440,7 +440,7 @@ jobs:
 
     - name: Upload iOS Artifacts
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ios-ipa
         path: mobile/fastlane/build/*.ipa
