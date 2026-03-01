@@ -39,7 +39,7 @@ jobs:
         distribution: 'temurin'
     
     - name: Cache Gradle packages
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: |
           ~/.gradle/caches
@@ -219,7 +219,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Cache Gradle packages
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: |
           ~/.gradle/caches
@@ -363,7 +363,7 @@ jobs:
         xcode-version: 'latest-stable'
 
     - name: Restore Gradle and Kotlin/Native cache
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       with:
         path: |
           ~/.gradle/caches
@@ -425,7 +425,7 @@ jobs:
 
     - name: Save Gradle and Kotlin/Native cache
       if: always()
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@v5
       with:
         path: |
           ~/.gradle/caches
