@@ -757,49 +757,6 @@ jobs:
           folder-path: 'mobile'
         continue-on-error: true
 
-  auto-assign-reviewers:
-    name: Auto-assign Reviewers
-    runs-on: ubuntu-latest
-    needs: pr-info
-    if: github.event.pull_request.draft == false && github.event.action == 'opened'
-    
-    steps:
-      - name: Auto-assign reviewers
-        uses: actions/github-script@v8
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const pullNumber = context.payload.pull_request.number;
-            
-            // Define reviewers based on changed files
-            let reviewers = [];
-            
-            if (${{ needs.pr-info.outputs.has-android-changes }}) {
-              reviewers.push('android-team-member'); // Replace with actual usernames
-            }
-            
-            if (${{ needs.pr-info.outputs.has-ios-changes }}) {
-              reviewers.push('ios-team-member'); // Replace with actual usernames
-            }
-            
-            if (${{ needs.pr-info.outputs.has-shared-changes }}) {
-              reviewers.push('kotlin-team-member'); // Replace with actual usernames
-            }
-            
-            // Remove duplicates and the PR author
-            reviewers = [...new Set(reviewers)].filter(reviewer => 
-              reviewer !== context.payload.pull_request.user.login
-            );
-            
-            if (reviewers.length > 0) {
-              await github.rest.pulls.requestReviewers({
-                owner,
-                repo,
-                pull_number: pullNumber,
-                reviewers: reviewers.slice(0, 3) // Max 3 reviewers
-              });
-            }
-
   pr-validation-summary:
     name: PR Validation Summary
     runs-on: ubuntu-latest
