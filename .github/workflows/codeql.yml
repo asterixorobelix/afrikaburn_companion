@@ -33,9 +33,6 @@ jobs:
     runs-on: ${{ matrix.language == 'swift' && 'macos-latest' || 'ubuntu-latest' }}
     timeout-minutes: 360
     needs: [changes]
-    if: |
-      (matrix.build-dir == 'backend' && needs.changes.outputs.backend == 'true') ||
-      (matrix.build-dir == 'mobile' && needs.changes.outputs.mobile == 'true')
     permissions:
       security-events: write
       packages: read
