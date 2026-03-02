@@ -54,28 +54,37 @@ jobs:
           build-dir: mobile
 
     steps:
+    - name: Check if should run
+      id: should-run
+      if: |
+        (matrix.build-dir == 'backend' && needs.changes.outputs.backend == 'true') ||
+        (matrix.build-dir == 'mobile' && needs.changes.outputs.mobile == 'true')
+      run: echo "run=true" >> "$GITHUB_OUTPUT"
+
     - name: Checkout repository
+      if: steps.should-run.outputs.run == 'true'
       uses: actions/checkout@v5
 
     - name: Set up JDK 17
-      if: matrix.language == 'java-kotlin'
+      if: steps.should-run.outputs.run == 'true' && matrix.language == 'java-kotlin'
       uses: actions/setup-java@v5
       with:
         java-version: '17'
         distribution: 'temurin'
 
     - name: Make gradlew executable
-      if: matrix.language == 'java-kotlin'
+      if: steps.should-run.outputs.run == 'true' && matrix.language == 'java-kotlin'
       run: chmod +x ${{ matrix.build-dir }}/gradlew
 
     - name: Initialize CodeQL
+      if: steps.should-run.outputs.run == 'true'
       uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
         build-mode: ${{ matrix.build-mode }}
 
     - name: Build Backend
-      if: matrix.language == 'java-kotlin' && matrix.build-dir == 'backend'
+      if: steps.should-run.outputs.run == 'true' && matrix.language == 'java-kotlin' && matrix.build-dir == 'backend'
       run: |
         cd backend
         # Ensure Kotlin compilation is captured by CodeQL
@@ -84,7 +93,7 @@ jobs:
         ./gradlew build -x test
 
     - name: Setup Firebase Config for Mobile
-      if: matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
+      if: steps.should-run.outputs.run == 'true' && matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
       run: |
         # Check if the existing google-services.json file is valid
         if [ -f mobile/composeApp/google-services.json ]; then
@@ -174,24 +183,25 @@ jobs:
         fi
 
     - name: Build Mobile
-      if: matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
+      if: steps.should-run.outputs.run == 'true' && matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
       run: |
         cd mobile
         ./gradlew build -x test
 
     - name: Setup Xcode
-      if: matrix.language == 'swift'
+      if: steps.should-run.outputs.run == 'true' && matrix.language == 'swift'
       uses: maxim-lobanov/setup-xcode@v1
       with:
         xcode-version: 'latest-stable'
     
     - name: Build iOS App
-      if: matrix.language == 'swift'
+      if: steps.should-run.outputs.run == 'true' && matrix.language == 'swift'
       run: |
         cd mobile/iosApp
         xcodebuild -project iosApp.xcodeproj -scheme iosApp -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
 
     - name: Perform CodeQL Analysis
+      if: steps.should-run.outputs.run == 'true'
       uses: github/codeql-action/analyze@v4
       with:
         category: "/language:${{matrix.language}}-${{matrix.build-dir}}"
