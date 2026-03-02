@@ -22,7 +22,7 @@ class ProjectItemFamilyFilterTest {
     }
     
     @Test
-    fun `isFamilyFriendly should return true for status containing Fam(ish)`() {
+    fun `isFamilyFriendly should return true for status containing Fam-ish`() {
         // Given project with "Fam(ish)" status
         val project = ProjectItem(
             name = "Test Camp",

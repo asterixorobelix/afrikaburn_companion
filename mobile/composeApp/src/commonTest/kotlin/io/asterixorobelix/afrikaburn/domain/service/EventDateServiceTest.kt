@@ -201,7 +201,7 @@ class EventDateServiceTest {
     // =========================================================================
 
     @Test
-    fun `debug flag bypass returns false when disabled (default)`() {
+    fun `debug flag bypass returns false when disabled - default`() {
         // Given: Default configuration (bypass disabled)
         val fakeClock = FakeClock(Instant.parse("2026-01-01T12:00:00Z"))
         val service = EventDateServiceImpl(fakeClock)

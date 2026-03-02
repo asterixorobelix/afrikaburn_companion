@@ -514,7 +514,7 @@ class UnlockConditionManagerTest {
     // =========================================================================
 
     @Test
-    fun `date unlock works when location is null (permission denied scenario)`() {
+    fun `date unlock works when location is null - permission denied scenario`() {
         // Given: Event has started, but location is null (location permission denied by user)
         val eventDateService = FakeEventDateService(eventStarted = true)
         val (manager, repository, _) = createManager(eventDateService = eventDateService)
