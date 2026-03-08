@@ -3,9 +3,8 @@ package io.asterixorobelix.afrikaburn.plugins
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.Application
-import kotlinx.coroutines.Dispatchers
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 
 private const val DEFAULT_CONNECTION_TIMEOUT_MS = 30000L
 private const val DEFAULT_IDLE_TIMEOUT_MS = 600000L
@@ -50,4 +49,4 @@ fun Application.configureDatabases() {
 }
 
 suspend fun <T> dbQuery(block: suspend () -> T): T =
-    newSuspendedTransaction(Dispatchers.IO) { block() }
+    suspendTransaction { block() }
