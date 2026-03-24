@@ -20,6 +20,7 @@ data class EventConfig(
     val geofenceRadiusKm: Double
 ) {
     companion object {
+        val YEAR = 2026
         /**
          * AfrikaBurn 2026 event configuration.
          *
@@ -29,8 +30,8 @@ data class EventConfig(
          * Geofence: 20 km radius as per requirements
          */
         val DEFAULT = EventConfig(
-            eventStartDate = LocalDate(2026, 4, 27),
-            eventEndDate = LocalDate(2026, 5, 3),
+            eventStartDate = LocalDate(YEAR, 4, 27),
+            eventEndDate = LocalDate(YEAR, 5, 3),
             eventLatitude = -32.3266,
             eventLongitude = 19.7437,
             geofenceRadiusKm = 20.0
