@@ -186,9 +186,9 @@ private fun AppScaffold(
 
     Scaffold(
         modifier = Modifier
-            .safeContentPadding()
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(MaterialTheme.colorScheme.background)
+            .safeContentPadding(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         bottomBar = {
             if (showBottomBar) {
