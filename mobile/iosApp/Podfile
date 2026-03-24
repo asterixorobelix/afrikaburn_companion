@@ -3,8 +3,7 @@ platform :ios, '15.0'
 target 'iosApp' do
   use_frameworks!
 
-  # MapLibre Native iOS SDK - required at link time by maplibre-compose KMP library
-  pod 'MapLibre', '~> 6.17'
+  # MapLibre moved to Swift Package Manager (required by maplibre-compose 0.12.1)
 end
 
 post_install do |installer|

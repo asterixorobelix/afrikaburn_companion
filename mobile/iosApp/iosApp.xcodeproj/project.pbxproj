@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		207B33B72F72B4060046CADC /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 207B33B62F72B4060046CADC /* MapLibre */; };
+		C7383224EEB8BD8D1A4FA33D /* Pods_iosApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADB2DE1E6070484834CB2AF8 /* Pods_iosApp.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		20F7F0B22F4B54FB006D1ED4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -17,7 +22,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		01A7FE944DC1C01821ADBF66 /* Pods-iosApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.release.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.release.xcconfig"; sourceTree = "<group>"; };
 		20F7F0AC2F4B54FB006D1ED4 /* AfrikaburnUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AfrikaburnUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		ADB2DE1E6070484834CB2AF8 /* Pods_iosApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_iosApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B4E0ECFC082F27D11DE0AEFF /* Pods-iosApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-iosApp.debug.xcconfig"; path = "Target Support Files/Pods-iosApp/Pods-iosApp.debug.xcconfig"; sourceTree = "<group>"; };
 		B9DA97B12DC1472C00A4DA20 /* Afrikaburn.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Afrikaburn.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -64,12 +72,31 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				207B33B72F72B4060046CADC /* MapLibre in Frameworks */,
+				C7383224EEB8BD8D1A4FA33D /* Pods_iosApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		865169BAE2093B197375C503 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B4E0ECFC082F27D11DE0AEFF /* Pods-iosApp.debug.xcconfig */,
+				01A7FE944DC1C01821ADBF66 /* Pods-iosApp.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		911E393E7353D35269B2E5E2 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ADB2DE1E6070484834CB2AF8 /* Pods_iosApp.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B9DA97A82DC1472C00A4DA20 = {
 			isa = PBXGroup;
 			children = (
@@ -77,6 +104,8 @@
 				B9DA97B32DC1472C00A4DA20 /* iosApp */,
 				20F7F0AD2F4B54FB006D1ED4 /* AfrikaburnUITests */,
 				B9DA97B22DC1472C00A4DA20 /* Products */,
+				865169BAE2093B197375C503 /* Pods */,
+				911E393E7353D35269B2E5E2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -109,8 +138,6 @@
 				20F7F0AD2F4B54FB006D1ED4 /* AfrikaburnUITests */,
 			);
 			name = AfrikaburnUITests;
-			packageProductDependencies = (
-			);
 			productName = AfrikaburnUITests;
 			productReference = 20F7F0AC2F4B54FB006D1ED4 /* AfrikaburnUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -119,6 +146,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B9DA97BF2DC1472D00A4DA20 /* Build configuration list for PBXNativeTarget "iosApp" */;
 			buildPhases = (
+				5668C96CC5CEBBE2BC0C654E /* [CP] Check Pods Manifest.lock */,
 				B9DA97F42DC1497100A4DA20 /* Compile Kotlin Framework */,
 				B9DA97AD2DC1472C00A4DA20 /* Sources */,
 				B9DA97AE2DC1472C00A4DA20 /* Frameworks */,
@@ -132,8 +160,6 @@
 				B9DA97B32DC1472C00A4DA20 /* iosApp */,
 			);
 			name = iosApp;
-			packageProductDependencies = (
-			);
 			productName = Afrikaburn;
 			productReference = B9DA97B12DC1472C00A4DA20 /* Afrikaburn.app */;
 			productType = "com.apple.product-type.application";
@@ -166,6 +192,9 @@
 			);
 			mainGroup = B9DA97A82DC1472C00A4DA20;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				207B33A52F72B38C0046CADC /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B9DA97B22DC1472C00A4DA20 /* Products */;
 			projectDirPath = "";
@@ -195,6 +224,28 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		5668C96CC5CEBBE2BC0C654E /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-iosApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
 		B9DA97F42DC1497100A4DA20 /* Compile Kotlin Framework */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -405,8 +456,7 @@
 		};
 		B9DA97C02DC1472D00A4DA20 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = B9DA98002DC14AA900A4DA20 /* Configuration */;
-			baseConfigurationReferenceRelativePath = Config.xcconfig;
+			baseConfigurationReference = B4E0ECFC082F27D11DE0AEFF /* Pods-iosApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -414,7 +464,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
-				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				DEVELOPMENT_TEAM = CWZS863WYG;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -446,8 +496,7 @@
 		};
 		B9DA97C12DC1472D00A4DA20 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = B9DA98002DC14AA900A4DA20 /* Configuration */;
-			baseConfigurationReferenceRelativePath = Config.xcconfig;
+			baseConfigurationReference = 01A7FE944DC1C01821ADBF66 /* Pods-iosApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -455,7 +504,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
-				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				DEVELOPMENT_TEAM = CWZS863WYG;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -516,6 +565,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		207B33A52F72B38C0046CADC /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.17.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		207B33B62F72B4060046CADC /* MapLibre */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 207B33A52F72B38C0046CADC /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
+			productName = MapLibre;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B9DA97A92DC1472C00A4DA20 /* Project object */;
 }
