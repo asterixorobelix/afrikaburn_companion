@@ -1,16 +1,16 @@
-platform :ios, '16.0'
+platform :ios, '15.0'
 
 target 'iosApp' do
   use_frameworks!
 
   # MapLibre Native iOS SDK - required at link time by maplibre-compose KMP library
-  pod 'MapLibre', '~> 6.8'
+  pod 'MapLibre', '~> 6.17'
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '16.0'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
       # Disable code signing for Pods targets (CI uses Manual signing for app only)
       config.build_settings['CODE_SIGNING_ALLOWED'] = 'NO'
       config.build_settings['CODE_SIGNING_REQUIRED'] = 'NO'
