@@ -87,11 +87,33 @@ jobs:
       if: steps.should-run.outputs.run == 'true' && matrix.language == 'java-kotlin' && matrix.build-dir == 'backend'
       run: |
         cd backend
-        # Attempt Kotlin compilation for CodeQL analysis; skip gracefully if
-        # the Kotlin version is too recent for the current CodeQL toolchain.
-        ./gradlew compileKotlin || echo "::warning::CodeQL does not yet support this Kotlin version — skipping compilation analysis"
+        # Attempt Kotlin compilation for CodeQL analysis; skip gracefully
+        # only if the failure is the known CodeQL/Kotlin version mismatch.
+        set +e
+        OUTPUT=$(./gradlew compileKotlin 2>&1)
+        RC=$?
+        set -e
+        if [ $RC -ne 0 ]; then
+          if echo "$OUTPUT" | grep -q "Kotlin version .* is too recent. CodeQL currently supports"; then
+            echo "::warning::CodeQL does not yet support this Kotlin version — skipping compilation analysis"
+          else
+            echo "$OUTPUT"
+            exit $RC
+          fi
+        fi
         ./gradlew detekt
-        ./gradlew build -x test -x compileKotlin || true
+        set +e
+        OUTPUT=$(./gradlew build -x test -x compileKotlin 2>&1)
+        RC=$?
+        set -e
+        if [ $RC -ne 0 ]; then
+          if echo "$OUTPUT" | grep -q "Kotlin version .* is too recent. CodeQL currently supports"; then
+            echo "::warning::CodeQL does not yet support this Kotlin version — skipping build analysis"
+          else
+            echo "$OUTPUT"
+            exit $RC
+          fi
+        fi
 
     - name: Setup Firebase Config for Mobile
       if: steps.should-run.outputs.run == 'true' && matrix.language == 'java-kotlin' && matrix.build-dir == 'mobile'
