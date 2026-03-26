@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.unit.Dp
@@ -96,84 +97,94 @@ val AppShapes = Shapes(
 @Suppress("LongMethod")
 @Composable
 fun appTypography(): Typography {
+    val defaultFamily = FontFamily.Default
     return Typography(
         displayLarge = TextStyle(
+            fontFamily = defaultFamily,
             fontSize = 57.sp,
             lineHeight = 64.sp,
             fontWeight = FontWeight.Normal
         ),
         displayMedium = TextStyle(
-
+            fontFamily = defaultFamily,
             fontSize = 45.sp,
             lineHeight = 52.sp,
             fontWeight = FontWeight.Normal
         ),
         displaySmall = TextStyle(
-
+            fontFamily = defaultFamily,
             fontSize = 36.sp,
             lineHeight = 44.sp,
             fontWeight = FontWeight.Normal
         ),
         headlineLarge = TextStyle(
-
+            fontFamily = defaultFamily,
             fontSize = 32.sp,
             lineHeight = 40.sp,
             fontWeight = FontWeight.Normal
         ),
         headlineMedium = TextStyle(
-
+            fontFamily = defaultFamily,
             fontSize = 28.sp,
             lineHeight = 36.sp,
             fontWeight = FontWeight.Normal
         ),
         headlineSmall = TextStyle(
-
+            fontFamily = defaultFamily,
             fontSize = 24.sp,
             lineHeight = 32.sp,
             fontWeight = FontWeight.Normal
         ),
         titleLarge = TextStyle(
-
+            fontFamily = defaultFamily,
             fontSize = 22.sp,
             lineHeight = 28.sp,
             fontWeight = FontWeight.Medium
         ),
         titleMedium = TextStyle(
+            fontFamily = defaultFamily,
             fontSize = 16.sp,
             lineHeight = 24.sp,
             fontWeight = FontWeight.Medium
         ),
         titleSmall = TextStyle(
+            fontFamily = defaultFamily,
             fontSize = 14.sp,
             lineHeight = 20.sp,
             fontWeight = FontWeight.Medium
         ),
         bodyLarge = TextStyle(
+            fontFamily = defaultFamily,
             fontSize = 16.sp,
             lineHeight = 24.sp,
             fontWeight = FontWeight.Normal
         ),
         bodyMedium = TextStyle(
+            fontFamily = defaultFamily,
             fontSize = 14.sp,
             lineHeight = 20.sp,
             fontWeight = FontWeight.Normal
         ),
         bodySmall = TextStyle(
+            fontFamily = defaultFamily,
             fontSize = 12.sp,
             lineHeight = 16.sp,
             fontWeight = FontWeight.Normal
         ),
         labelLarge = TextStyle(
+            fontFamily = defaultFamily,
             fontSize = 14.sp,
             lineHeight = 20.sp,
             fontWeight = FontWeight.Medium
         ),
         labelMedium = TextStyle(
+            fontFamily = defaultFamily,
             fontSize = 12.sp,
             lineHeight = 16.sp,
             fontWeight = FontWeight.Medium
         ),
         labelSmall = TextStyle(
+            fontFamily = defaultFamily,
             fontSize = 11.sp,
             lineHeight = 16.sp,
             fontWeight = FontWeight.Medium
