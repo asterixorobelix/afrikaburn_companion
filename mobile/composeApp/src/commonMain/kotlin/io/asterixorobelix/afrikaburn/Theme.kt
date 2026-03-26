@@ -9,8 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.ui.unit.Dp
+import afrikaburn.composeapp.generated.resources.Res
+import afrikaburn.composeapp.generated.resources.bitter_regular
+import org.jetbrains.compose.resources.Font
 import io.asterixorobelix.afrikaburn.Dimens.cornerRadiusLarge
 import io.asterixorobelix.afrikaburn.Dimens.cornerRadiusMedium
 import io.asterixorobelix.afrikaburn.Dimens.cornerRadiusSmall
@@ -91,8 +97,98 @@ val AppShapes = Shapes(
     large = androidx.compose.foundation.shape.RoundedCornerShape(cornerRadiusLarge)
 )
 
+@Suppress("LongMethod")
 @Composable
-fun appTypography(): Typography = Typography()
+fun appTypography(): Typography {
+    val bitterFamily = FontFamily(
+        Font(Res.font.bitter_regular, weight = FontWeight.Normal),
+        Font(Res.font.bitter_regular, weight = FontWeight.Medium),
+    )
+    return Typography(
+        displayLarge = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 57.sp,
+            lineHeight = 64.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        displayMedium = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 45.sp,
+            lineHeight = 52.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        displaySmall = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 36.sp,
+            lineHeight = 44.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        headlineLarge = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 32.sp,
+            lineHeight = 40.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        headlineMedium = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 28.sp,
+            lineHeight = 36.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        headlineSmall = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 24.sp,
+            lineHeight = 32.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        titleLarge = TextStyle(
+            fontFamily = bitterFamily,
+            fontSize = 22.sp,
+            lineHeight = 28.sp,
+            fontWeight = FontWeight.Medium
+        ),
+        titleMedium = TextStyle(
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            fontWeight = FontWeight.Medium
+        ),
+        titleSmall = TextStyle(
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            fontWeight = FontWeight.Medium
+        ),
+        bodyLarge = TextStyle(
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        bodyMedium = TextStyle(
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        bodySmall = TextStyle(
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            fontWeight = FontWeight.Normal
+        ),
+        labelLarge = TextStyle(
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            fontWeight = FontWeight.Medium
+        ),
+        labelMedium = TextStyle(
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+            fontWeight = FontWeight.Medium
+        ),
+        labelSmall = TextStyle(
+            fontSize = 11.sp,
+            lineHeight = 16.sp,
+            fontWeight = FontWeight.Medium
+        ),
+    )
+}
 
 object Dimens {
     // Padding

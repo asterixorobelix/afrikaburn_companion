@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		207B33B72F72B4060046CADC /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 207B33B62F72B4060046CADC /* MapLibre */; };
+		20BDE46D2F75161400BF9DC6 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 20BDE46C2F75161400BF9DC6 /* MapLibre */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,8 +38,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		20F7F0AD2F4B54FB006D1ED4 /* AfrikaburnUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = AfrikaburnUITests;
 			sourceTree = "<group>";
 		};
@@ -53,8 +51,6 @@
 		};
 		B9DA98002DC14AA900A4DA20 /* Configuration */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = Configuration;
 			sourceTree = "<group>";
 		};
@@ -72,13 +68,20 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				207B33B72F72B4060046CADC /* MapLibre in Frameworks */,
+				20BDE46D2F75161400BF9DC6 /* MapLibre in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		20BDE4652F75105C00BF9DC6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		865169BAE2093B197375C503 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -94,6 +97,7 @@
 				20F7F0AD2F4B54FB006D1ED4 /* AfrikaburnUITests */,
 				B9DA97B22DC1472C00A4DA20 /* Products */,
 				865169BAE2093B197375C503 /* Pods */,
+				20BDE4652F75105C00BF9DC6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -180,7 +184,7 @@
 			mainGroup = B9DA97A82DC1472C00A4DA20;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				207B33A52F72B38C0046CADC /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
+				20BDE46B2F75160F00BF9DC6 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B9DA97B22DC1472C00A4DA20 /* Products */;
@@ -441,6 +445,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -480,6 +485,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -530,20 +536,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		207B33A52F72B38C0046CADC /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
+		20BDE46B2F75160F00BF9DC6 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 6.17.1;
+				minimumVersion = 6.24.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		207B33B62F72B4060046CADC /* MapLibre */ = {
+		20BDE46C2F75161400BF9DC6 /* MapLibre */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 207B33A52F72B38C0046CADC /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
+			package = 20BDE46B2F75160F00BF9DC6 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
 			productName = MapLibre;
 		};
 /* End XCSwiftPackageProductDependency section */
