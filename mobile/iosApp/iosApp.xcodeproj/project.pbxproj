@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		20BDE4E02F75330800BF9DC6 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 20BDE4DF2F75330800BF9DC6 /* MapLibre */; };
+		20BDE4F32F7534FE00BF9DC6 /* MapLibre in Frameworks */ = {isa = PBXBuildFile; productRef = 20BDE4F22F7534FE00BF9DC6 /* MapLibre */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,7 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				20BDE4E02F75330800BF9DC6 /* MapLibre in Frameworks */,
+				20BDE4F32F7534FE00BF9DC6 /* MapLibre in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,7 +184,7 @@
 			mainGroup = B9DA97A82DC1472C00A4DA20;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				20BDE4DE2F75330400BF9DC6 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
+				20BDE4F12F7534FA00BF9DC6 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B9DA97B22DC1472C00A4DA20 /* Products */;
@@ -536,7 +536,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		20BDE4DE2F75330400BF9DC6 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
+		20BDE4F12F7534FA00BF9DC6 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/maplibre/maplibre-gl-native-distribution.git";
 			requirement = {
@@ -547,9 +547,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		20BDE4DF2F75330800BF9DC6 /* MapLibre */ = {
+		20BDE4F22F7534FE00BF9DC6 /* MapLibre */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 20BDE4DE2F75330400BF9DC6 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
+			package = 20BDE4F12F7534FA00BF9DC6 /* XCRemoteSwiftPackageReference "maplibre-gl-native-distribution" */;
 			productName = MapLibre;
 		};
 /* End XCSwiftPackageProductDependency section */
