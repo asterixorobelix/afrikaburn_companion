@@ -360,12 +360,36 @@ jobs:
             body: comment
           });
 
+  guard-maplibre-pin:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Verify MapLibre iOS pinned to 6.17.1
+      run: |
+        PBXPROJ="mobile/iosApp/iosApp.xcodeproj/project.pbxproj"
+        if grep -q "upToNextMajorVersion" "$PBXPROJ"; then
+          echo "FATAL: MapLibre iOS is NOT pinned to exactVersion."
+          echo "Found 'upToNextMajorVersion' in $PBXPROJ."
+          echo "MapLibre iOS >= 6.18.0 has a Harfbuzz symbol collision with Skiko (Compose)."
+          echo "Fix: set requirement to { kind = exactVersion; version = 6.17.1; }"
+          echo "See: maplibre-native#3777, maplibre-compose#551"
+          exit 1
+        fi
+        if ! grep -q "version = 6.17.1" "$PBXPROJ"; then
+          echo "FATAL: MapLibre iOS version is not 6.17.1 in $PBXPROJ."
+          echo "Only 6.17.1 is safe (no Harfbuzz collision with Skiko)."
+          exit 1
+        fi
+        echo "MapLibre iOS correctly pinned to exactVersion 6.17.1"
+
   build-ios:
     runs-on: macos-15
+    needs: guard-maplibre-pin
 
     steps:
     - uses: actions/checkout@v5
-    
+
     - name: Set up JDK 17
       uses: actions/setup-java@v5
       with:
