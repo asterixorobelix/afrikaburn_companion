@@ -74,6 +74,16 @@ For iOS (macOS only):
 cd mobile/iosApp && xcodebuild
 ```
 
+## Landing Page
+
+The app landing page is hosted on GitHub Pages at:
+
+**https://asterixorobelix.github.io/afrikaburn/**
+
+Source: [asterixorobelix.github.io/afrikaburn/](https://github.com/asterixorobelix/asterixorobelix.github.io/tree/master/afrikaburn)
+
+Includes privacy policy (`/afrikaburn/privacy.html`) and support page (`/afrikaburn/support.html`).
+
 ## Documentation
 
 - `GITHUB_SETUP.md`
